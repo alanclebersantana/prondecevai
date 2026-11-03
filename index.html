@@ -7,8 +7,8 @@
 <meta name="description" content="Passagens aéreas emitidas com milhas. Diga para onde vai e receba a cotação no WhatsApp.">
 <meta name="theme-color" content="#0E3B7A">
 <script src="firebase-config.js"></script>
-<link rel="icon" type="image/png" href="img/favicon.png">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
@@ -47,11 +47,11 @@ a{color:inherit}
 .ceu{position:relative;overflow:hidden;color:#fff;
   background:linear-gradient(180deg,var(--ceu) 0%,var(--ceu-2) 52%,var(--tarde) 82%,var(--horizonte) 100%);
   padding:130px 0 230px}
-/* Foto gerada (img/ceu-asa.jpg). Sem a foto, fica o degradê + asa desenhada */
+/* Foto gerada (ceu-asa.jpg). Sem a foto, fica o degradê + asa desenhada */
 .tem-foto .ceu{background:
   linear-gradient(90deg,rgba(9,32,70,.78) 0%,rgba(9,32,70,.45) 45%,rgba(9,32,70,0) 75%),
   linear-gradient(180deg,rgba(9,32,70,.35) 0%,rgba(9,32,70,0) 30%),
-  url("img/ceu-asa.jpg") left 38% / max(135vw, 1400px) auto no-repeat, var(--ceu)}
+  url("ceu-asa.jpg") left 38% / max(135vw, 1400px) auto no-repeat, var(--ceu)}
 .tem-foto .asa,.tem-foto .nuvem{display:none}
 .tem-foto .ceu h1 .baixo{color:var(--horizonte)}
 .nuvem{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.75),rgba(255,255,255,0));pointer-events:none}
@@ -255,7 +255,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
   .topo-zap span{display:none}
   .topo-zap{padding:9px}
   .ceu{padding:200px 0 210px}
-  .tem-foto .ceu{background:linear-gradient(180deg,rgba(9,32,70,.35) 0%,rgba(9,32,70,.1) 22%,rgba(9,32,70,.45) 45%,rgba(9,32,70,.5) 100%),url("img/ceu-asa-celular.jpg") center top / cover no-repeat,var(--ceu);padding-top:250px}
+  .tem-foto .ceu{background:linear-gradient(180deg,rgba(9,32,70,.35) 0%,rgba(9,32,70,.1) 22%,rgba(9,32,70,.45) 45%,rgba(9,32,70,.5) 100%),url("ceu-asa-celular.jpg") center top / cover no-repeat,var(--ceu);padding-top:250px}
   .asa{width:78vw;right:-20vw;top:50px}
   .ceu .sub{font-size:1.02rem}
   .cartao{padding:20px 16px;border-radius:18px}
@@ -283,7 +283,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
 <header class="topo">
   <div class="wrap">
     <a class="marca" href="#" aria-label="Pronde cê vai? — início">
-      <img src="img/logo-192.png" alt="" width="40" height="40">
+      <img src="logo-192.png" alt="" width="40" height="40">
       <span><b>Pronde cê vai?</b><small>passagens com milhas</small></span>
     </a>
     <a class="topo-zap" id="topoZap" href="#" target="_blank" rel="noopener">
@@ -697,7 +697,7 @@ const estado = { origem:null, destino:null, pax:{adultos:1,criancas:0,bebes:0} }
 /* ---------- foto do topo (se existir) ---------- */
 (()=>{ const celular = matchMedia('(max-width:640px)').matches;
   const i = new Image(); i.onload = ()=>document.documentElement.classList.add('tem-foto');
-  i.src = celular ? 'img/ceu-asa-celular.jpg' : 'img/ceu-asa.jpg'; })();
+  i.src = celular ? 'ceu-asa-celular.jpg' : 'ceu-asa.jpg'; })();
 
 /* ---------- WhatsApp ---------- */
 const linkZap = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.msgWhatsapp)}`;
@@ -793,7 +793,7 @@ const DESTINOS = [
 ];
 $('#destinos').innerHTML = DESTINOS.map((d,i)=>`
   <li class="dest">
-    <img src="img/destinos/${d.foto}.jpg" alt="${d.nome}, ${d.uf}" loading="lazy" width="800" height="600">
+    <img src="${d.foto}.jpg" alt="${d.nome}, ${d.uf}" loading="lazy" width="800" height="600">
     <div class="txt">
       <h3>${d.nome}<span class="uf">${d.uf}</span></h3>
       <p>${d.txt}</p>

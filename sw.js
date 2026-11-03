@@ -2,10 +2,10 @@
 // Páginas e configuração: busca na internet primeiro (sempre a versão mais nova) e usa a cópia guardada se estiver sem internet.
 // Imagens, fontes e o SDK do Firebase: usa a cópia guardada e atualiza por trás.
 // O Firestore cuida dos próprios dados offline; este arquivo não mexe nas chamadas dele.
-const VERSAO = 'pronde-v1';
+const VERSAO = 'pronde-v2';
 const ESSENCIAIS = [
   './painel.html', './painel.webmanifest', './firebase-config.js',
-  './img/logo-192.png', './img/logo-512.png', './img/logo-maskable-512.png', './img/favicon.png'
+  './logo-192.png', './logo-512.png', './logo-maskable-512.png', './favicon.png'
 ];
 
 self.addEventListener('install', (e) => {
