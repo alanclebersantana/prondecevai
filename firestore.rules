@@ -1,0 +1,46 @@
+rules_version = '2';
+
+// Regras do Firestore — Pronde cê vai?
+// Troque SEU-EMAIL@gmail.com pelo e-mail que entra no painel (o mesmo do firebase-config.js).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function admin() {
+      return request.auth != null && request.auth.token.email == 'SEU-EMAIL@gmail.com';
+    }
+
+    function texto(v, max) { return v is string && v.size() <= max; }
+
+    // Pedido novo vindo do site: qualquer pessoa pode CRIAR, ninguém de fora pode ler, mudar ou apagar.
+    function pedidoDoSiteValido(id) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['id','criadoEm','status','tipo','origem','destino','dataIda','dataVolta',
+                               'datasFlexiveis','passageiros','malasPorPassageiro','pet','cliente'])
+        && d.id == id
+        && d.status == 'nova'
+        && d.tipo in ['ida', 'ida_volta']
+        && texto(d.criadoEm, 40)
+        && texto(d.dataIda, 10)
+        && d.origem.iata is string && d.destino.iata is string
+        && d.passageiros.adultos is int && d.passageiros.adultos >= 1
+        && d.passageiros.adultos + d.passageiros.criancas + d.passageiros.bebes <= 9
+        && d.malasPorPassageiro is int && d.malasPorPassageiro >= 0 && d.malasPorPassageiro <= 2
+        && texto(d.cliente.nome, 120)
+        && texto(d.cliente.whatsapp, 15);
+    }
+
+    match /pedidos/{id} {
+      allow create: if admin() || pedidoDoSiteValido(id);
+      allow read, update, delete: if admin();
+
+      // prints e cartões de embarque de cada pedido
+      match /imagens/{imagem} {
+        allow read, write: if admin();
+      }
+    }
+
+    match /config/{doc} {
+      allow read, write: if admin();
+    }
+  }
+}

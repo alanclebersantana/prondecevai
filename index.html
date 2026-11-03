@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pronde cê vai? · Passagens com milhas</title>
+<meta name="description" content="Passagens aéreas emitidas com milhas. Diga para onde vai e receba a cotação no WhatsApp.">
+<meta name="theme-color" content="#0E3B7A">
+<script src="firebase-config.js"></script>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ceu:#0E3B7A; --ceu-2:#2F78C4; --tarde:#8FC3EE; --horizonte:#FFD2A8;
+  --sol:#FF7A2E; --sol-esc:#E0611C; --tinta:#13233F; --tinta-2:#4A5B76;
+  --nevoa:#EEF3F9; --linha:#D3DEEA; --erro:#C2261E; --ok:#1E8E5A;
+  --asfalto:#1D2A40;
+  --r-campo:12px; --r-card:22px;
+  --sombra:0 24px 60px -24px rgba(14,59,122,.45), 0 4px 14px -6px rgba(14,59,122,.18);
+  --fonte:"Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--fonte);color:var(--tinta);background:#fff;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img,svg{display:block}
+button,input,select{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sol);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ---------- topo ---------- */
+.topo{position:absolute;inset:0 0 auto 0;z-index:5}
+.topo .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.marca img{width:40px;height:40px;flex:none;border-radius:50%;box-shadow:0 2px 8px rgba(9,32,70,.35)}
+.marca b{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;line-height:1}
+.marca small{display:block;font-weight:500;font-size:.78rem;opacity:.8;margin-top:3px}
+.topo-zap{color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)}
+.topo-zap:hover{background:rgba(255,255,255,.22)}
+.topo-zap svg{width:18px;height:18px}
+
+/* ---------- céu ---------- */
+.ceu{position:relative;overflow:hidden;color:#fff;
+  background:linear-gradient(180deg,var(--ceu) 0%,var(--ceu-2) 52%,var(--tarde) 82%,var(--horizonte) 100%);
+  padding:130px 0 230px}
+/* Foto gerada (img/ceu-asa.jpg). Sem a foto, fica o degradê + asa desenhada */
+.tem-foto .ceu{background:
+  linear-gradient(90deg,rgba(9,32,70,.78) 0%,rgba(9,32,70,.45) 45%,rgba(9,32,70,0) 75%),
+  linear-gradient(180deg,rgba(9,32,70,.35) 0%,rgba(9,32,70,0) 30%),
+  url("img/ceu-asa.jpg") left 38% / max(135vw, 1400px) auto no-repeat, var(--ceu)}
+.tem-foto .asa,.tem-foto .nuvem{display:none}
+.tem-foto .ceu h1 .baixo{color:var(--horizonte)}
+.nuvem{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.75),rgba(255,255,255,0));pointer-events:none}
+.n1{width:520px;height:120px;left:-120px;top:58%}
+.n2{width:420px;height:90px;right:18%;top:70%;opacity:.8}
+.n3{width:300px;height:70px;left:38%;top:34%;opacity:.35}
+.asa{position:absolute;right:-40px;top:70px;width:min(62vw,720px);pointer-events:none;filter:drop-shadow(0 20px 30px rgba(10,30,70,.35))}
+.ceu h1{position:relative;margin:0;font-weight:800;letter-spacing:-.03em;line-height:.98;font-size:clamp(2.5rem,7vw,5rem);max-width:12ch;text-wrap:balance}
+.ceu h1 span{display:block}
+.ceu h1 .baixo{color:var(--tinta);margin-top:.08em}
+.ceu .sub{position:relative;max-width:46ch;font-size:1.12rem;margin:22px 0 0;color:#fff;font-weight:500;text-shadow:0 1px 2px rgba(14,59,122,.55),0 0 18px rgba(14,59,122,.45)}
+
+
+/* ---------- cartão de busca ---------- */
+.busca-area{position:relative;margin-top:-170px;z-index:3}
+.cartao{background:#fff;border-radius:var(--r-card);box-shadow:var(--sombra);padding:26px}
+.cartao h2{margin:0 0 4px;font-size:1.45rem;letter-spacing:-.01em}
+.cartao .dica{margin:0 0 18px;color:var(--tinta-2);font-size:.98rem}
+
+.seg{display:inline-flex;background:var(--nevoa);border-radius:999px;padding:4px;gap:2px;margin-bottom:18px}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.seg span{display:block;padding:8px 16px;border-radius:999px;font-weight:600;font-size:.95rem;color:var(--tinta-2);cursor:pointer;transition:background .15s,color .15s}
+.seg input:checked + span{background:#fff;color:var(--ceu);box-shadow:0 1px 4px rgba(14,59,122,.18)}
+.seg input:focus-visible + span{outline:3px solid var(--sol);outline-offset:1px}
+
+.grade{display:grid;gap:14px}
+.g-rota{grid-template-columns:1fr auto 1fr;align-items:end}
+.g-datas{grid-template-columns:1fr 1fr 1.1fr;margin-top:14px}
+.campo{position:relative;min-width:0}
+.campo > label,.rotulo{display:block;font-weight:600;font-size:.88rem;margin:0 0 6px;color:var(--tinta)}
+.campo .opc{font-weight:400;color:var(--tinta-2)}
+.entrada{width:100%;height:52px;border:1.5px solid var(--linha);border-radius:var(--r-campo);padding:0 14px;background:#fff;font-size:1rem;transition:border-color .15s, box-shadow .15s}
+.entrada:hover{border-color:#B7C7DA}
+.entrada:focus{outline:none;border-color:var(--ceu-2);box-shadow:0 0 0 4px rgba(47,120,196,.16)}
+.entrada::placeholder{color:#8A99AF}
+.campo.erro .entrada,.campo.erro .pax-btn{border-color:var(--erro)}
+.msg-erro{display:none;color:var(--erro);font-size:.85rem;margin-top:5px;font-weight:500}
+.campo.erro .msg-erro{display:block}
+.iata{position:absolute;right:12px;bottom:15px;font-weight:700;font-size:.85rem;color:var(--ceu);background:var(--nevoa);padding:2px 8px;border-radius:6px;pointer-events:none}
+.iata:empty{display:none}
+.com-iata .entrada{padding-right:64px}
+
+.trocar{width:44px;height:44px;margin-bottom:4px;border-radius:50%;border:1.5px solid var(--linha);background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ceu);transition:transform .25s}
+.trocar:hover{border-color:var(--ceu-2)}
+.trocar.girou{transform:rotate(180deg)}
+.trocar svg{width:20px;height:20px}
+
+/* autocomplete */
+.lista{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--linha);border-radius:14px;box-shadow:var(--sombra);list-style:none;margin:0;padding:6px;z-index:20;max-height:320px;overflow:auto;display:none}
+.lista.aberta{display:block}
+.lista li{display:flex;gap:12px;align-items:center;padding:10px 10px;border-radius:10px;cursor:pointer}
+.lista li[aria-selected="true"],.lista li:hover{background:var(--nevoa)}
+.lista .cod{flex:none;width:48px;font-weight:800;color:var(--ceu);font-size:.95rem}
+.lista .nome{min-width:0;line-height:1.25}
+.lista .nome b{display:block;font-weight:600;font-size:.98rem}
+.lista .nome small{color:var(--tinta-2);font-size:.83rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lista .vazio{color:var(--tinta-2);cursor:default}
+.lista .vazio:hover{background:none}
+
+/* passageiros */
+.pax-btn{width:100%;height:52px;border:1.5px solid var(--linha);border-radius:var(--r-campo);background:#fff;text-align:left;padding:0 40px 0 14px;font-size:1rem;cursor:pointer;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pax-btn::after{content:"";position:absolute;right:16px;top:21px;width:8px;height:8px;border-right:2px solid var(--tinta-2);border-bottom:2px solid var(--tinta-2);transform:rotate(45deg);transition:transform .2s}
+.pax-btn[aria-expanded="true"]::after{transform:rotate(225deg);top:24px}
+.pax-painel{position:absolute;right:0;top:calc(100% + 6px);width:min(340px,92vw);background:#fff;border:1px solid var(--linha);border-radius:16px;box-shadow:var(--sombra);padding:8px 16px 14px;z-index:20;display:none}
+.pax-painel.aberto{display:block}
+.pax-linha{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--nevoa)}
+.pax-linha:last-of-type{border-bottom:0}
+.pax-linha b{display:block;font-weight:600}
+.pax-linha small{color:var(--tinta-2);font-size:.84rem}
+.passo{display:flex;align-items:center;gap:10px}
+.passo button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--linha);background:#fff;font-size:1.2rem;font-weight:600;cursor:pointer;color:var(--ceu);display:grid;place-items:center;line-height:1}
+.passo button:disabled{opacity:.35;cursor:not-allowed}
+.passo output{min-width:20px;text-align:center;font-weight:700;font-size:1.05rem}
+.pax-ok{width:100%;margin-top:6px;height:42px;border:0;border-radius:10px;background:var(--nevoa);color:var(--ceu);font-weight:700;cursor:pointer}
+.pax-aviso{font-size:.82rem;color:var(--tinta-2);margin:6px 0 0}
+
+/* extras */
+.extras{display:grid;grid-template-columns:auto auto 1fr;gap:14px 28px;align-items:start;margin-top:20px;padding-top:18px;border-top:1px dashed var(--linha)}
+.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-weight:600;font-size:.95rem;user-select:none}
+.chk input{appearance:none;width:22px;height:22px;flex:none;border:1.5px solid #AFC0D4;border-radius:7px;margin:1px 0 0;display:grid;place-items:center;cursor:pointer;background:#fff;transition:background .15s,border-color .15s}
+.chk input::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px) scale(0);transition:transform .15s}
+.chk input:checked{background:var(--ceu);border-color:var(--ceu)}
+.chk input:checked::after{transform:rotate(45deg) translate(-1px,-1px) scale(1)}
+.chk small{display:block;font-weight:400;color:var(--tinta-2);font-size:.83rem;margin-top:1px}
+.malas .seg{margin:0}
+.malas .seg span{padding:6px 14px}
+.malas small{display:block;color:var(--tinta-2);font-size:.83rem;margin-top:6px}
+
+.pet-painel{display:none;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;padding:16px;background:#FFF6EF;border-radius:16px;border:1px solid #FFE0C9}
+.pet-painel.aberto{display:grid}
+.pet-painel .seg{margin:0;background:#fff}
+.pet-painel .seg input:checked + span{background:var(--sol);color:#fff;box-shadow:none}
+
+.contato{margin-top:22px;padding-top:18px;border-top:1px dashed var(--linha)}
+.contato .rotulo-sec{font-weight:700;font-size:1.02rem;margin:0 0 12px}
+.g-contato{grid-template-columns:1.2fr 1fr 1.2fr}
+
+.erro-envio{color:var(--erro);font-weight:600;margin:16px 0 0}
+.erro-envio:empty{display:none}
+.rodape-form{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px;flex-wrap:wrap}
+.rodape-form p{margin:0;color:var(--tinta-2);font-size:.88rem;max-width:52ch}
+.cta{height:56px;padding:0 30px;border:0;border-radius:14px;background:var(--sol);color:#fff;font-weight:700;font-size:1.08rem;cursor:pointer;display:inline-flex;align-items:center;gap:10px;box-shadow:0 10px 24px -10px rgba(224,97,28,.8);transition:background .15s, transform .1s}
+.cta:hover{background:var(--sol-esc)}
+.cta:active{transform:translateY(1px)}
+.cta svg{width:22px;height:22px}
+.cta[disabled]{opacity:.7;cursor:wait}
+
+/* sucesso */
+.sucesso{display:none;text-align:center;padding:26px 10px 14px}
+.sucesso.aberto{display:block}
+.decola{position:relative;height:110px;max-width:420px;margin:0 auto 10px;overflow:hidden}
+.decola .chao{position:absolute;left:0;right:0;bottom:12px;height:2px;background:linear-gradient(90deg,transparent,#B9CBE0 15%,#B9CBE0 85%,transparent)}
+.decola svg{position:absolute;width:56px;height:56px;left:6%;bottom:14px;color:var(--ceu)}
+.sucesso.aberto .decola svg{animation:decolar 1.6s cubic-bezier(.5,0,.6,1) .2s forwards}
+@keyframes decolar{
+  0%{transform:translate(0,0) rotate(0)}
+  45%{transform:translate(150px,0) rotate(0)}
+  100%{transform:translate(380px,-110px) rotate(-22deg);opacity:.0}
+}
+.sucesso h2{font-size:1.7rem;margin:0 0 6px;letter-spacing:-.01em}
+.sucesso p{margin:0 auto;max-width:44ch;color:var(--tinta-2)}
+.protocolo{display:inline-block;margin:16px 0 18px;font-weight:800;font-size:1.3rem;color:var(--ceu);background:var(--nevoa);padding:8px 18px;border-radius:12px;letter-spacing:.02em}
+.btn-sec{height:48px;padding:0 22px;border-radius:12px;border:1.5px solid var(--linha);background:#fff;font-weight:700;color:var(--ceu);cursor:pointer}
+.btn-sec:hover{border-color:var(--ceu-2)}
+
+/* ---------- destinos ---------- */
+.destinos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.dest{display:flex;flex-direction:column;background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--linha);box-shadow:0 10px 30px -18px rgba(14,59,122,.35)}
+.dest img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--nevoa)}
+.dest .txt{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.dest h3{margin:0;font-size:1.25rem;letter-spacing:-.01em}
+.dest .uf{display:block;font-weight:600;color:var(--tinta-2);font-size:.88rem;margin-top:2px}
+.dest p{margin:6px 0 14px;color:var(--tinta-2);font-size:.97rem;flex:1}
+.dest button{align-self:flex-start;height:42px;padding:0 16px;border-radius:11px;border:1.5px solid var(--sol);background:#fff;color:var(--sol-esc);font-weight:700;cursor:pointer}
+.dest button:hover{background:var(--sol);color:#fff}
+.dest-nota{margin:14px 0 0;color:var(--tinta-2);font-size:.85rem}
+
+/* ---------- como funciona ---------- */
+.secao{padding-top:96px}
+.secao h2.titulo{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.025em;line-height:1.05;margin:0 0 10px;max-width:20ch}
+.secao .lead{color:var(--tinta-2);max-width:56ch;margin:0 0 40px}
+.rota{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;position:relative}
+.rota::before{content:"";position:absolute;left:28px;right:28px;top:27px;border-top:2px dashed #B9CBE0}
+.rota li{position:relative}
+.rota .num{width:56px;height:56px;border-radius:50%;background:var(--ceu);color:#fff;font-weight:800;font-size:1.35rem;display:grid;place-items:center;position:relative;box-shadow:0 0 0 8px #fff}
+.rota li:last-child .num{background:var(--sol)}
+.rota h3{margin:18px 0 6px;font-size:1.2rem;letter-spacing:-.01em}
+.rota p{margin:0;color:var(--tinta-2);max-width:32ch}
+
+/* ---------- vantagens ---------- */
+.vantagens{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1.5px solid var(--tinta);margin-top:8px}
+.vant{padding:26px 26px 6px 0}
+.vant + .vant{padding-left:26px;border-left:1px solid var(--linha)}
+.vant svg{width:34px;height:34px;color:var(--sol);margin-bottom:12px}
+.vant h3{margin:0 0 6px;font-size:1.15rem}
+.vant p{margin:0;color:var(--tinta-2)}
+
+/* ---------- rodapé ---------- */
+.rodape{margin-top:110px;background:var(--asfalto);color:#C9D4E4;padding:42px 0 110px;font-size:.92rem;position:relative}
+.rodape .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-end;padding-top:20px}
+.rodape b{color:#fff;font-size:1.1rem}
+.rodape p{margin:4px 0 0}
+.link-teste{background:none;border:1px dashed #5D6E89;color:#C9D4E4;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.85rem}
+
+/* botão flutuante */
+.zap{position:fixed;right:18px;bottom:18px;z-index:30;width:60px;height:60px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px -8px rgba(0,0,0,.45);text-decoration:none}
+.zap svg{width:32px;height:32px}
+.zap:hover{transform:scale(1.05)}
+
+/* diálogo de pedidos de teste */
+dialog{border:0;border-radius:18px;padding:0;width:min(720px,94vw);max-height:86vh;box-shadow:var(--sombra)}
+dialog::backdrop{background:rgba(19,35,63,.55)}
+.dlg-topo{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--linha);position:sticky;top:0;background:#fff}
+.dlg-topo h3{margin:0}
+.dlg-corpo{padding:16px 20px 20px;overflow:auto}
+.pedido{border:1px solid var(--linha);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.pedido b{color:var(--ceu)}
+.pedido pre{background:var(--nevoa);padding:10px;border-radius:8px;font-size:.78rem;overflow:auto;margin:10px 0 0;white-space:pre-wrap}
+.dlg-acoes{display:flex;gap:10px}
+
+/* ---------- responsivo ---------- */
+@media (max-width:900px){
+  .g-datas{grid-template-columns:1fr 1fr}
+  .g-datas .campo-pax{grid-column:1 / -1}
+  .extras{grid-template-columns:1fr 1fr}
+  .extras .chk-pet{grid-column:1 / -1}
+  .g-contato{grid-template-columns:1fr 1fr}
+  .g-contato .campo-email{grid-column:1 / -1}
+  .rota{grid-template-columns:1fr;gap:26px}
+  .rota::before{left:27px;right:auto;top:28px;bottom:28px;border-top:0;border-left:2px dashed #B9CBE0}
+  .rota li{display:grid;grid-template-columns:56px 1fr;column-gap:18px}
+  .rota h3{margin:4px 0 4px}
+  .rota p{grid-column:2}
+  .vantagens{grid-template-columns:1fr}
+  .destinos{grid-template-columns:repeat(2,1fr)}
+  .vant,.vant + .vant{padding:22px 0;border-left:0;border-bottom:1px solid var(--linha)}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .topo-zap span{display:none}
+  .topo-zap{padding:9px}
+  .ceu{padding:200px 0 210px}
+  .tem-foto .ceu{background:linear-gradient(180deg,rgba(9,32,70,.35) 0%,rgba(9,32,70,.1) 22%,rgba(9,32,70,.45) 45%,rgba(9,32,70,.5) 100%),url("img/ceu-asa-celular.jpg") center top / cover no-repeat,var(--ceu);padding-top:250px}
+  .asa{width:78vw;right:-20vw;top:50px}
+  .ceu .sub{font-size:1.02rem}
+  .cartao{padding:20px 16px;border-radius:18px}
+  .g-rota{grid-template-columns:1fr;gap:8px}
+  .trocar{justify-self:end;margin:-4px 6px -4px 0;width:40px;height:40px;transform:rotate(90deg)}
+  .trocar.girou{transform:rotate(270deg)}
+  .g-datas{grid-template-columns:1fr 1fr}
+  .extras{grid-template-columns:1fr}
+  .pet-painel{grid-template-columns:1fr}
+  .g-contato{grid-template-columns:1fr}
+  .cta{width:100%;justify-content:center}
+  .pax-painel{left:0;right:auto;width:100%}
+  .secao{padding-top:72px}
+  .destinos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 -20px;padding:0 20px 8px;scrollbar-width:none}
+  .destinos::-webkit-scrollbar{display:none}
+  .dest{flex:0 0 78%;scroll-snap-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="wrap">
+    <a class="marca" href="#" aria-label="Pronde cê vai? — início">
+      <img src="img/logo-192.png" alt="" width="40" height="40">
+      <span><b>Pronde cê vai?</b><small>passagens com milhas</small></span>
+    </a>
+    <a class="topo-zap" id="topoZap" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+      <span>Fale com a gente</span>
+    </a>
+  </div>
+</header>
+
+<section class="ceu" aria-labelledby="h1">
+  <div class="nuvem n1"></div><div class="nuvem n2"></div><div class="nuvem n3"></div>
+  <!-- Asa ilustrada: pode trocar por uma foto depois -->
+  <svg class="asa" viewBox="0 0 720 340" aria-hidden="true">
+    <defs>
+      <linearGradient id="gAsa" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#F3F6FA"/><stop offset=".55" stop-color="#D5DEEA"/><stop offset="1" stop-color="#AEBCD0"/>
+      </linearGradient>
+      <linearGradient id="gMotor" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#E9EEF5"/><stop offset="1" stop-color="#9FAFC5"/>
+      </linearGradient>
+    </defs>
+    <!-- asa -->
+    <path d="M720 40 L720 190 L190 292 Q168 296 170 282 L176 268 Z" fill="url(#gAsa)"/>
+    <!-- bordo de ataque -->
+    <path d="M720 40 L176 268" stroke="#fff" stroke-width="3" opacity=".9"/>
+    <!-- flap -->
+    <path d="M720 160 L330 252" stroke="#9AAAC0" stroke-width="2" opacity=".7"/>
+    <!-- winglet -->
+    <path d="M190 292 L170 282 L176 268 L132 168 Q130 160 138 162 L150 166 L206 284 Z" fill="#FF7A2E"/>
+    <!-- motor -->
+    <g transform="translate(470 170) rotate(-12)">
+      <rect x="0" y="0" width="150" height="58" rx="29" fill="url(#gMotor)"/>
+      <ellipse cx="14" cy="29" rx="12" ry="27" fill="#2A3B57"/>
+      <path d="M60 0 h40 v-22 h-30 z" fill="#C6D1DF"/>
+    </g>
+  </svg>
+
+  <div class="wrap">
+    <h1 id="h1"><span>Bora voar?</span><span class="baixo">Pronde cê vai?</span></h1>
+    <p class="sub">Passagens emitidas com milhas, geralmente mais baratas que no site da companhia aérea. Conte para onde vai e mandamos a cotação no seu WhatsApp.</p>
+  </div>
+</section>
+
+<!-- ================= BUSCA ================= -->
+<main class="wrap busca-area" id="buscar">
+  <div class="cartao">
+    <form id="form" novalidate>
+      <h2>Para onde você vai?</h2>
+      <p class="dica">Preencha a viagem e enviamos a cotação completa, com valor no Pix e no cartão.</p>
+
+      <div class="seg" role="radiogroup" aria-label="Tipo de viagem">
+        <label><input type="radio" name="tipo" value="ida_volta" checked><span>Ida e volta</span></label>
+        <label><input type="radio" name="tipo" value="ida"><span>Somente ida</span></label>
+      </div>
+
+      <div class="grade g-rota">
+        <div class="campo com-iata" data-campo="origem">
+          <label for="origem">Saindo de</label>
+          <input class="entrada" id="origem" type="text" autocomplete="off" placeholder="Cidade ou aeroporto"
+                 role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-origem">
+          <span class="iata" id="iata-origem"></span>
+          <ul class="lista" id="lista-origem" role="listbox"></ul>
+          <div class="msg-erro"></div>
+        </div>
+        <button type="button" class="trocar" id="trocar" aria-label="Trocar origem e destino">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h13l-4-4M17 17H4l4 4"/></svg>
+        </button>
+        <div class="campo com-iata" data-campo="destino">
+          <label for="destino">Indo para</label>
+          <input class="entrada" id="destino" type="text" autocomplete="off" placeholder="Cidade ou aeroporto"
+                 role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-destino">
+          <span class="iata" id="iata-destino"></span>
+          <ul class="lista" id="lista-destino" role="listbox"></ul>
+          <div class="msg-erro"></div>
+        </div>
+      </div>
+
+      <div class="grade g-datas">
+        <div class="campo" data-campo="ida">
+          <label for="ida">Data de ida</label>
+          <input class="entrada" id="ida" type="date">
+          <div class="msg-erro"></div>
+        </div>
+        <div class="campo" data-campo="volta" id="campoVolta">
+          <label for="volta">Data de volta</label>
+          <input class="entrada" id="volta" type="date">
+          <div class="msg-erro"></div>
+        </div>
+        <div class="campo campo-pax" data-campo="pax">
+          <span class="rotulo" id="rot-pax">Passageiros</span>
+          <button type="button" class="pax-btn" id="paxBtn" aria-expanded="false" aria-controls="paxPainel" aria-labelledby="rot-pax paxBtn">1 adulto</button>
+          <div class="pax-painel" id="paxPainel" role="group" aria-label="Escolher passageiros">
+            <div class="pax-linha">
+              <div><b>Adultos</b><small>12 anos ou mais</small></div>
+              <div class="passo" data-tipo="adultos"><button type="button" data-d="-1" aria-label="Menos adultos">−</button><output>1</output><button type="button" data-d="1" aria-label="Mais adultos">+</button></div>
+            </div>
+            <div class="pax-linha">
+              <div><b>Crianças</b><small>de 2 a 11 anos</small></div>
+              <div class="passo" data-tipo="criancas"><button type="button" data-d="-1" aria-label="Menos crianças">−</button><output>0</output><button type="button" data-d="1" aria-label="Mais crianças">+</button></div>
+            </div>
+            <div class="pax-linha">
+              <div><b>Bebês de colo</b><small>até 1 ano</small></div>
+              <div class="passo" data-tipo="bebes"><button type="button" data-d="-1" aria-label="Menos bebês">−</button><output>0</output><button type="button" data-d="1" aria-label="Mais bebês">+</button></div>
+            </div>
+            <p class="pax-aviso">Cada bebê viaja no colo de um adulto. Até 9 passageiros por pedido.</p>
+            <button type="button" class="pax-ok" id="paxOk">Pronto</button>
+          </div>
+          <div class="msg-erro"></div>
+        </div>
+      </div>
+
+      <div class="extras">
+        <label class="chk">
+          <input type="checkbox" id="flex">
+          <span>Minhas datas são flexíveis<small>Até 3 dias antes ou depois, se ficar mais barato</small></span>
+        </label>
+        <div class="malas">
+          <span class="rotulo" id="rot-malas">Malas despachadas (23 kg)</span>
+          <div class="seg" role="radiogroup" aria-labelledby="rot-malas">
+            <label><input type="radio" name="malas" value="0" checked><span>Nenhuma</span></label>
+            <label><input type="radio" name="malas" value="1"><span>1</span></label>
+            <label><input type="radio" name="malas" value="2"><span>2</span></label>
+          </div>
+          <small>Por passageiro, em cada trecho. A mala de mão já está inclusa.</small>
+        </div>
+        <label class="chk chk-pet">
+          <input type="checkbox" id="temPet" aria-controls="petPainel">
+          <span>Vou levar pet<small>Cão ou gato, na cabine ou no porão</small></span>
+        </label>
+      </div>
+
+      <div class="pet-painel" id="petPainel">
+        <div class="campo" data-campo="petEspecie">
+          <span class="rotulo" id="rot-esp">Espécie</span>
+          <div class="seg" role="radiogroup" aria-labelledby="rot-esp">
+            <label><input type="radio" name="petEspecie" value="cao"><span>Cão</span></label>
+            <label><input type="radio" name="petEspecie" value="gato"><span>Gato</span></label>
+          </div>
+          <div class="msg-erro"></div>
+        </div>
+        <div class="campo" data-campo="petPeso">
+          <label for="petPeso">Peso com a caixa de transporte</label>
+          <input class="entrada" id="petPeso" type="number" inputmode="decimal" min="0.5" max="80" step="0.1" placeholder="Ex.: 7,5 kg">
+          <div class="msg-erro"></div>
+        </div>
+        <div class="campo" data-campo="petLocal">
+          <span class="rotulo" id="rot-loc">Onde ele vai viajar</span>
+          <div class="seg" role="radiogroup" aria-labelledby="rot-loc">
+            <label><input type="radio" name="petLocal" value="cabine"><span>Cabine</span></label>
+            <label><input type="radio" name="petLocal" value="porao"><span>Porão</span></label>
+          </div>
+          <div class="msg-erro"></div>
+        </div>
+      </div>
+
+      <div class="contato">
+        <p class="rotulo-sec">Para onde mandamos a cotação</p>
+        <div class="grade g-contato">
+          <div class="campo" data-campo="nome">
+            <label for="nome">Seu nome</label>
+            <input class="entrada" id="nome" type="text" autocomplete="name" placeholder="Nome e sobrenome">
+            <div class="msg-erro"></div>
+          </div>
+          <div class="campo" data-campo="whatsapp">
+            <label for="whatsapp">WhatsApp</label>
+            <input class="entrada" id="whatsapp" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(41) 99999-9999">
+            <div class="msg-erro"></div>
+          </div>
+          <div class="campo campo-email" data-campo="email">
+            <label for="email">E-mail <span class="opc">(opcional)</span></label>
+            <input class="entrada" id="email" type="email" autocomplete="email" placeholder="voce@email.com">
+            <div class="msg-erro"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="erro-envio" id="erroEnvio" role="alert"></p>
+      <div class="rodape-form">
+        <p>Seus dados servem só para enviar a cotação. Os documentos dos passageiros pedimos depois, quando você aprovar.</p>
+        <button class="cta" type="submit" id="enviar">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
+          Pedir cotação
+        </button>
+      </div>
+    </form>
+
+    <div class="sucesso" id="sucesso" role="status" aria-live="polite">
+      <div class="decola" aria-hidden="true">
+        <div class="chao"></div>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 19h19v2h-19zM22.1 9.6c-.2-.8-1-1.3-1.8-1.1L15 9.9 8.1 3.5l-1.9.5 4.1 7.2-5 1.3-2-1.5-1.5.4 2.6 4.5 16.6-4.4c.8-.3 1.3-1.1 1.1-1.9z"/></svg>
+      </div>
+      <h2>Pedido de cotação enviado</h2>
+      <p id="sucessoTxt">Em breve você recebe no WhatsApp a cotação com imagem e o link para aprovar e pagar.</p>
+      <div class="protocolo" id="protocolo">DC-0000</div>
+      <div><button type="button" class="btn-sec" id="novo">Pedir outra cotação</button></div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= DESTINOS ================= -->
+<section class="secao wrap" aria-labelledby="h-dest">
+  <h2 class="titulo" id="h-dest">Para onde ir</h2>
+  <p class="lead">Ideias de viagem pelo Brasil. Escolha uma e a gente já preenche o destino na busca.</p>
+  <ul class="destinos" id="destinos"></ul>
+  <p class="dest-nota">Imagens ilustrativas.</p>
+</section>
+
+<!-- ================= COMO FUNCIONA ================= -->
+<section class="secao wrap" aria-labelledby="h-como">
+  <h2 class="titulo" id="h-como">Como funciona</h2>
+  <p class="lead">Você não precisa ter milhas. A gente cuida da emissão, e você só escolhe e paga.</p>
+  <ol class="rota">
+    <li>
+      <div class="num" aria-hidden="true">1</div>
+      <h3>Você pede</h3>
+      <p>Diga origem, destino, datas, quantas pessoas, malas e se vai levar pet.</p>
+    </li>
+    <li>
+      <div class="num" aria-hidden="true">2</div>
+      <h3>Recebe a cotação</h3>
+      <p>Mandamos no WhatsApp a imagem com voo, horários e valor, mais o link para aprovar.</p>
+    </li>
+    <li>
+      <div class="num" aria-hidden="true">3</div>
+      <h3>Paga e viaja</h3>
+      <p>Pague no Pix ou parcele no cartão. A gente emite e ainda faz o seu check-in.</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ================= VANTAGENS ================= -->
+<section class="secao wrap" aria-labelledby="h-vant">
+  <h2 class="titulo" id="h-vant">Por que comprar com a gente</h2>
+  <div class="vantagens">
+    <div class="vant">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+      <h3>Preço de milhas</h3>
+      <p>A passagem é emitida com milhas, o que costuma sair bem mais em conta que a tarifa comum.</p>
+    </div>
+    <div class="vant">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14l2.5 2.5L16 12"/></svg>
+      <h3>Check-in por nossa conta</h3>
+      <p>Quando o check-in abrir, a gente faz e te manda o cartão de embarque.</p>
+    </div>
+    <div class="vant">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.6-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+      <h3>Atendimento no WhatsApp</h3>
+      <p>Uma pessoa de verdade responde suas dúvidas antes, durante e depois da viagem.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="rodape">
+  <div class="wrap">
+    <div>
+      <b>Pronde cê vai?</b>
+      <p>Aqui quem decola é você. O preço fica no chão.</p>
+    </div>
+    <button type="button" class="link-teste" id="verTeste">Pedidos de teste</button>
+  </div>
+</footer>
+
+<a class="zap" id="zap" href="#" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+</a>
+
+<dialog id="dlgTeste">
+  <div class="dlg-topo">
+    <h3>Pedidos de teste (salvos neste navegador)</h3>
+    <div class="dlg-acoes">
+      <button type="button" class="btn-sec" id="limparTeste">Apagar todos</button>
+      <button type="button" class="btn-sec" id="fecharTeste">Fechar</button>
+    </div>
+  </div>
+  <div class="dlg-corpo" id="listaTeste"></div>
+</dialog>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO — troque aqui
+   ========================================================= */
+const CONFIG = {
+  whatsapp: '5541900000000',          // seu número com DDI + DDD, só dígitos
+  msgWhatsapp: 'Olá! Vim pelo site Pronde cê vai? e tenho uma dúvida.',
+  chaveStorage: 'dcnp_pedidos_teste'  // pedidos de teste (depois vira Firebase)
+};
+
+/* =========================================================
+   AEROPORTOS  (IATA | cidade | aeroporto | país)
+   ========================================================= */
+const AEROPORTOS_TXT = `
+GRU|São Paulo|Guarulhos|Brasil
+CGH|São Paulo|Congonhas|Brasil
+VCP|Campinas|Viracopos|Brasil
+GIG|Rio de Janeiro|Galeão|Brasil
+SDU|Rio de Janeiro|Santos Dumont|Brasil
+BSB|Brasília|Juscelino Kubitschek|Brasil
+CNF|Belo Horizonte|Confins|Brasil
+PLU|Belo Horizonte|Pampulha|Brasil
+CWB|Curitiba|Afonso Pena|Brasil
+POA|Porto Alegre|Salgado Filho|Brasil
+FLN|Florianópolis|Hercílio Luz|Brasil
+NVT|Navegantes|Ministro Victor Konder|Brasil
+JOI|Joinville|Lauro Carneiro de Loyola|Brasil
+XAP|Chapecó|Serafin Enoss Bertaso|Brasil
+CCM|Criciúma|Diomício Freitas|Brasil
+IGU|Foz do Iguaçu|Cataratas|Brasil
+LDB|Londrina|Governador José Richa|Brasil
+MGF|Maringá|Sílvio Name Júnior|Brasil
+CAC|Cascavel|Adalberto Mendes da Silva|Brasil
+CXJ|Caxias do Sul|Hugo Cantergiani|Brasil
+PFB|Passo Fundo|Lauro Kortz|Brasil
+SSA|Salvador|Deputado Luís Eduardo Magalhães|Brasil
+REC|Recife|Guararapes|Brasil
+FOR|Fortaleza|Pinto Martins|Brasil
+NAT|Natal|São Gonçalo do Amarante|Brasil
+MCZ|Maceió|Zumbi dos Palmares|Brasil
+AJU|Aracaju|Santa Maria|Brasil
+JPA|João Pessoa|Castro Pinto|Brasil
+CPV|Campina Grande|Presidente João Suassuna|Brasil
+THE|Teresina|Senador Petrônio Portella|Brasil
+SLZ|São Luís|Marechal Cunha Machado|Brasil
+IMP|Imperatriz|Prefeito Renato Moreira|Brasil
+BEL|Belém|Val-de-Cans|Brasil
+STM|Santarém|Maestro Wilson Fonseca|Brasil
+MAB|Marabá|João Corrêa da Rocha|Brasil
+MAO|Manaus|Eduardo Gomes|Brasil
+MCP|Macapá|Alberto Alcolumbre|Brasil
+BVB|Boa Vista|Atlas Brasil Cantanhede|Brasil
+PVH|Porto Velho|Governador Jorge Teixeira|Brasil
+RBR|Rio Branco|Plácido de Castro|Brasil
+PMW|Palmas|Brigadeiro Lysias Rodrigues|Brasil
+CGB|Cuiabá|Marechal Rondon|Brasil
+CGR|Campo Grande|Campo Grande|Brasil
+BYO|Bonito|Bonito|Brasil
+GYN|Goiânia|Santa Genoveva|Brasil
+VIX|Vitória|Eurico de Aguiar Salles|Brasil
+UDI|Uberlândia|Ten. Cel. Aviador César Bombonato|Brasil
+MOC|Montes Claros|Mário Ribeiro|Brasil
+RAO|Ribeirão Preto|Leite Lopes|Brasil
+SJP|São José do Rio Preto|Prof. Eribelto Manoel Reino|Brasil
+PPB|Presidente Prudente|Presidente Prudente|Brasil
+IOS|Ilhéus|Jorge Amado|Brasil
+BPS|Porto Seguro|Porto Seguro|Brasil
+VDC|Vitória da Conquista|Glauber Rocha|Brasil
+PNZ|Petrolina|Senador Nilo Coelho|Brasil
+JDO|Juazeiro do Norte|Orlando Bezerra de Menezes|Brasil
+JJD|Jericoacoara|Comandante Ariston Pessoa|Brasil
+FEN|Fernando de Noronha|Fernando de Noronha|Brasil
+CFB|Cabo Frio|Cabo Frio|Brasil
+EZE|Buenos Aires|Ezeiza|Argentina
+AEP|Buenos Aires|Aeroparque Jorge Newbery|Argentina
+BRC|Bariloche|San Carlos de Bariloche|Argentina
+MDZ|Mendoza|El Plumerillo|Argentina
+COR|Córdoba|Ingeniero Taravella|Argentina
+SCL|Santiago|Arturo Merino Benítez|Chile
+MVD|Montevidéu|Carrasco|Uruguai
+PDP|Punta del Este|Capitán Corbeta Curbelo|Uruguai
+ASU|Assunção|Silvio Pettirossi|Paraguai
+LIM|Lima|Jorge Chávez|Peru
+CUZ|Cusco|Alejandro Velasco Astete|Peru
+BOG|Bogotá|El Dorado|Colômbia
+CTG|Cartagena|Rafael Núñez|Colômbia
+PTY|Cidade do Panamá|Tocumen|Panamá
+CUN|Cancún|Cancún|México
+MEX|Cidade do México|Benito Juárez|México
+PUJ|Punta Cana|Punta Cana|República Dominicana
+MIA|Miami|Miami|Estados Unidos
+FLL|Fort Lauderdale|Fort Lauderdale-Hollywood|Estados Unidos
+MCO|Orlando|Orlando|Estados Unidos
+JFK|Nova York|John F. Kennedy|Estados Unidos
+EWR|Nova York|Newark|Estados Unidos
+ATL|Atlanta|Hartsfield-Jackson|Estados Unidos
+IAH|Houston|George Bush|Estados Unidos
+DFW|Dallas|Dallas/Fort Worth|Estados Unidos
+LAX|Los Angeles|Los Angeles|Estados Unidos
+LAS|Las Vegas|Harry Reid|Estados Unidos
+YYZ|Toronto|Pearson|Canadá
+LIS|Lisboa|Humberto Delgado|Portugal
+OPO|Porto|Francisco Sá Carneiro|Portugal
+MAD|Madri|Barajas|Espanha
+BCN|Barcelona|El Prat|Espanha
+CDG|Paris|Charles de Gaulle|França
+ORY|Paris|Orly|França
+LHR|Londres|Heathrow|Reino Unido
+FCO|Roma|Fiumicino|Itália
+MXP|Milão|Malpensa|Itália
+FRA|Frankfurt|Frankfurt|Alemanha
+MUC|Munique|Franz Josef Strauss|Alemanha
+AMS|Amsterdã|Schiphol|Holanda
+ZRH|Zurique|Zurique|Suíça
+IST|Istambul|Istambul|Turquia
+DXB|Dubai|Dubai|Emirados Árabes
+DOH|Doha|Hamad|Catar
+JNB|Joanesburgo|O. R. Tambo|África do Sul
+NRT|Tóquio|Narita|Japão
+`;
+const AEROPORTOS = AEROPORTOS_TXT.trim().split('\n').map(l=>{
+  const [iata,cidade,aeroporto,pais] = l.split('|');
+  return {iata,cidade,aeroporto,pais, busca: norm(`${iata} ${cidade} ${aeroporto} ${pais}`)};
+});
+function norm(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const estado = { origem:null, destino:null, pax:{adultos:1,criancas:0,bebes:0} };
+
+/* ---------- foto do topo (se existir) ---------- */
+(()=>{ const celular = matchMedia('(max-width:640px)').matches;
+  const i = new Image(); i.onload = ()=>document.documentElement.classList.add('tem-foto');
+  i.src = celular ? 'img/ceu-asa-celular.jpg' : 'img/ceu-asa.jpg'; })();
+
+/* ---------- WhatsApp ---------- */
+const linkZap = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.msgWhatsapp)}`;
+$('#zap').href = linkZap; $('#topoZap').href = linkZap;
+
+/* ---------- datas ---------- */
+function hojeISO(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+$('#ida').min = hojeISO(); $('#volta').min = hojeISO();
+$('#ida').addEventListener('change',()=>{
+  $('#volta').min = $('#ida').value || hojeISO();
+  if($('#volta').value && $('#volta').value < $('#ida').value) $('#volta').value='';
+  limparErro('ida');
+});
+$('#volta').addEventListener('change',()=>limparErro('volta'));
+
+/* ---------- tipo de viagem ---------- */
+function tipoAtual(){return document.querySelector('input[name="tipo"]:checked').value}
+document.querySelectorAll('input[name="tipo"]').forEach(r=>r.addEventListener('change',()=>{
+  const soIda = tipoAtual()==='ida';
+  $('#volta').disabled = soIda;
+  $('#campoVolta').style.opacity = soIda ? .45 : 1;
+  if(soIda){ $('#volta').value=''; limparErro('volta'); }
+}));
+
+/* ---------- autocomplete de aeroportos ---------- */
+function montarAuto(qual){
+  const inp = $('#'+qual), lista = $('#lista-'+qual), tag = $('#iata-'+qual);
+  let itens = [], ativo = -1;
+
+  function filtrar(q){
+    q = norm(q.trim());
+    if(!q) return AEROPORTOS.filter(a=>['GRU','CGH','GIG','BSB','CWB','SSA','REC','FOR'].includes(a.iata));
+    const porIata = AEROPORTOS.filter(a=>a.iata.toLowerCase()===q);
+    const comeca = AEROPORTOS.filter(a=>!porIata.includes(a) && (norm(a.cidade).startsWith(q)));
+    const contem = AEROPORTOS.filter(a=>!porIata.includes(a) && !comeca.includes(a) && a.busca.includes(q));
+    return [...porIata,...comeca,...contem].slice(0,7);
+  }
+  function render(){
+    lista.innerHTML = '';
+    if(!itens.length){
+      lista.innerHTML = '<li class="vazio">Não encontramos esse lugar. Tente o nome da cidade.</li>';
+    }
+    itens.forEach((a,i)=>{
+      const li = document.createElement('li');
+      li.id = `${qual}-op-${i}`; li.setAttribute('role','option');
+      li.setAttribute('aria-selected', i===ativo ? 'true':'false');
+      li.innerHTML = `<span class="cod">${a.iata}</span><span class="nome"><b>${a.cidade}</b><small>${a.aeroporto} · ${a.pais}</small></span>`;
+      li.addEventListener('mousedown',e=>{e.preventDefault();escolher(a)});
+      lista.appendChild(li);
+    });
+    abrir(true);
+    inp.setAttribute('aria-activedescendant', ativo>=0 ? `${qual}-op-${ativo}` : '');
+  }
+  function abrir(sim){lista.classList.toggle('aberta',sim);inp.setAttribute('aria-expanded',sim)}
+  function escolher(a){
+    estado[qual] = a;
+    inp.value = `${a.cidade} · ${a.aeroporto}`;
+    tag.textContent = a.iata;
+    abrir(false); limparErro(qual);
+  }
+  inp.addEventListener('input',()=>{
+    estado[qual] = null; tag.textContent = '';
+    itens = filtrar(inp.value); ativo = itens.length ? 0 : -1; render();
+  });
+  inp.addEventListener('focus',()=>{ if(!estado[qual]){ itens = filtrar(inp.value); ativo = -1; render(); } else inp.select(); });
+  inp.addEventListener('keydown',e=>{
+    if(!lista.classList.contains('aberta')) return;
+    if(e.key==='ArrowDown'){e.preventDefault();ativo=Math.min(ativo+1,itens.length-1);render()}
+    else if(e.key==='ArrowUp'){e.preventDefault();ativo=Math.max(ativo-1,0);render()}
+    else if(e.key==='Enter'){ if(ativo>=0 && itens[ativo]){e.preventDefault();escolher(itens[ativo])} }
+    else if(e.key==='Escape'){abrir(false)}
+  });
+  inp.addEventListener('blur',()=>{
+    setTimeout(()=>abrir(false),120);
+    if(!estado[qual] && inp.value.trim()){
+      const r = filtrar(inp.value);
+      if(r.length===1 || (r[0] && r[0].iata.toLowerCase()===norm(inp.value.trim()))) escolher(r[0]);
+    }
+  });
+  return { set(a){ if(a){escolher(a)} else {estado[qual]=null;inp.value='';tag.textContent=''} } };
+}
+const autoOrigem = montarAuto('origem');
+const autoDestino = montarAuto('destino');
+
+/* ---------- destinos sugeridos ---------- */
+const DESTINOS = [
+  {foto:'maceio', nome:'Maceió', uf:'Alagoas', iata:'MCZ', txt:'Piscinas naturais verde-esmeralda, jangadas e praias de coqueiral no litoral alagoano.'},
+  {foto:'foz-do-iguacu', nome:'Foz do Iguaçu', uf:'Paraná', iata:'IGU', txt:'As Cataratas de pertinho, com passarelas sobre as quedas e arco-íris nos dias de sol.'},
+  {foto:'fernando-de-noronha', nome:'Fernando de Noronha', uf:'Pernambuco', iata:'FEN', txt:'Mar transparente, Morro Dois Irmãos e mergulho com tartarugas no arquipélago mais famoso do país.'},
+  {foto:'salvador', nome:'Salvador', uf:'Bahia', iata:'SSA', txt:'Casarões coloridos do Pelourinho, acarajé e praias urbanas na primeira capital do Brasil.'},
+  {foto:'gramado', nome:'Gramado', uf:'Rio Grande do Sul', iata:'POA', txt:'Clima de serra, chocolate quente e ruas floridas com cara de Europa. Voo até Porto Alegre.'},
+  {foto:'jericoacoara', nome:'Jericoacoara', uf:'Ceará', iata:'JJD', txt:'Dunas, lagoas com redes dentro da água e o pôr do sol mais aplaudido do Ceará.'}
+];
+$('#destinos').innerHTML = DESTINOS.map((d,i)=>`
+  <li class="dest">
+    <img src="img/destinos/${d.foto}.jpg" alt="${d.nome}, ${d.uf}" loading="lazy" width="800" height="600">
+    <div class="txt">
+      <h3>${d.nome}<span class="uf">${d.uf}</span></h3>
+      <p>${d.txt}</p>
+      <button type="button" data-dest="${i}" aria-label="Quero ir para ${d.nome}">Quero ir para lá</button>
+    </div>
+  </li>`).join('');
+$$('[data-dest]').forEach(b=>b.addEventListener('click',()=>{
+  const d = DESTINOS[Number(b.dataset.dest)];
+  const a = AEROPORTOS.find(x=>x.iata===d.iata); if(!a) return;
+  if($('#form').style.display==='none') $('#novo').click();
+  autoDestino.set(a);
+  if(estado.origem && estado.origem.iata===a.iata) autoOrigem.set(null);
+  $('#buscar').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'});
+  setTimeout(()=>(estado.origem ? $('#ida') : $('#origem')).focus({preventScroll:true}), 450);
+}));
+$('#trocar').addEventListener('click',e=>{
+  const o = estado.origem, d = estado.destino;
+  autoOrigem.set(d); autoDestino.set(o);
+  e.currentTarget.classList.toggle('girou');
+});
+
+/* ---------- passageiros ---------- */
+const paxBtn = $('#paxBtn'), paxPainel = $('#paxPainel');
+function textoPax(){
+  const {adultos:a,criancas:c,bebes:b} = estado.pax, p=[];
+  p.push(`${a} adulto${a>1?'s':''}`);
+  if(c) p.push(`${c} criança${c>1?'s':''}`);
+  if(b) p.push(`${b} bebê${b>1?'s':''}`);
+  return p.join(', ');
+}
+function atualizarPax(){
+  const {adultos,criancas,bebes} = estado.pax, total = adultos+criancas+bebes;
+  document.querySelectorAll('.passo').forEach(el=>{
+    const t = el.dataset.tipo, v = estado.pax[t];
+    el.querySelector('output').textContent = v;
+    const menos = el.querySelector('[data-d="-1"]'), mais = el.querySelector('[data-d="1"]');
+    menos.disabled = t==='adultos' ? v<=1 : v<=0;
+    mais.disabled = total>=9 || (t==='bebes' && bebes>=adultos);
+  });
+  paxBtn.textContent = textoPax();
+  limparErro('pax');
+}
+document.querySelectorAll('.passo button').forEach(b=>b.addEventListener('click',()=>{
+  const t = b.closest('.passo').dataset.tipo;
+  estado.pax[t] += Number(b.dataset.d);
+  if(estado.pax.bebes > estado.pax.adultos) estado.pax.bebes = estado.pax.adultos;
+  atualizarPax();
+}));
+function abrirPax(sim){paxPainel.classList.toggle('aberto',sim);paxBtn.setAttribute('aria-expanded',sim)}
+paxBtn.addEventListener('click',()=>abrirPax(!paxPainel.classList.contains('aberto')));
+$('#paxOk').addEventListener('click',()=>{abrirPax(false);paxBtn.focus()});
+document.addEventListener('click',e=>{ if(!e.target.closest('.campo-pax')) abrirPax(false) });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && paxPainel.classList.contains('aberto')){abrirPax(false);paxBtn.focus()} });
+atualizarPax();
+
+/* ---------- pet ---------- */
+$('#temPet').addEventListener('change',e=>{
+  $('#petPainel').classList.toggle('aberto',e.target.checked);
+  if(!e.target.checked) ['petEspecie','petPeso','petLocal'].forEach(limparErro);
+});
+document.querySelectorAll('input[name="petEspecie"]').forEach(r=>r.addEventListener('change',()=>limparErro('petEspecie')));
+document.querySelectorAll('input[name="petLocal"]').forEach(r=>r.addEventListener('change',()=>limparErro('petLocal')));
+$('#petPeso').addEventListener('input',()=>limparErro('petPeso'));
+
+/* ---------- máscara WhatsApp ---------- */
+$('#whatsapp').addEventListener('input',e=>{
+  let d = e.target.value.replace(/\D/g,'').slice(0,11), s='';
+  if(d.length>0) s='('+d.slice(0,2);
+  if(d.length>=3) s+=') '+d.slice(2, d.length>10?7:6);
+  if(d.length>=7) s+='-'+d.slice(d.length>10?7:6);
+  e.target.value = s; limparErro('whatsapp');
+});
+$('#nome').addEventListener('input',()=>limparErro('nome'));
+$('#email').addEventListener('input',()=>limparErro('email'));
+
+/* =========================================================
+   VALIDAÇÃO
+   ========================================================= */
+function campo(n){return document.querySelector(`[data-campo="${n}"]`)}
+function erro(n,msg){const c=campo(n);c.classList.add('erro');c.querySelector('.msg-erro').textContent=msg}
+function limparErro(n){const c=campo(n);if(c){c.classList.remove('erro');c.querySelector('.msg-erro').textContent=''}}
+
+function validar(){
+  const erros = [];
+  const add = (n,m)=>{erro(n,m);erros.push(n)};
+  if(!estado.origem) add('origem','Escolha a cidade de saída na lista.');
+  if(!estado.destino) add('destino','Escolha o destino na lista.');
+  if(estado.origem && estado.destino && estado.origem.iata===estado.destino.iata) add('destino','O destino precisa ser diferente da origem.');
+  const ida = $('#ida').value, volta = $('#volta').value, hoje = hojeISO();
+  if(!ida) add('ida','Informe a data de ida.');
+  else if(ida < hoje) add('ida','A data de ida já passou.');
+  if(tipoAtual()==='ida_volta'){
+    if(!volta) add('volta','Informe a data de volta ou marque "Somente ida".');
+    else if(ida && volta < ida) add('volta','A volta precisa ser depois da ida.');
+  }
+  if($('#temPet').checked){
+    if(!document.querySelector('input[name="petEspecie"]:checked')) add('petEspecie','Escolha cão ou gato.');
+    const p = parseFloat(String($('#petPeso').value).replace(',','.'));
+    if(!p || p<=0) add('petPeso','Informe o peso em kg.');
+    if(!document.querySelector('input[name="petLocal"]:checked')) add('petLocal','Escolha cabine ou porão.');
+  }
+  const nome = $('#nome').value.trim();
+  if(nome.split(/\s+/).length<2) add('nome','Informe nome e sobrenome.');
+  const zap = $('#whatsapp').value.replace(/\D/g,'');
+  if(zap.length<10) add('whatsapp','Informe o WhatsApp com DDD.');
+  const email = $('#email').value.trim();
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) add('email','Esse e-mail parece incompleto.');
+  return erros;
+}
+
+/* =========================================================
+   ENVIO  (por enquanto salva no navegador; depois → Firebase)
+   ========================================================= */
+function gerarId(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s='';
+  for(let i=0;i<5;i++) s+=c[Math.floor(Math.random()*c.length)];
+  return 'PV-'+s;
+}
+function montarPedido(){
+  const pet = $('#temPet').checked ? {
+    especie: document.querySelector('input[name="petEspecie"]:checked').value,
+    pesoKg: parseFloat(String($('#petPeso').value).replace(',','.')),
+    local: document.querySelector('input[name="petLocal"]:checked').value
+  } : null;
+  const limpo = a => ({iata:a.iata,cidade:a.cidade,aeroporto:a.aeroporto,pais:a.pais});
+  return {
+    id: gerarId(),
+    criadoEm: new Date().toISOString(),
+    status: 'nova',
+    tipo: tipoAtual(),
+    origem: limpo(estado.origem),
+    destino: limpo(estado.destino),
+    dataIda: $('#ida').value,
+    dataVolta: tipoAtual()==='ida_volta' ? $('#volta').value : null,
+    datasFlexiveis: $('#flex').checked,
+    passageiros: {...estado.pax},
+    malasPorPassageiro: Number(document.querySelector('input[name="malas"]:checked').value),
+    pet,
+    cliente: {
+      nome: $('#nome').value.trim(),
+      whatsapp: $('#whatsapp').value.replace(/\D/g,''),
+      email: $('#email').value.trim() || null
+    }
+  };
+}
+/* ---------- envio: Firebase (se configurado) ou modo teste ---------- */
+const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const FIREBASE_ATIVO = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey);
+let dbSite = null, fsSite = null;
+async function conectar(){
+  if(dbSite) return;
+  const [app, fs] = await Promise.all([import(SDK+'firebase-app.js'), import(SDK+'firebase-firestore.js')]);
+  const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+  fsSite = fs; dbSite = fs.getFirestore(a);
+}
+const comPrazo = (prom, ms) => Promise.race([prom, new Promise((_,rej)=>setTimeout(()=>rej(new Error('tempo esgotado')), ms))]);
+async function enviarPedido(pedido){
+  if(!FIREBASE_ATIVO){ salvarTeste(pedido); await new Promise(r=>setTimeout(r,400)); return; }
+  await comPrazo(conectar(), 15000);
+  for(let tentativa=0; tentativa<3; tentativa++){
+    try{ await comPrazo(fsSite.setDoc(fsSite.doc(dbSite,'pedidos',pedido.id), pedido), 15000); return; }
+    catch(e){
+      // código repetido por acaso: o Firestore recusa (seria uma alteração), então gera outro
+      if(e.code==='permission-denied' && tentativa<2){ pedido.id = gerarId(); continue; }
+      throw e;
+    }
+  }
+}
+if(FIREBASE_ATIVO){ const t=$('#verTeste'); if(t) t.hidden = true; }
+
+function lerTeste(){try{return JSON.parse(localStorage.getItem(CONFIG.chaveStorage))||[]}catch(e){return []}}
+function salvarTeste(p){
+  const l = lerTeste(); l.unshift(p);
+  try{localStorage.setItem(CONFIG.chaveStorage,JSON.stringify(l))}catch(e){console.warn('Não foi possível salvar no navegador',e)}
+}
+
+$('#form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const erros = validar();
+  if(erros.length){
+    const primeiro = campo(erros[0]);
+    primeiro.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'center'});
+    const foco = primeiro.querySelector('input,button'); if(foco) setTimeout(()=>foco.focus({preventScroll:true}),250);
+    return;
+  }
+  const btn = $('#enviar'); btn.disabled = true;
+  const pedido = montarPedido();
+  $('#erroEnvio').textContent = '';
+  try{ await enviarPedido(pedido); }
+  catch(err){
+    console.error(err);
+    btn.disabled = false;
+    $('#erroEnvio').textContent = 'Não conseguimos enviar seu pedido agora. Confira a internet e tente de novo, ou chame a gente no WhatsApp.';
+    return;
+  }
+  btn.disabled = false;
+  $('#protocolo').textContent = pedido.id;
+  const z = pedido.cliente.whatsapp;
+  const zFmt = `(${z.slice(0,2)}) ${z.slice(2,z.length-4)}-${z.slice(-4)}`;
+  $('#sucessoTxt').textContent = `Em breve você recebe no WhatsApp ${zFmt} a imagem da cotação e o link para aprovar e pagar.`;
+  $('#form').style.display='none';
+  const s = $('#sucesso'); s.classList.remove('aberto'); void s.offsetWidth; s.classList.add('aberto');
+  s.closest('.cartao').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+$('#novo').addEventListener('click',()=>{
+  $('#sucesso').classList.remove('aberto');
+  $('#form').style.display='';
+  // mantém contato, limpa a viagem
+  autoOrigem.set(null); autoDestino.set(null);
+  $('#ida').value=''; $('#volta').value=''; $('#flex').checked=false;
+  estado.pax={adultos:1,criancas:0,bebes:0}; atualizarPax();
+  document.querySelector('input[name="malas"][value="0"]').checked=true;
+  $('#temPet').checked=false; $('#petPainel').classList.remove('aberto');
+  $('#origem').focus();
+});
+
+/* ---------- pedidos de teste ---------- */
+const dlg = $('#dlgTeste');
+function fmtData(iso){if(!iso)return '—';const [a,m,d]=iso.split('-');return `${d}/${m}/${a}`}
+function renderTeste(){
+  const l = lerTeste(), box = $('#listaTeste');
+  if(!l.length){box.innerHTML='<p>Nenhum pedido ainda. Preencha o formulário e toque em "Pedir cotação".</p>';return}
+  box.innerHTML = l.map(p=>`
+    <div class="pedido">
+      <b>${p.id}</b> — ${p.cliente.nome} · ${p.origem.iata} → ${p.destino.iata} · ${fmtData(p.dataIda)}${p.dataVolta?' a '+fmtData(p.dataVolta):''}
+      <pre>${JSON.stringify(p,null,2).replace(/</g,'&lt;')}</pre>
+    </div>`).join('');
+}
+$('#verTeste').addEventListener('click',()=>{renderTeste();dlg.showModal()});
+$('#fecharTeste').addEventListener('click',()=>dlg.close());
+$('#limparTeste').addEventListener('click',()=>{localStorage.removeItem(CONFIG.chaveStorage);renderTeste()});
+</script>
+</body>
+</html>
