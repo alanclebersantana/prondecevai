@@ -183,6 +183,11 @@ a.btn{text-decoration:none}
 .selo-online{white-space:nowrap;background:rgba(255,255,255,.16);color:#fff;font-weight:700;font-size:.75rem;padding:4px 10px;border-radius:999px}
 .selo-online.off{background:#C2261E}
 
+/* dica de instalação no iPhone */
+.dica-ios{position:fixed;left:12px;right:12px;bottom:calc(var(--nav) + 12px);z-index:120;background:var(--tinta);color:#fff;border-radius:14px;padding:12px 44px 12px 14px;font-size:.9rem;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.dica-ios[hidden]{display:none}
+.dica-ios button{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;cursor:pointer}
+
 /* início */
 .ini{max-width:1180px;margin:0 auto}
 .ini-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:4px 0 16px}
@@ -293,6 +298,7 @@ a.btn{text-decoration:none}
   <span class="esp"></span>
   <span class="selo-teste" id="seloTeste" title="Lendo os pedidos salvos neste navegador">Modo teste</span>
   <span class="selo-online" id="seloOnline" hidden>Online</span>
+  <button type="button" id="btnInstalarTopo" hidden>Instalar app</button>
   <button type="button" id="btnExemplo">+ <span class="so-pc">Pedido de </span>exemplo</button>
 </header>
 
@@ -409,6 +415,11 @@ a.btn{text-decoration:none}
     <button class="btn pri" type="submit" id="btnEntrar">Entrar</button>
     <button class="link" type="button" id="esqueci">Esqueci a senha</button>
   </form>
+</div>
+
+<div class="dica-ios" id="dicaIos" hidden>
+  <span>Para instalar no iPhone: toque em <b>Compartilhar</b> e depois em <b>Adicionar à Tela de Início</b>.</span>
+  <button type="button" id="fecharDicaIos" aria-label="Fechar">✕</button>
 </div>
 
 <div class="det-fundo" id="detFundo"></div>
@@ -1595,8 +1606,22 @@ $('#btnSair').addEventListener('click', async ()=>{
   await FB.au.signOut(FB.auth);
 });
 let pedidoInstalar = null;
-window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); pedidoInstalar = e; $('#btnInstalar').hidden = false; });
-$('#btnInstalar').addEventListener('click', async ()=>{ if(!pedidoInstalar) return; pedidoInstalar.prompt(); await pedidoInstalar.userChoice; pedidoInstalar = null; $('#btnInstalar').hidden = true; });
+const jaInstalado = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); pedidoInstalar = e; $('#btnInstalar').hidden = false; $('#btnInstalarTopo').hidden = false; });
+async function instalar(){
+  if(!pedidoInstalar){ toast('Use o menu do navegador › Instalar app (ou Adicionar à tela inicial).'); return; }
+  pedidoInstalar.prompt(); await pedidoInstalar.userChoice; pedidoInstalar = null;
+  $('#btnInstalar').hidden = true; $('#btnInstalarTopo').hidden = true;
+}
+$('#btnInstalar').addEventListener('click', instalar);
+$('#btnInstalarTopo').addEventListener('click', instalar);
+window.addEventListener('appinstalled', ()=>{ $('#btnInstalar').hidden = true; $('#btnInstalarTopo').hidden = true; toast('Painel instalado. Abra pelo ícone na tela inicial.'); });
+// iPhone/iPad não tem botão de instalar: mostra a dica uma vez
+if(/iPhone|iPad|iPod/.test(navigator.userAgent) && !jaInstalado){
+  let visto = false; try{ visto = localStorage.getItem('dcnp_dica_ios')==='1'; }catch(e){}
+  if(!visto) $('#dicaIos').hidden = false;
+}
+$('#fecharDicaIos').addEventListener('click', ()=>{ $('#dicaIos').hidden = true; try{ localStorage.setItem('dcnp_dica_ios','1'); }catch(e){} });
 function atualizarOnline(){ const s=$('#seloOnline'); s.textContent = navigator.onLine ? 'Online' : 'Sem internet'; s.classList.toggle('off', !navigator.onLine); }
 window.addEventListener('online', atualizarOnline); window.addEventListener('offline', atualizarOnline);
 
