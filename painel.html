@@ -301,6 +301,15 @@ a.btn{text-decoration:none}
 .nav .badge{position:absolute;top:8px;left:calc(50% + 8px);background:var(--sol);color:#fff;font-size:.68rem;font-weight:800;border-radius:999px;padding:0 6px;min-width:18px;text-align:center}
 .nav .badge:empty{display:none}
 
+.auto-st{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.auto-chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;padding:4px 8px;border-radius:8px;background:var(--fundo);color:var(--tinta-2)}
+.auto-chip.ok{background:var(--ok-claro);color:var(--ok)} .auto-chip.v{background:#F1F1F1;color:var(--tinta-2)} .auto-chip.e{background:var(--sol-claro);color:var(--aviso)}
+.auto-chip .gira{width:12px;height:12px;border:2px solid var(--linha);border-top-color:var(--ceu-2);border-radius:50%;animation:gira .8s linear infinite;flex:none}
+.auto-chip .lnk{background:none;border:0;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}
+.barra-captura{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav) + 12px);width:min(720px,94vw);background:#fff;border:2px solid var(--sol);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:12px 14px;z-index:55;display:none;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;font-size:.92rem}
+.barra-captura.on{display:flex}
+.barra-captura .bc-acoes{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.barra-captura select{max-width:100%;padding:7px 8px;border-radius:8px;border:1px solid var(--linha);font:inherit}
 .toast{position:fixed;left:50%;bottom:calc(var(--nav) + 16px);transform:translate(-50%,20px);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;opacity:0;transition:.2s;z-index:60;pointer-events:none;max-width:90vw}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
@@ -501,6 +510,7 @@ a.btn{text-decoration:none}
   <div class="det-corpo" id="detCorpo"></div>
 </aside>
 
+<div class="barra-captura" id="barraCaptura" role="status" aria-live="polite"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -934,6 +944,7 @@ $('#detStatus').innerHTML = ETAPAS.map(([v,t])=>`<option value="${v}">${t}</opti
 $('#detStatus').addEventListener('change',e=>{ const p=pedido(abertoId); if(p){ mudarStatus(p,e.target.value); renderDetalhe(); toast(`Movido para ${NOME_ETAPA[e.target.value]}`);} });
 function abrirDetalhe(id){
   abertoId = id; renderDetalhe(); carregarImagens(id);
+  setTimeout(agendarAuto, 300);
   $('#detalhe').classList.add('aberto'); $('#detFundo').classList.add('aberto');
   $('#detCorpo').scrollTop = 0;
 }
@@ -1005,10 +1016,18 @@ function etapaBusca(p, cls, aberto){
   const menor = menorPrograma(p);
   const quadros = Object.entries(PROG).map(([k,meta])=>{
     const b = p.busca[k];
+    const st = (tr) => p.auto?.st?.[k+'|'+tr];
+    const chip = (tr, rot) => { const x = st(tr); if(!x) return ''; const cls = {buscando:'b',ok:'ok',vazio:'v'}[x.status]||'e';
+      return `<span class="auto-chip ${cls}">${x.status==='buscando'?'<span class="gira"></span>':''}${rot?rot+': ':''}${esc(x.msg||'')}${(x.status==='login'||x.status==='bloqueado'||x.status==='erro') && autoAtual ? ` <button type="button" class="lnk" data-veraba="${k}|${tr}">ver aba</button>`:''}</span>`; };
+    const opcoes = (T) => { const tr=T.toLowerCase(), lista = p.auto?.opcoes?.[k+'|'+tr] || []; if(!lista.length) return '';
+      const atual = lista.findIndex(v=>v.voo===(b['voo'+T]||'') && v.saida===(b['saida'+T]||'') && n(v.milhas)===n(b['pp'+T]));
+      return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(v.saida||'?')}→${esc(v.chegada||'?')} · ${esc(v.voo||'voo ?')} · ${v.paradas===0?'direto':v.paradas!=null?v.paradas+' parada'+(v.paradas>1?'s':''):''} · ${MIL(v.milhas)}/pessoa</option>`).join('')}</select>
+        ${b['auto'+T] && b['pp'+T] ? `<small class="nota">${MIL(b['pp'+T])} milhas por pessoa × ${pagantes(p)} = ${MIL(b['milhas'+T])}</small>`:''}</div>`; };
     const campoMil = (campo, rot) => `<div class="campo"><label>${rot}</label><input type="number" min="0" step="100" inputmode="numeric" data-bind="busca.${k}.${campo}" value="${esc(b[campo]??'')}" placeholder="total de milhas"></div>`;
     return `<div class="prog ${b.semDisp?'semdisp':''} ${p.escolhido===k?'escolhido':''}" data-prog="${k}">
       <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>Menor milhagem</span></div>
       <div class="corpo">
+        ${p.auto?.st ? `<div class="auto-st">${chip('ida', p.tipo==='ida_volta'?'Ida':'')}${p.tipo==='ida_volta'?chip('volta','Volta'):''}</div>`:''}
         <label class="linha-semdisp"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}> Sem disponibilidade</label>
         <div class="campo"><label>Cia que opera</label>
           <select data-bind="busca.${k}.cia">${['GOL','LATAM','Azul','Outra'].map(c=>`<option ${b.cia===c?'selected':''}>${c}</option>`).join('')}</select></div>
@@ -1018,6 +1037,7 @@ function etapaBusca(p, cls, aberto){
           <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaIda" value="${esc(b.saidaIda||'')}"></div>
           <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaIda" value="${esc(b.chegadaIda||'')}"></div>
         </div>
+        ${opcoes('Ida')}
         ${campoMil('milhasIda',`Milhas da ida (total, ${totalPax(p)} pax)`)}
         ${p.tipo==='ida_volta'?`
         <div class="sub" style="margin:4px 0 0">Volta · ${fmtDataCurta(p.dataVolta)}</div>
@@ -1026,6 +1046,7 @@ function etapaBusca(p, cls, aberto){
           <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaVolta" value="${esc(b.saidaVolta||'')}"></div>
           <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaVolta" value="${esc(b.chegadaVolta||'')}"></div>
         </div>
+        ${opcoes('Volta')}
         ${campoMil('milhasVolta',`Milhas da volta (total, ${totalPax(p)} pax)`)}`:''}
         ${p.datasFlexiveis?`<div class="campo"><label>Datas encontradas (se mudou)</label><input data-bind="busca.${k}.datasAlt" value="${esc(b.datasAlt||'')}" placeholder="Ex.: ida 21/12, volta 04/01"></div>`:''}
         <div class="campo"><label>Taxas total (R$, ida${p.tipo==='ida_volta'?' + volta':''})</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="busca.${k}.taxas" value="${esc(b.taxas??'')}" placeholder="0,00"></div>
@@ -1043,12 +1064,12 @@ function etapaBusca(p, cls, aberto){
     <summary><span class="n">1</span><h3>Pesquisar nos programas</h3><span class="res">${p.escolhido?'Escolhido: '+PROG[p.escolhido].nome:''}</span></summary>
     <div class="conteudo">
       <div class="acoes" style="margin-top:0">
-        <button type="button" class="btn pri" data-acao="buscaAuto">Busca automática</button>
+        <button type="button" class="btn pri" data-acao="buscaAuto">${p.auto ? 'Buscar de novo' : 'Buscar agora'}</button>
         <button type="button" class="btn" data-acao="pesquisar">Pesquisar nos 3</button>
         <button type="button" class="btn peq" data-acao="copiarTrecho">Copiar dados do trecho</button>
       </div>
       <div class="links-busca" id="linksBusca">${Object.entries(PROG).map(([k,m])=>`<a class="btn peq" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener" style="border-color:${m.cor};color:${m.cor}">Abrir ${m.nome}</a>`).join('')}</div>
-      <p class="nota" style="margin:8px 0 0">"Pesquisar nos 3" abre Smiles, LATAM Pass e Azul, cada um numa aba, e copia o trecho para você colar. Sem a extensão, o navegador pode bloquear abas: use os botões de cada site.</p>
+      <p class="nota" style="margin:8px 0 0">${extensaoAtiva ? 'A busca roda sozinha quando o pedido chega e preenche cada programa com o voo de menos milhas. Para trocar, use "Voos encontrados". O que você digitar à mão não é sobrescrito.' : 'Abra o painel no Chrome com a extensão para a busca rodar sozinha.'} "Pesquisar nos 3" abre Smiles, LATAM Pass e Azul, cada um numa aba, e copia o trecho para você colar. Sem a extensão, o navegador pode bloquear abas: use os botões de cada site.</p>
       <p class="nota" style="margin:6px 0 0" id="avisoExtensao">${extensaoAtiva ? '✓ Extensão de captura ligada: nos sites, clique no ícone dela (ou Alt+Shift+C) e depois no voo. O print e os dados chegam aqui sozinhos, com este pedido aberto.' : 'Instale a extensão de captura para trazer o print e os dados do voo sem printar à mão.'}</p>
       <div class="progs">${quadros}</div>
     </div>
@@ -1221,6 +1242,7 @@ function ligarDetalhe(p){
       let v = el.dataset.tipo==='bool' ? el.checked : el.value;
       if(el.dataset.bind==='emissao.localizador') v = v.toUpperCase();
       setPath(p, el.dataset.bind, v);
+      { const m = el.dataset.bind.match(/^busca\.(\w+)\.(?:milhas|voo|saida|chegada)(Ida|Volta)$/); if(m) p.busca[m[1]]['auto'+m[2]] = false; }   // editou à mão: a busca não sobrescreve
       salvar();
       if(el.dataset.bind.endsWith('.semDisp')) el.closest('.prog').classList.toggle('semdisp', v);
       if(el.dataset.rerender) { salvar(true); renderDetalhe(); return; }
@@ -1245,6 +1267,8 @@ function ligarDetalhe(p){
   });
   corpo.querySelectorAll('[data-tirar]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); const [k,T]=b.dataset.tirar.split('|'); delete p.busca[k]['print'+T]; salvar(true); renderDetalhe(); }));
   corpo.querySelectorAll('[data-escolher]').forEach(b=>b.addEventListener('click',()=>escolherPrograma(p,b.dataset.escolher)));
+  corpo.querySelectorAll('[data-opcao]').forEach(sel=>sel.addEventListener('change',()=>{ const [k,T]=sel.dataset.opcao.split('|'); const v=(p.auto?.opcoes?.[k+'|'+T.toLowerCase()]||[])[Number(sel.value)]; if(!v) return; aplicarVooAuto(p,k,T,v,true); salvar(true); renderDetalhe(); toast(`${PROG[k].nome} · ${T.toLowerCase()}: ${v.saida}→${v.chegada}, ${MIL(n(v.milhas)*pagantes(p))} milhas`); }));
+  corpo.querySelectorAll('.auto-chip [data-veraba]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const [programa,trecho]=b.dataset.veraba.split('|'); if(autoAtual) window.postMessage({tipo:'dcnp-focar-aba', buscaId:autoAtual.id, programa, trecho},'*'); }));
   corpo.querySelectorAll('[data-acao]').forEach(b=>b.addEventListener('click',()=>ACOES[b.dataset.acao]?.(p,b)));
   corpo.querySelectorAll('[data-tirarcartao]').forEach(b=>b.addEventListener('click',()=>{ p.checkin.cartoes.splice(Number(b.dataset.tirarcartao),1); salvar(true); renderDetalhe(); }));
   const arqC = corpo.querySelector('#arqCartao');
@@ -1349,7 +1373,7 @@ const ACOES = {
     }
   },
   copiarTrecho(p){ copiar(textoTrecho(p),'Dados do trecho copiados'); },
-  buscaAuto(p){ abrirBuscaDoPedido(p); },
+  buscaAuto(p){ if(autoAtual && autoAtual.pedidoId===p.id){ toast('A busca deste pedido já está rodando.'); return; } for(const k in PROG) for(const T of ['Ida','Volta']) if(p.busca[k]['auto'+T]){ p.busca[k]['milhas'+T]=''; } p.auto=null; if(autoAtual){ toast('Há outra busca rodando; este pedido entra em seguida.'); salvar(true); renderDetalhe(); return; } iniciarAuto(p); },
   async compartilharMP(p){
     const c = await cardMP(p);
     const ok = await compartilharCanvas(c, `${p.id}-${p.escolhido}.png`, `Cotação ${p.id} — ${p.origem.iata} → ${p.destino.iata}`);
@@ -1629,6 +1653,7 @@ function iniciarBusca(pedidoId){
   setTimeout(()=>{ if(!busca || busca.id!==id) return; let mudou=false; for(const t of Object.values(busca.tarefas)) if(t.status==='buscando'){ t.status='erro'; t.msg='Sem resposta da aba'; mudou=true; } if(mudou) renderBusca(); }, 100000);
 }
 function receberResultado(m){
+  if(autoAtual && m.buscaId===autoAtual.id){ receberAuto(m); return; }
   if(!busca || m.buscaId!==busca.id) return;
   const t = busca.tarefas[m.programa+'|'+m.trecho]; if(!t) return;
   Object.assign(t, {status:m.status, msg:m.msg, voos:(m.voos||[]).filter(v=>v && n(v.milhas)>0), diagnostico:m.diagnostico});
@@ -1707,6 +1732,77 @@ function baixarDiagnostico(){
     tarefas:Object.values(busca.tarefas).map(t=>({programa:t.programa, trecho:t.trecho, status:t.status, msg:t.msg, url:t.url, voosLidos:t.voos.length, diagnostico:t.diagnostico}))};
   baixarBlob(new Blob([JSON.stringify(dados,null,1)],{type:'application/json'}), `diagnostico-busca-${busca.params.origem}-${busca.params.destino}.json`);
 }
+/* ---------- busca automática por pedido: roda sozinha e preenche os quadros ---------- */
+let autoAtual = null;   // {id, pedidoId, tarefas:{'prog|trecho':{programa,trecho,status,msg,voos,url}}, inicio}
+const AUTO_ETAPAS = ['nova','aguardando_mp'];
+const hojeISO = () => new Date().toISOString().slice(0,10);
+function precisaAuto(p){
+  return p && AUTO_ETAPAS.includes(p.status) && !p.auto && p.dataIda && p.dataIda >= hojeISO()
+    && /^[A-Z]{3}$/.test(p.origem?.iata||'') && /^[A-Z]{3}$/.test(p.destino?.iata||'');
+}
+function pagantes(p){ const x=p.passageiros||{}; return Math.max(1,(x.adultos||0)+(x.criancas||0)); }
+function agendarAuto(){
+  if(autoAtual || !extensaoAtiva || !versaoOk()) return;
+  // primeiro o pedido aberto; depois os mais antigos que ainda não foram buscados
+  const fila = [pedido(abertoId), ...pedidos.slice().sort((a,b)=>(a.criadoEm||'').localeCompare(b.criadoEm||''))].filter(precisaAuto);
+  if(fila.length) iniciarAuto(fila[0]);
+}
+function iniciarAuto(p, forcar){
+  if(!extensaoAtiva || !versaoOk()){ toast('A busca automática precisa da extensão neste Chrome.'); return; }
+  if(autoAtual){ if(forcar && autoAtual.pedidoId!==p.id){ toast('Terminando a busca de outro pedido; este entra em seguida.'); p.auto=null; } return; }
+  const x = p.passageiros||{};
+  const trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  const tarefas = {}, envio = [];
+  for(const [trecho,o,d,data] of trechos) for(const k in PROG){
+    const url = urlBusca(cfg.urls[k], {origem:o, destino:d, data, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0});
+    tarefas[k+'|'+trecho] = {programa:k, trecho, status:'buscando', msg:'Buscando…', voos:[], url};
+    envio.push({programa:k, trecho, url});
+  }
+  autoAtual = {id: token(10), pedidoId:p.id, tarefas, inicio:Date.now()};
+  p.auto = {em:new Date().toISOString(), st:{}, opcoes:{}};
+  for(const c in tarefas) p.auto.st[c] = {status:'buscando', msg:'Buscando…'};
+  salvar(true); if(abertoId===p.id) renderDetalhe();
+  window.postMessage({tipo:'dcnp-buscar', buscaId:autoAtual.id, tarefas:envio}, '*');
+  const id = autoAtual.id;
+  setTimeout(()=>{ if(!autoAtual || autoAtual.id!==id) return;
+    for(const t of Object.values(autoAtual.tarefas)) if(t.status==='buscando') receberAuto({buscaId:id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'Sem resposta da aba', voos:[]});
+  }, 100000);
+}
+function receberAuto(m){
+  const a = autoAtual; if(!a || m.buscaId!==a.id) return;
+  const chave = m.programa+'|'+m.trecho, t = a.tarefas[chave]; if(!t) return;
+  const voos = (m.voos||[]).filter(v=>v && n(v.milhas)>0).sort((x,y)=>n(x.milhas)-n(y.milhas) || ((x.paradas??9)-(y.paradas??9)));
+  let status = m.status, msg = m.msg||'';
+  if(status==='ok' && !voos.length){ status='erro'; msg='Não consegui ler os voos'; }
+  Object.assign(t, {status, msg, voos});
+  const p = pedido(a.pedidoId);
+  if(p){
+    p.auto = p.auto || {st:{}, opcoes:{}};
+    p.auto.st[chave] = {status, msg: status==='ok' ? `${voos.length} voo${voos.length!==1?'s':''}` : (msg || ROTULO_ST[status])};
+    p.auto.opcoes[chave] = voos.slice(0,8).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:v.paradas??null, milhas:n(v.milhas), milhasClube:v.milhasClube||null, taxas:v.taxas??null}));
+    const T = m.trecho==='volta' ? 'Volta' : 'Ida', b = p.busca[m.programa];
+    if(status==='ok') aplicarVooAuto(p, m.programa, T, p.auto.opcoes[chave][0]);
+    else if(status==='vazio' && (!b['milhas'+T] || b['auto'+T])){ b.semDisp = true; b['auto'+T] = true; }
+    salvar(true); if(abertoId===p.id) renderDetalhe();
+  }
+  if(Object.values(a.tarefas).every(x=>x.status!=='buscando')){
+    autoAtual = null;
+    if(p){ const k = menorPrograma(p); toast(`Busca do ${p.id} pronta${k?` · menor: ${PROG[k].nome}, ${MIL(totalMilhas(p,k))} milhas`:''}`); bip(); }
+    setTimeout(agendarAuto, 1500);
+  }
+}
+function aplicarVooAuto(p, k, T, v, manual){
+  if(!v) return;
+  const b = p.busca[k];
+  if(!manual && b['milhas'+T] && !b['auto'+T]) return;   // não passa por cima do que você digitou
+  const tot = n(v.milhas) * pagantes(p);
+  b['voo'+T] = v.voo || ''; b['saida'+T] = v.saida || ''; b['chegada'+T] = v.chegada || '';
+  b['milhas'+T] = String(tot); b['auto'+T] = true; b['pp'+T] = n(v.milhas);
+  if(v.taxas!=null){ b['taxas'+T] = Math.round(n(v.taxas)*pagantes(p)*100)/100; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
+  if(v.voo){ const c = v.voo.slice(0,2).toUpperCase(); b.cia = c==='G3'?'GOL':c==='LA'||c==='JJ'?'LATAM':c==='AD'?'Azul':b.cia; }
+  b.semDisp = false;
+}
 $('#btnBuscar').addEventListener('click',()=>iniciarBusca(busca && busca.pedidoId && $('#bOrigem').value.toUpperCase()===busca.params.origem ? busca.pedidoId : null));
 $('#formBusca').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#btnBuscar').click(); } });
 
@@ -1714,35 +1810,70 @@ $('#formBusca').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDe
    EXTENSÃO DE CAPTURA
    ========================================================= */
 let extensaoAtiva = document.documentElement.dataset.dcnpExtensao==='1';
-const capturasAplicadas = new Set(); let avisouSemPedido = false;
+const capturasAplicadas = new Set();
 window.addEventListener('message', e=>{
   if(e.source!==window || !e.data) return;
   if(e.data.tipo==='dcnp-abas-abertas'){ if(!e.data.ok) toast('Não consegui abrir as abas pela extensão. Use os botões de cada site.'); return; }
-  if(e.data.tipo==='dcnp-extensao-ativa'){ extensaoAtiva = true; if(e.data.versao) extensaoVersao = e.data.versao; atualizarAvisoExtensao(); const a=$('#avisoExtensao'); if(a && abertoId) renderDetalhe(); return; }
+  if(e.data.tipo==='dcnp-extensao-ativa'){ extensaoAtiva = true; if(e.data.versao) extensaoVersao = e.data.versao; atualizarAvisoExtensao(); setTimeout(agendarAuto, 1500); const a=$('#avisoExtensao'); if(a && abertoId) renderDetalhe(); return; }
   if(e.data.tipo==='dcnp-resultado'){ receberResultado(e.data); return; }
-  if(e.data.tipo==='dcnp-busca-iniciada'){ if(!e.data.ok){ toast('A extensão não conseguiu abrir as abas de busca.'); if(busca){ for(const t of Object.values(busca.tarefas)) if(t.status==='buscando'){ t.status='erro'; t.msg='Não abriu a aba'; } renderBusca(); } } return; }
+  if(e.data.tipo==='dcnp-busca-iniciada'){ if(!e.data.ok && autoAtual && e.data.buscaId===autoAtual.id){ const a=autoAtual; for(const t of Object.values(a.tarefas)) receberAuto({buscaId:a.id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'A extensão não abriu a aba', voos:[]}); return; } if(!e.data.ok){ toast('A extensão não conseguiu abrir as abas de busca.'); if(busca){ for(const t of Object.values(busca.tarefas)) if(t.status==='buscando'){ t.status='erro'; t.msg='Não abriu a aba'; } renderBusca(); } } return; }
+  if(e.data.tipo==='dcnp-extensao-velha'){
+    // a extensão foi atualizada: se em 2 s nenhuma ponte nova responder, pede para recarregar o painel
+    extensaoAtiva = false; window.postMessage({tipo:'dcnp-painel-pronto'},'*');
+setInterval(agendarAuto, 20000);
+    clearTimeout(timerVelha); timerVelha = setTimeout(()=>{ if(!extensaoAtiva) mostrarBarraCaptura('velha'); }, 2000);
+    return;
+  }
   if(e.data.tipo!=='dcnp-captura') return;
   extensaoAtiva = true;
   const c = e.data.captura;
+  if(!c || !c.id) return;
   if(capturasAplicadas.has(c.id)){ window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); return; }
-  const p = pedido(abertoId);
-  if(!p){ if(!avisouSemPedido){ toast('Chegou uma captura de voo. Abra o pedido para aplicar.'); avisouSemPedido=true; } return; }
-  if(!PROG[c.programa]) return;
+  if(!PROG[c.programa]){ toast('Captura de um site que o painel não conhece.'); window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); return; }
+  // pedido de destino: o que está aberto; senão, o da busca automática em andamento
+  const p = pedido(abertoId) || (busca && busca.pedidoId && pedido(busca.pedidoId));
+  if(p){ aplicarCaptura(c, p); return; }
+  if(!capturasEspera.has(c.id)){ capturasEspera.set(c.id, c); mostrarBarraCaptura(); }
+});
+let timerVelha = null;
+const capturasEspera = new Map();   // capturas que chegaram sem pedido aberto
+function aplicarCaptura(c, p){
   const T = c.trecho==='volta' ? 'Volta' : 'Ida';
-  if(T==='Volta' && p.tipo!=='ida_volta'){ toast('Este pedido é só de ida. A captura da volta foi ignorada.'); window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); return; }
+  capturasEspera.delete(c.id);
+  if(T==='Volta' && p.tipo!=='ida_volta'){ toast(`O ${p.id} é só de ida. A captura da volta foi ignorada.`); capturasAplicadas.add(c.id); window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); mostrarBarraCaptura(); return; }
   const b = p.busca[c.programa];
   b['print'+T] = c.print;
   if(c.voo) b['voo'+T] = c.voo;
   if(c.saida) b['saida'+T] = c.saida;
   if(c.chegada) b['chegada'+T] = c.chegada;
   if(c.milhas) b['milhas'+T] = c.milhas;
-  if(c.taxas!==''){ b['taxas'+T] = c.taxas; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
+  if(c.taxas!=='' && c.taxas!=null){ b['taxas'+T] = c.taxas; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
   b.semDisp = false;
-  capturasAplicadas.add(c.id); avisouSemPedido = false;
-  salvar(true); renderDetalhe();
+  capturasAplicadas.add(c.id);
+  salvar(true);
+  if(abertoId===p.id) renderDetalhe();
   window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*');
   bip(); toast(`${PROG[c.programa].nome} · ${T.toLowerCase()} recebida no ${p.id}`);
-});
+  mostrarBarraCaptura();
+}
+function mostrarBarraCaptura(modo){
+  const bar = $('#barraCaptura');
+  if(modo==='velha'){
+    bar.innerHTML = `<div class="bc-txt"><b>A extensão foi atualizada.</b> Recarregue o painel para voltar a receber as capturas.</div><div class="bc-acoes"><button type="button" class="btn pri peq" id="bcRecarregar">Recarregar painel</button></div>`;
+    bar.classList.add('on'); $('#bcRecarregar').onclick = ()=>location.reload(); return;
+  }
+  if(!capturasEspera.size){ bar.classList.remove('on'); bar.innerHTML=''; return; }
+  const c = [...capturasEspera.values()][0];
+  const abertos = pedidos.filter(x=>!['concluido','perdido'].includes(x.status)).sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
+  const det = [c.saida && c.chegada ? `${c.saida}–${c.chegada}` : '', c.milhas ? `${Number(c.milhas).toLocaleString('pt-BR')} milhas` : '', c.taxas ? BRL(n(c.taxas)) : ''].filter(Boolean).join(' · ');
+  bar.innerHTML = `<div class="bc-txt"><b>Captura recebida:</b> ${esc(PROG[c.programa].nome)} · ${c.trecho==='volta'?'volta':'ida'}${det?' · '+esc(det):''}${capturasEspera.size>1?` <small>(+${capturasEspera.size-1} na fila)</small>`:''}</div>
+    <div class="bc-acoes">${abertos.length ? `<select id="bcPedido">${abertos.map(x=>`<option value="${esc(x.id)}">${esc(x.id)} · ${esc(x.origem.iata)} → ${esc(x.destino.iata)} · ${esc(x.cliente?.nome||'')}</option>`).join('')}</select>
+    <button type="button" class="btn pri peq" id="bcAplicar">Usar neste pedido</button>` : '<span>Nenhum pedido em andamento.</span>'}
+    <button type="button" class="btn peq" id="bcDescartar">Descartar</button></div>`;
+  bar.classList.add('on');
+  if(abertos.length) $('#bcAplicar').onclick = ()=>{ const p = pedido($('#bcPedido').value); if(p){ aplicarCaptura(c, p); abrirDetalhe(p.id); } };
+  $('#bcDescartar').onclick = ()=>{ capturasEspera.delete(c.id); capturasAplicadas.add(c.id); window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); mostrarBarraCaptura(); };
+}
 
 /* =========================================================
    NAVEGAÇÃO, EXEMPLO E AVISOS
