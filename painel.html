@@ -443,7 +443,7 @@ a.btn{text-decoration:none}
       <section>
         <h2>Endereço do site</h2>
         <p class="nota">Usado para montar o link da cotação que vai para o cliente.</p>
-        <div class="campo"><label for="c-site">Endereço do site no GitHub Pages</label><input id="c-site" data-cfg="urlSite" type="url"></div>
+        <div class="campo"><label for="c-site">Endereço do site (deixe em branco para usar o mesmo do painel)</label><input id="c-site" data-cfg="urlSite" type="url"></div>
       </section>
       <section id="secConta" hidden>
         <h2>Conta e app</h2>
@@ -801,7 +801,13 @@ function lucro(p){ return Math.round((valorCliente(p)-n(p.valorMP))*100)/100; }
 function valorCartao(base, parcelas){ const t = n(cfg.taxas[parcelas-1])/100; return Math.round(base/(1-t)*100)/100; }
 function validadeHoras(p){ return p.validadeHoras!=null && p.validadeHoras!=='' ? n(p.validadeHoras) : n(cfg.validadeHoras); }
 function vencida(p){ return p.status==='cotacao_enviada' && p.cotacao && new Date(p.cotacao.validaAte) < new Date(); }
-function linkCotacao(p){ return `${cfg.urlSite.replace(/\/$/,'')}/cotacao.html?c=${p.cotacao?.token||''}`; }
+function baseSite(){
+  // o painel está no mesmo endereço do site: usa o endereço de onde ele foi aberto (Netlify, GitHub…), a não ser que você tenha posto outro nas Configurações
+  const daqui = /^https?:$/.test(location.protocol) ? location.origin + location.pathname.replace(/\/[^/]*$/,'') : '';
+  const padrao = 'https://alanclebersantana.github.io/prondecevai';
+  return ((cfg.urlSite && cfg.urlSite!==padrao) ? cfg.urlSite : (daqui || padrao)).replace(/\/$/,'');
+}
+function linkCotacao(p){ return `${baseSite()}/cotacao.html?c=${p.cotacao?.token||''}`; }
 
 /* =========================================================
    QUADRO
