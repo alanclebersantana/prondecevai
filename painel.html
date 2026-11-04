@@ -150,6 +150,12 @@ a.btn{text-decoration:none}
 .aviso{display:none;margin-top:8px;color:var(--aviso);background:var(--sol-claro);border-radius:9px;padding:8px 12px;font-size:.85rem;font-weight:600}
 .aviso.on{display:block}
 
+.calc + .parc-box{margin-top:10px}
+.parc-lista{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px}
+.parc-lista div{background:#fff;border:1px solid var(--linha);border-radius:10px;padding:8px 10px;font-size:.95rem;color:var(--tinta)}
+.parc-lista b{color:var(--ceu);margin-right:4px}
+.parc-lista small{display:block;color:var(--tinta-2);font-size:.75rem;margin-top:2px}
+@media (max-width:640px){ .parc-lista{grid-template-columns:1fr 1fr} }
 .parcelas{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}
 .parcelas th,.parcelas td{padding:6px 8px;border-bottom:1px solid var(--linha);text-align:right}
 .parcelas th:first-child,.parcelas td:first-child{text-align:left}
@@ -798,6 +804,8 @@ function menorPrograma(p){
 function perc(p){ return p.percLucro!=null && p.percLucro!=='' ? n(p.percLucro) : n(cfg.percPadrao); }
 function valorCliente(p){ const v=n(p.valorMP); return v ? Math.round(v*(1+perc(p)/100)*100)/100 : 0; }
 function lucro(p){ return Math.round((valorCliente(p)-n(p.valorMP))*100)/100; }
+const MAX_PARCELAS = 5;   // parcelamento máximo no cartão
+const listaParcelas = () => Array.from({length:MAX_PARCELAS}, (_,i)=>i+1);
 function valorCartao(base, parcelas){ const t = n(cfg.taxas[parcelas-1])/100; return Math.round(base/(1-t)*100)/100; }
 function validadeHoras(p){ return p.validadeHoras!=null && p.validadeHoras!=='' ? n(p.validadeHoras) : n(cfg.validadeHoras); }
 function vencida(p){ return p.status==='cotacao_enviada' && p.cotacao && new Date(p.cotacao.validaAte) < new Date(); }
@@ -1113,8 +1121,8 @@ function etapaValor(p, cls, aberto){
       <div class="calc">
         <div class="box"><small>Valor para o cliente no Pix</small><b id="vCliente">—</b></div>
         <div class="box lucro" id="boxLucro"><small>Seu lucro</small><b id="vLucro">—</b></div>
-        <div class="box"><small>12x no cartão</small><b id="v12">—</b></div>
       </div>
+      <div class="box parc-box"><small>No cartão (até ${MAX_PARCELAS}x)</small><div class="parc-lista" id="vParcelas">—</div></div>
       <div class="aviso" id="avisoLucro">O lucro está abaixo do mínimo de ${BRL(cfg.lucroMinimo)}.</div>
       <div class="acoes">
         <button type="button" class="btn pri" data-acao="enviarCotacao" ${p.escolhido?'':'disabled'}>${p.cotacao?'Reenviar cotação':'Enviar cotação'}</button>
@@ -1131,7 +1139,7 @@ function etapaValor(p, cls, aberto){
 function etapaPagamento(p, cls, aberto){
   const pg = p.pagamento || {};
   const base = valorCliente(p);
-  const linhas = base ? cfg.taxas.map((t,i)=>{ const tot=valorCartao(base,i+1); return `<tr class="${pg.forma==='cartao'&&n(pg.parcelas)===i+1?'sel':''}"><td>${i+1}x</td><td>${BRL(tot/(i+1))}</td><td>${BRL(tot)}</td><td>${String(t).replace('.',',')}%</td></tr>`; }).join('') : '';
+  const linhas = base ? cfg.taxas.slice(0,MAX_PARCELAS).map((t,i)=>{ const tot=valorCartao(base,i+1); return `<tr class="${pg.forma==='cartao'&&n(pg.parcelas)===i+1?'sel':''}"><td>${i+1}x</td><td>${BRL(tot/(i+1))}</td><td>${BRL(tot)}</td><td>${String(t).replace('.',',')}%</td></tr>`; }).join('') : '';
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">4</span><h3>Pagamento</h3><span class="res">${pg.pagoEm?(pg.forma==='pix'?'Pix':'Cartão '+pg.parcelas+'x')+' · '+BRL(pg.valorCobrado):''}</span></summary>
     <div class="conteudo">
@@ -1144,7 +1152,7 @@ function etapaPagamento(p, cls, aberto){
             <option value="cartao" ${pg.forma==='cartao'?'selected':''}>Cartão de crédito</option>
           </select></div>
         ${pg.forma==='cartao'?`<div class="campo"><label>Parcelas que o cliente pediu</label>
-          <select data-bind="pagamento.parcelas" data-rerender="1">${cfg.taxas.map((_,i)=>`<option value="${i+1}" ${n(pg.parcelas)===i+1?'selected':''}>${i+1}x de ${BRL(valorCartao(base,i+1)/(i+1))}</option>`).join('')}</select></div>`:''}
+          <select data-bind="pagamento.parcelas" data-rerender="1">${listaParcelas().map(i=>i-1).map(i=>`<option value="${i+1}" ${n(pg.parcelas)===i+1?'selected':''}>${i+1}x de ${BRL(valorCartao(base,i+1)/(i+1))}</option>`).join('')}</select></div>`:''}
       </div>
       ${pg.forma==='pix'?`<p class="nota">Chave Pix: <b>${esc(cfg.chavePix||'(cadastre nas Configurações)')}</b>${cfg.recebedor?' · '+esc(cfg.recebedor):''}. Confira o comprovante que o cliente mandar no WhatsApp.</p>`:''}
       ${pg.forma==='cartao'&&pg.parcelas?`
@@ -1315,7 +1323,7 @@ function atualizarCalculos(p){
   if($('#vCliente')){
     $('#vCliente').textContent = vc?BRL(vc):'—';
     $('#vLucro').textContent = vc?BRL(lc):'—';
-    $('#v12').textContent = vc?`12x ${BRL(valorCartao(vc,12)/12)}`:'—';
+    $('#vParcelas').innerHTML = vc ? listaParcelas().map(i=>{ const tot=valorCartao(vc,i); return `<div><b>${i}x</b> ${i===1?BRL(tot):'de '+BRL(tot/i)}<small>${i===1?'no cartão':'total '+BRL(tot)}</small></div>`; }).join('') : '—';
     const baixo = vc && lc < n(cfg.lucroMinimo);
     $('#boxLucro').classList.toggle('baixo', !!baixo);
     $('#avisoLucro').classList.toggle('on', !!baixo);
@@ -1411,8 +1419,8 @@ const ACOES = {
     salvar(true);
     const c = await cardCliente(p);
     await baixarCanvas(c, `cotacao-${p.id}.png`);
-    const nome = p.cliente.nome.split(' ')[0];
-    const msg = `Olá, ${nome}! Segue sua cotação ${p.id}, ${p.origem.cidade} → ${p.destino.cidade}.\n\nPara aprovar e pagar, acesse: ${linkCotacao(p)}\n\nVálida até ${fmtHora(p.cotacao.validaAte)} de ${new Date(p.cotacao.validaAte).toLocaleDateString('pt-BR')}, porque as cias aéreas reprecificam as tarifas.`;
+    const pn = String(p.cliente.nome||'').trim().split(/\s+/)[0] || ''; const nome = pn.charAt(0).toUpperCase() + pn.slice(1).toLowerCase();
+    const msg = `Olá, ${nome}, seja bem-vindo(a)!\nVai para ${p.destino.cidade}? ✈️\nEssa é a sua cotação. Bora voar?\n\n${p.origem.cidade} → ${p.destino.cidade} · cotação ${p.id}\n\nPara aprovar e pagar, acesse: ${linkCotacao(p)}\n\nVálida até ${fmtHora(p.cotacao.validaAte)} de ${new Date(p.cotacao.validaAte).toLocaleDateString('pt-BR')}, porque as cias aéreas reprecificam as tarifas.`;
     window.open(zapLink(p.cliente.whatsapp, msg), '_blank', 'noopener');
     if(idx(p.status) < idx('cotacao_enviada')) mudarStatus(p,'cotacao_enviada');
     renderDetalhe(); toast('Imagem baixada. Anexe na conversa do cliente.');
@@ -1553,19 +1561,43 @@ async function cardCliente(p){
   const k=p.escolhido, b=p.busca[k]||{}, W=1080, P=64;
   const c=document.createElement('canvas'); c.width=W; c.height=2400; const ctx=c.getContext('2d');
   ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,c.height);
-  // cabeçalho
-  const g = ctx.createLinearGradient(0,0,0,300); g.addColorStop(0,'#0E3B7A'); g.addColorStop(1,'#2F78C4');
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,300);
-  const logo = await carregarImg(LOGO_DATA); if(logo) ctx.drawImage(logo,P-2,48,72,72);
-  ctx.fillStyle='#fff';
-  ctx.font=F(800,44); ctx.fillText('Vai pra onde?', P+86, 100);
-  ctx.font=F(500,26); ctx.globalAlpha=.85; ctx.fillText(`Cotação ${p.id}`, P+86, 138); ctx.globalAlpha=1;
-  ctx.font=F(800,104); ctx.fillText(`${p.origem.iata} → ${p.destino.iata}`, P, 262);
-  ctx.fillStyle='#FF7A2E'; ctx.fillRect(0,300,W,10);
-  let y = 380;
-  ctx.fillStyle='#55657F'; ctx.font=F(500,32); ctx.fillText(`${p.origem.cidade} → ${p.destino.cidade}`, P, y);
-  y+=46; ctx.fillStyle='#13233F'; ctx.font=F(600,30); ctx.fillText(`Voo operado por ${b.cia||'—'}`, P, y);
-  y+=76;
+  // cabeçalho com a mesma foto do site (asa do avião sobre as nuvens)
+  const H = 460;
+  const g = ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0E3B7A'); g.addColorStop(1,'#2F78C4');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  const foto = await carregarImg('ceu-asa.jpg');
+  if(foto){
+    const esc = Math.max(W/foto.width, H/foto.height), fw = foto.width*esc, fh = foto.height*esc;
+    ctx.save(); ctx.beginPath(); ctx.rect(0,0,W,H); ctx.clip();
+    ctx.drawImage(foto, W-fw, (H-fh)*0.45, fw, fh);   // encosta à direita para a asa aparecer
+    const gx = ctx.createLinearGradient(0,0,W,0);
+    gx.addColorStop(0,'rgba(9,32,70,.88)'); gx.addColorStop(.5,'rgba(9,32,70,.55)'); gx.addColorStop(1,'rgba(9,32,70,.12)');
+    ctx.fillStyle=gx; ctx.fillRect(0,0,W,H);
+    const gy = ctx.createLinearGradient(0,H*.45,0,H);
+    gy.addColorStop(0,'rgba(9,32,70,0)'); gy.addColorStop(1,'rgba(9,32,70,.55)');
+    ctx.fillStyle=gy; ctx.fillRect(0,0,W,H);
+    ctx.restore();
+  }
+  const logo = await carregarImg(LOGO_DATA); if(logo) ctx.drawImage(logo,P-2,52,72,72);
+  ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=14;
+  ctx.font=F(800,44); ctx.fillText('Vai pra onde?', P+86, 104);
+  ctx.font=F(500,26); ctx.globalAlpha=.9; ctx.fillText(`Cotação ${p.id}`, P+86, 142); ctx.globalAlpha=1;
+  ctx.font=F(800,112); ctx.fillText(`${p.origem.iata} → ${p.destino.iata}`, P, H-62);
+  ctx.shadowBlur=0; ctx.shadowColor='transparent';
+  ctx.fillStyle='#FF7A2E'; ctx.fillRect(0,H,W,10);
+  // boas-vindas
+  const primeiro = String(p.cliente?.nome||'').trim().split(/\s+/)[0] || '';
+  const nomeBonito = primeiro ? primeiro.charAt(0).toUpperCase() + primeiro.slice(1).toLowerCase() : '';
+  let y = H+86;
+  ctx.fillStyle='#13233F'; ctx.font=F(700,42);
+  quebrar(ctx, nomeBonito ? `Olá, ${nomeBonito}, seja bem-vindo(a)!` : 'Olá, seja bem-vindo(a)!', W-P*2).forEach(l=>{ ctx.fillText(l,P,y); y+=54; });
+  y+=12; ctx.fillStyle='#E0611C'; ctx.font=F(800,60);
+  quebrar(ctx, `Vai para ${p.destino.cidade}`, W-P*2).forEach(l=>{ ctx.fillText(l,P,y); y+=70; });
+  ctx.fillStyle='#55657F'; ctx.font=F(500,34); ctx.fillText('Essa é a sua cotação. Bora voar?', P, y);
+  y+=50; ctx.fillStyle='#DCE4EE'; ctx.fillRect(P, y, W-P*2, 2);
+  y+=58; ctx.fillStyle='#55657F'; ctx.font=F(500,30); ctx.fillText(`${p.origem.cidade} → ${p.destino.cidade}`, P, y);
+  y+=44; ctx.fillStyle='#13233F'; ctx.font=F(600,30); ctx.fillText(`Voo operado por ${b.cia||'—'}`, P, y);
+  y+=70;
   y = linhaDado(ctx,W,P,y,'Ida', vooTxt(p.dataIda,b.vooIda,b.saidaIda,b.chegadaIda));
   if(p.tipo==='ida_volta') y = linhaDado(ctx,W,P,y,'Volta', vooTxt(p.dataVolta,b.vooVolta,b.saidaVolta,b.chegadaVolta));
   if(b.datasAlt) y = linhaDado(ctx,W,P,y,'Datas', b.datasAlt);
@@ -1574,12 +1606,29 @@ async function cardCliente(p){
   if(p.pet) y = linhaDado(ctx,W,P,y,'Pet', textoPet(p));
   // preço
   const vc = valorCliente(p);
-  y+=4; ctx.fillStyle='#FFF1E7'; rr(ctx,P,y,W-P*2,240,28); ctx.fill();
+  y+=4; ctx.fillStyle='#FFF1E7'; rr(ctx,P,y,W-P*2,200,28); ctx.fill();
   ctx.fillStyle='#B85A00'; ctx.font=F(600,30); ctx.fillText('À vista no Pix', P+40, y+62);
   ctx.fillStyle='#E0611C'; ctx.font=F(800,96); ctx.fillText(vc?BRL(vc):'R$ —', P+40, y+160);
-  ctx.fillStyle='#13233F'; ctx.font=F(500,30);
-  ctx.fillText(vc?`ou em até 12x de ${BRL(valorCartao(vc,12)/12)} no cartão`:'', P+40, y+210);
-  y+=290;
+  y+=224;
+  if(vc){
+    // cartão: todas as opções de 1x até o máximo
+    const alt = 92 + MAX_PARCELAS*58;
+    ctx.fillStyle='#F4F7FB'; rr(ctx,P,y,W-P*2,alt,28); ctx.fill();
+    ctx.fillStyle='#0E3B7A'; ctx.font=F(700,30); ctx.fillText(`No cartão de crédito, em até ${MAX_PARCELAS}x`, P+40, y+58);
+    let ly = y+80;
+    listaParcelas().forEach((i, idx)=>{
+      const tot = valorCartao(vc,i);
+      if(idx){ ctx.fillStyle='#DCE4EE'; ctx.fillRect(P+40, ly, W-P*2-80, 2); }
+      ctx.fillStyle='#13233F'; ctx.font=F(700,32); ctx.textAlign='left';
+      ctx.fillText(i===1 ? '1x de '+BRL(tot) : `${i}x de ${BRL(tot/i)}`, P+40, ly+42);
+      ctx.fillStyle='#55657F'; ctx.font=F(500,26); ctx.textAlign='right';
+      ctx.fillText(i===1 ? 'à vista no cartão' : 'total '+BRL(tot), W-P-40, ly+42);
+      ctx.textAlign='left';
+      ly += 58;
+    });
+    y += alt + 30;
+  }
+  y+=40;
   // validade
   const ate = p.cotacao?.validaAte ? new Date(p.cotacao.validaAte) : new Date(Date.now()+validadeHoras(p)*3600e3);
   ctx.fillStyle='#13233F'; ctx.font=F(700,34); ctx.fillText(`Válida até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}`, P, y);
@@ -1625,7 +1674,7 @@ function renderCheckins(){
    ========================================================= */
 function renderCfg(){
   $$('[data-cfg]').forEach(el=>{ const v = el.dataset.cfg.split('.').reduce((o,k)=>o?.[k], cfg); el.value = v ?? ''; });
-  $('#taxasCfg').innerHTML = cfg.taxas.map((t,i)=>`<div class="campo"><label for="tx${i}">${i+1}x (%)</label><input id="tx${i}" type="number" step="0.01" min="0" max="60" value="${t}" data-taxa="${i}"></div>`).join('');
+  $('#taxasCfg').innerHTML = cfg.taxas.slice(0,MAX_PARCELAS).map((t,i)=>`<div class="campo"><label for="tx${i}">${i+1}x (%)</label><input id="tx${i}" type="number" step="0.01" min="0" max="60" value="${t}" data-taxa="${i}"></div>`).join('');
   $$('[data-taxa]').forEach(el=>el.addEventListener('input',()=>{ cfg.taxas[Number(el.dataset.taxa)] = n(el.value); salvarCfg(); }));
 }
 $$('[data-cfg]').forEach(el=>el.addEventListener('input',()=>{
