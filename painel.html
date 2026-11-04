@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Painel · Pronde cê vai?</title>
+<title>Painel · Vai pra onde?</title>
 <meta name="theme-color" content="#0E3B7A">
 <meta name="dcnp-painel" content="1">
 <link rel="manifest" href="painel.webmanifest">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pronde Painel">
+<meta name="apple-mobile-web-app-title" content="Vai pra onde?">
 <script src="firebase-config.js"></script>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -33,7 +33,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3,h4{margin:0;letter-spacing:-.01em}
 
 /* topo */
-.topo{position:sticky;top:0;z-index:10;background:var(--ceu);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:56px}
+.topo{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,rgba(9,32,70,.94) 0%,rgba(9,32,70,.78) 45%,rgba(9,32,70,.35) 100%),url("ceu-asa.jpg") right 30% / cover no-repeat,var(--ceu);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:56px}
 .topo .logo{width:32px;height:32px;flex:none;border-radius:50%}
 .topo h1{font-size:1.05rem;font-weight:800;line-height:1.1}
 .topo h1 small{display:block;font-weight:500;font-size:.75rem;opacity:.75}
@@ -168,8 +168,44 @@ a.btn{text-decoration:none}
 .miniaturas img{height:90px;border-radius:8px;border:1px solid var(--linha);display:block}
 .miniaturas button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(19,35,63,.7);color:#fff;cursor:pointer;line-height:1}
 
+/* busca automática */
+.bus-form{display:grid;grid-template-columns:repeat(4,1fr) repeat(3,90px);gap:10px;align-items:end}
+.bus-form .campo input{text-transform:uppercase}
+.bus-form .campo input[type=date]{text-transform:none}
+.bus-progs{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.bus-progs label{display:flex;gap:6px;align-items:center;font-weight:600;font-size:.9rem}
+.bus-status{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:14px 0}
+.bst{background:#fff;border:1px solid var(--linha);border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.bst .cor{width:10px;align-self:stretch;border-radius:4px;flex:none}
+.bst b{display:block;font-size:.9rem}
+.bst small{color:var(--tinta-2);font-size:.8rem}
+.bst .gira{width:16px;height:16px;border:2.5px solid var(--linha);border-top-color:var(--ceu-2);border-radius:50%;animation:gira .8s linear infinite;flex:none;margin-left:auto}
+@keyframes gira{to{transform:rotate(360deg)}}
+.bst button{margin-left:auto}
+.bus-res{background:#fff;border:1px solid var(--linha);border-radius:14px;overflow:hidden}
+.bus-res-topo{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--linha)}
+.seg-p{display:inline-flex;background:var(--fundo);border-radius:999px;padding:3px}
+.seg-p button{border:0;background:none;padding:6px 14px;border-radius:999px;font-weight:700;color:var(--tinta-2);cursor:pointer}
+.seg-p button.on{background:#fff;color:var(--ceu);box-shadow:0 1px 3px rgba(14,59,122,.18)}
+.tab-voos{width:100%;border-collapse:collapse;font-size:.9rem}
+.tab-voos th{text-align:left;font-size:.75rem;color:var(--tinta-2);font-weight:700;padding:8px 12px;background:var(--fundo)}
+.tab-voos td{padding:10px 12px;border-top:1px solid var(--fundo);vertical-align:middle}
+.tab-voos .mil{font-weight:800;color:var(--ceu);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tab-voos .mil small{display:block;font-weight:500;color:var(--tinta-2);font-size:.75rem}
+.tab-voos tr.melhor td{background:var(--ok-claro)}
+.badge-p{display:inline-block;color:#fff;font-weight:800;font-size:.72rem;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.bus-vazio{padding:22px;text-align:center;color:var(--tinta-2)}
+@media (max-width:900px){ .bus-form{grid-template-columns:1fr 1fr} }
+@media (max-width:640px){
+  .tab-voos thead{display:none}
+  .tab-voos tr{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 12px;border-top:1px solid var(--fundo)}
+  .tab-voos td{border:0;padding:0}
+  .tab-voos td.c-prog{grid-column:1 / -1}
+  .tab-voos td.c-acao{grid-column:1 / -1;margin-top:6px}
+}
+
 /* login */
-.login{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#0E3B7A,#2F78C4 70%,#8FC3EE);display:grid;place-items:center;padding:20px}
+.login{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,rgba(9,32,70,.55),rgba(9,32,70,.15) 60%,rgba(9,32,70,.35)),url("ceu-asa.jpg") center / cover no-repeat,linear-gradient(160deg,#0E3B7A,#2F78C4 70%,#8FC3EE);display:grid;place-items:center;padding:20px}
 .login[hidden]{display:none}
 .login-caixa{background:#fff;border-radius:20px;padding:28px 24px;width:min(380px,100%);box-shadow:0 30px 60px -20px rgba(9,32,70,.6);display:flex;flex-direction:column;gap:12px}
 .login-caixa img{width:64px;height:64px;border-radius:50%;align-self:center;box-shadow:0 4px 14px rgba(14,59,122,.25)}
@@ -190,9 +226,11 @@ a.btn{text-decoration:none}
 
 /* início */
 .ini{max-width:1180px;margin:0 auto}
-.ini-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:4px 0 16px}
-.ini-topo h2{font-size:1.6rem;letter-spacing:-.02em}
-.ini-topo p{margin:2px 0 0;color:var(--tinta-2)}
+.ini-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 0 16px;padding:28px 24px 22px;min-height:170px;border-radius:18px;color:#fff;
+  background:linear-gradient(90deg,rgba(9,32,70,.85) 0%,rgba(9,32,70,.55) 50%,rgba(9,32,70,.1) 100%),url("ceu-asa.jpg") right 35% / cover no-repeat,var(--ceu)}
+.ini-topo h2{font-size:1.9rem;letter-spacing:-.02em;text-shadow:0 1px 10px rgba(9,32,70,.5)}
+.ini-topo p{margin:4px 0 0;color:rgba(255,255,255,.88)}
+.ini-topo .btn{background:rgba(255,255,255,.95)}
 .ini-grade{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start}
 .bloco{background:#fff;border-radius:16px;border:1px solid var(--linha);padding:16px 18px}
 .bloco h3{font-size:1.05rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
@@ -229,7 +267,7 @@ a.btn{text-decoration:none}
 .col-dir{display:flex;flex-direction:column;gap:16px}
 .ini-grade > *{min-width:0}
 @media (max-width:900px){ .ini-grade{grid-template-columns:1fr} }
-@media (max-width:640px){ .fazer .acao{display:none} .ini-topo h2{font-size:1.35rem} .bloco{padding:14px} }
+@media (max-width:640px){ .fazer .acao{display:none} .ini-topo h2{font-size:1.5rem} .ini-topo{min-height:150px;padding:20px 16px 16px;background-image:linear-gradient(180deg,rgba(9,32,70,.25) 0%,rgba(9,32,70,.75) 100%),url("ceu-asa-celular.jpg");background-position:center 30%} .bloco{padding:14px} .login{background-image:linear-gradient(160deg,rgba(9,32,70,.45),rgba(9,32,70,.2) 60%,rgba(9,32,70,.4)),url("ceu-asa-celular.jpg")} }
 
 /* check-ins */
 .grupo{margin-bottom:22px}
@@ -294,7 +332,7 @@ a.btn{text-decoration:none}
 
 <header class="topo">
   <img class="logo" src="logo-192.png" alt="" width="30" height="30">
-  <h1>Pronde cê vai?<small>Painel de cotações</small></h1>
+  <h1>Vai pra onde?<small>Painel de cotações</small></h1>
   <span class="esp"></span>
   <span class="selo-teste" id="seloTeste" title="Lendo os pedidos salvos neste navegador">Modo teste</span>
   <span class="selo-online" id="seloOnline" hidden>Online</span>
@@ -315,6 +353,33 @@ a.btn{text-decoration:none}
   </section>
 
   <!-- CHECK-INS -->
+  <section class="tela" id="tela-buscar">
+    <div class="bloco">
+      <h3>Buscar voos com milhas</h3>
+      <p class="nota" style="margin:0 0 12px">A extensão abre Smiles, LATAM Pass e Azul em abas de fundo no seu Chrome, lê os voos e traz tudo para cá. Para a LATAM Pass, deixe sua conta conectada neste Chrome.</p>
+      <form id="formBusca" class="bus-form" novalidate>
+        <div class="campo"><label for="bOrigem">Origem</label><input id="bOrigem" maxlength="3" placeholder="CWB" autocomplete="off"></div>
+        <div class="campo"><label for="bDestino">Destino</label><input id="bDestino" maxlength="3" placeholder="SSA" autocomplete="off"></div>
+        <div class="campo"><label for="bIda">Ida</label><input id="bIda" type="date"></div>
+        <div class="campo"><label for="bVolta">Volta (opcional)</label><input id="bVolta" type="date"></div>
+        <div class="campo"><label for="bAdt">Adultos</label><input id="bAdt" type="number" min="1" max="9" value="1"></div>
+        <div class="campo"><label for="bChd">Crianças</label><input id="bChd" type="number" min="0" max="8" value="0"></div>
+        <div class="campo"><label for="bInf">Bebês</label><input id="bInf" type="number" min="0" max="8" value="0"></div>
+      </form>
+      <div class="bus-progs">
+        <label><input type="checkbox" id="bpSmiles" checked> Smiles</label>
+        <label><input type="checkbox" id="bpLatam" checked> LATAM Pass</label>
+        <label><input type="checkbox" id="bpAzul" checked> Azul Fidelidade</label>
+        <span style="flex:1"></span>
+        <button type="button" class="btn pri" id="btnBuscar">Buscar</button>
+      </div>
+      <p class="nota" id="buscaPedidoInfo" style="margin:10px 0 0" hidden></p>
+      <p class="aviso" id="avisoSemExtensao" style="margin-top:10px">Para buscar automaticamente, instale a extensão do Vai pra onde? (versão 1.2 ou mais nova) neste Chrome.</p>
+    </div>
+    <div class="bus-status" id="buscaStatus"></div>
+    <div id="buscaResultados"></div>
+  </section>
+
   <section class="tela" id="tela-checkins">
     <div id="listaCheckins"></div>
   </section>
@@ -361,7 +426,7 @@ a.btn{text-decoration:none}
       </section>
       <section>
         <h2>Endereços de busca</h2>
-        <p class="nota">O botão "Pesquisar nos 3" abre estes endereços. Se você fizer uma busca no site do programa e copiar o endereço do resultado, pode colar aqui trocando os valores por {origem}, {destino}, {ida}, {volta}, {adultos}, {criancas}, {bebes}. Datas no formato AAAA-MM-DD.</p>
+        <p class="nota">O botão "Pesquisar nos 3" abre estes endereços. Se você fizer uma busca no site do programa e copiar o endereço do resultado, pode colar aqui trocando os valores por {origem}, {destino}, {data} (AAAA-MM-DD), {data_us} (MM/DD/AAAA), {data_ms}, {adultos}, {criancas}, {bebes}. A busca automática também usa estes endereços.</p>
         <div class="campo"><label for="c-u-smiles">Smiles</label><input id="c-u-smiles" data-cfg="urls.smiles" type="url"></div>
         <div class="campo" style="margin-top:8px"><label for="c-u-latam">LATAM Pass</label><input id="c-u-latam" data-cfg="urls.latam" type="url"></div>
         <div class="campo" style="margin-top:8px"><label for="c-u-azul">Azul Fidelidade</label><input id="c-u-azul" data-cfg="urls.azul" type="url"></div>
@@ -393,6 +458,10 @@ a.btn{text-decoration:none}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/></svg>
     Pedidos<span class="badge" id="badgeNovos"></span>
   </button>
+  <button type="button" data-tela="buscar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    Buscar
+  </button>
   <button type="button" data-tela="checkins">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>
     Check-ins<span class="badge" id="badgeCk"></span>
@@ -406,7 +475,7 @@ a.btn{text-decoration:none}
 <div class="login carregando" id="login" hidden>
   <form class="login-caixa" id="formLogin" novalidate>
     <img src="logo-192.png" alt="" width="64" height="64">
-    <h1>Pronde cê vai?</h1>
+    <h1>Vai pra onde?</h1>
     <p>Painel de cotações</p>
     <p class="login-status" id="loginStatus">Conectando…</p>
     <div class="campo"><label for="lEmail">E-mail</label><input id="lEmail" type="email" autocomplete="username" inputmode="email"></div>
@@ -467,9 +536,9 @@ const CFG_PADRAO = {
   meuWhatsapp:'', whatsappMP:'',
   checkin:{LATAM:48, GOL:48, Azul:72},
   urls:{
-    smiles:'https://www.smiles.com.br/home',
-    latam:'https://www.latamairlines.com/br/pt',
-    azul:'https://www.voeazul.com.br/br/pt/home'
+    smiles:'https://www.smiles.com.br/mfe/emissao-passagem/?adults={adultos}&children={criancas}&infants={bebes}&cabin=ALL&searchType=g3&segments=1&tripType=2&originAirport={origem}&destinationAirport={destino}&departureDate={data_ms}&isFlexibleDateChecked=false',
+    latam:'https://www.latamairlines.com/br/pt/oferta-voos?origin={origem}&inbound=null&outbound={data}T15%3A00%3A00.000Z&destination={destino}&adt={adultos}&chd={criancas}&inf={bebes}&trip=OW&cabin=Economy&redemption=true&sort=RECOMMENDED',
+    azul:'https://www.voeazul.com.br/br/pt/home/selecao-voo?c[0].ds={origem}&c[0].std={data_us}&c[0].as={destino}&p[0].t=ADT&p[0].c={adultos}&p[0].cp=false&p[1].t=CHD&p[1].c={criancas}&p[1].cp=false&p[2].t=INF&p[2].c={bebes}&p[2].cp=false&f.dl=3&f.dr=3&cc=PTS'
   },
   urlSite:'https://alanclebersantana.github.io/prondecevai'
 };
@@ -504,8 +573,10 @@ function soDigitos(s){ return String(s||'').replace(/\D/g,''); }
 function zapLink(num, txt){ let d=soDigitos(num); if(d && !d.startsWith('55')) d='55'+d; return `https://wa.me/${d}?text=${encodeURIComponent(txt)}`; }
 
 /* ---------- configurações ---------- */
+const URLS_ANTIGAS = {smiles:'https://www.smiles.com.br/home', latam:'https://www.latamairlines.com/br/pt', azul:'https://www.voeazul.com.br/br/pt/home'};
 function mesclarCfg(c){
   c = c || {};
+  if(c.urls){ c = {...c, urls:{...c.urls}}; for(const k in URLS_ANTIGAS) if(!c.urls[k] || c.urls[k]===URLS_ANTIGAS[k]) delete c.urls[k]; }
   return {...CFG_PADRAO, ...c, checkin:{...CFG_PADRAO.checkin,...(c.checkin||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas]};
 }
 function lerCfg(){ let c={}; try{ c = JSON.parse(localStorage.getItem(CHAVE_CFG))||{}; }catch(e){} return mesclarCfg(c); }
@@ -771,7 +842,7 @@ function renderInicio(){
 
   $('#tela-inicio').innerHTML = `
     <div class="ini-topo">
-      <div><h2>${saud}!</h2><p>${agora.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</p></div>
+      <div><h2>${saud}! Vai pra onde hoje?</h2><p>${agora.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</p></div>
       <button type="button" class="btn" onclick="irPara('pedidos')">Ver todos os pedidos</button>
     </div>
     <div class="ini-grade">
@@ -972,7 +1043,8 @@ function etapaBusca(p, cls, aberto){
     <summary><span class="n">1</span><h3>Pesquisar nos programas</h3><span class="res">${p.escolhido?'Escolhido: '+PROG[p.escolhido].nome:''}</span></summary>
     <div class="conteudo">
       <div class="acoes" style="margin-top:0">
-        <button type="button" class="btn pri" data-acao="pesquisar">Pesquisar nos 3</button>
+        <button type="button" class="btn pri" data-acao="buscaAuto">Busca automática</button>
+        <button type="button" class="btn" data-acao="pesquisar">Pesquisar nos 3</button>
         <button type="button" class="btn peq" data-acao="copiarTrecho">Copiar dados do trecho</button>
       </div>
       <div class="links-busca" id="linksBusca">${Object.entries(PROG).map(([k,m])=>`<a class="btn peq" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener" style="border-color:${m.cor};color:${m.cor}">Abrir ${m.nome}</a>`).join('')}</div>
@@ -1240,11 +1312,17 @@ function escolherPrograma(p,k){
 function textoTrecho(p){
   return `${p.origem.iata} → ${p.destino.iata} | Ida ${fmtData(p.dataIda)}${p.dataVolta?' | Volta '+fmtData(p.dataVolta):''} | ${textoPax(p)}${p.datasFlexiveis?' | datas flexíveis ±3 dias':''}`;
 }
+function urlBusca(t, o){
+  const [y,m,d] = String(o.data||'').split('-');
+  const ms = y ? Date.UTC(+y, +m-1, +d, 3, 0, 0) : '';
+  return t.replaceAll('{origem}',o.origem).replaceAll('{destino}',o.destino)
+    .replaceAll('{data_ms}',ms).replaceAll('{data_us}', y?`${m}/${d}/${y}`:'').replaceAll('{data}',o.data||'')
+    .replaceAll('{ida}',o.data||'').replaceAll('{volta}',o.volta||'')
+    .replaceAll('{adultos}',o.adultos||0).replaceAll('{criancas}',o.criancas||0).replaceAll('{bebes}',o.bebes||0);
+}
 function montarUrl(t,p){
   const x=p.passageiros||{};
-  return t.replaceAll('{origem}',p.origem.iata).replaceAll('{destino}',p.destino.iata)
-    .replaceAll('{ida}',p.dataIda||'').replaceAll('{volta}',p.dataVolta||'')
-    .replaceAll('{adultos}',x.adultos||0).replaceAll('{criancas}',x.criancas||0).replaceAll('{bebes}',x.bebes||0);
+  return urlBusca(t, {origem:p.origem.iata, destino:p.destino.iata, data:p.dataIda, volta:p.dataVolta, adultos:x.adultos||0, criancas:x.criancas||0, bebes:x.bebes||0});
 }
 async function copiar(txt, msg){ try{ await navigator.clipboard.writeText(txt); toast(msg||'Copiado'); }catch(e){ prompt('Copie o texto:', txt); } }
 async function compartilharCanvas(canvas, nome, texto){
@@ -1271,6 +1349,7 @@ const ACOES = {
     }
   },
   copiarTrecho(p){ copiar(textoTrecho(p),'Dados do trecho copiados'); },
+  buscaAuto(p){ abrirBuscaDoPedido(p); },
   async compartilharMP(p){
     const c = await cardMP(p);
     const ok = await compartilharCanvas(c, `${p.id}-${p.escolhido}.png`, `Cotação ${p.id} — ${p.origem.iata} → ${p.destino.iata}`);
@@ -1433,7 +1512,7 @@ async function cardCliente(p){
   ctx.fillStyle=g; ctx.fillRect(0,0,W,300);
   const logo = await carregarImg(LOGO_DATA); if(logo) ctx.drawImage(logo,P-2,48,72,72);
   ctx.fillStyle='#fff';
-  ctx.font=F(800,44); ctx.fillText('Pronde cê vai?', P+86, 100);
+  ctx.font=F(800,44); ctx.fillText('Vai pra onde?', P+86, 100);
   ctx.font=F(500,26); ctx.globalAlpha=.85; ctx.fillText(`Cotação ${p.id}`, P+86, 138); ctx.globalAlpha=1;
   ctx.font=F(800,104); ctx.fillText(`${p.origem.iata} → ${p.destino.iata}`, P, 262);
   ctx.fillStyle='#FF7A2E'; ctx.fillRect(0,300,W,10);
@@ -1510,6 +1589,128 @@ $$('[data-cfg]').forEach(el=>el.addEventListener('input',()=>{
 }));
 
 /* =========================================================
+   BUSCA AUTOMÁTICA (pela extensão)
+   ========================================================= */
+let busca = null;   // {id, pedidoId, params, tarefas:{chave:{programa,trecho,status,msg,voos,url,diagnostico}}, trecho:'ida', soDiretos:false}
+let extensaoVersao = null;
+const versaoOk = () => { if(!extensaoVersao) return false; const [a,b] = extensaoVersao.split('.').map(Number); return a>1 || (a===1 && b>=2); };
+function atualizarAvisoExtensao(){ const a=$('#avisoSemExtensao'); if(a) a.classList.toggle('on', !versaoOk()); }
+function abrirBuscaDoPedido(p){
+  $('#bOrigem').value = p.origem.iata; $('#bDestino').value = p.destino.iata;
+  $('#bIda').value = p.dataIda || ''; $('#bVolta').value = p.dataVolta || '';
+  const x = p.passageiros||{}; $('#bAdt').value = x.adultos||1; $('#bChd').value = x.criancas||0; $('#bInf').value = x.bebes||0;
+  fecharDetalhe(); irPara('buscar');
+  iniciarBusca(p.id);
+}
+function iniciarBusca(pedidoId){
+  const params = {
+    origem: $('#bOrigem').value.trim().toUpperCase(), destino: $('#bDestino').value.trim().toUpperCase(),
+    ida: $('#bIda').value, volta: $('#bVolta').value,
+    adultos: Math.max(1, n($('#bAdt').value)), criancas: n($('#bChd').value), bebes: n($('#bInf').value)
+  };
+  if(!/^[A-Z]{3}$/.test(params.origem) || !/^[A-Z]{3}$/.test(params.destino)){ toast('Informe origem e destino com o código do aeroporto (ex.: CWB, SSA).'); return; }
+  if(!params.ida){ toast('Informe a data de ida.'); return; }
+  if(params.volta && params.volta < params.ida){ toast('A volta precisa ser depois da ida.'); return; }
+  const progs = [['smiles','#bpSmiles'],['latam','#bpLatam'],['azul','#bpAzul']].filter(([,sel])=>$(sel).checked).map(([k])=>k);
+  if(!progs.length){ toast('Escolha pelo menos um programa.'); return; }
+  if(!versaoOk()){ atualizarAvisoExtensao(); toast('A busca automática precisa da extensão atualizada neste Chrome.'); return; }
+  const trechos = [['ida', params.origem, params.destino, params.ida]];
+  if(params.volta) trechos.push(['volta', params.destino, params.origem, params.volta]);
+  const tarefas = {}, envio = [];
+  for(const [trecho, o, d, data] of trechos) for(const k of progs){
+    const url = urlBusca(cfg.urls[k], {origem:o, destino:d, data, adultos:params.adultos, criancas:params.criancas, bebes:params.bebes});
+    tarefas[k+'|'+trecho] = {programa:k, trecho, status:'buscando', msg:'Buscando…', voos:[], url};
+    envio.push({programa:k, trecho, url});
+  }
+  busca = {id: token(10), pedidoId: pedidoId || null, params, tarefas, trecho:'ida', soDiretos:false, inicio: Date.now()};
+  window.postMessage({tipo:'dcnp-buscar', buscaId: busca.id, tarefas: envio}, '*');
+  renderBusca();
+  const id = busca.id;
+  setTimeout(()=>{ if(!busca || busca.id!==id) return; let mudou=false; for(const t of Object.values(busca.tarefas)) if(t.status==='buscando'){ t.status='erro'; t.msg='Sem resposta da aba'; mudou=true; } if(mudou) renderBusca(); }, 100000);
+}
+function receberResultado(m){
+  if(!busca || m.buscaId!==busca.id) return;
+  const t = busca.tarefas[m.programa+'|'+m.trecho]; if(!t) return;
+  Object.assign(t, {status:m.status, msg:m.msg, voos:(m.voos||[]).filter(v=>v && n(v.milhas)>0), diagnostico:m.diagnostico});
+  if(t.status==='ok' && !t.voos.length){ t.status='vazio'; t.msg='Nenhum voo lido'; }
+  renderBusca();
+}
+const ROTULO_ST = {buscando:'Buscando…', ok:'', vazio:'Sem voos', login:'Precisa entrar na conta', bloqueado:'Site bloqueou', erro:'Não consegui ler'};
+function renderBusca(){
+  const st = $('#buscaStatus'), res = $('#buscaResultados');
+  const pInfo = $('#buscaPedidoInfo');
+  if(busca && busca.pedidoId && pedido(busca.pedidoId)){ pInfo.hidden=false; pInfo.innerHTML = `Buscando para o pedido <b>${esc(busca.pedidoId)}</b>. Use "Usar no pedido" para preencher o quadro do programa.`; }
+  else pInfo.hidden = true;
+  if(!busca){ st.innerHTML=''; res.innerHTML=''; return; }
+  const tarefas = Object.values(busca.tarefas);
+  st.innerHTML = tarefas.map(t=>{
+    const m = PROG[t.programa];
+    const txt = t.status==='ok' ? `${t.voos.length} voo${t.voos.length!==1?'s':''} · ${esc(t.msg||'')}` : esc(t.msg || ROTULO_ST[t.status]);
+    const acao = t.status==='buscando' ? '<span class="gira" aria-label="buscando"></span>'
+      : (t.status==='login'||t.status==='bloqueado'||t.status==='erro') ? `<button type="button" class="btn peq" data-veraba="${t.programa}|${t.trecho}">Ver aba</button>` : '';
+    return `<div class="bst"><span class="cor" style="background:${m.cor}"></span><div><b>${m.nome} · ${t.trecho==='ida'?'Ida':'Volta'}</b><small>${txt}</small></div>${acao}</div>`;
+  }).join('');
+  st.querySelectorAll('[data-veraba]').forEach(b=>b.addEventListener('click',()=>{ const [programa,trecho]=b.dataset.veraba.split('|'); window.postMessage({tipo:'dcnp-focar-aba', buscaId:busca.id, programa, trecho},'*'); }));
+
+  const temVolta = !!busca.params.volta;
+  const lista = tarefas.filter(t=>t.trecho===busca.trecho).flatMap(t=>t.voos.map(v=>({...v, programa:t.programa, url:t.url})))
+    .filter(v=>!busca.soDiretos || v.paradas===0)
+    .sort((a,b)=>n(a.milhas)-n(b.milhas));
+  const menor = lista.length ? n(lista[0].milhas) : null;
+  const terminou = tarefas.every(t=>t.status!=='buscando');
+  const temDiag = tarefas.some(t=>t.diagnostico);
+  const pedidoAlvo = busca.pedidoId && pedido(busca.pedidoId);
+  const [o,d] = busca.trecho==='ida' ? [busca.params.origem, busca.params.destino] : [busca.params.destino, busca.params.origem];
+  const data = busca.trecho==='ida' ? busca.params.ida : busca.params.volta;
+  res.innerHTML = `<div class="bus-res">
+    <div class="bus-res-topo">
+      <div><b>${o} → ${d}</b> <span class="nota">· ${fmtData(data)} · ${busca.params.adultos} adulto${busca.params.adultos>1?'s':''}${busca.params.criancas?` · ${busca.params.criancas} criança${busca.params.criancas>1?'s':''}`:''}${busca.params.bebes?` · ${busca.params.bebes} bebê${busca.params.bebes>1?'s':''}`:''}</span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        ${temVolta?`<div class="seg-p" role="tablist"><button type="button" class="${busca.trecho==='ida'?'on':''}" data-trecho="ida">Ida</button><button type="button" class="${busca.trecho==='volta'?'on':''}" data-trecho="volta">Volta</button></div>`:''}
+        <label class="nota" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="soDiretos" ${busca.soDiretos?'checked':''}> Só diretos</label>
+        ${temDiag?`<button type="button" class="btn peq" id="baixarDiag" title="Arquivo para ajustar a leitura de um site">Diagnóstico</button>`:''}
+      </div>
+    </div>
+    ${lista.length ? `<table class="tab-voos"><thead><tr><th>Programa</th><th>Voo</th><th>Horário</th><th>Paradas</th><th>Milhas</th><th>Taxas</th><th></th></tr></thead><tbody>
+      ${lista.map((v,i)=>`<tr class="${n(v.milhas)===menor?'melhor':''}">
+        <td class="c-prog"><span class="badge-p" style="background:${PROG[v.programa].cor}">${PROG[v.programa].nome}</span> ${v.cia?`<span class="nota">${esc(v.cia)}</span>`:''}</td>
+        <td>${esc(v.voo||'—')}</td>
+        <td>${esc(v.saida||'?')} → ${esc(v.chegada||'?')}</td>
+        <td>${v.paradas===0?'Direto':v.paradas!=null?v.paradas+' parada'+(v.paradas>1?'s':''):'—'}</td>
+        <td class="mil">${MIL(v.milhas)}${v.milhasClube?`<small>Clube: ${MIL(v.milhasClube)}</small>`:''}</td>
+        <td>${v.taxas!=null?BRL(v.taxas):'<span class="nota">no site</span>'}</td>
+        <td class="c-acao">${pedidoAlvo?`<button type="button" class="btn peq ${n(v.milhas)===menor?'pri':''}" data-usar="${i}">Usar no pedido</button>`:''} <a class="btn peq" href="${esc(v.url)}" target="_blank" rel="noopener">Abrir no site</a></td>
+      </tr>`).join('')}
+    </tbody></table>` : `<div class="bus-vazio">${terminou ? 'Nenhum voo encontrado para este trecho.' : 'Buscando nos programas… os voos aparecem aqui assim que cada site responder.'}</div>`}
+  </div>`;
+  res.querySelectorAll('[data-trecho]').forEach(b=>b.addEventListener('click',()=>{ busca.trecho=b.dataset.trecho; renderBusca(); }));
+  const sd = $('#soDiretos'); if(sd) sd.addEventListener('change',()=>{ busca.soDiretos=sd.checked; renderBusca(); });
+  const bd = $('#baixarDiag'); if(bd) bd.addEventListener('click', baixarDiagnostico);
+  res.querySelectorAll('[data-usar]').forEach(b=>b.addEventListener('click',()=>usarVoo(lista[Number(b.dataset.usar)])));
+}
+function usarVoo(v){
+  const p = pedido(busca.pedidoId); if(!p) return;
+  const T = busca.trecho==='volta' ? 'Volta' : 'Ida';
+  if(T==='Volta' && p.tipo!=='ida_volta'){ toast('Este pedido é só de ida.'); return; }
+  const b = p.busca[v.programa];
+  if(v.voo) b['voo'+T] = v.voo;
+  if(v.saida) b['saida'+T] = v.saida;
+  if(v.chegada) b['chegada'+T] = v.chegada;
+  b['milhas'+T] = String(v.milhas);
+  if(v.taxas!=null){ b['taxas'+T] = v.taxas; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
+  b.semDisp = false;
+  salvar(true);
+  toast(`${PROG[v.programa].nome} · ${T.toLowerCase()} preenchido no ${p.id}. Confira se as milhas são por pessoa ou do total.`);
+}
+function baixarDiagnostico(){
+  const dados = {versao:extensaoVersao, quando:new Date().toISOString(), params:busca.params,
+    tarefas:Object.values(busca.tarefas).map(t=>({programa:t.programa, trecho:t.trecho, status:t.status, msg:t.msg, url:t.url, voosLidos:t.voos.length, diagnostico:t.diagnostico}))};
+  baixarBlob(new Blob([JSON.stringify(dados,null,1)],{type:'application/json'}), `diagnostico-busca-${busca.params.origem}-${busca.params.destino}.json`);
+}
+$('#btnBuscar').addEventListener('click',()=>iniciarBusca(busca && busca.pedidoId && $('#bOrigem').value.toUpperCase()===busca.params.origem ? busca.pedidoId : null));
+$('#formBusca').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#btnBuscar').click(); } });
+
+/* =========================================================
    EXTENSÃO DE CAPTURA
    ========================================================= */
 let extensaoAtiva = document.documentElement.dataset.dcnpExtensao==='1';
@@ -1517,7 +1718,9 @@ const capturasAplicadas = new Set(); let avisouSemPedido = false;
 window.addEventListener('message', e=>{
   if(e.source!==window || !e.data) return;
   if(e.data.tipo==='dcnp-abas-abertas'){ if(!e.data.ok) toast('Não consegui abrir as abas pela extensão. Use os botões de cada site.'); return; }
-  if(e.data.tipo==='dcnp-extensao-ativa'){ extensaoAtiva = true; const a=$('#avisoExtensao'); if(a && abertoId) renderDetalhe(); return; }
+  if(e.data.tipo==='dcnp-extensao-ativa'){ extensaoAtiva = true; if(e.data.versao) extensaoVersao = e.data.versao; atualizarAvisoExtensao(); const a=$('#avisoExtensao'); if(a && abertoId) renderDetalhe(); return; }
+  if(e.data.tipo==='dcnp-resultado'){ receberResultado(e.data); return; }
+  if(e.data.tipo==='dcnp-busca-iniciada'){ if(!e.data.ok){ toast('A extensão não conseguiu abrir as abas de busca.'); if(busca){ for(const t of Object.values(busca.tarefas)) if(t.status==='buscando'){ t.status='erro'; t.msg='Não abriu a aba'; } renderBusca(); } } return; }
   if(e.data.tipo!=='dcnp-captura') return;
   extensaoAtiva = true;
   const c = e.data.captura;
@@ -1635,7 +1838,7 @@ if(FB.ativo){
   iniciarFirebase();
 }
 
-renderCfg(); renderQuadro(); renderCheckins();
+renderCfg(); renderQuadro(); renderCheckins(); atualizarAvisoExtensao();
 window.postMessage({tipo:'dcnp-painel-pronto'},'*');
 </script>
 </body>

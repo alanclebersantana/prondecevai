@@ -1,11 +1,11 @@
-// Service worker do painel Pronde cê vai?
+// Service worker do painel Vai pra onde?
 // Páginas e configuração: busca na internet primeiro (sempre a versão mais nova) e usa a cópia guardada se estiver sem internet.
 // Imagens, fontes e o SDK do Firebase: usa a cópia guardada e atualiza por trás.
 // O Firestore cuida dos próprios dados offline; este arquivo não mexe nas chamadas dele.
-const VERSAO = 'pronde-v2';
+const VERSAO = 'vaipraonde-v3';
 const ESSENCIAIS = [
   './painel.html', './painel.webmanifest', './firebase-config.js',
-  './logo-192.png', './logo-512.png', './logo-maskable-512.png', './favicon.png'
+  './logo-192.png', './logo-512.png', './logo-maskable-512.png', './favicon.png', './ceu-asa.jpg', './ceu-asa-celular.jpg'
 ];
 
 self.addEventListener('install', (e) => {

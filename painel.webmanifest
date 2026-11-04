@@ -1,7 +1,7 @@
 {
-  "name": "Pronde cê vai? · Painel",
-  "short_name": "Pronde Painel",
-  "description": "Painel de cotações de passagens da Pronde cê vai?",
+  "name": "Vai pra onde? · Painel",
+  "short_name": "Vai pra onde",
+  "description": "Painel de cotações de passagens da Vai pra onde?",
   "lang": "pt-BR",
   "start_url": "./painel.html",
   "scope": "./",
