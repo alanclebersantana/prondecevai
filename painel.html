@@ -1024,7 +1024,7 @@ function etapaBusca(p, cls, aberto){
     const b = p.busca[k];
     const st = (tr) => p.auto?.st?.[k+'|'+tr];
     const chip = (tr, rot) => { const x = st(tr); if(!x) return ''; const cls = {buscando:'b',ok:'ok',vazio:'v'}[x.status]||'e';
-      return `<span class="auto-chip ${cls}">${x.status==='buscando'?'<span class="gira"></span>':''}${rot?rot+': ':''}${esc(x.msg||'')}${(x.status==='login'||x.status==='bloqueado'||x.status==='erro') && autoAtual ? ` <button type="button" class="lnk" data-veraba="${k}|${tr}">ver aba</button>`:''}</span>`; };
+      return `<span class="auto-chip ${cls}">${x.status==='buscando'?'<span class="gira"></span>':''}${rot?rot+': ':''}${esc(x.msg||'')}${(x.status==='login'||x.status==='bloqueado'||x.status==='erro'||x.status==='vazio') && autoAtual ? ` <button type="button" class="lnk" data-veraba="${k}|${tr}">ver aba</button>`:''}${x.status!=='ok' && x.status!=='buscando' && diagAuto[p.id]?.[k+'|'+tr] ? ` <button type="button" class="lnk" data-diag="${k}|${tr}">diagnóstico</button>`:''}</span>`; };
     const opcoes = (T) => { const tr=T.toLowerCase(), lista = p.auto?.opcoes?.[k+'|'+tr] || []; if(!lista.length) return '';
       const atual = lista.findIndex(v=>v.voo===(b['voo'+T]||'') && v.saida===(b['saida'+T]||'') && n(v.milhas)===n(b['pp'+T]));
       return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(v.saida||'?')}→${esc(v.chegada||'?')} · ${esc(v.voo||'voo ?')} · ${v.paradas===0?'direto':v.paradas!=null?v.paradas+' parada'+(v.paradas>1?'s':''):''} · ${MIL(v.milhas)}/pessoa</option>`).join('')}</select>
@@ -1274,6 +1274,8 @@ function ligarDetalhe(p){
   corpo.querySelectorAll('[data-tirar]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); const [k,T]=b.dataset.tirar.split('|'); delete p.busca[k]['print'+T]; salvar(true); renderDetalhe(); }));
   corpo.querySelectorAll('[data-escolher]').forEach(b=>b.addEventListener('click',()=>escolherPrograma(p,b.dataset.escolher)));
   corpo.querySelectorAll('[data-opcao]').forEach(sel=>sel.addEventListener('change',()=>{ const [k,T]=sel.dataset.opcao.split('|'); const v=(p.auto?.opcoes?.[k+'|'+T.toLowerCase()]||[])[Number(sel.value)]; if(!v) return; aplicarVooAuto(p,k,T,v,true); salvar(true); renderDetalhe(); toast(`${PROG[k].nome} · ${T.toLowerCase()}: ${v.saida}→${v.chegada}, ${MIL(n(v.milhas)*pagantes(p))} milhas`); }));
+  corpo.querySelectorAll('.auto-chip [data-diag]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const d = diagAuto[p.id]?.[b.dataset.diag]; if(!d) return; const [k,tr]=b.dataset.diag.split('|');
+    baixarBlob(new Blob([JSON.stringify({versao:extensaoVersao, quando:new Date().toISOString(), pedido:p.id, programa:k, trecho:tr, ...d},null,1)],{type:'application/json'}), `diagnostico-${k}-${tr}-${p.origem.iata}-${p.destino.iata}.json`); }));
   corpo.querySelectorAll('.auto-chip [data-veraba]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const [programa,trecho]=b.dataset.veraba.split('|'); if(autoAtual) window.postMessage({tipo:'dcnp-focar-aba', buscaId:autoAtual.id, programa, trecho},'*'); }));
   corpo.querySelectorAll('[data-acao]').forEach(b=>b.addEventListener('click',()=>ACOES[b.dataset.acao]?.(p,b)));
   corpo.querySelectorAll('[data-tirarcartao]').forEach(b=>b.addEventListener('click',()=>{ p.checkin.cartoes.splice(Number(b.dataset.tirarcartao),1); salvar(true); renderDetalhe(); }));
@@ -1342,13 +1344,27 @@ function escolherPrograma(p,k){
 function textoTrecho(p){
   return `${p.origem.iata} → ${p.destino.iata} | Ida ${fmtData(p.dataIda)}${p.dataVolta?' | Volta '+fmtData(p.dataVolta):''} | ${textoPax(p)}${p.datasFlexiveis?' | datas flexíveis ±3 dias':''}`;
 }
+// Azul: tira os grupos de passageiros com zero (crianças 0, bebês 0) e renumera, como o próprio site faz
+function limparPaxAzul(url){
+  if(!/p\[\d+\]\.t=/.test(url)) return url;
+  const [base, qs=''] = url.split('?');
+  const partes = qs.split('&').filter(Boolean);
+  const grupos = {}, outros = [];
+  for(const x of partes){ const m = x.match(/^p\[(\d+)\]\.(\w+)=(.*)$/); if(m){ (grupos[m[1]] = grupos[m[1]] || {})[m[2]] = m[3]; } else outros.push(x); }
+  const validos = Object.keys(grupos).sort((a,b)=>a-b).map(i=>grupos[i]).filter(g=>Number(g.c)>0);
+  const pax = validos.flatMap((g,i)=>Object.entries(g).map(([k,v])=>`p[${i}].${k}=${v}`));
+  const iF = outros.findIndex(x=>/^f\.|^cc=/.test(x));
+  const final = iF<0 ? [...outros, ...pax] : [...outros.slice(0,iF), ...pax, ...outros.slice(iF)];
+  return base + '?' + final.join('&');
+}
 function urlBusca(t, o){
   const [y,m,d] = String(o.data||'').split('-');
-  const ms = y ? Date.UTC(+y, +m-1, +d, 3, 0, 0) : '';
-  return t.replaceAll('{origem}',o.origem).replaceAll('{destino}',o.destino)
+  const ms = y ? Date.UTC(+y, +m-1, +d, 15, 0, 0) : '';   // meio-dia no horário de Brasília
+  const u = t.replaceAll('{origem}',o.origem).replaceAll('{destino}',o.destino)
     .replaceAll('{data_ms}',ms).replaceAll('{data_us}', y?`${m}/${d}/${y}`:'').replaceAll('{data}',o.data||'')
     .replaceAll('{ida}',o.data||'').replaceAll('{volta}',o.volta||'')
     .replaceAll('{adultos}',o.adultos||0).replaceAll('{criancas}',o.criancas||0).replaceAll('{bebes}',o.bebes||0);
+  return /voeazul\.com\.br/i.test(u) ? limparPaxAzul(u) : u;
 }
 function montarUrl(t,p){
   const x=p.passageiros||{};
@@ -1379,7 +1395,7 @@ const ACOES = {
     }
   },
   copiarTrecho(p){ copiar(textoTrecho(p),'Dados do trecho copiados'); },
-  buscaAuto(p){ if(autoAtual && autoAtual.pedidoId===p.id){ toast('A busca deste pedido já está rodando.'); return; } for(const k in PROG) for(const T of ['Ida','Volta']) if(p.busca[k]['auto'+T]){ p.busca[k]['milhas'+T]=''; } p.auto=null; if(autoAtual){ toast('Há outra busca rodando; este pedido entra em seguida.'); salvar(true); renderDetalhe(); return; } iniciarAuto(p); },
+  buscaAuto(p){ if(autoAtual && autoAtual.pedidoId===p.id){ toast('A busca deste pedido já está rodando.'); return; } for(const k in PROG){ const b=p.busca[k]; for(const T of ['Ida','Volta']) if(b['auto'+T]){ b['milhas'+T]=''; } if(b.autoIda||b.autoVolta) b.semDisp=false; } p.auto=null; if(autoAtual){ toast('Há outra busca rodando; este pedido entra em seguida.'); salvar(true); renderDetalhe(); return; } iniciarAuto(p); },
   async compartilharMP(p){
     const c = await cardMP(p);
     const ok = await compartilharCanvas(c, `${p.id}-${p.escolhido}.png`, `Cotação ${p.id} — ${p.origem.iata} → ${p.destino.iata}`);
@@ -1739,11 +1755,14 @@ function baixarDiagnostico(){
   baixarBlob(new Blob([JSON.stringify(dados,null,1)],{type:'application/json'}), `diagnostico-busca-${busca.params.origem}-${busca.params.destino}.json`);
 }
 /* ---------- busca automática por pedido: roda sozinha e preenche os quadros ---------- */
+const diagAuto = {};   // diagnóstico da última busca automática de cada pedido (só nesta sessão)
 let autoAtual = null;   // {id, pedidoId, tarefas:{'prog|trecho':{programa,trecho,status,msg,voos,url}}, inicio}
 const AUTO_ETAPAS = ['nova','aguardando_mp'];
 const hojeISO = () => new Date().toISOString().slice(0,10);
+const AUTO_V = 2;   // versão da leitura: pedidos buscados por uma versão antiga são buscados de novo
+function autoTravada(p){ return p.auto && Object.values(p.auto.st||{}).some(x=>x.status==='buscando') && !(autoAtual && autoAtual.pedidoId===p.id) && (Date.now() - Date.parse(p.auto.em||0)) > 180000; }
 function precisaAuto(p){
-  return p && AUTO_ETAPAS.includes(p.status) && !p.auto && p.dataIda && p.dataIda >= hojeISO()
+  return p && AUTO_ETAPAS.includes(p.status) && (!p.auto || p.auto.v!==AUTO_V || autoTravada(p)) && p.dataIda && p.dataIda >= hojeISO()
     && /^[A-Z]{3}$/.test(p.origem?.iata||'') && /^[A-Z]{3}$/.test(p.destino?.iata||'');
 }
 function pagantes(p){ const x=p.passageiros||{}; return Math.max(1,(x.adultos||0)+(x.criancas||0)); }
@@ -1766,14 +1785,16 @@ function iniciarAuto(p, forcar){
     envio.push({programa:k, trecho, url});
   }
   autoAtual = {id: token(10), pedidoId:p.id, tarefas, inicio:Date.now()};
-  p.auto = {em:new Date().toISOString(), st:{}, opcoes:{}};
+  // a versão antiga marcava "Sem disponibilidade" por engano: desfaz o que foi marcado automaticamente
+  for(const k in PROG){ const b=p.busca[k]; if(b.semDisp && (b.autoIda||b.autoVolta) && !b.milhasIda) b.semDisp=false; }
+  p.auto = {v:AUTO_V, em:new Date().toISOString(), st:{}, opcoes:{}};
   for(const c in tarefas) p.auto.st[c] = {status:'buscando', msg:'Buscando…'};
   salvar(true); if(abertoId===p.id) renderDetalhe();
   window.postMessage({tipo:'dcnp-buscar', buscaId:autoAtual.id, tarefas:envio}, '*');
   const id = autoAtual.id;
   setTimeout(()=>{ if(!autoAtual || autoAtual.id!==id) return;
     for(const t of Object.values(autoAtual.tarefas)) if(t.status==='buscando') receberAuto({buscaId:id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'Sem resposta da aba', voos:[]});
-  }, 100000);
+  }, 130000);
 }
 function receberAuto(m){
   const a = autoAtual; if(!a || m.buscaId!==a.id) return;
@@ -1782,6 +1803,7 @@ function receberAuto(m){
   let status = m.status, msg = m.msg||'';
   if(status==='ok' && !voos.length){ status='erro'; msg='Não consegui ler os voos'; }
   Object.assign(t, {status, msg, voos});
+  if(m.diagnostico) (diagAuto[a.pedidoId] = diagAuto[a.pedidoId] || {})[chave] = {status, msg, url:m.url||t.url, ...m.diagnostico};
   const p = pedido(a.pedidoId);
   if(p){
     p.auto = p.auto || {st:{}, opcoes:{}};
@@ -1789,7 +1811,6 @@ function receberAuto(m){
     p.auto.opcoes[chave] = voos.slice(0,8).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:v.paradas??null, milhas:n(v.milhas), milhasClube:v.milhasClube||null, taxas:v.taxas??null}));
     const T = m.trecho==='volta' ? 'Volta' : 'Ida', b = p.busca[m.programa];
     if(status==='ok') aplicarVooAuto(p, m.programa, T, p.auto.opcoes[chave][0]);
-    else if(status==='vazio' && (!b['milhas'+T] || b['auto'+T])){ b.semDisp = true; b['auto'+T] = true; }
     salvar(true); if(abertoId===p.id) renderDetalhe();
   }
   if(Object.values(a.tarefas).every(x=>x.status!=='buscando')){
