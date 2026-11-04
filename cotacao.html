@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sua cotação · Vai pra onde?</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E3B7A">
+<script src="firebase-config.js"></script>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ceu:#0E3B7A; --ceu-2:#2F78C4; --ceu-claro:#E6EFF9; --horizonte:#FFD2A8;
+  --sol:#FF7A2E; --sol-esc:#E0611C; --sol-claro:#FFF1E7;
+  --tinta:#13233F; --tinta-2:#4A5B76; --nevoa:#EEF3F9; --linha:#D3DEEA;
+  --erro:#C2261E; --ok:#1E8E5A; --ok-claro:#E5F5EC;
+  --fonte:"Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--fonte);color:var(--tinta);background:var(--nevoa);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sol);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+
+/* topo com a foto do site */
+.ceu{color:#fff;padding:22px 20px 92px;
+  background:linear-gradient(90deg,rgba(9,32,70,.88) 0%,rgba(9,32,70,.55) 50%,rgba(9,32,70,.15) 100%),url("ceu-asa.jpg") right 35% / cover no-repeat,linear-gradient(180deg,var(--ceu),var(--ceu-2))}
+.marca{display:flex;align-items:center;gap:10px;max-width:640px;margin:0 auto}
+.marca img{width:40px;height:40px;border-radius:50%;box-shadow:0 2px 8px rgba(9,32,70,.35)}
+.marca b{font-weight:800;font-size:1.15rem;line-height:1}
+.marca small{display:block;font-weight:500;font-size:.78rem;opacity:.85;margin-top:3px}
+.rota-grande{max-width:640px;margin:34px auto 0;font-weight:800;font-size:clamp(2.6rem,11vw,4rem);letter-spacing:-.02em;line-height:1;text-shadow:0 2px 14px rgba(0,0,0,.3)}
+
+main{max-width:640px;margin:-64px auto 40px;padding:0 14px}
+.cartao{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);padding:24px 22px;margin-bottom:16px}
+.ola{font-weight:700;font-size:1.35rem;margin:0}
+.vai{font-weight:800;font-size:clamp(1.8rem,7vw,2.3rem);color:var(--sol-esc);margin:4px 0 2px;line-height:1.1}
+.bora{color:var(--tinta-2);margin:0}
+hr{border:0;border-top:1px solid var(--linha);margin:18px 0}
+.linha{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--linha);font-size:.98rem}
+.linha:last-child{border-bottom:0}
+.linha span{color:var(--tinta-2)}
+.linha b{text-align:right;font-weight:600}
+.sub{color:var(--tinta-2);font-size:.95rem;margin:0}
+.validade{display:flex;align-items:center;gap:10px;background:var(--ceu-claro);color:var(--ceu);border-radius:14px;padding:12px 14px;font-weight:600;font-size:.95rem;margin-top:16px}
+.validade.fim{background:#FDECEA;color:var(--erro)}
+
+h2{font-size:1.2rem;margin:0 0 4px}
+.nota{color:var(--tinta-2);font-size:.9rem;margin:4px 0 0}
+.opcoes{display:grid;gap:10px;margin-top:14px}
+.opcao{display:flex;align-items:center;gap:12px;border:2px solid var(--linha);border-radius:14px;padding:13px 14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+.opcao input{width:20px;height:20px;accent-color:var(--sol);flex:none;margin:0}
+.opcao .t{flex:1}
+.opcao .t b{display:block;font-weight:700}
+.opcao .t small{color:var(--tinta-2)}
+.opcao .v{font-weight:800;white-space:nowrap}
+.opcao.pix .v{color:var(--sol-esc);font-size:1.25rem}
+.opcao:has(input:checked){border-color:var(--sol);background:var(--sol-claro)}
+.grupo-cartao{font-weight:700;color:var(--ceu);margin:8px 0 -2px;font-size:.95rem}
+
+.pax{border:1px solid var(--linha);border-radius:14px;padding:14px;margin-top:12px}
+.pax .tit{font-weight:700;margin-bottom:6px}
+.campo{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.campo label{font-weight:600;font-size:.9rem}
+.campo input{border:1.5px solid var(--linha);border-radius:12px;padding:12px 13px;background:#fff;width:100%}
+.campo input:focus{border-color:var(--ceu-2);outline:0}
+.campo.erro input{border-color:var(--erro)}
+.campo .msg{color:var(--erro);font-size:.82rem;min-height:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){ .g2{grid-template-columns:1fr} }
+.aceite{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:.92rem}
+.aceite input{width:20px;height:20px;accent-color:var(--sol);margin-top:2px;flex:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:15px 20px;font-weight:700;font-size:1.05rem;cursor:pointer;text-decoration:none;width:100%}
+.btn.pri{background:var(--sol);color:#fff;box-shadow:0 10px 24px -10px rgba(224,97,28,.7)}
+.btn.pri:hover{background:var(--sol-esc)}
+.btn.pri:disabled{opacity:.6;cursor:wait}
+.btn.sec{background:#fff;color:var(--ceu);border:2px solid var(--linha);margin-top:10px}
+.btn.zap{background:#1FA855;color:#fff;margin-top:10px}
+.erro-geral{color:var(--erro);font-weight:600;margin-top:10px;font-size:.95rem}
+
+.pix-box{background:var(--sol-claro);border-radius:16px;padding:16px;margin-top:14px}
+.pix-box .valor{font-weight:800;font-size:2rem;color:var(--sol-esc);line-height:1.1}
+.copia{display:flex;gap:8px;margin-top:10px}
+.copia code{flex:1;min-width:0;background:#fff;border:1px dashed var(--linha);border-radius:10px;padding:10px;font-size:.78rem;word-break:break-all;max-height:84px;overflow:auto}
+.ok-topo{display:flex;align-items:center;gap:12px}
+.ok-topo .sel{width:44px;height:44px;border-radius:50%;background:var(--ok-claro);color:var(--ok);display:grid;place-items:center;font-size:1.5rem;flex:none}
+.carregando{text-align:center;color:var(--tinta-2);padding:40px 10px}
+.rodape{text-align:center;color:var(--tinta-2);font-size:.82rem;margin:20px 0 30px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:640px){ .ceu{background-image:linear-gradient(180deg,rgba(9,32,70,.55) 0%,rgba(9,32,70,.35) 50%,rgba(9,32,70,.65) 100%),url("ceu-asa-celular.jpg"),linear-gradient(180deg,var(--ceu),var(--ceu-2));background-position:center 30%;background-size:cover} }
+</style>
+</head>
+<body>
+<header class="ceu">
+  <div class="marca"><img src="logo-192.png" alt=""><div><b>Vai pra onde?</b><small id="numCot">Sua cotação</small></div></div>
+  <div class="rota-grande" id="rotaGrande">&nbsp;</div>
+</header>
+
+<main>
+  <div class="cartao carregando" id="carregando">Carregando sua cotação…</div>
+
+  <!-- não encontrada / vencida -->
+  <div class="cartao" id="semCotacao" hidden>
+    <h2 id="semTit">Não encontramos esta cotação</h2>
+    <p class="sub" id="semTxt">Confira se o link está completo, ou fale com a gente pelo WhatsApp.</p>
+    <a class="btn zap" id="semZap" href="#" target="_blank" rel="noopener" hidden>Falar no WhatsApp</a>
+  </div>
+
+  <!-- cotação -->
+  <section id="cotacao" hidden>
+    <div class="cartao">
+      <p class="ola" id="ola"></p>
+      <p class="vai" id="vai"></p>
+      <p class="bora">Essa é a sua cotação. Bora voar?</p>
+      <hr>
+      <p class="sub" id="trajeto"></p>
+      <div id="detalhes" style="margin-top:6px"></div>
+      <div class="validade" id="validade"></div>
+    </div>
+
+    <!-- escolha + passageiros -->
+    <form class="cartao" id="formAprovar" novalidate>
+      <h2>1. Como você quer pagar?</h2>
+      <p class="nota">Os valores já incluem as taxas de embarque.</p>
+      <div class="opcoes" id="opcoes"></div>
+
+      <hr>
+      <h2>2. Dados de quem vai viajar</h2>
+      <p class="nota">Escreva o nome completo exatamente como está no documento. A emissão usa estes dados.</p>
+      <div id="paxLista"></div>
+
+      <label class="aceite"><input type="checkbox" id="aceite"> <span>Confirmo que os dados estão corretos e entendo que, depois de emitida, a passagem segue as regras da companhia aérea.</span></label>
+      <div class="erro-geral" id="erroGeral" hidden></div>
+      <button type="submit" class="btn pri" id="btnAprovar" style="margin-top:16px">Aprovar cotação</button>
+    </form>
+  </section>
+
+  <!-- depois de aprovar -->
+  <section id="aprovada" hidden>
+    <div class="cartao">
+      <div class="ok-topo"><div class="sel">✓</div><div><h2 style="margin:0">Cotação aprovada!</h2><p class="sub" id="aprovadaSub"></p></div></div>
+      <div id="pagarPix" hidden>
+        <hr>
+        <h2>Pague com Pix</h2>
+        <p class="nota">Use o código abaixo no app do seu banco (Pix copia e cola) ou a chave Pix. Depois, envie o comprovante no WhatsApp.</p>
+        <div class="pix-box">
+          <div class="nota" style="margin:0">Valor</div>
+          <div class="valor" id="pixValor"></div>
+          <div id="pixCopiaBox">
+            <div class="nota" style="margin-top:12px">Pix copia e cola</div>
+            <div class="copia"><code id="pixCodigo"></code></div>
+            <button type="button" class="btn pri" id="copiarCodigo" style="margin-top:10px">Copiar código Pix</button>
+          </div>
+          <div class="nota" style="margin-top:12px">Chave Pix</div>
+          <div class="copia"><code id="pixChave"></code></div>
+          <button type="button" class="btn sec" id="copiarChave">Copiar chave Pix</button>
+          <p class="nota" id="pixRecebedor"></p>
+        </div>
+        <a class="btn zap" id="zapComprovante" href="#" target="_blank" rel="noopener">Enviar comprovante no WhatsApp</a>
+      </div>
+      <div id="pagarCartao" hidden>
+        <hr>
+        <h2>Pagamento no cartão</h2>
+        <p class="sub" id="cartaoTxt"></p>
+        <a class="btn zap" id="zapCartao" href="#" target="_blank" rel="noopener">Falar com a gente no WhatsApp</a>
+      </div>
+      <button type="button" class="btn sec" id="trocarForma">Trocar a forma de pagamento</button>
+    </div>
+  </section>
+
+  <p class="rodape">Vai pra onde? · passagens com milhas<br>Emitimos a sua passagem e ainda fazemos o seu check-in.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const BRL = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtData = iso => { if(!iso) return '—'; const [a,m,d] = iso.slice(0,10).split('-'); return `${d}/${m}/${a}`; };
+const fmtHora = d => new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('on'),2200); }
+const zap = (num, msg) => num ? `https://wa.me/${String(num).replace(/\D/g,'').replace(/^(?!55)/,'55')}?text=${encodeURIComponent(msg)}` : '#';
+async function copiar(t, msg){ try{ await navigator.clipboard.writeText(t); }catch(e){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); } toast(msg); }
+
+/* ---------- acesso aos dados: Firebase, ou modo teste (mesmo navegador do painel) ---------- */
+const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const FIREBASE_ATIVO = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey);
+const CHAVE_TESTE = 'dcnp_cotacoes_teste';
+const token = (new URLSearchParams(location.search).get('c') || '').replace(/[^A-Za-z0-9_-]/g,'').slice(0,64);
+let fs = null, db = null;
+async function conectar(){
+  if(db) return;
+  const [app, f] = await Promise.all([import(SDK+'firebase-app.js'), import(SDK+'firebase-firestore.js')]);
+  const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+  fs = f; db = f.getFirestore(a);
+}
+const lerTeste = () => { try{ return JSON.parse(localStorage.getItem(CHAVE_TESTE))||{}; }catch(e){ return {}; } };
+async function buscar(){
+  if(!FIREBASE_ATIVO) return lerTeste()[token] || null;
+  await conectar();
+  const s = await fs.getDoc(fs.doc(db,'cotacoes',token));
+  return s.exists() ? s.data() : null;
+}
+async function gravarResposta(resposta, lista){
+  if(!FIREBASE_ATIVO){
+    const t = lerTeste(); t[token].resposta = resposta; localStorage.setItem(CHAVE_TESTE, JSON.stringify(t));
+    const px = JSON.parse(localStorage.getItem(CHAVE_TESTE+'_pax')||'{}'); px[token] = {lista, enviadoEm:resposta.aprovadaEm}; localStorage.setItem(CHAVE_TESTE+'_pax', JSON.stringify(px));
+    return;
+  }
+  await conectar();
+  // primeiro os passageiros, depois a aprovação (assim o painel já encontra tudo junto)
+  await fs.setDoc(fs.doc(db,'cotacoes',token,'privado','passageiros'), {lista, enviadoEm:resposta.aprovadaEm});
+  await fs.updateDoc(fs.doc(db,'cotacoes',token), {resposta});
+}
+const comPrazo = (p, ms) => Promise.race([p, new Promise((_,r)=>setTimeout(()=>r(new Error('tempo esgotado')), ms))]);
+
+/* ---------- Pix copia e cola (BR Code) ---------- */
+const semAcento = s => String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9 ]/g,'').toUpperCase().trim();
+function cpfValido(c){ c=String(c).replace(/\D/g,''); if(c.length!==11||/^(\d)\1+$/.test(c)) return false; for(const t of [9,10]){ let s=0; for(let i=0;i<t;i++) s+=+c[i]*(t+1-i); const d=(s*10)%11%10; if(d!==+c[t]) return false; } return true; }
+function chavePix(k){
+  k = String(k||'').trim(); if(!k) return '';
+  if(/@/.test(k) || k.startsWith('+')) return k;
+  const d = k.replace(/\D/g,'');
+  if(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(k)) return k.toLowerCase();
+  if(d.length===14) return d;                         // CNPJ
+  if(d.length===11 && cpfValido(d)) return d;         // CPF
+  if(d.length===10 || d.length===11) return '+55'+d;  // celular
+  if(d.length===13 && d.startsWith('55')) return '+'+d;
+  return k;
+}
+function brcode(chave, valor, nome, txid){
+  const f = (id, v) => id + String(v.length).padStart(2,'0') + v;
+  const conta = f('00','br.gov.bcb.pix') + f('01', chave);
+  let p = f('00','01') + f('26',conta) + f('52','0000') + f('53','986') + f('54', Number(valor).toFixed(2)) + f('58','BR')
+        + f('59', (semAcento(nome)||'VAI PRA ONDE').slice(0,25)) + f('60','BRASIL') + f('62', f('05', (String(txid||'').replace(/[^A-Za-z0-9]/g,'')||'***').slice(0,25))) + '6304';
+  let crc = 0xFFFF;
+  for(const ch of p){ crc ^= ch.charCodeAt(0) << 8; for(let i=0;i<8;i++){ crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1); crc &= 0xFFFF; } }
+  return p + crc.toString(16).toUpperCase().padStart(4,'0');
+}
+
+/* ---------- tela ---------- */
+let C = null, trocando = false;
+function mostrarSem(tit, txt, msgZap){
+  $('#carregando').hidden = true; $('#cotacao').hidden = true; $('#aprovada').hidden = true;
+  $('#semCotacao').hidden = false; $('#semTit').textContent = tit; $('#semTxt').textContent = txt;
+  if(C && C.whatsapp && msgZap){ $('#semZap').hidden = false; $('#semZap').href = zap(C.whatsapp, msgZap); }
+}
+const vooTxt = v => v ? [fmtData(v.data), v.voo, (v.saida||v.chegada)?`${v.saida||'?'} → ${v.chegada||'?'}`:''].filter(Boolean).join(' · ') : '';
+function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
+function vencida(){ return Date.now() >= (C.validaAteMs || Date.parse(C.validaAte)); }
+
+function montar(){
+  document.title = `Cotação ${C.pedidoId} · Vai pra onde?`;
+  $('#numCot').textContent = `Cotação ${C.pedidoId}`;
+  $('#rotaGrande').textContent = `${C.origem.iata} → ${C.destino.iata}`;
+  $('#ola').textContent = C.nome ? `Olá, ${C.nome}, seja bem-vindo(a)!` : 'Olá, seja bem-vindo(a)!';
+  $('#vai').textContent = `Vai para ${C.destino.cidade}`;
+  $('#trajeto').innerHTML = `${esc(C.origem.cidade)} → ${esc(C.destino.cidade)}${C.cia?` · voo operado por <b>${esc(C.cia)}</b>`:''}`;
+  $('#detalhes').innerHTML = linha('Ida', vooTxt(C.ida)) + linha('Volta', vooTxt(C.volta)) + linha('Datas', C.datasAlt) + linha('Passageiros', C.pax) + linha('Bagagem', C.bagagem) + linha('Pet', C.pet);
+  // opções de pagamento
+  const r = C.resposta || {};
+  $('#opcoes').innerHTML = `
+    <label class="opcao pix"><input type="radio" name="forma" value="pix|0" ${r.forma!=='cartao'?'checked':''}><span class="t"><b>Pix</b><small>à vista, o menor valor</small></span><span class="v">${BRL(C.valorPix)}</span></label>
+    <div class="grupo-cartao">Cartão de crédito</div>
+    ${(C.parcelas||[]).map(x=>`<label class="opcao"><input type="radio" name="forma" value="cartao|${x.n}" ${r.forma==='cartao'&&r.parcelas===x.n?'checked':''}><span class="t"><b>${x.n}x de ${BRL(x.parcela)}</b><small>${x.n===1?'no cartão':'total '+BRL(x.total)}</small></span></label>`).join('')}`;
+  // passageiros
+  const q = C.paxQtd || {adultos:1}, tipos = [];
+  for(let i=0;i<(q.adultos||0);i++) tipos.push('Adulto');
+  for(let i=0;i<(q.criancas||0);i++) tipos.push('Criança');
+  for(let i=0;i<(q.bebes||0);i++) tipos.push('Bebê');
+  const conta = {};
+  $('#paxLista').innerHTML = tipos.map((t,i)=>{ conta[t]=(conta[t]||0)+1; return `<div class="pax" data-tipo="${t}">
+    <div class="tit">${i+1}. ${t}${tipos.filter(x=>x===t).length>1?' '+conta[t]:''}</div>
+    <div class="campo"><label for="n${i}">Nome completo</label><input id="n${i}" data-c="nome" autocomplete="${i===0?'name':'off'}" maxlength="120"><div class="msg"></div></div>
+    <div class="g2">
+      <div class="campo"><label for="d${i}">CPF ou passaporte</label><input id="d${i}" data-c="doc" inputmode="text" maxlength="20" placeholder="000.000.000-00"><div class="msg"></div></div>
+      <div class="campo"><label for="b${i}">Nascimento</label><input id="b${i}" data-c="nasc" type="date" max="${new Date().toISOString().slice(0,10)}"><div class="msg"></div></div>
+    </div></div>`; }).join('');
+  atualizarValidade(); setInterval(atualizarValidade, 30000);
+  if(vencida() && !C.resposta) return;   // atualizarValidade já mostrou o aviso de vencida
+  $('#carregando').hidden = true;
+  mostrarEtapa();
+}
+function atualizarValidade(){
+  const el = $('#validade'), ate = new Date(C.validaAte), min = Math.floor((ate - Date.now())/60000);
+  if(min < 0){
+    el.classList.add('fim'); el.textContent = 'Esta cotação venceu. As companhias aéreas mudam os preços: peça uma nova pelo WhatsApp.';
+    if(!C.resposta) mostrarSem('Esta cotação venceu', `Ela valia até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}. As companhias aéreas mudam os preços o tempo todo: fale com a gente para receber uma nova.`, `Olá! A minha cotação ${C.pedidoId} venceu. Pode me mandar uma nova?`);
+    return;
+  }
+  const h = Math.floor(min/60), m = min%60;
+  el.textContent = `⏱ Válida por mais ${h?h+'h ':''}${m}min (até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}). Depois disso a companhia aérea pode mudar o valor.`;
+}
+function mostrarEtapa(){
+  if(C.resposta && !trocando){ $('#cotacao').hidden = true; $('#aprovada').hidden = false; montarPagamento(); }
+  else { $('#aprovada').hidden = true; $('#cotacao').hidden = false; }
+  scrollTo(0,0);
+}
+function montarPagamento(){
+  const r = C.resposta, pix = r.forma === 'pix';
+  const par = (C.parcelas||[]).find(x=>x.n===r.parcelas);
+  $('#aprovadaSub').textContent = pix ? `Pagamento no Pix: ${BRL(C.valorPix)}` : `Pagamento no cartão: ${r.parcelas}x de ${BRL(par?.parcela)}${r.parcelas>1?' (total '+BRL(par?.total)+')':''}`;
+  $('#pagarPix').hidden = !pix; $('#pagarCartao').hidden = pix;
+  $('#trocarForma').hidden = vencida();
+  if(pix){
+    const ch = chavePix(C.pix?.chave);
+    $('#pixValor').textContent = BRL(C.valorPix);
+    $('#pixChave').textContent = C.pix?.chave || 'Peça a chave Pix no WhatsApp';
+    $('#copiarChave').hidden = !C.pix?.chave;
+    $('#pixRecebedor').textContent = C.pix?.recebedor ? `Recebedor: ${C.pix.recebedor}` : '';
+    $('#pixCopiaBox').hidden = !ch;
+    if(ch) $('#pixCodigo').textContent = brcode(ch, C.valorPix, C.pix?.recebedor, C.pedidoId);
+    $('#zapComprovante').href = zap(C.whatsapp, `Olá! Aprovei a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}) e paguei no Pix ${BRL(C.valorPix)}. Segue o comprovante.`);
+    $('#zapComprovante').hidden = !C.whatsapp;
+  } else {
+    $('#cartaoTxt').textContent = `Em instantes enviamos no seu WhatsApp o link seguro do Mercado Pago para pagar em ${r.parcelas}x de ${BRL(par?.parcela)}. É só abrir o link e colocar os dados do cartão.`;
+    $('#zapCartao').href = zap(C.whatsapp, `Olá! Aprovei a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}) e vou pagar no cartão em ${r.parcelas}x. Pode me mandar o link?`);
+    $('#zapCartao').hidden = !C.whatsapp;
+  }
+}
+
+/* ---------- validação e envio ---------- */
+function marcar(inp, msg){ const c = inp.closest('.campo'); c.classList.toggle('erro', !!msg); c.querySelector('.msg').textContent = msg||''; return !msg; }
+function validar(){
+  let ok = true, primeiro = null;
+  const lista = [...document.querySelectorAll('.pax')].map(el=>{
+    const g = k => el.querySelector(`[data-c="${k}"]`);
+    const nome = g('nome').value.trim().replace(/\s+/g,' '), doc = g('doc').value.trim(), nasc = g('nasc').value;
+    const dig = doc.replace(/\D/g,'');
+    const eNome = nome.split(' ').length < 2 ? 'Escreva nome e sobrenome, como no documento.' : '';
+    const eDoc = !doc ? 'Informe o CPF ou o passaporte.' : (/^\d[\d.\-\s]*$/.test(doc) ? (cpfValido(dig) ? '' : 'Este CPF não parece certo. Confira os números.') : (/^[A-Za-z0-9]{6,12}$/.test(doc) ? '' : 'Confira o número do passaporte.'));
+    const eNasc = !nasc ? 'Informe a data de nascimento.' : (nasc > new Date().toISOString().slice(0,10) ? 'A data não pode ser no futuro.' : '');
+    [[g('nome'),eNome],[g('doc'),eDoc],[g('nasc'),eNasc]].forEach(([i,m])=>{ if(!marcar(i,m)){ ok=false; primeiro = primeiro||i; } });
+    return {tipo: el.dataset.tipo, nome, doc: /^\d[\d.\-\s]*$/.test(doc) ? dig.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4') : doc.toUpperCase(), nasc};
+  });
+  return {ok, lista, primeiro};
+}
+document.addEventListener('input', e=>{ if(e.target.closest('.campo.erro')) marcar(e.target, ''); });
+$('#formAprovar').addEventListener('submit', async e=>{
+  e.preventDefault();
+  $('#erroGeral').hidden = true;
+  if(vencida()){ atualizarValidade(); return; }
+  const {ok, lista, primeiro} = validar();
+  if(!ok){ primeiro.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>primeiro.focus({preventScroll:true}),300); return; }
+  if(!$('#aceite').checked){ $('#erroGeral').hidden = false; $('#erroGeral').textContent = 'Marque a confirmação dos dados para aprovar.'; return; }
+  const [forma, parc] = (document.querySelector('input[name=forma]:checked')?.value || 'pix|0').split('|');
+  const resposta = {forma, parcelas: Number(parc)||0, aprovadaEm: new Date().toISOString()};
+  const btn = $('#btnAprovar'); btn.disabled = true; btn.textContent = 'Enviando…';
+  try{
+    await comPrazo(gravarResposta(resposta, lista), 20000);
+    C.resposta = resposta; trocando = false; mostrarEtapa();
+  }catch(err){
+    console.error(err);
+    $('#erroGeral').hidden = false;
+    $('#erroGeral').textContent = /permission/i.test(err.code||err.message||'') ? 'Esta cotação não pode mais ser aprovada (ela pode ter vencido). Fale com a gente pelo WhatsApp.' : 'Não consegui enviar. Confira a internet e tente de novo.';
+  } finally { btn.disabled = false; btn.textContent = 'Aprovar cotação'; }
+});
+$('#copiarCodigo').addEventListener('click', ()=>copiar($('#pixCodigo').textContent, 'Código Pix copiado'));
+$('#copiarChave').addEventListener('click', ()=>copiar(C.pix.chave, 'Chave Pix copiada'));
+$('#trocarForma').addEventListener('click', ()=>{ trocando = true; mostrarEtapa(); toast('Escolha a nova forma e confirme os dados'); });
+
+(async ()=>{
+  if(!token){ mostrarSem('Link incompleto', 'Este link de cotação está faltando um pedaço. Abra de novo pelo link que mandamos no WhatsApp.'); return; }
+  try{
+    C = await comPrazo(buscar(), 20000);
+    if(!C){ mostrarSem('Não encontramos esta cotação', 'Ela pode ter sido substituída por uma mais nova. Fale com a gente pelo WhatsApp.'); return; }
+    montar();
+  }catch(e){
+    console.error(e);
+    mostrarSem('Não consegui abrir a cotação', 'Confira a internet e recarregue a página.');
+  }
+})();
+</script>
+</body>
+</html>

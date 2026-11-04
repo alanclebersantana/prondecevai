@@ -808,7 +808,7 @@ const MAX_PARCELAS = 5;   // parcelamento máximo no cartão
 const listaParcelas = () => Array.from({length:MAX_PARCELAS}, (_,i)=>i+1);
 function valorCartao(base, parcelas){ const t = n(cfg.taxas[parcelas-1])/100; return Math.round(base/(1-t)*100)/100; }
 function validadeHoras(p){ return p.validadeHoras!=null && p.validadeHoras!=='' ? n(p.validadeHoras) : n(cfg.validadeHoras); }
-function vencida(p){ return p.status==='cotacao_enviada' && p.cotacao && new Date(p.cotacao.validaAte) < new Date(); }
+function vencida(p){ return p.status==='cotacao_enviada' && p.cotacao && !p.cotacao.resposta && new Date(p.cotacao.validaAte) < new Date(); }
 function baseSite(){
   // o painel está no mesmo endereço do site: usa o endereço de onde ele foi aberto (Netlify, GitHub…), a não ser que você tenha posto outro nas Configurações
   const daqui = /^https?:$/.test(location.protocol) ? location.origin + location.pathname.replace(/\/[^/]*$/,'') : '';
@@ -937,7 +937,8 @@ function cartaoPedido(p){
   if(p.pet) tags.push('<span class="tag sol">Pet</span>');
   if(p.malasPorPassageiro) tags.push(`<span class="tag">${p.malasPorPassageiro} mala${p.malasPorPassageiro>1?'s':''}</span>`);
   if(p.escolhido && ['nova','aguardando_mp'].includes(p.status)) tags.push(`<span class="tag sol">${PROG[p.escolhido].nome}</span>`);
-  if(vencida(p)) tags.push('<span class="tag erro">Vencida</span>');
+  if(p.cotacao?.resposta && !p.pagamento?.pagoEm) tags.push(`<span class="tag ok">Aprovada · ${p.cotacao.resposta.forma==='pix'?'Pix':'Cartão '+p.cotacao.resposta.parcelas+'x'}</span>`);
+  if(vencida(p) && !p.cotacao?.resposta) tags.push('<span class="tag erro">Vencida</span>');
   if(p.status==='cotacao_enviada' && !vencida(p) && p.cotacao) tags.push(`<span class="tag ok">até ${fmtHora(p.cotacao.validaAte)}</span>`);
   if(valorCliente(p) && ['cotacao_enviada','pago','emitido','checkin_feito','concluido'].includes(p.status)) tags.push(`<span class="tag ok">${BRL(valorCliente(p))}</span>`);
   return `<button type="button" class="ped" onclick="abrirDetalhe('${p.id}')">
@@ -1143,6 +1144,7 @@ function etapaPagamento(p, cls, aberto){
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">4</span><h3>Pagamento</h3><span class="res">${pg.pagoEm?(pg.forma==='pix'?'Pix':'Cartão '+pg.parcelas+'x')+' · '+BRL(pg.valorCobrado):''}</span></summary>
     <div class="conteudo">
+      ${p.cotacao?.resposta ? `<div class="aviso on" style="background:var(--ok-claro);color:var(--ok);margin-top:0">✓ O cliente aprovou pela página em ${fmtDataHora(p.cotacao.resposta.aprovadaEm)} e escolheu <b>${p.cotacao.resposta.forma==='pix'?'Pix':'cartão em '+p.cotacao.resposta.parcelas+'x'}</b>.${p.cotacao.resposta.forma==='cartao'?' Crie o link no Mercado Pago e envie para ele.':' Aguarde o comprovante no WhatsApp.'}</div>` : (p.cotacao ? `<p class="nota" style="margin-top:0">Quando o cliente aprovar pela página, a forma de pagamento e os dados dos passageiros aparecem aqui sozinhos.</p>` : '')}
       ${base ? `
       <div class="g2">
         <div class="campo"><label>Forma</label>
@@ -1185,7 +1187,7 @@ function etapaPassageiros(p, cls, aberto){
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">5</span><h3>Dados dos passageiros</h3><span class="res">${ok?'Completos':''}</span></summary>
     <div class="conteudo">
-      <p class="nota" style="margin-top:0">O cliente vai preencher por um link, que entra na próxima etapa com o Firebase. Por enquanto dá para digitar aqui.</p>
+      <p class="nota" style="margin-top:0">${p.cotacao?.resposta ? 'Preenchido pelo cliente na página da cotação. Confira com os documentos.' : 'O cliente preenche estes dados ao aprovar a cotação pela página. Você também pode digitar aqui.'}</p>
       ${linhas}
       <div class="acoes">
         <button type="button" class="btn pri" data-acao="copiarEmissao" ${ok&&p.escolhido?'':'disabled'}>Copiar resumo para a Milhas Plus emitir</button>
@@ -1416,7 +1418,10 @@ const ACOES = {
     p.cotacao = { token: p.cotacao?.token || token(), enviadaEm: agora.toISOString(), validaAte: new Date(agora.getTime()+validadeHoras(p)*3600e3).toISOString(),
                   valorPix: valorCliente(p), percLucro: perc(p), lucro: lucro(p) };
     if(p.percLucro==null) p.percLucro = cfg.percPadrao;
+    if(p.cotacao.resposta) delete p.cotacao.resposta;   // nova cotação: a aprovação anterior não vale mais
     salvar(true);
+    try{ await publicarCotacao(p); }
+    catch(e){ console.error(e); toast('Não consegui publicar a página da cotação. Confira as regras do Firestore.'); }
     const c = await cardCliente(p);
     await baixarCanvas(c, `cotacao-${p.id}.png`);
     const pn = String(p.cliente.nome||'').trim().split(/\s+/)[0] || ''; const nome = pn.charAt(0).toUpperCase() + pn.slice(1).toLowerCase();
@@ -1642,6 +1647,83 @@ async function cardCliente(p){
   y+=150;
   return recortar(c, y);
 }
+
+
+/* =========================================================
+   PÁGINA DA COTAÇÃO DO CLIENTE (cotacao.html)
+   Só vai para lá o necessário para o cliente ver e aprovar: nada de telefone nem dados do pedido.
+   ========================================================= */
+const CHAVE_COTACOES = 'dcnp_cotacoes_teste';
+function dadosCotacaoPublica(p){
+  const b = p.busca[p.escolhido] || {}, vc = valorCliente(p), x = p.passageiros||{};
+  const pn = String(p.cliente?.nome||'').trim().split(/\s+/)[0] || '';
+  return {
+    v:1, pedidoId:p.id, criadaEm:p.cotacao.enviadaEm, validaAte:p.cotacao.validaAte, validaAteMs:new Date(p.cotacao.validaAte).getTime(),
+    nome: pn ? pn.charAt(0).toUpperCase()+pn.slice(1).toLowerCase() : '',
+    origem:{iata:p.origem.iata, cidade:p.origem.cidade}, destino:{iata:p.destino.iata, cidade:p.destino.cidade},
+    tipo:p.tipo, cia:b.cia||'',
+    ida:{data:p.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||''},
+    volta: p.tipo==='ida_volta' ? {data:p.dataVolta||'', voo:b.vooVolta||'', saida:b.saidaVolta||'', chegada:b.chegadaVolta||''} : null,
+    datasAlt: b.datasAlt||'',
+    pax: textoPax(p), paxQtd:{adultos:x.adultos||0, criancas:x.criancas||0, bebes:x.bebes||0},
+    bagagem: textoMalas(p), pet: p.pet ? textoPet(p) : '',
+    valorPix: vc,
+    parcelas: listaParcelas().map(i=>{ const t=valorCartao(vc,i); return {n:i, parcela:Math.round(t/i*100)/100, total:t}; }),
+    pix:{chave:cfg.chavePix||'', recebedor:cfg.recebedor||''},
+    whatsapp: soDigitos(cfg.meuWhatsapp||''),
+    resposta:null
+  };
+}
+async function publicarCotacao(p){
+  const d = dadosCotacaoPublica(p), tk = p.cotacao.token;
+  if(FB.ativo && FB.db){ await FB.fs.setDoc(FB.fs.doc(FB.db,'cotacoes',tk), d); return; }
+  const t = lerJSON(CHAVE_COTACOES, {}); t[tk] = d; localStorage.setItem(CHAVE_COTACOES, JSON.stringify(t));
+}
+function lerJSON(chave, padrao){ try{ return JSON.parse(localStorage.getItem(chave)) ?? padrao; }catch(e){ return padrao; } }
+async function lerCotacaoPublica(tk){
+  if(FB.ativo && FB.db){
+    const snap = await FB.fs.getDoc(FB.fs.doc(FB.db,'cotacoes',tk));
+    if(!snap.exists()) return null;
+    const d = snap.data();
+    if(d.resposta){
+      const ps = await FB.fs.getDoc(FB.fs.doc(FB.db,'cotacoes',tk,'privado','passageiros')).catch(()=>null);
+      d.passageirosEnviados = ps && ps.exists() ? (ps.data().lista||[]) : null;
+    }
+    return d;
+  }
+  const d = lerJSON(CHAVE_COTACOES, {})[tk]; if(!d) return null;
+  d.passageirosEnviados = (lerJSON(CHAVE_COTACOES+'_pax', {})[tk]||{}).lista || null;
+  return d;
+}
+// procura aprovações das cotações em aberto (a cada 30 s e quando o painel volta a ficar visível)
+let checandoRespostas = false;
+async function checarRespostas(){
+  if(checandoRespostas) return;
+  if(FB.ativo && !(FB.db && FB.user)) return;
+  checandoRespostas = true;
+  try{
+    const abertas = pedidos.filter(p=>p.cotacao?.token && ['cotacao_enviada','aguardando_mp','nova'].includes(p.status) && !p.pagamento?.pagoEm);
+    for(const p of abertas){
+      let d; try{ d = await lerCotacaoPublica(p.cotacao.token); }catch(e){ continue; }
+      if(!d || !d.resposta) continue;
+      if(p.cotacao.resposta && p.cotacao.resposta.aprovadaEm === d.resposta.aprovadaEm) continue;   // nada mudou
+      const trocou = !!p.cotacao.resposta;
+      p.cotacao.resposta = {forma:d.resposta.forma, parcelas:d.resposta.parcelas||0, aprovadaEm:d.resposta.aprovadaEm};
+      p.pagamento = p.pagamento || {};
+      if(!p.pagamento.pagoEm){ p.pagamento.forma = d.resposta.forma; if(d.resposta.forma==='cartao') p.pagamento.parcelas = d.resposta.parcelas; }
+      if(Array.isArray(d.passageirosEnviados) && d.passageirosEnviados.length){
+        p.passageirosDados = d.passageirosEnviados.map(x=>({nome:String(x.nome||''), doc:String(x.doc||''), nasc:String(x.nasc||'')}));
+      }
+      salvar(true); renderQuadro(); if(abertoId===p.id) renderDetalhe();
+      const forma = d.resposta.forma==='pix' ? 'Pix' : `cartão em ${d.resposta.parcelas}x`;
+      bip(); toast(trocou ? `${p.cliente.nome.split(' ')[0]} trocou a forma de pagamento do ${p.id}: ${forma}` : `${p.cliente.nome.split(' ')[0]} aprovou a cotação ${p.id} · ${forma}`);
+      try{ if('Notification' in window && Notification.permission==='granted') new Notification('Cotação aprovada', {body:`${p.id} · ${p.origem.iata} → ${p.destino.iata} · ${forma}`}); }catch(e){}
+    }
+  } finally { checandoRespostas = false; }
+}
+setInterval(checarRespostas, 30000);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') checarRespostas(); });
+setTimeout(checarRespostas, 4000);
 
 /* =========================================================
    CHECK-INS
