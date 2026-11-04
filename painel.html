@@ -549,7 +549,7 @@ const CFG_PADRAO = {
   percPadrao:15, lucroMinimo:50, validadeHoras:2,
   chavePix:'', recebedor:'',
   taxas:[4.98,9.9,11.28,12.64,13.97,15.27,16.55,17.81,19.04,20.25,21.44,22.61],
-  meuWhatsapp:'', whatsappMP:'',
+  meuWhatsapp:'35920001121', whatsappMP:'',
   checkin:{LATAM:48, GOL:48, Azul:72},
   urls:{
     smiles:'https://www.smiles.com.br/mfe/emissao-passagem/?adults={adultos}&children={criancas}&infants={bebes}&cabin=ALL&searchType=g3&segments=1&tripType=2&originAirport={origem}&destinationAirport={destino}&departureDate={data_ms}&isFlexibleDateChecked=false',
@@ -1670,7 +1670,7 @@ function dadosCotacaoPublica(p){
     valorPix: vc,
     parcelas: listaParcelas().map(i=>{ const t=valorCartao(vc,i); return {n:i, parcela:Math.round(t/i*100)/100, total:t}; }),
     pix:{chave:cfg.chavePix||'', recebedor:cfg.recebedor||''},
-    whatsapp: soDigitos(cfg.meuWhatsapp||''),
+    whatsapp: soDigitos(cfg.meuWhatsapp||'35920001121'),
     resposta:null
   };
 }
