@@ -33,9 +33,61 @@ button,input,select{font:inherit;color:inherit}
 .marca img{width:40px;height:40px;border-radius:50%;box-shadow:0 2px 8px rgba(9,32,70,.35)}
 .marca b{font-weight:800;font-size:1.15rem;line-height:1}
 .marca small{display:block;font-weight:500;font-size:.78rem;opacity:.85;margin-top:3px}
-.rota-grande{max-width:640px;margin:34px auto 0;font-weight:800;font-size:clamp(2.6rem,11vw,4rem);letter-spacing:-.02em;line-height:1;text-shadow:0 2px 14px rgba(0,0,0,.3)}
+.rota-grande{max-width:640px;margin:2px auto 0;font-weight:800;font-size:clamp(2.2rem,9vw,3.2rem);letter-spacing:-.02em;line-height:1.05;text-shadow:0 2px 14px rgba(0,0,0,.3)}
+.ola-topo{max-width:640px;margin:26px auto 0;font-size:1rem;font-weight:500;opacity:.92;text-shadow:0 1px 8px rgba(0,0,0,.35)}
 
-main{max-width:640px;margin:-64px auto 40px;padding:0 14px}
+/* bilhete (cotação em estilo cartão de embarque) */
+.bilhete{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);overflow:hidden;margin-bottom:12px}
+.bl-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ceu);color:#fff;padding:10px 18px;font-size:.78rem;font-weight:800;letter-spacing:.07em}
+.bl-hd .cia{background:#F26B1D;border-radius:7px;padding:3px 9px;letter-spacing:0;font-size:.8rem}
+.bl-rt{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 18px 2px}
+.bl-rt b{display:block;font-size:2.3rem;letter-spacing:-.02em;line-height:1}
+.bl-rt small{display:block;font-size:.85rem;color:var(--tinta-2);font-weight:600;margin-top:2px}
+.bl-rt .r{text-align:right}
+.bl-rt .av{color:var(--ceu-2);font-size:1.3rem;padding:0 8px}
+.trecho{padding:12px 18px 4px}
+.trecho .lb{font-size:.74rem;font-weight:800;letter-spacing:.08em;color:var(--sol-esc);margin-bottom:2px;text-transform:uppercase}
+.trecho .lb .tc{background:var(--nevoa);color:var(--ceu);border-radius:6px;padding:1px 6px;margin-left:4px;letter-spacing:0}
+.lin{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.lin .h{font-size:1.55rem;font-weight:800;line-height:1.05}
+.lin .h small{display:block;font-size:.78rem;color:var(--tinta-2);font-weight:600}
+.lin .h.r{text-align:right}
+.via{position:relative;height:40px}
+.via::before{content:"";position:absolute;left:0;right:0;top:19px;border-top:2px dashed #B9C6D8}
+.via i{position:absolute;top:13px;width:14px;height:14px;border-radius:50%;background:#fff;border:3.5px solid var(--sol);transform:translateX(-50%)}
+.via .em{position:absolute;top:-1px;left:0;right:0;text-align:center;font-size:.72rem;font-weight:800;color:var(--sol-esc)}
+.via .em.direto{color:var(--ok)}
+.via .u{position:absolute;bottom:-4px;left:0;right:0;text-align:center;font-size:.74rem;color:var(--tinta-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.corte{position:relative;height:18px;margin-top:12px}
+.corte::before{content:"";position:absolute;left:18px;right:18px;top:8px;border-top:2px dashed #DCE4EE}
+.corte::after,.corte i{content:"";position:absolute;top:0;width:18px;height:18px;border-radius:50%;background:var(--nevoa)}
+.corte::after{right:-9px}.corte i{left:-9px}
+.bl-ft{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 18px 16px;font-size:.78rem;color:var(--tinta-2)}
+.bl-ft b{display:block;font-size:.95rem;color:var(--tinta);font-weight:700}
+.bl-ex{padding:0 18px 14px;font-size:.88rem;color:var(--tinta-2)}
+.bl-ex div{padding:3px 0}.bl-ex b{color:var(--tinta)}
+.validade{justify-content:space-between;background:var(--sol-claro);color:var(--sol-esc);font-weight:800;margin-top:0;margin-bottom:16px}
+.validade span{background:var(--sol);color:#fff;border-radius:9px;padding:4px 10px;white-space:nowrap}
+.validade small{display:block;font-weight:500;color:var(--tinta-2);font-size:.8rem;margin-top:2px}
+.economia{margin:0 0 12px}
+@media (max-width:420px){ .bl-rt b{font-size:2rem} .lin .h{font-size:1.35rem} .bl-ft{grid-template-columns:1fr 1fr} }
+
+/* carregando com aviãozinho */
+.voando{display:flex;flex-direction:column;align-items:center;gap:6px;padding:34px 10px;color:var(--tinta-2);font-weight:600}
+.voando svg{width:220px;height:64px;overflow:visible}
+.voando .av{offset-path:path("M10 52 Q110 -6 210 52");animation:ida-volta 2.4s ease-in-out infinite alternate;offset-rotate:auto}
+@keyframes ida-volta{from{offset-distance:4%}to{offset-distance:96%}}
+/* botões que reagem */
+.btn{transition:transform .15s,box-shadow .15s,background .15s}
+.btn.pri:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+.btn.enviando{background:#FFB98F}
+.btn.enviando::before{content:"";width:18px;height:18px;border:3px solid #fff;border-top-color:transparent;border-radius:50%;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.toast{display:flex;gap:9px;align-items:center;background:#fff;color:var(--tinta);border-left:4px solid var(--ok);box-shadow:0 10px 24px -8px rgba(19,35,63,.35)}
+.toast::before{content:"✓";width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--ok-claro);color:var(--ok);font-size:.8rem;flex:none}
+
+main{max-width:640px;margin:-64px auto 40px;padding:0 14px;position:relative;z-index:1}
 .cartao{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);padding:24px 22px;margin-bottom:16px}
 .ola{font-weight:700;font-size:1.35rem;margin:0}
 .vai{font-weight:800;font-size:clamp(1.8rem,7vw,2.3rem);color:var(--sol-esc);margin:4px 0 2px;line-height:1.1}
@@ -46,11 +98,14 @@ hr{border:0;border-top:1px solid var(--linha);margin:18px 0}
 .linha span{color:var(--tinta-2)}
 .linha b{text-align:right;font-weight:600}
 .sub{color:var(--tinta-2);font-size:.95rem;margin:0}
-.validade{display:flex;align-items:center;gap:10px;background:var(--ceu-claro);color:var(--ceu);border-radius:14px;padding:12px 14px;font-weight:600;font-size:.95rem;margin-top:16px}
+.validade{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;font-size:.95rem}
 .validade.fim{background:#FDECEA;color:var(--erro)}
 
 h2{font-size:1.2rem;margin:0 0 4px}
 .nota{color:var(--tinta-2);font-size:.9rem;margin:4px 0 0}
+.economia{margin-top:14px;background:var(--ok-claro);border-radius:14px;padding:12px 14px}
+.economia small{display:block;color:var(--tinta-2);font-size:.88rem}
+.economia b{color:var(--ok);font-size:1.08rem}
 .opcoes{display:grid;gap:10px;margin-top:14px}
 .opcao{display:flex;align-items:center;gap:12px;border:2px solid var(--linha);border-radius:14px;padding:13px 14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
 .opcao input{width:20px;height:20px;accent-color:var(--sol);flex:none;margin:0}
@@ -85,6 +140,14 @@ h2{font-size:1.2rem;margin:0 0 4px}
 
 .pix-box{background:var(--sol-claro);border-radius:16px;padding:16px;margin-top:14px}
 .pix-box .valor{font-weight:800;font-size:2rem;color:var(--sol-esc);line-height:1.1}
+.pix-qr{display:flex;justify-content:center;margin:14px 0 4px}
+.pix-qr svg,.pix-qr img{width:220px;height:220px;background:#fff;border-radius:12px;padding:8px}
+.pax-salvos{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.pax-salvos .nota{width:100%;margin:0}
+.pax-salvos button{border:1.5px solid var(--ceu-2);background:var(--ceu-claro);color:var(--ceu);border-radius:999px;padding:5px 12px;font-weight:600;font-size:.88rem;cursor:pointer}
+.pax-salvos button.on{background:var(--ceu);color:#fff}
+.doc-salvo{font-size:.82rem;color:var(--tinta-2);margin-top:4px}
+.doc-salvo button{background:none;border:0;color:var(--ceu-2);text-decoration:underline;cursor:pointer;padding:0;font:inherit}
 .copia{display:flex;gap:8px;margin-top:10px}
 .copia code{flex:1;min-width:0;background:#fff;border:1px dashed var(--linha);border-radius:10px;padding:10px;font-size:.78rem;word-break:break-all;max-height:84px;overflow:auto}
 .ok-topo{display:flex;align-items:center;gap:12px}
@@ -99,11 +162,12 @@ h2{font-size:1.2rem;margin:0 0 4px}
 <body>
 <header class="ceu">
   <div class="marca"><img src="logo-192.png" alt=""><div><b>Vai pra onde?</b><small id="numCot">Sua cotação</small></div></div>
+  <p class="ola-topo" id="olaTopo">&nbsp;</p>
   <div class="rota-grande" id="rotaGrande">&nbsp;</div>
 </header>
 
 <main>
-  <div class="cartao carregando" id="carregando">Carregando sua cotação…</div>
+  <div class="cartao carregando" id="carregando"><div class="voando"><svg viewBox="0 0 220 64" aria-hidden="true"><path d="M10 52 Q110 -6 210 52" fill="none" stroke="#B9C6D8" stroke-width="2.5" stroke-dasharray="3 8" stroke-linecap="round"/><circle cx="10" cy="52" r="5" fill="#FF7A2E"/><circle cx="210" cy="52" r="5" fill="#0E3B7A"/><g class="av"><path transform="rotate(90) translate(-12 -12)" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="#0E3B7A"/></g></svg>Buscando a sua cotação…</div></div>
 
   <!-- não encontrada / vencida -->
   <div class="cartao" id="semCotacao" hidden>
@@ -114,15 +178,16 @@ h2{font-size:1.2rem;margin:0 0 4px}
 
   <!-- cotação -->
   <section id="cotacao" hidden>
-    <div class="cartao">
-      <p class="ola" id="ola"></p>
-      <p class="vai" id="vai"></p>
-      <p class="bora">Essa é a sua cotação. Bora voar?</p>
-      <hr>
-      <p class="sub" id="trajeto"></p>
-      <div id="detalhes" style="margin-top:6px"></div>
-      <div class="validade" id="validade"></div>
+    <div class="bilhete">
+      <div class="bl-hd"><span id="blCod">COTAÇÃO</span><span class="cia" id="blCia" hidden></span></div>
+      <div class="bl-rt"><div><b id="blO"></b><small id="blOc"></small></div><div class="av" aria-hidden="true">✈</div><div class="r"><b id="blD"></b><small id="blDc"></small></div></div>
+      <div id="blTrechos"></div>
+      <div class="corte" aria-hidden="true"><i></i></div>
+      <div class="bl-ft" id="blFt"></div>
+      <div class="bl-ex" id="blEx"></div>
     </div>
+    <div class="economia" id="economia" hidden></div>
+    <div class="validade" id="validade"></div>
 
     <!-- escolha + passageiros -->
     <form class="cartao" id="formAprovar" novalidate>
@@ -153,6 +218,8 @@ h2{font-size:1.2rem;margin:0 0 4px}
           <div class="nota" style="margin:0">Valor</div>
           <div class="valor" id="pixValor"></div>
           <div id="pixCopiaBox">
+            <div class="pix-qr" id="pixQR" aria-label="QR Code do Pix"></div>
+            <div class="nota" style="text-align:center;margin-top:0">Abra o app do banco, escolha Pix → Ler QR Code. No celular, use o código abaixo.</div>
             <div class="nota" style="margin-top:12px">Pix copia e cola</div>
             <div class="copia"><code id="pixCodigo"></code></div>
             <button type="button" class="btn pri" id="copiarCodigo" style="margin-top:10px">Copiar código Pix</button>
@@ -178,6 +245,12 @@ h2{font-size:1.2rem;margin:0 0 4px}
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script>
+// Copyright (c) 2009 Kazuhiko Arase
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+</script>
 <script>
 const $ = s => document.querySelector(s);
 const BRL = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -219,6 +292,15 @@ async function gravarResposta(resposta, lista){
   await fs.updateDoc(fs.doc(db,'cotacoes',token), {resposta});
 }
 const comPrazo = (p, ms) => Promise.race([p, new Promise((_,r)=>setTimeout(()=>r(new Error('tempo esgotado')), ms))]);
+// marca que o cliente abriu (uma vez por sessão do navegador) — o painel mostra "abriu às 14:32"
+async function registrarVista(){
+  try{
+    const ch = 'vista-'+token; if(sessionStorage.getItem(ch)) return; sessionStorage.setItem(ch,'1');
+    const agora = new Date().toISOString(), dados = {vistaEm: C.vistaEm || agora, ultimaVistaEm: agora, vistas: (Number(C.vistas)||0) + 1};
+    if(!FIREBASE_ATIVO){ const t = lerTeste(); if(t[token]){ Object.assign(t[token], dados); localStorage.setItem(CHAVE_TESTE, JSON.stringify(t)); } return; }
+    await conectar(); await fs.updateDoc(fs.doc(db,'cotacoes',token), dados);
+  }catch(e){ console.warn('Não registrei a visualização', e); }
+}
 
 /* ---------- Pix copia e cola (BR Code) ---------- */
 const semAcento = s => String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9 ]/g,'').toUpperCase().trim();
@@ -252,17 +334,53 @@ function mostrarSem(tit, txt, msgZap){
   if(C && C.whatsapp && msgZap){ $('#semZap').hidden = false; $('#semZap').href = zap(C.whatsapp, msgZap); }
 }
 const vooTxt = v => v ? [fmtData(v.data), v.voo, (v.saida||v.chegada)?`${v.saida||'?'} → ${v.chegada||'?'}`:''].filter(Boolean).join(' · ') : '';
+/* ---------- bilhete ---------- */
+const DIAS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+function dataBilhete(iso){ if(!iso) return ''; const [a,m,d] = iso.slice(0,10).split('-').map(Number); return `${DIAS[new Date(a,m-1,d).getDay()]} ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`; }
+function fmtMin(mi){ if(mi==null || !isFinite(mi)) return ''; const h = Math.floor(mi/60), m = Math.round(mi%60); return h ? `${h}h${m?String(m).padStart(2,'0'):''}` : `${m}min`; }
+// quantas paradas e onde (novo: nParadas/escalas; cotações antigas: lê o texto "1 parada: GRU (1h15 de espera)")
+function paradasDe(v){
+  if(!v) return {q:null, es:[]};
+  if(v.nParadas!=null) return {q:Number(v.nParadas)||0, es:(v.escalas||[]).map(e=>({local:e.local||'', t:fmtMin(e.min)}))};
+  const t = String(v.paradas||''); if(!t) return {q:null, es:[]};
+  if(/direto/i.test(t)) return {q:0, es:[]};
+  const q = Number((t.match(/^(\d+)/)||[])[1])||0, det = t.split(':').slice(1).join(':');
+  const es = det ? det.split(',').map(x=>{ const m = x.trim().match(/^([^()]*?)\s*(?:\(([^)]*?) de espera\))?$/); return {local:(m?.[1]||'').replace('?','').trim(), t:m?.[2]||''}; }) : [];
+  return {q, es};
+}
+function trechoHTML(rot, v, de, para, ciaDif){
+  if(!v) return '';
+  const {q, es} = paradasDe(v);
+  const pontos = q ? Array.from({length:q},(_,i)=>`<i style="left:${(100*(i+1)/(q+1)).toFixed(1)}%"></i>`).join('') : '';
+  const em = q==null ? '' : q===0 ? '<span class="em direto">voo direto</span>' : `<span class="em">${q} parada${q>1?'s':''}</span>`;
+  const u = es.filter(e=>e.local||e.t).map(e=>[e.local,e.t].filter(Boolean).join(' · ')).join(' + ');
+  return `<div class="trecho"><div class="lb">${rot}${v.data?' · '+dataBilhete(v.data):''}${v.voo?' · '+esc(v.voo):''}${ciaDif&&v.cia?`<span class="tc">${esc(v.cia)}</span>`:''}</div>
+    <div class="lin"><div class="h">${esc(v.saida||'--:--')}<small>${esc(de)}</small></div><div class="via">${em}${pontos}${u?`<span class="u">${esc(u)}</span>`:''}</div><div class="h r">${esc(v.chegada||'--:--')}<small>${esc(para)}</small></div></div></div>`;
+}
+function montarBilhete(){
+  const ciaI = C.ida?.cia||'', ciaV = C.volta?.cia||'', dif = !!(ciaI && ciaV && ciaI!==ciaV);
+  $('#blCod').textContent = `COTAÇÃO ${C.pedidoId} · ${C.volta ? 'IDA E VOLTA' : 'SÓ IDA'}`;
+  const cia = dif ? '' : (ciaI || C.cia || ''); $('#blCia').hidden = !cia; $('#blCia').textContent = cia;
+  $('#blO').textContent = C.origem.iata; $('#blOc').textContent = C.origem.cidade;
+  $('#blD').textContent = C.destino.iata; $('#blDc').textContent = C.destino.cidade;
+  $('#blTrechos').innerHTML = trechoHTML('Ida', C.ida, C.origem.iata, C.destino.iata, dif) + trechoHTML('Volta', C.volta, C.destino.iata, C.origem.iata, dif);
+  $('#blFt').innerHTML = `<div>Passageiros<b>${esc(C.pax||'—')}</b></div><div>Bagagem<b>${esc(C.bagagem||'Mala de mão')}</b></div><div>Viagem<b>${C.volta?'Ida e volta':'Só ida'}</b></div>`;
+  $('#blEx').innerHTML = [C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:''].join('');
+  $('#blEx').hidden = !C.datasAlt && !C.pet;
+}
 function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
 function vencida(){ return Date.now() >= (C.validaAteMs || Date.parse(C.validaAte)); }
 
 function montar(){
   document.title = `Cotação ${C.pedidoId} · Vai pra onde?`;
   $('#numCot').textContent = `Cotação ${C.pedidoId}`;
-  $('#rotaGrande').textContent = `${C.origem.iata} → ${C.destino.iata}`;
-  $('#ola').textContent = C.nome ? `Olá, ${C.nome}, seja bem-vindo(a)!` : 'Olá, seja bem-vindo(a)!';
-  $('#vai').textContent = `Vai para ${C.destino.cidade}`;
-  $('#trajeto').innerHTML = `${esc(C.origem.cidade)} → ${esc(C.destino.cidade)}${C.cia?` · voo operado por <b>${esc(C.cia)}</b>`:''}`;
-  $('#detalhes').innerHTML = linha('Ida', vooTxt(C.ida)) + linha(C.volta?'Paradas na ida':'Paradas', C.ida?.paradas) + linha('Volta', vooTxt(C.volta)) + linha('Paradas na volta', C.volta?.paradas) + linha('Datas', C.datasAlt) + linha('Passageiros', C.pax) + linha('Bagagem', C.bagagem) + linha('Pet', C.pet);
+  $('#olaTopo').textContent = (C.nome ? `Olá, ${C.nome}! ` : 'Olá! ') + 'Sua viagem para';
+  $('#rotaGrande').textContent = C.destino.cidade;
+  montarBilhete();
+  if(C.comparacao && C.comparacao.economia > 0){
+    const e = $('#economia'); e.hidden = false;
+    e.innerHTML = `<small>Na ${esc(C.comparacao.cia)}, comprando em dinheiro: ${BRL(C.comparacao.preco)}</small><b>Com a gente você economiza ${BRL(C.comparacao.economia)} (${C.comparacao.pct}%)</b>`;
+  }
   // opções de pagamento
   const r = C.resposta || {};
   $('#opcoes').innerHTML = `
@@ -277,15 +395,27 @@ function montar(){
   const conta = {};
   $('#paxLista').innerHTML = tipos.map((t,i)=>{ conta[t]=(conta[t]||0)+1; return `<div class="pax" data-tipo="${t}">
     <div class="tit">${i+1}. ${t}${tipos.filter(x=>x===t).length>1?' '+conta[t]:''}</div>
+    ${(C.paxSalvos||[]).length ? `<div class="pax-salvos"><span class="nota">Já viajou com a gente? Toque para preencher:</span>${C.paxSalvos.map((x,j)=>`<button type="button" data-salvo="${j}">${esc(x.nome.split(' ')[0])} ${esc(x.nome.split(' ').slice(-1)[0]!==x.nome.split(' ')[0]?x.nome.split(' ').slice(-1)[0]:'')}</button>`).join('')}</div>` : ''}
     <div class="campo"><label for="n${i}">Nome completo</label><input id="n${i}" data-c="nome" autocomplete="${i===0?'name':'off'}" maxlength="120"><div class="msg"></div></div>
     <div class="g2">
-      <div class="campo"><label for="d${i}">CPF ou passaporte</label><input id="d${i}" data-c="doc" inputmode="text" maxlength="20" placeholder="000.000.000-00"><div class="msg"></div></div>
+      <div class="campo"><label for="d${i}">CPF ou passaporte</label><input id="d${i}" data-c="doc" inputmode="text" maxlength="20" placeholder="000.000.000-00"><div class="doc-salvo" hidden></div><div class="msg"></div></div>
       <div class="campo"><label for="b${i}">Nascimento</label><input id="b${i}" data-c="nasc" type="date" max="${new Date().toISOString().slice(0,10)}"><div class="msg"></div></div>
     </div></div>`; }).join('');
+  document.querySelectorAll('.pax').forEach(el=>el.querySelectorAll('[data-salvo]').forEach(b=>b.addEventListener('click',()=>usarSalvo(el, Number(b.dataset.salvo)))));
   atualizarValidade(); setInterval(atualizarValidade, 30000);
   if(vencida() && !C.resposta) return;   // atualizarValidade já mostrou o aviso de vencida
   $('#carregando').hidden = true;
   mostrarEtapa();
+}
+function usarSalvo(el, j){
+  const x = C.paxSalvos[j]; if(!x) return;
+  const g = k => el.querySelector(`[data-c="${k}"]`), doc = g('doc'), info = el.querySelector('.doc-salvo');
+  g('nome').value = x.nome; g('nasc').value = x.nasc || '';
+  doc.value = x.docMasc; doc.readOnly = true; doc.dataset.salvo = j;
+  info.hidden = false; info.innerHTML = `Documento já cadastrado. <button type="button">Usar outro documento</button>`;
+  info.querySelector('button').onclick = ()=>{ doc.readOnly = false; doc.value = ''; delete doc.dataset.salvo; info.hidden = true; el.querySelectorAll('[data-salvo]').forEach(b=>b.classList.remove('on')); doc.focus(); };
+  el.querySelectorAll('[data-salvo]').forEach(b=>b.classList.toggle('on', Number(b.dataset.salvo)===j));
+  ['nome','doc','nasc'].forEach(k=>marcar(g(k),''));
 }
 function atualizarValidade(){
   const el = $('#validade'), ate = new Date(C.validaAte), min = Math.floor((ate - Date.now())/60000);
@@ -295,7 +425,7 @@ function atualizarValidade(){
     return;
   }
   const h = Math.floor(min/60), m = min%60;
-  el.textContent = `⏱ Válida por mais ${h?h+'h ':''}${m}min (até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}). Depois disso a companhia aérea pode mudar o valor.`;
+  el.innerHTML = `<div>⏱ Esse valor vale por mais<small>até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}. Depois a companhia aérea pode mudar o valor.</small></div><span>${h?h+'h ':''}${m}min</span>`;
 }
 function mostrarEtapa(){
   if(C.resposta && !trocando){ $('#cotacao').hidden = true; $('#aprovada').hidden = false; montarPagamento(); }
@@ -315,7 +445,11 @@ function montarPagamento(){
     $('#copiarChave').hidden = !C.pix?.chave;
     $('#pixRecebedor').textContent = C.pix?.recebedor ? `Recebedor: ${C.pix.recebedor}` : '';
     $('#pixCopiaBox').hidden = !ch;
-    if(ch) $('#pixCodigo').textContent = brcode(ch, C.valorPix, C.pix?.recebedor, C.pedidoId);
+    if(ch){
+      const cod = brcode(ch, C.valorPix, C.pix?.recebedor, C.pedidoId);
+      $('#pixCodigo').textContent = cod;
+      try{ const q = qrcode(0, 'M'); q.addData(cod); q.make(); $('#pixQR').innerHTML = q.createSvgTag({cellSize:5, margin:2, scalable:true}); }catch(e){ console.warn('QR', e); $('#pixQR').hidden = true; }
+    }
     $('#zapComprovante').href = zap(C.whatsapp, `Olá! Aprovei a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}) e paguei no Pix ${BRL(C.valorPix)}. Segue o comprovante.`);
     $('#zapComprovante').hidden = !C.whatsapp;
   } else {
@@ -331,12 +465,13 @@ function validar(){
   let ok = true, primeiro = null;
   const lista = [...document.querySelectorAll('.pax')].map(el=>{
     const g = k => el.querySelector(`[data-c="${k}"]`);
-    const nome = g('nome').value.trim().replace(/\s+/g,' '), doc = g('doc').value.trim(), nasc = g('nasc').value;
+    const nome = g('nome').value.trim().replace(/\s+/g,' '), doc = g('doc').value.trim(), nasc = g('nasc').value, salvo = g('doc').dataset.salvo;
     const dig = doc.replace(/\D/g,'');
     const eNome = nome.split(' ').length < 2 ? 'Escreva nome e sobrenome, como no documento.' : '';
-    const eDoc = !doc ? 'Informe o CPF ou o passaporte.' : (/^\d[\d.\-\s]*$/.test(doc) ? (cpfValido(dig) ? '' : 'Este CPF não parece certo. Confira os números.') : (/^[A-Za-z0-9]{6,12}$/.test(doc) ? '' : 'Confira o número do passaporte.'));
+    const eDoc = salvo!=null ? '' : !doc ? 'Informe o CPF ou o passaporte.' : (/^\d[\d.\-\s]*$/.test(doc) ? (cpfValido(dig) ? '' : 'Este CPF não parece certo. Confira os números.') : (/^[A-Za-z0-9]{6,12}$/.test(doc) ? '' : 'Confira o número do passaporte.'));
     const eNasc = !nasc ? 'Informe a data de nascimento.' : (nasc > new Date().toISOString().slice(0,10) ? 'A data não pode ser no futuro.' : '');
     [[g('nome'),eNome],[g('doc'),eDoc],[g('nasc'),eNasc]].forEach(([i,m])=>{ if(!marcar(i,m)){ ok=false; primeiro = primeiro||i; } });
+    if(salvo!=null) return {tipo: el.dataset.tipo, nome, doc:'', salvo:Number(salvo), nasc};
     return {tipo: el.dataset.tipo, nome, doc: /^\d[\d.\-\s]*$/.test(doc) ? dig.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4') : doc.toUpperCase(), nasc};
   });
   return {ok, lista, primeiro};
@@ -351,7 +486,7 @@ $('#formAprovar').addEventListener('submit', async e=>{
   if(!$('#aceite').checked){ $('#erroGeral').hidden = false; $('#erroGeral').textContent = 'Marque a confirmação dos dados para aprovar.'; return; }
   const [forma, parc] = (document.querySelector('input[name=forma]:checked')?.value || 'pix|0').split('|');
   const resposta = {forma, parcelas: Number(parc)||0, aprovadaEm: new Date().toISOString()};
-  const btn = $('#btnAprovar'); btn.disabled = true; btn.textContent = 'Enviando…';
+  const btn = $('#btnAprovar'); btn.disabled = true; btn.textContent = 'Enviando…'; btn.classList.add('enviando');
   try{
     await comPrazo(gravarResposta(resposta, lista), 20000);
     C.resposta = resposta; trocando = false; mostrarEtapa();
@@ -359,7 +494,7 @@ $('#formAprovar').addEventListener('submit', async e=>{
     console.error(err);
     $('#erroGeral').hidden = false;
     $('#erroGeral').textContent = /permission/i.test(err.code||err.message||'') ? 'Esta cotação não pode mais ser aprovada (ela pode ter vencido). Fale com a gente pelo WhatsApp.' : 'Não consegui enviar. Confira a internet e tente de novo.';
-  } finally { btn.disabled = false; btn.textContent = 'Aprovar cotação'; }
+  } finally { btn.disabled = false; btn.textContent = 'Aprovar cotação'; btn.classList.remove('enviando'); }
 });
 $('#copiarCodigo').addEventListener('click', ()=>copiar($('#pixCodigo').textContent, 'Código Pix copiado'));
 $('#copiarChave').addEventListener('click', ()=>copiar(C.pix.chave, 'Chave Pix copiada'));
@@ -371,6 +506,7 @@ $('#trocarForma').addEventListener('click', ()=>{ trocando = true; mostrarEtapa(
     C = await comPrazo(buscar(), 20000);
     if(!C){ mostrarSem('Não encontramos esta cotação', 'Ela pode ter sido substituída por uma mais nova. Fale com a gente pelo WhatsApp.'); return; }
     montar();
+    registrarVista();
   }catch(e){
     console.error(e);
     mostrarSem('Não consegui abrir a cotação', 'Confira a internet e recarregue a página.');

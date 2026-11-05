@@ -183,12 +183,7 @@ a{color:inherit}
 .destinos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .dest{display:flex;flex-direction:column;background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--linha);box-shadow:0 10px 30px -18px rgba(14,59,122,.35)}
 .dest img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--nevoa)}
-.dest .txt{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
-.dest h3{margin:0;font-size:1.25rem;letter-spacing:-.01em}
 .dest .uf{display:block;font-weight:600;color:var(--tinta-2);font-size:.88rem;margin-top:2px}
-.dest p{margin:6px 0 14px;color:var(--tinta-2);font-size:.97rem;flex:1}
-.dest button{align-self:flex-start;height:42px;padding:0 16px;border-radius:11px;border:1.5px solid var(--sol);background:#fff;color:var(--sol-esc);font-weight:700;cursor:pointer}
-.dest button:hover{background:var(--sol);color:#fff}
 .dest-nota{margin:14px 0 0;color:var(--tinta-2);font-size:.85rem}
 
 /* ---------- como funciona ---------- */
@@ -234,6 +229,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
 .pedido pre{background:var(--nevoa);padding:10px;border-radius:8px;font-size:.78rem;overflow:auto;margin:10px 0 0;white-space:pre-wrap}
 .dlg-acoes{display:flex;gap:10px}
 
+
 /* ---------- responsivo ---------- */
 @media (max-width:900px){
   .g-datas{grid-template-columns:1fr 1fr}
@@ -270,9 +266,242 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
   .cta{width:100%;justify-content:center}
   .pax-painel{left:0;right:auto;width:100%}
   .secao{padding-top:72px}
-  .destinos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 -20px;padding:0 20px 8px;scrollbar-width:none}
-  .destinos::-webkit-scrollbar{display:none}
-  .dest{flex:0 0 78%;scroll-snap-align:center}
+  .destinos::-webkit-scrollbar,.regioes::-webkit-scrollbar,.avals::-webkit-scrollbar{display:none}
+}
+/* =================== VISUAL NOVO (opções 8, 9, 10, 11, 14, 15, 16, 19) =================== */
+/* barra fixa ao rolar */
+.barra{position:fixed;inset:0 0 auto 0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid var(--linha);box-shadow:0 8px 24px -12px rgba(14,59,122,.35);transform:translateY(-110%);transition:transform .25s}
+.barra.on{transform:none}
+.barra .wrap{display:flex;align-items:center;gap:18px;height:64px}
+.marca-b{display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;color:var(--tinta);flex:none}
+.marca-b img{width:32px;height:32px;border-radius:50%}
+.nav-b{display:flex;gap:18px;font-weight:600;font-size:.95rem}
+.nav-b a{text-decoration:none;color:var(--tinta-2);padding:6px 0}
+.nav-b a:hover,.nav-b a.on{color:var(--ceu);box-shadow:inset 0 -2px 0 var(--sol)}
+.zap-b{margin-left:auto;text-decoration:none;font-weight:700;font-size:.92rem;color:#128C4A;border:1.5px solid var(--linha);border-radius:999px;padding:7px 14px}
+.cta-b{display:inline-flex;align-items:center;gap:7px;text-decoration:none;background:var(--sol);color:#fff;font-weight:700;font-size:.95rem;border-radius:999px;padding:9px 16px;box-shadow:0 6px 14px -6px rgba(224,97,28,.8);transition:transform .15s,box-shadow .15s,background .15s}
+.cta-b:hover{background:var(--sol-esc);transform:translateY(-1px)}
+.cta-b svg{width:18px;height:18px}
+.menu-b{display:none;width:42px;height:42px;border-radius:12px;border:1.5px solid var(--linha);background:#fff;flex-direction:column;justify-content:center;align-items:center;gap:4px;cursor:pointer;padding:0}
+.menu-b span{display:block;width:18px;height:2px;border-radius:2px;background:var(--tinta)}
+
+/* formulário em 2 passos */
+.passos-form{display:flex;align-items:center;gap:10px;margin:0 0 18px;font-weight:700;font-size:.9rem;color:var(--tinta-2)}
+.pf{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.pf b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--nevoa);color:var(--tinta-2);font-size:.85rem;transition:background .2s}
+.pf.on{color:var(--tinta)}.pf.on b{background:var(--sol);color:#fff}
+.pf.ok b{background:var(--ok);color:#fff}
+.pf-ln{flex:1;max-width:160px;height:3px;border-radius:2px;background:var(--linha);transition:background .3s}
+.pf-ln.ok{background:var(--ok)}
+.etapa[hidden]{display:none}
+.etapa{animation:entrar .3s ease}
+@keyframes entrar{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.data-cx{position:relative}
+.data-txt{display:flex;align-items:center;gap:8px;height:52px;border:1.5px solid var(--linha);border-radius:var(--r-campo);padding:0 14px;background:#fff;font-size:1rem;font-weight:600;white-space:nowrap;overflow:hidden}
+.data-txt::before{content:"";width:18px;height:18px;flex:none;background:var(--ceu-2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E") center/contain no-repeat}
+.data-txt.vazio{color:#8A99AF;font-weight:400}
+.data-in{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
+.data-in::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;opacity:0}
+.data-cx:hover .data-txt{border-color:#B7C7DA}
+.data-cx:focus-within .data-txt{border-color:var(--ceu-2);box-shadow:0 0 0 4px rgba(47,120,196,.16)}
+.campo.erro .data-txt{border-color:var(--erro)}
+.data-in:disabled{cursor:not-allowed}
+.extras{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end}
+.chips-op{display:flex;gap:10px;flex-wrap:wrap}
+.chip-chk{position:relative;cursor:pointer;user-select:none}
+.chip-chk input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chip-chk span{display:flex;flex-direction:column;padding:9px 16px;border-radius:14px;background:var(--nevoa);border:1.5px solid transparent;font-weight:700;font-size:.93rem;color:var(--tinta-2);transition:background .15s,border-color .15s,color .15s;line-height:1.25}
+.chip-chk small{font-weight:500;font-size:.78rem;opacity:.85}
+.chip-chk input:checked + span{background:#E6EFF9;border-color:var(--ceu-2);color:var(--ceu)}
+.chip-chk input:checked + span::before{content:"✓ ";position:absolute;margin-left:-12px}
+.chip-chk input:checked + span{padding-left:26px}
+.chip-chk input:focus-visible + span{outline:3px solid var(--sol);outline-offset:2px}
+.resumo{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--nevoa);border-radius:16px;padding:12px 16px;margin:4px 0 4px}
+.resumo b{font-size:1.1rem;display:block}.resumo small{color:var(--tinta-2);font-size:.88rem}
+.resumo button{border:0;background:none;color:var(--ceu);font-weight:800;cursor:pointer;padding:8px;font-size:.95rem}
+.contato{margin-top:16px;padding-top:0;border-top:0}
+
+/* botões que reagem */
+.cta{transition:background .15s,transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(224,97,28,.85)}
+.cta:active{transform:scale(.97)}
+.cta.enviando{background:#FFB98F;cursor:wait;transform:none}
+.cta.enviando svg{display:none}
+.cta.enviando::before{content:"";width:18px;height:18px;border:3px solid #fff;border-top-color:transparent;border-radius:50%;animation:gira .8s linear infinite}
+.cta.pronto{background:var(--ok);box-shadow:none}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+/* sucesso */
+.sucesso{padding:8px 4px 4px;max-width:520px;margin:0 auto}
+.decola{position:relative;height:120px;max-width:440px;margin:0 auto -6px;overflow:hidden}
+.decola .rastro{position:absolute;inset:0;width:100%;height:100%;stroke-dashoffset:0}
+.decola .aviao{position:absolute;width:38px;height:38px;left:0;bottom:0;color:var(--ceu);transform:rotate(60deg);opacity:0}
+.decola .rastro{clip-path:inset(0 100% 0 0)}
+.sucesso.aberto .decola .rastro{animation:rastro 1.6s cubic-bezier(.45,.05,.4,1) forwards}
+.sucesso.aberto .decola .aviao{animation:voo 1.6s cubic-bezier(.45,.05,.4,1) forwards}
+@keyframes voo{0%{left:0;bottom:0;opacity:1;transform:rotate(70deg)}100%{left:calc(100% - 40px);bottom:calc(100% - 34px);opacity:1;transform:rotate(60deg)}}
+@keyframes rastro{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.selo-ok{width:66px;height:66px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;margin:0 auto 10px;border:5px solid #fff;box-shadow:0 8px 18px -6px rgba(30,142,90,.6)}
+.selo-ok svg{width:30px;height:30px}
+.sucesso.aberto .selo-ok{animation:pula .5s cubic-bezier(.3,1.6,.5,1) .3s both}
+@keyframes pula{from{transform:scale(0)}to{transform:scale(1)}}
+.sucesso h2{font-size:1.7rem;margin:0 0 4px}
+.sucesso p{margin:0 auto 16px}
+.canhoto{display:flex;border:1.5px dashed #B9C6D8;border-radius:16px;overflow:hidden;text-align:left;margin:0 0 16px}
+.canhoto .ca{flex:1;padding:12px 16px;min-width:0}.canhoto small{display:block;font-size:.72rem;font-weight:800;letter-spacing:.07em;color:var(--tinta-2)}
+.canhoto .ca b{display:block;font-size:1.2rem}.canhoto .ca span{font-size:.88rem;color:var(--tinta-2)}
+.canhoto .cb{background:var(--ceu);color:#fff;padding:12px 16px;display:flex;flex-direction:column;justify-content:center}
+.canhoto .cb small{color:rgba(255,255,255,.8)}.canhoto .cb b{font-size:1.15rem;letter-spacing:.04em}
+.protocolo{all:unset}
+.agora{list-style:none;margin:0 0 18px;padding:0;text-align:left;font-size:.95rem}
+.agora li{display:flex;gap:10px;align-items:center;padding:5px 0;color:var(--tinta-2)}
+.agora i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.8rem;background:var(--nevoa);flex:none}
+.agora .feito{color:var(--tinta)}.agora .feito i{background:var(--ok);color:#fff}
+.agora .atual{color:var(--tinta);font-weight:700}.agora .atual i{background:var(--sol);color:#fff}
+.cta-larga{width:100%;justify-content:center;text-decoration:none}
+.cta-larga svg{width:20px;height:20px}
+.btn-zap-sec{display:flex;justify-content:center;align-items:center;height:50px;margin-top:10px;border:1.5px solid var(--linha);border-radius:14px;font-weight:700;color:#128C4A;text-decoration:none}
+.btn-zap-sec:hover{border-color:#25D366}
+.link-sec{display:block;margin:10px auto 0;border:0;background:none;color:var(--ceu-2);font-weight:700;cursor:pointer;padding:8px}
+
+/* destinos com foto inteira */
+.regioes{display:flex;gap:8px;flex-wrap:wrap;margin:-16px 0 22px}
+.regioes button{border:0;border-radius:999px;padding:9px 16px;font-weight:700;font-size:.93rem;background:var(--nevoa);color:var(--tinta-2);cursor:pointer;transition:background .15s,color .15s}
+.regioes button:hover{background:#E1EAF5}
+.regioes button[aria-pressed="true"]{background:var(--ceu);color:#fff}
+.destinos{grid-template-columns:repeat(3,1fr);gap:20px}
+.dest{border:0;border-radius:22px;position:relative;aspect-ratio:4/5;box-shadow:0 14px 30px -14px rgba(14,59,122,.45);background:var(--reg,#2F78C4);transition:outline-color .15s}
+.dest[hidden]{display:none}
+.dest-bt{all:unset;position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box;cursor:pointer;color:#fff;border-radius:22px;overflow:hidden}
+.dest-bt:focus-visible{outline:3px solid var(--sol);outline-offset:3px}
+.dest img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;aspect-ratio:auto;transition:transform .5s;background:none}
+.dest:hover img{transform:scale(1.07)}
+.dest:hover{outline:3px solid var(--sol);outline-offset:3px}
+.dest-bt::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,25,55,0) 25%,rgba(9,25,55,.55) 52%,rgba(9,25,55,.94) 100%)}
+.sem-foto .dest-bt{background:radial-gradient(120% 80% at 80% 0%,rgba(255,255,255,.28),transparent 60%),linear-gradient(160deg,var(--reg),#0B254D)}
+.sem-foto .dest-bt::before{content:attr(data-iata);position:absolute;right:-8px;top:36%;font-size:7.5rem;font-weight:800;letter-spacing:-.04em;color:rgba(255,255,255,.12);line-height:1}
+.dest .tag{position:absolute;top:14px;left:14px;z-index:2;font-size:.78rem;font-weight:800;background:rgba(255,255,255,.95);color:var(--tinta);padding:5px 10px;border-radius:999px}
+.dest .cod{position:absolute;top:14px;right:14px;z-index:2;font-size:.78rem;font-weight:800;background:var(--ceu);color:#fff;padding:5px 9px;border-radius:8px}
+.dest .txt{position:absolute;left:18px;right:18px;bottom:16px;z-index:2;padding:0;text-shadow:0 1px 6px rgba(0,0,0,.45);display:block}
+.dest .h{display:block;font-size:1.65rem;font-weight:800;letter-spacing:-.01em;color:#fff;margin:0;line-height:1.05}
+.dest .uf{display:block;color:rgba(255,255,255,.85);font-size:.85rem;font-weight:600;margin-top:3px}
+.dest .p{display:block;color:rgba(255,255,255,.93);font-size:.92rem;margin:6px 0 12px;line-height:1.35}
+.dest .bt{display:inline-flex;gap:6px;background:var(--sol);color:#fff;border-radius:999px;padding:8px 15px;font-weight:700;font-size:.9rem;text-shadow:none}
+.pontos{display:none}
+
+/* como funciona com celular */
+.como{display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:center;background:linear-gradient(135deg,#F4F7FB,#EAF2FB);border-radius:28px;padding:30px}
+.passos-como{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.passos-como li{display:flex;gap:16px;background:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 4px 14px -6px rgba(14,59,122,.18);position:relative;align-items:flex-start}
+.passos-como li.destaque{outline:2px solid var(--sol)}
+.passos-como .ic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:1.6rem;flex:none}
+.passos-como h3{margin:0 0 4px;font-size:1.15rem}
+.passos-como p{margin:0;color:var(--tinta-2);font-size:.97rem}
+.passos-como .veja{color:var(--sol-esc)}
+.passos-como .n{position:absolute;right:16px;top:12px;font-size:.8rem;font-weight:800;color:#93A3BC}
+.tempo{display:inline-block;margin-top:8px;font-size:.78rem;font-weight:800;color:var(--ok);background:#E5F5EC;border-radius:999px;padding:3px 9px}
+.celular-demo{margin:0;justify-self:center}
+.cd-tela{width:290px;border-radius:38px;border:9px solid var(--tinta);overflow:hidden;background:#E9E1D6;padding-bottom:16px;box-shadow:0 22px 44px -18px rgba(19,35,63,.55)}
+.cd-topo{background:#0B6E5F;color:#fff;padding:13px 14px;display:flex;gap:9px;align-items:center;font-size:.85rem;font-weight:700;line-height:1.2}
+.cd-topo i img{width:30px;height:30px;border-radius:50%;background:#fff}
+.cd-topo small{display:block;font-weight:500;font-size:.7rem;opacity:.8}
+.cd-msg{margin:8px 10px 0;background:#fff;border-radius:10px;padding:7px 10px;font-size:.8rem;max-width:84%;box-shadow:0 1px 1px rgba(0,0,0,.08);line-height:1.35}
+.cd-msg.eu{margin-left:auto;background:#D9FDD3}.cd-msg span{display:block;text-align:right;font-size:.65rem;color:#667}
+.cd-cot{background:#fff;border-radius:10px;margin:8px 10px 0;padding:6px;max-width:88%}
+.cd-im{border-radius:8px;background:linear-gradient(160deg,#0E3B7A,#2F78C4);color:#fff;padding:12px}
+.cd-rt{display:flex;justify-content:space-between;font-weight:800;font-size:1.35rem;line-height:1}.cd-rt span{font-size:.95rem;opacity:.8}
+.cd-ln{font-size:.68rem;opacity:.85;margin-top:3px}
+.cd-pr{background:#fff;color:var(--tinta);border-radius:8px;margin-top:10px;padding:7px 9px;line-height:1.25}
+.cd-pr small{display:block;font-size:.64rem;color:var(--tinta-2)}.cd-pr b{font-size:1.15rem;color:var(--ok)}
+.cd-lk{font-size:.72rem;color:#0B6E8F;padding:6px 4px 2px;word-break:break-all}
+.celular-demo figcaption{text-align:center;font-size:.8rem;color:var(--tinta-2);margin-top:10px}
+
+/* avaliações */
+.avals{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.aval{background:var(--nevoa);border-radius:20px;padding:18px 20px;position:relative}
+.aval .estrelas{color:#F5B400;font-size:1.05rem;letter-spacing:2px}.aval .estrelas span{color:#D5DCE6}
+.aval blockquote{margin:8px 0 12px;font-style:italic;line-height:1.5}
+.aval .quem{display:flex;gap:10px;align-items:center;font-size:.85rem}
+.aval .quem i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:800;flex:none}
+.aval .quem b{display:block;font-size:.95rem}.aval .quem span{color:var(--tinta-2)}
+.aval .selo{margin-left:auto;font-size:.72rem;font-weight:800;color:var(--ok);background:#E5F5EC;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.aval img{width:100%;border-radius:12px;margin-top:12px;display:block}
+
+/* dúvidas */
+.faq{display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:start}
+.faq-ajuda{background:var(--ceu);color:#fff;border-radius:22px;padding:22px}
+.faq-ajuda b{font-size:1.1rem;display:block}.faq-ajuda p{opacity:.85;margin:4px 0 14px;font-size:.95rem}
+.faq-ajuda a{display:inline-flex;gap:7px;background:#1FAF5A;color:#fff;border-radius:999px;padding:10px 18px;font-weight:700;text-decoration:none}
+.faq-lista details{border:1.5px solid var(--linha);border-radius:18px;margin-bottom:10px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.faq-lista details[open]{border-color:var(--ceu-2);box-shadow:0 8px 22px -12px rgba(47,120,196,.45)}
+.faq-lista summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 18px;font-weight:700;font-size:1.02rem}
+.faq-lista summary::-webkit-details-marker{display:none}
+.faq-lista summary::after{content:"+";margin-left:auto;width:30px;height:30px;border-radius:50%;background:var(--nevoa);color:var(--ceu);display:grid;place-items:center;font-weight:800;flex:none;font-size:1.1rem}
+.faq-lista details[open] summary::after{content:"−";background:var(--ceu);color:#fff}
+.faq-lista details p{margin:0;padding:0 18px 18px 48px;color:var(--tinta-2)}
+
+/* rodapé completo */
+.rodape{padding:46px 0 90px}
+.rodape .wrap{display:block;padding-top:0}
+.rod-cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:28px}
+.rodape h4{color:#fff;margin:0 0 12px;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}
+.rm{display:flex;align-items:center;gap:10px}.rm img{width:40px;height:40px;border-radius:50%;background:#fff}
+.rodape ul{list-style:none;margin:0;padding:0}.rodape li{margin:0 0 8px}
+.rodape a{color:#C9D4E4;text-decoration:none}.rodape a:hover{color:#fff}
+.rodape .rodape-zap{color:#fff;font-weight:800}
+.rod-zap{display:inline-flex;margin-top:10px;background:#1FAF5A;color:#fff !important;border-radius:999px;padding:8px 16px;font-weight:700}
+.rod-chips{display:flex;gap:6px;flex-wrap:wrap}.rod-chips span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:5px 10px;font-size:.82rem;font-weight:700;color:#fff}
+.rod-base{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.1);margin-top:28px;padding-top:16px;font-size:.84rem;color:#8A9AB4}
+.zap{transition:transform .15s}
+
+@media (max-width:900px){
+  .nav-b{display:none}
+  .menu-b{display:flex;order:5}
+  .zap-b{display:none}
+  .cta-b{margin-left:auto}
+  .nav-b.aberto{display:flex;flex-direction:column;gap:0;position:absolute;top:64px;left:0;right:0;background:#fff;border-bottom:1px solid var(--linha);box-shadow:0 14px 24px -14px rgba(14,59,122,.4);padding:6px 20px 12px}
+  .nav-b.aberto a{padding:12px 0;border-bottom:1px solid var(--nevoa);box-shadow:none}
+  .destinos{grid-template-columns:repeat(2,1fr)}
+  .como{grid-template-columns:1fr;padding:22px}
+  .faq{grid-template-columns:1fr;gap:20px}
+  .avals{grid-template-columns:1fr 1fr}
+  .rod-cols{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .barra .wrap{gap:10px;height:58px}
+  .nav-b.aberto{top:58px}
+  .marca-b b{font-size:.98rem}
+  .cta-b{padding:8px 13px;font-size:.88rem}
+  .cta-b svg{display:none}
+  .passos-form{font-size:.82rem}
+  .g-rota{border:1.5px solid var(--linha);border-radius:16px;gap:0;position:relative}
+  .g-rota .campo > label{position:absolute;left:14px;top:8px;margin:0;font-size:.74rem;color:var(--tinta-2);font-weight:600;z-index:1}
+  .g-rota .entrada{border:0;height:64px;padding-top:20px;border-radius:16px;font-weight:600;padding-right:84px;text-overflow:ellipsis}
+  .g-rota .campo:first-child .entrada{padding-right:116px}
+  .g-rota .entrada:focus{box-shadow:inset 0 0 0 2px var(--ceu-2)}
+  .g-rota .campo + .trocar + .campo{border-top:1px solid var(--linha)}
+  .g-rota .iata{bottom:20px;right:60px}
+  .g-rota .campo:last-child .iata{right:12px}
+  .trocar{position:absolute;right:12px;top:50%;margin:-20px 0 0;z-index:3;transform:none;background:#fff}
+  .trocar.girou{transform:rotate(180deg)}
+  .g-rota .msg-erro{padding:0 14px 8px}
+  .extras{flex-direction:column;align-items:stretch;gap:14px}
+  .resumo b{font-size:1rem}
+  .destinos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -20px;padding:4px 20px 10px;scrollbar-width:none}
+  .dest{flex:0 0 74%;scroll-snap-align:start}
+  .dest:hover{outline:0}
+  .dest .h{font-size:1.4rem}
+  .pontos{display:flex;gap:6px;justify-content:center;margin-top:8px}
+  .pontos i{width:7px;height:7px;border-radius:4px;background:var(--linha);transition:width .2s,background .2s}
+  .pontos i.on{width:20px;background:var(--sol)}
+  .regioes{flex-wrap:nowrap;overflow-x:auto;margin:-16px -20px 18px;padding:0 20px;scrollbar-width:none}
+  .regioes button{flex:none}
+  .celular-demo{transform:scale(.92)}
+  .avals{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 8px;gap:12px;scrollbar-width:none}
+  .aval{flex:0 0 84%;scroll-snap-align:start}
+  .faq-lista details p{padding-left:18px}
+  .rod-cols{grid-template-columns:1fr}
+  .canhoto .ca b{font-size:1.05rem}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none !important;animation:none !important;scroll-behavior:auto !important}
@@ -294,7 +523,19 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
   </div>
 </header>
 
-<section class="ceu" aria-labelledby="h1">
+<div class="barra" id="barra">
+  <div class="wrap">
+    <a class="marca-b" href="#topo-pagina" aria-label="Vai pra onde? — início"><img src="logo-192.png" alt="" width="32" height="32"><b>Vai pra onde?</b></a>
+    <nav class="nav-b" id="navB" aria-label="Seções">
+      <a href="#h-dest">Para onde ir</a><a href="#h-como">Como funciona</a><a href="#h-faq">Dúvidas</a><a href="#" class="acompanhar">Acompanhar pedido</a>
+    </nav>
+    <a class="zap-b" id="barraZap" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="cta-b" href="#buscar" id="barraCta"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Pedir cotação</a>
+    <button type="button" class="menu-b" id="menuB" aria-expanded="false" aria-controls="navB" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+  </div>
+</div>
+
+<section class="ceu" id="topo-pagina" aria-labelledby="h1">
   <div class="nuvem n1"></div><div class="nuvem n2"></div><div class="nuvem n3"></div>
   <!-- Asa ilustrada: pode trocar por uma foto depois -->
   <svg class="asa" viewBox="0 0 720 340" aria-hidden="true">
@@ -332,6 +573,10 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
 <main class="wrap busca-area" id="buscar">
   <div class="cartao">
     <form id="form" novalidate>
+      <div class="passos-form" aria-hidden="true">
+        <span class="pf on" id="pf1"><b>1</b>A viagem</span><span class="pf-ln" id="pfLn"></span><span class="pf" id="pf2"><b>2</b>Seus dados</span>
+      </div>
+      <div class="etapa" id="etapa1">
       <h2>Para onde você vai?</h2>
       <p class="dica">Preencha a viagem e enviamos a cotação completa, com valor no Pix e no cartão.</p>
 
@@ -365,12 +610,12 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
       <div class="grade g-datas">
         <div class="campo" data-campo="ida">
           <label for="ida">Data de ida</label>
-          <input class="entrada" id="ida" type="date">
+          <div class="data-cx"><span class="data-txt vazio" id="idaTxt">Escolher data</span><input class="entrada data-in" id="ida" type="date"></div>
           <div class="msg-erro"></div>
         </div>
         <div class="campo" data-campo="volta" id="campoVolta">
           <label for="volta">Data de volta</label>
-          <input class="entrada" id="volta" type="date">
+          <div class="data-cx"><span class="data-txt vazio" id="voltaTxt">Escolher data</span><input class="entrada data-in" id="volta" type="date"></div>
           <div class="msg-erro"></div>
         </div>
         <div class="campo campo-pax" data-campo="pax">
@@ -397,10 +642,6 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
       </div>
 
       <div class="extras">
-        <label class="chk">
-          <input type="checkbox" id="flex">
-          <span>Minhas datas são flexíveis<small>Até 3 dias antes ou depois, se ficar mais barato</small></span>
-        </label>
         <div class="malas">
           <span class="rotulo" id="rot-malas">Malas despachadas (23 kg)</span>
           <div class="seg" role="radiogroup" aria-labelledby="rot-malas">
@@ -410,10 +651,10 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
           </div>
           <small>Por passageiro, em cada trecho. A mala de mão já está inclusa.</small>
         </div>
-        <label class="chk chk-pet">
-          <input type="checkbox" id="temPet" aria-controls="petPainel">
-          <span>Vou levar pet<small>Cão ou gato, na cabine ou no porão</small></span>
-        </label>
+        <div class="chips-op">
+          <label class="chip-chk"><input type="checkbox" id="flex"><span>Datas flexíveis<small>até 3 dias antes ou depois</small></span></label>
+          <label class="chip-chk"><input type="checkbox" id="temPet" aria-controls="petPainel"><span>🐾 Vou levar pet<small>cão ou gato</small></span></label>
+        </div>
       </div>
 
       <div class="pet-painel" id="petPainel">
@@ -440,8 +681,16 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         </div>
       </div>
 
+      <div class="rodape-form">
+        <p>Leva 1 minuto. No próximo passo você diz para onde mandamos a cotação.</p>
+        <button class="cta" type="button" id="continuar">Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+      </div>
+
+      <div class="etapa" id="etapa2" hidden>
+      <h2>Quase lá! Pra onde mandamos?</h2>
+      <div class="resumo"><div><b id="resRota">—</b><small id="resInfo"></small></div><button type="button" id="alterar">Alterar</button></div>
       <div class="contato">
-        <p class="rotulo-sec">Para onde mandamos a cotação</p>
         <div class="grade g-contato">
           <div class="campo" data-campo="nome">
             <label for="nome">Seu nome</label>
@@ -466,20 +715,32 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         <p>Seus dados servem só para enviar a cotação. Os documentos dos passageiros pedimos depois, quando você aprovar.</p>
         <button class="cta" type="submit" id="enviar">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
-          Pedir cotação
+          <span>Pedir cotação</span>
         </button>
+      </div>
       </div>
     </form>
 
     <div class="sucesso" id="sucesso" role="status" aria-live="polite">
       <div class="decola" aria-hidden="true">
-        <div class="chao"></div>
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 19h19v2h-19zM22.1 9.6c-.2-.8-1-1.3-1.8-1.1L15 9.9 8.1 3.5l-1.9.5 4.1 7.2-5 1.3-2-1.5-1.5.4 2.6 4.5 16.6-4.4c.8-.3 1.3-1.1 1.1-1.9z"/></svg>
+        <svg class="rastro" viewBox="0 0 420 120" preserveAspectRatio="none"><path d="M10 112 C 120 104, 230 70, 400 14" fill="none" stroke="#9DB6D4" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/></svg>
+        <svg class="aviao" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
       </div>
-      <h2>Pedido de cotação enviado</h2>
-      <p id="sucessoTxt">Em breve você recebe no WhatsApp a cotação com imagem e o link para aprovar e pagar.</p>
-      <div class="protocolo" id="protocolo">DC-0000</div>
-      <div><button type="button" class="btn-sec" id="novo">Pedir outra cotação</button></div>
+      <div class="selo-ok" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2>Pedido enviado!</h2>
+      <p id="sucessoTxt">Em breve você recebe a cotação no WhatsApp.</p>
+      <div class="canhoto">
+        <div class="ca"><small>SUA VIAGEM</small><b id="sucRota">—</b><span id="sucInfo"></span></div>
+        <div class="cb"><small>PROTOCOLO</small><b id="protocolo">DC-0000</b></div>
+      </div>
+      <ol class="agora">
+        <li class="feito"><i>✓</i>Recebemos o seu pedido</li>
+        <li class="atual"><i>2</i>Estamos montando a sua cotação</li>
+        <li><i>3</i>Você recebe a imagem e o link para aprovar</li>
+      </ol>
+      <a class="cta cta-larga" id="linkViagem" href="#">Acompanhe o seu pedido <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn-zap-sec" id="sucZap" href="#" target="_blank" rel="noopener">💬 Salvar nosso WhatsApp</a>
+      <button type="button" class="link-sec" id="novo">Pedir outra cotação</button>
     </div>
   </div>
 </main>
@@ -488,7 +749,9 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
 <section class="secao wrap" aria-labelledby="h-dest">
   <h2 class="titulo" id="h-dest">Para onde ir</h2>
   <p class="lead">Ideias de viagem pelo Brasil. Escolha uma e a gente já preenche o destino na busca.</p>
+  <div class="regioes" id="regioes" role="group" aria-label="Filtrar por região"></div>
   <ul class="destinos" id="destinos"></ul>
+  <div class="pontos" id="pontosDest" aria-hidden="true"></div>
   <p class="dest-nota">Imagens ilustrativas.</p>
 </section>
 
@@ -496,23 +759,25 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
 <section class="secao wrap" aria-labelledby="h-como">
   <h2 class="titulo" id="h-como">Como funciona</h2>
   <p class="lead">Você não precisa ter milhas. A gente cuida da emissão, e você só escolhe e paga.</p>
-  <ol class="rota">
-    <li>
-      <div class="num" aria-hidden="true">1</div>
-      <h3>Você pede</h3>
-      <p>Diga origem, destino, datas, quantas pessoas, malas e se vai levar pet.</p>
-    </li>
-    <li>
-      <div class="num" aria-hidden="true">2</div>
-      <h3>Recebe a cotação</h3>
-      <p>Mandamos no WhatsApp a imagem com voo, horários e valor, mais o link para aprovar.</p>
-    </li>
-    <li>
-      <div class="num" aria-hidden="true">3</div>
-      <h3>Paga e viaja</h3>
-      <p>Pague no Pix ou parcele no cartão. A gente emite e ainda faz o seu check-in.</p>
-    </li>
-  </ol>
+  <div class="como">
+    <ol class="passos-como">
+      <li><div class="ic" style="background:#E6EFF9">📝</div><div><h3>Você pede</h3><p>Diga origem, destino, datas, quantas pessoas, malas e se vai levar pet.</p><span class="tempo">⏱ leva 1 minuto</span></div><span class="n">1</span></li>
+      <li class="destaque"><div class="ic" style="background:#DFF7E7">💬</div><div><h3>Recebe a cotação no WhatsApp</h3><p>Uma imagem com voo, horários, paradas e valor, mais o link para aprovar. <b class="veja">Veja ao lado →</b></p></div><span class="n">2</span></li>
+      <li><div class="ic" style="background:#FFF1E7">✈️</div><div><h3>Paga e viaja</h3><p>Pague no Pix ou parcele no cartão. A gente emite, faz o seu check-in e manda o cartão de embarque.</p></div><span class="n">3</span></li>
+    </ol>
+    <figure class="celular-demo" aria-label="Exemplo ilustrativo de cotação no WhatsApp">
+      <div class="cd-tela">
+        <div class="cd-topo"><i><img src="logo-192.png" alt="" width="28" height="28"></i><div>Vai pra onde?<small>online</small></div></div>
+        <div class="cd-msg eu">Oi! Quero Maringá → Salvador, 12 a 19/12, 2 adultos 😊<span>09:14 ✓✓</span></div>
+        <div class="cd-msg">Oi, Mariana! Segue a sua cotação 👇</div>
+        <div class="cd-cot"><div class="cd-im">
+          <div class="cd-rt">MGF <span>✈</span> SSA</div><div class="cd-ln">Ida 12/12 · 06:10 → 11:45 · 1 parada</div><div class="cd-ln">Volta 19/12 · 14:20 → 19:05 · 1 parada</div>
+          <div class="cd-pr"><small>2 adultos · ida e volta</small><b>R$ 2.415,00</b><small>no Pix · ou parcelado no cartão</small></div></div>
+          <div class="cd-lk">vaipraondeagencia.netlify.app/cotacao…<br><b>Toque para ver e aprovar</b></div></div>
+      </div>
+      <figcaption>Conversa ilustrativa</figcaption>
+    </figure>
+  </div>
 </section>
 
 <!-- ================= VANTAGENS ================= -->
@@ -537,14 +802,47 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
   </div>
 </section>
 
+<!-- ================= AVALIAÇÕES (só aparece com avaliação publicada no painel) ================= -->
+<section class="secao wrap" id="secAval" aria-labelledby="h-aval" hidden>
+  <h2 class="titulo" id="h-aval">Quem já voou com a gente</h2>
+  <p class="lead">Mensagens que os clientes mandaram depois da viagem.</p>
+  <ul class="avals" id="avals"></ul>
+</section>
+
+<!-- ================= DÚVIDAS ================= -->
+<section class="secao wrap" aria-labelledby="h-faq">
+  <div class="faq">
+    <div class="faq-lado">
+      <h2 class="titulo" id="h-faq">Dúvidas frequentes</h2>
+      <p class="lead">O que todo mundo pergunta antes da primeira viagem com a gente.</p>
+      <div class="faq-ajuda"><b>Não achou a sua dúvida?</b><p>Uma pessoa de verdade responde no WhatsApp.</p><a id="faqZap" href="#" target="_blank" rel="noopener">💬 Falar no WhatsApp</a></div>
+    </div>
+    <div class="faq-lista" id="faqLista">
+      <details><summary><span>🎟</span>Preciso ter milhas?</summary><p>Não. Você não precisa ter milhas nem conta em programa nenhum. A gente cuida da emissão com milhas e você só paga o valor da cotação.</p></details>
+      <details><summary><span>🔒</span>A passagem é segura? Fica no meu nome?</summary><p>Sim. A passagem é emitida no nome de cada passageiro, direto na companhia aérea. Você recebe o código da reserva (localizador) e pode conferir tudo no site ou no app da companhia antes de viajar.</p></details>
+      <details><summary><span>💳</span>Como eu pago?</summary><p>No Pix, à vista, ou no cartão de crédito, parcelado. Os valores das duas formas aparecem na cotação.</p></details>
+      <details><summary><span>🧳</span>A mala está incluída?</summary><p>A mala de mão vai inclusa. A mala despachada (23 kg) você escolhe no pedido, e o valor dela já vem somado na cotação.</p></details>
+      <details><summary><span>🐾</span>Posso levar meu pet?</summary><p>Pode. Avise no pedido (cão ou gato, peso com a caixa e se vai na cabine ou no porão). O transporte segue as regras da companhia aérea, e a gente confere tudo antes de emitir.</p></details>
+      <details><summary><span>📅</span>E se eu precisar remarcar ou cancelar?</summary><p>Remarcação e cancelamento seguem as regras do programa de milhas usado em cada passagem. A gente explica as regras da sua antes de você pagar.</p></details>
+      <details><summary><span>📲</span>Quem faz o check-in?</summary><p>A gente. Quando o check-in abrir, fazemos por você e mandamos o cartão de embarque no WhatsApp e na página de acompanhamento do pedido.</p></details>
+    </div>
+  </div>
+</section>
+
 <footer class="rodape">
   <div class="wrap">
-    <div>
-      <b>Vai pra onde?</b>
-      <p>Aqui quem decola é você. O preço fica no chão.</p>
-      <p><a class="rodape-zap" id="rodapeZap" href="#" target="_blank" rel="noopener">WhatsApp (35) 92000-1121</a></p>
+    <div class="rod-cols">
+      <div class="rod-marca">
+        <div class="rm"><img src="logo-192.png" alt="" width="40" height="40"><b>Vai pra onde?</b></div>
+        <p>Aqui quem decola é você. O preço fica no chão.</p>
+        <p>Passagens emitidas com milhas, com atendimento de pessoa de verdade.</p>
+      </div>
+      <div><h4>Navegue</h4><ul><li><a href="#buscar">Pedir cotação</a></li><li><a href="#h-dest">Para onde ir</a></li><li><a href="#h-como">Como funciona</a></li><li><a href="#h-faq">Dúvidas frequentes</a></li><li><a href="#" class="acompanhar">Acompanhar meu pedido</a></li></ul></div>
+      <div><h4>Atendimento</h4><p>WhatsApp<br><a class="rodape-zap" id="rodapeZap" href="#" target="_blank" rel="noopener">(35) 92000-1121</a></p><a class="rod-zap" id="rodZapBt" href="#" target="_blank" rel="noopener">💬 Chamar agora</a></div>
+      <div><h4>Pagamento</h4><div class="rod-chips"><span>Pix</span><span>Cartão de crédito</span><span>Parcelado</span></div>
+        <h4 style="margin-top:16px">Emitimos pela</h4><div class="rod-chips"><span>GOL · Smiles</span><span>LATAM Pass</span><span>Azul Fidelidade</span></div></div>
     </div>
-    <button type="button" class="link-teste" id="verTeste">Pedidos de teste</button>
+    <div class="rod-base"><span>© <span id="ano">2026</span> Vai pra onde? · CNPJ 32.937.916/0001-69</span><button type="button" class="link-teste" id="verTeste">Pedidos de teste</button></div>
   </div>
 </footer>
 
@@ -622,6 +920,7 @@ CGB|Cuiabá|Marechal Rondon|Brasil
 CGR|Campo Grande|Campo Grande|Brasil
 BYO|Bonito|Bonito|Brasil
 GYN|Goiânia|Santa Genoveva|Brasil
+CLV|Caldas Novas|Nelson Ribeiro Guimarães|Brasil
 VIX|Vitória|Eurico de Aguiar Salles|Brasil
 UDI|Uberlândia|Ten. Cel. Aviador César Bombonato|Brasil
 MOC|Montes Claros|Mário Ribeiro|Brasil
@@ -703,17 +1002,29 @@ const estado = { origem:null, destino:null, pax:{adultos:1,criancas:0,bebes:0} }
 
 /* ---------- WhatsApp ---------- */
 const linkZap = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.msgWhatsapp)}`;
-$('#zap').href = linkZap; $('#topoZap').href = linkZap; $('#rodapeZap').href = linkZap;
+['#zap','#topoZap','#rodapeZap','#rodZapBt','#barraZap','#faqZap'].forEach(id=>{ const a=$(id); if(a) a.href = linkZap; });
+$('#sucZap').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('Olá! Acabei de pedir uma cotação pelo site. Salvei o contato de vocês 😊')}`;
+$('#ano').textContent = new Date().getFullYear();
 
 /* ---------- datas ---------- */
 function hojeISO(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+const DIAS_SEM = ['dom','seg','ter','qua','qui','sex','sáb'];
+function dataCurta(iso){ if(!iso) return ''; const [a,m,d]=iso.split('-').map(Number); const dt=new Date(a,m-1,d); return `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}${a!==new Date().getFullYear()?'/'+String(a).slice(2):''} · ${DIAS_SEM[dt.getDay()]}`; }
+function mostrarData(qual){
+  const inp=$('#'+qual), t=$('#'+qual+'Txt');
+  if(inp.disabled){ t.textContent='Só ida'; t.classList.add('vazio'); return; }
+  t.textContent = inp.value ? dataCurta(inp.value) : 'Escolher data'; t.classList.toggle('vazio', !inp.value);
+}
+['ida','volta'].forEach(q=>{ const inp=$('#'+q);
+  inp.addEventListener('click',()=>{ try{ inp.showPicker && inp.showPicker(); }catch(e){} });
+  inp.addEventListener('input',()=>mostrarData(q)); });
 $('#ida').min = hojeISO(); $('#volta').min = hojeISO();
 $('#ida').addEventListener('change',()=>{
   $('#volta').min = $('#ida').value || hojeISO();
   if($('#volta').value && $('#volta').value < $('#ida').value) $('#volta').value='';
-  limparErro('ida');
+  limparErro('ida'); mostrarData('ida'); mostrarData('volta');
 });
-$('#volta').addEventListener('change',()=>limparErro('volta'));
+$('#volta').addEventListener('change',()=>{ limparErro('volta'); mostrarData('volta'); });
 
 /* ---------- tipo de viagem ---------- */
 function tipoAtual(){return document.querySelector('input[name="tipo"]:checked').value}
@@ -722,6 +1033,7 @@ document.querySelectorAll('input[name="tipo"]').forEach(r=>r.addEventListener('c
   $('#volta').disabled = soIda;
   $('#campoVolta').style.opacity = soIda ? .45 : 1;
   if(soIda){ $('#volta').value=''; limparErro('volta'); }
+  mostrarData('volta');
 }));
 
 /* ---------- autocomplete de aeroportos ---------- */
@@ -784,28 +1096,82 @@ function montarAuto(qual){
 const autoOrigem = montarAuto('origem');
 const autoDestino = montarAuto('destino');
 
-/* ---------- destinos sugeridos ---------- */
-const DESTINOS = [
-  {foto:'maceio', nome:'Maceió', uf:'Alagoas', iata:'MCZ', txt:'Piscinas naturais verde-esmeralda, jangadas e praias de coqueiral no litoral alagoano.'},
-  {foto:'foz-do-iguacu', nome:'Foz do Iguaçu', uf:'Paraná', iata:'IGU', txt:'As Cataratas de pertinho, com passarelas sobre as quedas e arco-íris nos dias de sol.'},
-  {foto:'fernando-de-noronha', nome:'Fernando de Noronha', uf:'Pernambuco', iata:'FEN', txt:'Mar transparente, Morro Dois Irmãos e mergulho com tartarugas no arquipélago mais famoso do país.'},
-  {foto:'salvador', nome:'Salvador', uf:'Bahia', iata:'SSA', txt:'Casarões coloridos do Pelourinho, acarajé e praias urbanas na primeira capital do Brasil.'},
-  {foto:'gramado', nome:'Gramado', uf:'Rio Grande do Sul', iata:'POA', txt:'Clima de serra, chocolate quente e ruas floridas com cara de Europa. Voo até Porto Alegre.'},
-  {foto:'jericoacoara', nome:'Jericoacoara', uf:'Ceará', iata:'JJD', txt:'Dunas, lagoas com redes dentro da água e o pôr do sol mais aplaudido do Ceará.'}
+/* ---------- destinos sugeridos (por região) ----------
+   foto: arquivo .jpg com esse nome na pasta do site. Sem a foto, o cartão usa um degradê da cor da região. */
+const REGIOES = [
+  {id:'sul', nome:'Sul', cor:'#1B6FB8'},
+  {id:'sudeste', nome:'Sudeste', cor:'#7A3FC4'},
+  {id:'centro-oeste', nome:'Centro-Oeste', cor:'#1E8E5A'},
+  {id:'nordeste', nome:'Nordeste', cor:'#E0611C'},
+  {id:'norte', nome:'Norte', cor:'#0E7C86'}
 ];
+const DESTINOS = [
+  // Sul
+  {reg:'sul', foto:'gramado', nome:'Gramado', uf:'Rio Grande do Sul', iata:'POA', tag:'⛰ Serra', txt:'Clima de serra, chocolate quente e ruas floridas. Voo até Porto Alegre.'},
+  {reg:'sul', foto:'florianopolis', nome:'Florianópolis', uf:'Santa Catarina', iata:'FLN', tag:'🏖 Praia', txt:'Mais de 40 praias na ilha, lagoa da Conceição e frutos do mar.'},
+  {reg:'sul', foto:'foz-do-iguacu', nome:'Foz do Iguaçu', uf:'Paraná', iata:'IGU', tag:'🌿 Natureza', txt:'As Cataratas de pertinho, com passarelas sobre as quedas.'},
+  {reg:'sul', foto:'balneario-camboriu', nome:'Balneário Camboriú', uf:'Santa Catarina', iata:'NVT', tag:'🏖 Praia', txt:'Praia agitada, roda-gigante e bondinho. Voo até Navegantes.'},
+  {reg:'sul', foto:'curitiba', nome:'Curitiba', uf:'Paraná', iata:'CWB', tag:'🏛 Cultura', txt:'Parques, Jardim Botânico e o passeio de trem pela Serra do Mar.'},
+  {reg:'sul', foto:'bento-goncalves', nome:'Bento Gonçalves', uf:'Rio Grande do Sul', iata:'CXJ', tag:'🍷 Serra', txt:'Vale dos Vinhedos, vinícolas e comida italiana. Voo até Caxias do Sul.'},
+  // Sudeste
+  {reg:'sudeste', foto:'rio-de-janeiro', nome:'Rio de Janeiro', uf:'Rio de Janeiro', iata:'GIG', tag:'🏖 Praia', txt:'Cristo Redentor, Pão de Açúcar e o calçadão de Copacabana.'},
+  {reg:'sudeste', foto:'sao-paulo', nome:'São Paulo', uf:'São Paulo', iata:'GRU', tag:'🏛 Cultura', txt:'Museus, shows, compras e a melhor gastronomia do país.'},
+  {reg:'sudeste', foto:'buzios', nome:'Búzios', uf:'Rio de Janeiro', iata:'CFB', tag:'🏖 Praia', txt:'Praias de água calma e a Rua das Pedras. Voo até Cabo Frio.'},
+  {reg:'sudeste', foto:'ouro-preto', nome:'Ouro Preto', uf:'Minas Gerais', iata:'CNF', tag:'🏛 Cultura', txt:'Igrejas barrocas e ladeiras históricas. Voo até Belo Horizonte.'},
+  {reg:'sudeste', foto:'paraty', nome:'Paraty', uf:'Rio de Janeiro', iata:'GIG', tag:'🏛 Cultura', txt:'Centro histórico de pedra, passeio de escuna e cachoeiras. Voo até o Rio.'},
+  {reg:'sudeste', foto:'vitoria', nome:'Vitória', uf:'Espírito Santo', iata:'VIX', tag:'🏖 Praia', txt:'Praias tranquilas, moqueca capixaba e o Convento da Penha.'},
+  // Centro-Oeste
+  {reg:'centro-oeste', foto:'bonito', nome:'Bonito', uf:'Mato Grosso do Sul', iata:'BYO', tag:'🌿 Natureza', txt:'Rios de água cristalina, flutuação e grutas azuis.'},
+  {reg:'centro-oeste', foto:'brasilia', nome:'Brasília', uf:'Distrito Federal', iata:'BSB', tag:'🏛 Cultura', txt:'A arquitetura de Niemeyer, o Lago Paranoá e o pôr do sol do cerrado.'},
+  {reg:'centro-oeste', foto:'chapada-dos-veadeiros', nome:'Chapada dos Veadeiros', uf:'Goiás', iata:'BSB', tag:'🌿 Natureza', txt:'Cânions, cachoeiras e trilhas no cerrado. Voo até Brasília.'},
+  {reg:'centro-oeste', foto:'pantanal', nome:'Pantanal', uf:'Mato Grosso', iata:'CGB', tag:'🌿 Natureza', txt:'Onças, araras e jacarés no maior alagado do mundo. Voo até Cuiabá.'},
+  {reg:'centro-oeste', foto:'chapada-dos-guimaraes', nome:'Chapada dos Guimarães', uf:'Mato Grosso', iata:'CGB', tag:'🌿 Natureza', txt:'Mirantes, paredões vermelhos e o Véu de Noiva. Voo até Cuiabá.'},
+  {reg:'centro-oeste', foto:'caldas-novas', nome:'Caldas Novas', uf:'Goiás', iata:'CLV', tag:'♨️ Águas quentes', txt:'Parques aquáticos e piscinas de águas termais o ano todo.'},
+  // Nordeste
+  {reg:'nordeste', foto:'maceio', nome:'Maceió', uf:'Alagoas', iata:'MCZ', tag:'🏖 Praia', txt:'Piscinas naturais verde-esmeralda e praias de coqueiral.'},
+  {reg:'nordeste', foto:'fernando-de-noronha', nome:'Fernando de Noronha', uf:'Pernambuco', iata:'FEN', tag:'🌿 Natureza', txt:'Mar transparente, Morro Dois Irmãos e mergulho com tartarugas.'},
+  {reg:'nordeste', foto:'salvador', nome:'Salvador', uf:'Bahia', iata:'SSA', tag:'🏛 Cultura · Praia', txt:'Pelourinho colorido, acarajé e praias urbanas.'},
+  {reg:'nordeste', foto:'jericoacoara', nome:'Jericoacoara', uf:'Ceará', iata:'JJD', tag:'🏖 Praia · Natureza', txt:'Dunas, redes na lagoa e o pôr do sol mais aplaudido do Ceará.'},
+  {reg:'nordeste', foto:'porto-de-galinhas', nome:'Porto de Galinhas', uf:'Pernambuco', iata:'REC', tag:'🏖 Praia', txt:'Piscinas naturais com peixinhos e passeio de jangada. Voo até Recife.'},
+  {reg:'nordeste', foto:'lencois-maranhenses', nome:'Lençóis Maranhenses', uf:'Maranhão', iata:'SLZ', tag:'🌿 Natureza', txt:'Dunas brancas com lagoas azuis no meio. Voo até São Luís.'},
+  // Norte
+  {reg:'norte', foto:'manaus', nome:'Manaus', uf:'Amazonas', iata:'MAO', tag:'🌿 Natureza', txt:'Encontro das Águas, Teatro Amazonas e passeios na floresta.'},
+  {reg:'norte', foto:'alter-do-chao', nome:'Alter do Chão', uf:'Pará', iata:'STM', tag:'🏖 Praia de rio', txt:'O "Caribe amazônico", com praias de areia branca no rio Tapajós.'},
+  {reg:'norte', foto:'belem', nome:'Belém', uf:'Pará', iata:'BEL', tag:'🏛 Cultura', txt:'Mercado Ver-o-Peso, açaí de verdade e a culinária paraense.'},
+  {reg:'norte', foto:'jalapao', nome:'Jalapão', uf:'Tocantins', iata:'PMW', tag:'🌿 Natureza', txt:'Fervedouros, dunas douradas e cachoeiras. Voo até Palmas.'},
+  {reg:'norte', foto:'ilha-de-marajo', nome:'Ilha de Marajó', uf:'Pará', iata:'BEL', tag:'🌿 Natureza', txt:'Búfalos, praias de rio e cerâmica marajoara. Voo até Belém.'},
+  {reg:'norte', foto:'monte-roraima', nome:'Monte Roraima', uf:'Roraima', iata:'BVB', tag:'⛰ Aventura', txt:'Trekking até o topo de um dos tepuis mais antigos do planeta. Voo até Boa Vista.'}
+];
+const corReg = id => (REGIOES.find(r=>r.id===id)||{}).cor || '#2F78C4';
 $('#destinos').innerHTML = DESTINOS.map((d,i)=>`
-  <li class="dest">
-    <img src="${d.foto}.jpg" alt="${d.nome}, ${d.uf}" loading="lazy" width="800" height="600">
-    <div class="txt">
-      <h3>${d.nome}<span class="uf">${d.uf}</span></h3>
-      <p>${d.txt}</p>
-      <button type="button" data-dest="${i}" aria-label="Quero ir para ${d.nome}">Quero ir para lá</button>
-    </div>
+  <li class="dest" data-reg="${d.reg}" style="--reg:${corReg(d.reg)}">
+    <button type="button" class="dest-bt" data-dest="${i}" data-iata="${d.iata}" aria-label="Quero ir para ${d.nome}, ${d.uf}">
+      <img src="${d.foto}.jpg" alt="" loading="lazy" width="800" height="1000" onerror="this.closest('.dest').classList.add('sem-foto');this.remove()">
+      <span class="tag">${d.tag}</span><span class="cod">${d.iata}</span>
+      <span class="txt"><span class="h">${d.nome}</span><span class="uf">${d.uf}</span><span class="p">${d.txt}</span><span class="bt">Quero ir para lá →</span></span>
+    </button>
   </li>`).join('');
+$('#regioes').innerHTML = REGIOES.map(r=>`<button type="button" data-reg="${r.id}" aria-pressed="false">${r.nome}</button>`).join('');
+function filtrarRegiao(id){
+  $$('#regioes button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.reg===id)));
+  $$('#destinos .dest').forEach(li=>li.hidden = li.dataset.reg!==id);
+  $('#destinos').scrollLeft = 0; pontosDest();
+  const bt = $(`#regioes button[data-reg="${id}"]`), rg = $('#regioes'); if(bt && rg.scrollWidth > rg.clientWidth) rg.scrollLeft = Math.max(0, bt.offsetLeft - rg.offsetLeft - 40);
+}
+$$('#regioes button').forEach(b=>b.addEventListener('click',()=>filtrarRegiao(b.dataset.reg)));
+function pontosDest(){
+  const vis = $$('#destinos .dest:not([hidden])'), ul = $('#destinos');
+  if(!vis.length) { $('#pontosDest').innerHTML=''; return; }
+  const w = vis[0].getBoundingClientRect().width + 12, at = Math.min(vis.length-1, Math.round(ul.scrollLeft / (w||1)));
+  $('#pontosDest').innerHTML = vis.map((_,i)=>`<i class="${i===at?'on':''}"></i>`).join('');
+}
+$('#destinos').addEventListener('scroll',()=>{ cancelAnimationFrame(pontosDest._r); pontosDest._r = requestAnimationFrame(pontosDest); }, {passive:true});
+filtrarRegiao('nordeste');   // começa pelo Nordeste; os botões trocam a região
 $$('[data-dest]').forEach(b=>b.addEventListener('click',()=>{
   const d = DESTINOS[Number(b.dataset.dest)];
   const a = AEROPORTOS.find(x=>x.iata===d.iata); if(!a) return;
   if($('#form').style.display==='none') $('#novo').click();
+  irEtapa(1);
   autoDestino.set(a);
   if(estado.origem && estado.origem.iata===a.iata) autoOrigem.set(null);
   $('#buscar').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'});
@@ -878,7 +1244,8 @@ function campo(n){return document.querySelector(`[data-campo="${n}"]`)}
 function erro(n,msg){const c=campo(n);c.classList.add('erro');c.querySelector('.msg-erro').textContent=msg}
 function limparErro(n){const c=campo(n);if(c){c.classList.remove('erro');c.querySelector('.msg-erro').textContent=''}}
 
-function validar(){
+function validar(){ return [...validarViagem(), ...validarContato()]; }
+function validarViagem(){
   const erros = [];
   const add = (n,m)=>{erro(n,m);erros.push(n)};
   if(!estado.origem) add('origem','Escolha a cidade de saída na lista.');
@@ -897,6 +1264,11 @@ function validar(){
     if(!p || p<=0) add('petPeso','Informe o peso em kg.');
     if(!document.querySelector('input[name="petLocal"]:checked')) add('petLocal','Escolha cabine ou porão.');
   }
+  return erros;
+}
+function validarContato(){
+  const erros = [];
+  const add = (n,m)=>{erro(n,m);erros.push(n)};
   const nome = $('#nome').value.trim();
   if(nome.split(/\s+/).length<2) add('nome','Informe nome e sobrenome.');
   const zap = $('#whatsapp').value.replace(/\D/g,'');
@@ -909,6 +1281,14 @@ function validar(){
 /* =========================================================
    ENVIO  (por enquanto salva no navegador; depois → Firebase)
    ========================================================= */
+/* ---------- indicação: quem chega por ?indicacao=CODIGO fica marcado por 60 dias ---------- */
+const CHAVE_IND = 'vpo_indicacao';
+(function(){
+  const c = (new URLSearchParams(location.search).get('indicacao')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,20);
+  if(c) try{ localStorage.setItem(CHAVE_IND, JSON.stringify({c, em:Date.now()})); }catch(e){}
+})();
+function indicacao(){ try{ const x = JSON.parse(localStorage.getItem(CHAVE_IND)); return x && Date.now()-x.em < 60*864e5 ? x.c : ''; }catch(e){ return ''; } }
+function tokenViagem(){ const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789', a = new Uint32Array(22); crypto.getRandomValues(a); return [...a].map(x=>c[x%c.length]).join(''); }
 function gerarId(){
   const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s='';
   for(let i=0;i<5;i++) s+=c[Math.floor(Math.random()*c.length)];
@@ -921,7 +1301,10 @@ function montarPedido(){
     local: document.querySelector('input[name="petLocal"]:checked').value
   } : null;
   const limpo = a => ({iata:a.iata,cidade:a.cidade,aeroporto:a.aeroporto,pais:a.pais});
+  const ind = indicacao();
   return {
+    ...(ind ? {indicadoPor: ind} : {}),
+    viagemToken: tokenViagem(),
     id: gerarId(),
     criadoEm: new Date().toISOString(),
     status: 'nova',
@@ -972,30 +1355,59 @@ function salvarTeste(p){
   try{localStorage.setItem(CONFIG.chaveStorage,JSON.stringify(l))}catch(e){console.warn('Não foi possível salvar no navegador',e)}
 }
 
+/* ---------- etapas do pedido ---------- */
+function irEtapa(n){
+  $('#etapa1').hidden = n!==1; $('#etapa2').hidden = n!==2;
+  $('#pf1').className = 'pf ' + (n===1 ? 'on' : 'ok'); $('#pf1').querySelector('b').textContent = n===1 ? '1' : '✓';
+  $('#pf2').className = 'pf' + (n===2 ? ' on' : ''); $('#pfLn').classList.toggle('ok', n===2);
+}
+function mostrarErros(erros){
+  const primeiro = campo(erros[0]);
+  primeiro.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'center'});
+  const foco = primeiro.querySelector('input,button'); if(foco) setTimeout(()=>foco.focus({preventScroll:true}),250);
+}
+$('#continuar').addEventListener('click',()=>{
+  const erros = validarViagem();
+  if(erros.length) return mostrarErros(erros);
+  const o=estado.origem, d=estado.destino, ida=$('#ida').value, volta=$('#volta').value, m=Number(document.querySelector('input[name="malas"]:checked').value);
+  $('#resRota').textContent = `${o.iata} → ${d.iata}`;
+  $('#resInfo').textContent = [ida ? dataCurta(ida).split(' · ')[0] + (tipoAtual()==='ida_volta' && volta ? ' a ' + dataCurta(volta).split(' · ')[0] : ' · só ida') : '', textoPax(), m ? `${m} mala${m>1?'s':''} por pessoa` : 'só mala de mão'].filter(Boolean).join(' · ');
+  irEtapa(2);
+  $('#buscar').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'});
+  setTimeout(()=>{ const n=$('#nome'); if(!n.value) n.focus({preventScroll:true}); }, 350);
+});
+$('#alterar').addEventListener('click',()=>irEtapa(1));
+
 $('#form').addEventListener('submit',async e=>{
   e.preventDefault();
-  const erros = validar();
+  if(!$('#etapa1').hidden){ $('#continuar').click(); return; }
+  const ev = validarViagem();
+  if(ev.length){ irEtapa(1); return mostrarErros(ev); }
+  const erros = validarContato();
   if(erros.length){
-    const primeiro = campo(erros[0]);
-    primeiro.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'center'});
-    const foco = primeiro.querySelector('input,button'); if(foco) setTimeout(()=>foco.focus({preventScroll:true}),250);
-    return;
+    return mostrarErros(erros);
   }
-  const btn = $('#enviar'); btn.disabled = true;
+  const btn = $('#enviar'); btn.disabled = true; btn.classList.add('enviando'); btn.querySelector('span').textContent = 'Enviando…';
   const pedido = montarPedido();
   $('#erroEnvio').textContent = '';
   try{ await enviarPedido(pedido); }
   catch(err){
     console.error(err);
-    btn.disabled = false;
+    btn.disabled = false; btn.classList.remove('enviando'); btn.querySelector('span').textContent = 'Pedir cotação';
     $('#erroEnvio').textContent = 'Não conseguimos enviar seu pedido agora. Confira a internet e tente de novo, ou chame a gente no WhatsApp.';
     return;
   }
-  btn.disabled = false;
+  btn.classList.remove('enviando'); btn.classList.add('pronto'); btn.querySelector('span').textContent = 'Enviado';
+  await new Promise(r=>setTimeout(r,450));
+  btn.disabled = false; btn.classList.remove('pronto'); btn.querySelector('span').textContent = 'Pedir cotação';
   $('#protocolo').textContent = pedido.id;
+  $('#linkViagem').href = 'viagem.html?v=' + pedido.viagemToken;
+  try{ localStorage.setItem('vpo_ultimo_pedido', JSON.stringify({v:pedido.viagemToken, id:pedido.id, em:Date.now()})); }catch(e){}
   const z = pedido.cliente.whatsapp;
   const zFmt = `(${z.slice(0,2)}) ${z.slice(2,z.length-4)}-${z.slice(-4)}`;
-  $('#sucessoTxt').textContent = `Em breve você recebe no WhatsApp ${zFmt} a imagem da cotação e o link para aprovar e pagar.`;
+  $('#sucessoTxt').innerHTML = `Em breve você recebe a cotação no WhatsApp <b>${zFmt}</b>.`;
+  $('#sucRota').textContent = `${pedido.origem.iata} → ${pedido.destino.iata}`;
+  $('#sucInfo').textContent = (pedido.dataVolta ? `${dataCurta(pedido.dataIda).split(' · ')[0]} a ${dataCurta(pedido.dataVolta).split(' · ')[0]}` : `${dataCurta(pedido.dataIda).split(' · ')[0]} · só ida`) + ' · ' + textoPax();
   $('#form').style.display='none';
   const s = $('#sucesso'); s.classList.remove('aberto'); void s.offsetWidth; s.classList.add('aberto');
   s.closest('.cartao').scrollIntoView({behavior:'smooth',block:'start'});
@@ -1010,8 +1422,58 @@ $('#novo').addEventListener('click',()=>{
   estado.pax={adultos:1,criancas:0,bebes:0}; atualizarPax();
   document.querySelector('input[name="malas"][value="0"]').checked=true;
   $('#temPet').checked=false; $('#petPainel').classList.remove('aberto');
+  mostrarData('ida'); mostrarData('volta'); irEtapa(1);
   $('#origem').focus();
 });
+
+/* ---------- barra fixa, menu e "acompanhar pedido" ---------- */
+(()=>{
+  const barra = $('#barra'), menu = $('#menuB'), nav = $('#navB');
+  const ver = ()=>barra.classList.toggle('on', scrollY > 420);
+  addEventListener('scroll', ver, {passive:true}); ver();
+  menu.addEventListener('click',()=>{ const ab = !nav.classList.contains('aberto'); nav.classList.toggle('aberto', ab); menu.setAttribute('aria-expanded', ab); });
+  nav.addEventListener('click',()=>{ nav.classList.remove('aberto'); menu.setAttribute('aria-expanded', false); });
+  $$('.acompanhar').forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault();
+    let u = null; try{ u = JSON.parse(localStorage.getItem('vpo_ultimo_pedido')); }catch(x){}
+    if(u && u.v) location.href = 'viagem.html?v=' + encodeURIComponent(u.v);
+    else window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('Olá! Fiz um pedido de cotação e queria saber como está.')}`, '_blank', 'noopener');
+  }));
+  // destaca no menu a seção que está na tela
+  const secs = ['h-dest','h-como','h-faq'].map(id=>document.getElementById(id)).filter(Boolean);
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting) $$('.nav-b a').forEach(a=>a.classList.toggle('on', a.getAttribute('href')==='#'+en.target.id)); }), {rootMargin:'-40% 0px -55% 0px'});
+    secs.forEach(el=>io.observe(el));
+  }
+  mostrarData('ida'); mostrarData('volta');
+})();
+
+/* ---------- dúvidas: uma aberta por vez ---------- */
+$$('#faqLista details').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open) $$('#faqLista details').forEach(o=>{ if(o!==d) o.open=false; }); }));
+
+/* ---------- avaliações publicadas no painel ---------- */
+const escH = t => String(t??'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CORES_AV = ['#7A3FC4','#0E7C86','#E0611C','#2F78C4','#1E8E5A','#C8104E'];
+async function carregarAvaliacoes(){
+  let lista = [];
+  try{
+    if(!FIREBASE_ATIVO){ lista = (JSON.parse(localStorage.getItem('dcnp_avaliacoes_teste'))||[]).filter(a=>a.publicada); }
+    else{
+      await comPrazo(conectar(), 15000);
+      const q = fsSite.query(fsSite.collection(dbSite,'avaliacoes'), fsSite.where('publicada','==',true));
+      lista = (await comPrazo(fsSite.getDocs(q), 15000)).docs.map(d=>d.data());
+    }
+  }catch(e){ console.warn('avaliações', e); return; }
+  if(!lista.length) return;
+  lista.sort((a,b)=>String(b.publicadaEm||'').localeCompare(String(a.publicadaEm||'')));
+  $('#avals').innerHTML = lista.slice(0,9).map((a,i)=>{ const n=Math.max(1,Math.min(5,Number(a.estrelas)||5));
+    return `<li class="aval"><div class="estrelas" aria-label="${n} de 5 estrelas">${'★'.repeat(n)}<span>${'★'.repeat(5-n)}</span></div>
+      ${a.texto?`<blockquote>“${escH(a.texto)}”</blockquote>`:''}
+      <div class="quem"><i style="background:${CORES_AV[i%CORES_AV.length]}">${escH((a.nome||'?').trim()[0]||'?')}</i><div><b>${escH(a.nome)}</b><span>${escH([a.rota,a.quando].filter(Boolean).join(' · '))}</span></div><span class="selo">✓ Cliente</span></div>
+      ${a.print?`<img src="${escH(a.print)}" alt="Print da conversa com ${escH(a.nome)}" loading="lazy">`:''}</li>`; }).join('');
+  $('#secAval').hidden = false;
+}
+carregarAvaliacoes();
 
 /* ---------- pedidos de teste ---------- */
 const dlg = $('#dlgTeste');

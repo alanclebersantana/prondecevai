@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Minha viagem · Vai pra onde?</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E3B7A">
+<script src="firebase-config.js"></script>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ceu:#0E3B7A; --ceu-2:#2F78C4; --ceu-claro:#E6EFF9; --horizonte:#FFD2A8;
+  --sol:#FF7A2E; --sol-esc:#E0611C; --sol-claro:#FFF1E7;
+  --tinta:#13233F; --tinta-2:#4A5B76; --nevoa:#EEF3F9; --linha:#D3DEEA;
+  --erro:#C2261E; --ok:#1E8E5A; --ok-claro:#E5F5EC;
+  --fonte:"Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--fonte);color:var(--tinta);background:var(--nevoa);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sol);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+
+/* topo com a foto do site */
+.ceu{color:#fff;padding:22px 20px 92px;
+  background:linear-gradient(90deg,rgba(9,32,70,.88) 0%,rgba(9,32,70,.55) 50%,rgba(9,32,70,.15) 100%),url("ceu-asa.jpg") right 35% / cover no-repeat,linear-gradient(180deg,var(--ceu),var(--ceu-2))}
+.marca{display:flex;align-items:center;gap:10px;max-width:640px;margin:0 auto}
+.marca img{width:40px;height:40px;border-radius:50%;box-shadow:0 2px 8px rgba(9,32,70,.35)}
+.marca b{font-weight:800;font-size:1.15rem;line-height:1}
+.marca small{display:block;font-weight:500;font-size:.78rem;opacity:.85;margin-top:3px}
+.rota-grande{max-width:640px;margin:34px auto 0;font-weight:800;font-size:clamp(2.6rem,11vw,4rem);letter-spacing:-.02em;line-height:1;text-shadow:0 2px 14px rgba(0,0,0,.3)}
+
+main{max-width:640px;margin:-64px auto 40px;padding:0 14px;position:relative;z-index:1}
+.cartao{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);padding:24px 22px;margin-bottom:16px}
+.ola{font-weight:700;font-size:1.35rem;margin:0}
+.vai{font-weight:800;font-size:clamp(1.8rem,7vw,2.3rem);color:var(--sol-esc);margin:4px 0 2px;line-height:1.1}
+.bora{color:var(--tinta-2);margin:0}
+hr{border:0;border-top:1px solid var(--linha);margin:18px 0}
+.linha{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--linha);font-size:.98rem}
+.linha:last-child{border-bottom:0}
+.linha span{color:var(--tinta-2)}
+.linha b{text-align:right;font-weight:600}
+.sub{color:var(--tinta-2);font-size:.95rem;margin:0}
+.validade{display:flex;align-items:center;gap:10px;background:var(--ceu-claro);color:var(--ceu);border-radius:14px;padding:12px 14px;font-weight:600;font-size:.95rem;margin-top:16px}
+.validade.fim{background:#FDECEA;color:var(--erro)}
+
+h2{font-size:1.2rem;margin:0 0 4px}
+.nota{color:var(--tinta-2);font-size:.9rem;margin:4px 0 0}
+.economia{margin-top:14px;background:var(--ok-claro);border-radius:14px;padding:12px 14px}
+.economia small{display:block;color:var(--tinta-2);font-size:.88rem}
+.economia b{color:var(--ok);font-size:1.08rem}
+.opcoes{display:grid;gap:10px;margin-top:14px}
+.opcao{display:flex;align-items:center;gap:12px;border:2px solid var(--linha);border-radius:14px;padding:13px 14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+.opcao input{width:20px;height:20px;accent-color:var(--sol);flex:none;margin:0}
+.opcao .t{flex:1}
+.opcao .t b{display:block;font-weight:700}
+.opcao .t small{color:var(--tinta-2)}
+.opcao .v{font-weight:800;white-space:nowrap}
+.opcao.pix .v{color:var(--sol-esc);font-size:1.25rem}
+.opcao:has(input:checked){border-color:var(--sol);background:var(--sol-claro)}
+.grupo-cartao{font-weight:700;color:var(--ceu);margin:8px 0 -2px;font-size:.95rem}
+
+.pax{border:1px solid var(--linha);border-radius:14px;padding:14px;margin-top:12px}
+.pax .tit{font-weight:700;margin-bottom:6px}
+.campo{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.campo label{font-weight:600;font-size:.9rem}
+.campo input{border:1.5px solid var(--linha);border-radius:12px;padding:12px 13px;background:#fff;width:100%}
+.campo input:focus{border-color:var(--ceu-2);outline:0}
+.campo.erro input{border-color:var(--erro)}
+.campo .msg{color:var(--erro);font-size:.82rem;min-height:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){ .g2{grid-template-columns:1fr} }
+.aceite{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:.92rem}
+.aceite input{width:20px;height:20px;accent-color:var(--sol);margin-top:2px;flex:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:15px 20px;font-weight:700;font-size:1.05rem;cursor:pointer;text-decoration:none;width:100%}
+.btn.pri{background:var(--sol);color:#fff;box-shadow:0 10px 24px -10px rgba(224,97,28,.7)}
+.btn.pri:hover{background:var(--sol-esc)}
+.btn.pri:disabled{opacity:.6;cursor:wait}
+.btn.sec{background:#fff;color:var(--ceu);border:2px solid var(--linha);margin-top:10px}
+.btn.zap{background:#1FA855;color:#fff;margin-top:10px}
+.erro-geral{color:var(--erro);font-weight:600;margin-top:10px;font-size:.95rem}
+
+.pix-box{background:var(--sol-claro);border-radius:16px;padding:16px;margin-top:14px}
+.pix-box .valor{font-weight:800;font-size:2rem;color:var(--sol-esc);line-height:1.1}
+.pix-qr{display:flex;justify-content:center;margin:14px 0 4px}
+.pix-qr svg,.pix-qr img{width:220px;height:220px;background:#fff;border-radius:12px;padding:8px}
+.pax-salvos{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.pax-salvos .nota{width:100%;margin:0}
+.pax-salvos button{border:1.5px solid var(--ceu-2);background:var(--ceu-claro);color:var(--ceu);border-radius:999px;padding:5px 12px;font-weight:600;font-size:.88rem;cursor:pointer}
+.pax-salvos button.on{background:var(--ceu);color:#fff}
+.doc-salvo{font-size:.82rem;color:var(--tinta-2);margin-top:4px}
+.doc-salvo button{background:none;border:0;color:var(--ceu-2);text-decoration:underline;cursor:pointer;padding:0;font:inherit}
+.copia{display:flex;gap:8px;margin-top:10px}
+.copia code{flex:1;min-width:0;background:#fff;border:1px dashed var(--linha);border-radius:10px;padding:10px;font-size:.78rem;word-break:break-all;max-height:84px;overflow:auto}
+.ok-topo{display:flex;align-items:center;gap:12px}
+.ok-topo .sel{width:44px;height:44px;border-radius:50%;background:var(--ok-claro);color:var(--ok);display:grid;place-items:center;font-size:1.5rem;flex:none}
+.carregando{text-align:center;color:var(--tinta-2);padding:40px 10px}
+.rodape{text-align:center;color:var(--tinta-2);font-size:.82rem;margin:20px 0 30px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:640px){ .ceu{background-image:linear-gradient(180deg,rgba(9,32,70,.55) 0%,rgba(9,32,70,.35) 50%,rgba(9,32,70,.65) 100%),url("ceu-asa-celular.jpg"),linear-gradient(180deg,var(--ceu),var(--ceu-2));background-position:center 30%;background-size:cover} }
+
+/* minha viagem */
+.contagem{display:flex;align-items:baseline;gap:8px;background:var(--sol-claro);color:var(--sol-esc);border-radius:14px;padding:12px 16px;margin-top:14px;font-weight:700}
+.contagem b{font-size:2rem;line-height:1}
+.linha-tempo{list-style:none;margin:6px 0 0;padding:0}
+.linha-tempo li{display:flex;gap:12px;align-items:flex-start;position:relative;padding:0 0 18px}
+.linha-tempo li:last-child{padding-bottom:0}
+.linha-tempo li::before{content:"";position:absolute;left:15px;top:32px;bottom:2px;width:2px;background:var(--linha)}
+.linha-tempo li:last-child::before{display:none}
+.linha-tempo .pt{width:32px;height:32px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:.95rem;background:#fff;border:2px solid var(--linha);color:var(--tinta-2);position:relative;z-index:1}
+.linha-tempo li.feito .pt{background:var(--ok);border-color:var(--ok);color:#fff}
+.linha-tempo li.feito::before{background:var(--ok)}
+.linha-tempo li.atual .pt{background:var(--sol);border-color:var(--sol);color:#fff;box-shadow:0 0 0 6px rgba(255,122,46,.18)}
+.linha-tempo .tx{padding-top:4px}
+.linha-tempo .tx b{display:block}
+.linha-tempo .tx small{color:var(--tinta-2)}
+.linha-tempo li:not(.feito):not(.atual) .tx b{color:var(--tinta-2);font-weight:600}
+.loc{background:var(--ceu-claro);border-radius:14px;padding:12px 16px;margin-top:10px}
+.loc small{display:block;color:var(--tinta-2);font-weight:600}
+.loc b{font-size:1.9rem;letter-spacing:.04em;color:var(--ceu)}
+.cartoes{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:10px}
+.cartoes a{display:block;border:1px solid var(--linha);border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:var(--ceu);font-weight:700;font-size:.85rem;text-align:center}
+.cartoes img{display:block;width:100%;height:180px;object-fit:cover;object-position:top}
+.cartoes span{display:block;padding:8px}
+.encerrado{background:#FDECEA;color:var(--erro);border-radius:14px;padding:12px 16px;font-weight:600;margin-top:12px}
+
+/* ===== visual novo: foto do destino, selo de contagem, andamento em linha, bilhete ===== */
+.ceu.destino{position:relative;padding:22px 20px 96px;min-height:290px;background:linear-gradient(180deg,rgba(9,25,55,.4),rgba(9,25,55,.08) 40%,rgba(9,25,55,.82)),var(--foto, url("ceu-asa.jpg")) center/cover no-repeat,linear-gradient(180deg,var(--ceu),var(--ceu-2))}
+.topo-tx{max-width:640px;margin:70px auto 0;position:relative;padding-right:100px}
+.topo-tx p{margin:0;font-size:1rem;opacity:.92;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.topo-tx h1{margin:2px 0 0;font-size:clamp(2.2rem,9vw,3.2rem);line-height:1.02;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.selo-dias{position:absolute;right:0;bottom:-6px;width:92px;height:92px;border-radius:50%;background:var(--sol);color:#fff;border:4px solid #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.3);text-align:center;line-height:1}
+.selo-dias b{font-size:2rem}.selo-dias small{font-size:.68rem;font-weight:800;letter-spacing:.06em;margin-top:2px}
+.selo-dias.hoje{font-size:.95rem;font-weight:800;padding:6px}
+.prog{display:flex;justify-content:space-between;position:relative;margin:8px 0 0}
+.prog::before{content:"";position:absolute;left:18px;right:18px;top:17px;height:4px;background:var(--linha);border-radius:2px}
+.prog .barra{position:absolute;left:18px;top:17px;height:4px;background:var(--ok);border-radius:2px;transition:width .5s}
+.prog .st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:60px;text-align:center;font-size:.72rem;font-weight:700;color:var(--tinta-2)}
+.prog .st i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:#fff;border:2px solid var(--linha);font-size:.95rem;margin-bottom:5px}
+.prog .st.ok{color:var(--tinta)}.prog .st.ok i{background:var(--ok);border-color:var(--ok);color:#fff}
+.prog .st.at{color:var(--sol-esc)}.prog .st.at i{background:var(--sol);border-color:var(--sol);color:#fff;box-shadow:0 0 0 5px rgba(255,122,46,.2)}
+.agora{margin-top:12px;background:var(--ok-claro);color:var(--ok);border-radius:12px;padding:10px 14px;font-weight:700;font-size:.92rem}
+.loc{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--linha)}
+.loc small{letter-spacing:.05em;font-size:.74rem;font-weight:800}
+.loc b{display:block}
+.loc button{border:0;background:var(--ceu-claro);color:var(--ceu);font-weight:800;border-radius:10px;padding:9px 13px;cursor:pointer;font-size:.88rem}
+.loc a{display:block;font-size:.82rem;color:var(--ceu-2);font-weight:700;text-decoration:none;margin-top:2px}
+.trecho{padding:10px 0 4px}
+.trecho .lb{font-size:.74rem;font-weight:800;letter-spacing:.08em;color:var(--sol-esc);margin-bottom:2px;text-transform:uppercase}
+.trecho .lb .tc{background:var(--nevoa);color:var(--ceu);border-radius:6px;padding:1px 6px;margin-left:4px;letter-spacing:0}
+.lin{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.lin .h{font-size:1.5rem;font-weight:800;line-height:1.05}
+.lin .h small{display:block;font-size:.78rem;color:var(--tinta-2);font-weight:600}
+.lin .h.r{text-align:right}
+.via{position:relative;height:40px}
+.via::before{content:"";position:absolute;left:0;right:0;top:19px;border-top:2px dashed #B9C6D8}
+.via i{position:absolute;top:13px;width:14px;height:14px;border-radius:50%;background:#fff;border:3.5px solid var(--sol);transform:translateX(-50%)}
+.via .em{position:absolute;top:-1px;left:0;right:0;text-align:center;font-size:.72rem;font-weight:800;color:var(--sol-esc)}
+.via .em.direto{color:var(--ok)}
+.via .u{position:absolute;bottom:-4px;left:0;right:0;text-align:center;font-size:.74rem;color:var(--tinta-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pe{margin-top:12px;font-size:.88rem;color:var(--tinta-2)}
+.bts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bts .btn{margin-top:0;font-size:.95rem;padding:14px 8px;white-space:nowrap}
+.btn.agd{background:#fff;color:var(--ceu);border:1.5px solid var(--linha)}
+.btn{transition:transform .15s}.btn:active{transform:scale(.97)}
+.voando{display:flex;flex-direction:column;align-items:center;gap:6px;padding:34px 10px;color:var(--tinta-2);font-weight:600}
+.voando svg{width:220px;height:64px;overflow:visible}
+.voando .av{offset-path:path("M10 52 Q110 -6 210 52");animation:ida-volta 2.4s ease-in-out infinite alternate;offset-rotate:auto}
+@keyframes ida-volta{from{offset-distance:4%}to{offset-distance:96%}}
+.toast{display:flex;gap:9px;align-items:center;background:#fff;color:var(--tinta);border-left:4px solid var(--ok);box-shadow:0 10px 24px -8px rgba(19,35,63,.35)}
+.toast::before{content:"✓";width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--ok-claro);color:var(--ok);font-size:.8rem;flex:none}
+@media (max-width:420px){ .prog .st{width:52px;font-size:.66rem} .prog .st i{width:32px;height:32px} .lin .h{font-size:1.3rem} }
+</style>
+</head>
+<body>
+<header class="ceu destino" id="topo">
+  <div class="marca"><img src="logo-192.png" alt=""><div><b>Vai pra onde?</b><small id="numPed">Minha viagem</small></div></div>
+  <div class="topo-tx"><p id="ola">&nbsp;</p><h1 id="destinoNome">&nbsp;</h1><div id="seloDias"></div></div>
+</header>
+<main>
+  <div class="cartao carregando" id="carregando"><div class="voando"><svg viewBox="0 0 220 64" aria-hidden="true"><path d="M10 52 Q110 -6 210 52" fill="none" stroke="#B9C6D8" stroke-width="2.5" stroke-dasharray="3 8" stroke-linecap="round"/><circle cx="10" cy="52" r="5" fill="#FF7A2E"/><circle cx="210" cy="52" r="5" fill="#0E3B7A"/><g class="av"><path transform="rotate(90) translate(-12 -12)" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="#0E3B7A"/></g></svg><span id="carregandoTxt">Buscando a sua viagem…</span></div></div>
+  <div class="cartao" id="semViagem" hidden>
+    <h2>Recebemos o seu pedido! ✈️</h2>
+    <p class="sub">Assim que a gente começar a cotar, o andamento aparece aqui. Pode deixar esta página salva.</p>
+    <a class="btn zap" id="semZap" href="#" target="_blank" rel="noopener">Falar com a agência no WhatsApp</a>
+  </div>
+  <section id="viagem" hidden>
+    <div class="cartao">
+      <div id="encerrado"></div>
+      <div id="andamentoBox"><h2 style="margin:0 0 6px">Andamento</h2>
+      <div class="prog" id="prog"></div>
+      <div class="agora" id="agora"></div></div>
+      <div id="cotacaoBox"></div>
+    </div>
+    <div class="cartao" id="voosBox" hidden>
+      <h2 style="margin:0 0 4px">Seus voos</h2>
+      <div id="locs"></div>
+      <div id="trechos" style="margin-top:6px"></div>
+      <div class="pe" id="pe"></div>
+    </div>
+    <div class="cartao" id="cartoesBox" hidden>
+      <h2 style="margin:0 0 4px">Cartões de embarque</h2>
+      <p class="nota">Toque para abrir e salvar no celular. Mostre no embarque junto com o documento.</p>
+      <div class="cartoes" id="cartoes"></div>
+    </div>
+    <div class="bts"><a class="btn zap" id="zap" href="#" target="_blank" rel="noopener">💬 WhatsApp</a><button type="button" class="btn agd" id="agenda" hidden>📅 Salvar na agenda</button></div>
+  </section>
+  <p class="rodape">Vai pra onde? · passagens com milhas<br>Emitimos a sua passagem e ainda fazemos o seu check-in.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtData = iso => { if(!iso) return '—'; const [a,m,d] = iso.slice(0,10).split('-'); return `${d}/${m}/${a}`; };
+const fmtHora = d => new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const zap = (num, msg) => num ? `https://wa.me/${String(num).replace(/\D/g,'').replace(/^(?!55)/,'55')}?text=${encodeURIComponent(msg)}` : '#';
+const ZAP_AGENCIA = '35920001121';
+const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const FIREBASE_ATIVO = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey);
+const token = (new URLSearchParams(location.search).get('v') || '').replace(/[^A-Za-z0-9_-]/g,'').slice(0,64);
+let fs = null, db = null;
+async function conectar(){
+  if(db) return;
+  const [app, f] = await Promise.all([import(SDK+'firebase-app.js'), import(SDK+'firebase-firestore.js')]);
+  const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+  fs = f; db = f.getFirestore(a);
+}
+async function buscar(){
+  if(!FIREBASE_ATIVO){ const t = JSON.parse(localStorage.getItem('dcnp_viagens_teste')||'{}')[token]; return t ? {dados:t, cartoes:t.cartoesImg||[]} : null; }
+  await conectar();
+  const s = await fs.getDoc(fs.doc(db,'viagens',token)); if(!s.exists()) return null;
+  const dados = s.data(); let cartoes = [];
+  if(dados.cartoes){ const cs = await fs.getDocs(fs.collection(db,'viagens',token,'cartoes')); cartoes = cs.docs.sort((a,b)=>a.id.localeCompare(b.id)).map(d=>d.data().dados).filter(Boolean); }
+  return {dados, cartoes};
+}
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('on'),2200); }
+async function copiar(t, msg){ try{ await navigator.clipboard.writeText(t); }catch(e){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); } toast(msg); }
+const slug = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const SITE_CIA = {GOL:'https://www.voegol.com.br', LATAM:'https://www.latamairlines.com/br/pt', AZUL:'https://www.voeazul.com.br'};
+const DIAS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+function dataBilhete(iso){ if(!iso) return ''; const [a,m,d] = iso.slice(0,10).split('-').map(Number); return `${DIAS[new Date(a,m-1,d).getDay()]} ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`; }
+function fmtMin(mi){ if(mi==null || !isFinite(mi)) return ''; const h = Math.floor(mi/60), m = Math.round(mi%60); return h ? `${h}h${m?String(m).padStart(2,'0'):''}` : `${m}min`; }
+function paradasDe(v){
+  if(!v) return {q:null, es:[]};
+  if(v.nParadas!=null) return {q:Number(v.nParadas)||0, es:(v.escalas||[]).map(e=>({local:e.local||'', t:fmtMin(e.min)}))};
+  const t = String(v.paradas||''); if(!t) return {q:null, es:[]};
+  if(/direto/i.test(t)) return {q:0, es:[]};
+  const q = Number((t.match(/^(\d+)/)||[])[1])||0, det = t.split(':').slice(1).join(':');
+  const es = det ? det.split(',').map(x=>{ const m = x.trim().match(/^([^()]*?)\s*(?:\(([^)]*?) de espera\))?$/); return {local:(m?.[1]||'').replace('?','').trim(), t:m?.[2]||''}; }) : [];
+  return {q, es};
+}
+function trechoHTML(rot, v, de, para, ciaDif){
+  if(!v || !(v.voo || v.saida)) return '';
+  const {q, es} = paradasDe(v);
+  const pontos = q ? Array.from({length:q},(_,i)=>`<i style="left:${(100*(i+1)/(q+1)).toFixed(1)}%"></i>`).join('') : '';
+  const em = q==null ? '' : q===0 ? '<span class="em direto">voo direto</span>' : `<span class="em">${q} parada${q>1?'s':''}</span>`;
+  const u = es.filter(e=>e.local||e.t).map(e=>[e.local,e.t].filter(Boolean).join(' · ')).join(' + ');
+  return `<div class="trecho"><div class="lb">${rot}${v.data?' · '+dataBilhete(v.data):''}${v.voo?' · '+esc(v.voo):''}${ciaDif&&v.cia?`<span class="tc">${esc(v.cia)}</span>`:''}</div>
+    <div class="lin"><div class="h">${esc(v.saida||'--:--')}<small>${esc(de)}</small></div><div class="via">${em}${pontos}${u?`<span class="u">${esc(u)}</span>`:''}</div><div class="h r">${esc(v.chegada||'--:--')}<small>${esc(para)}</small></div></div></div>`;
+}
+// arquivo de calendário (.ics) com os voos da ida e da volta
+function ics(V){
+  const z = n => String(n).padStart(2,'0'), ev = [];
+  const quando = (data, h) => { const [a,m,d] = data.split('-'); const [hh,mm] = String(h||'').split(':'); return `${a}${m}${d}T${z(hh||0)}${z(mm||0)}00`; };
+  const um = (rot, v, de, para, loc) => {
+    if(!v?.data || !v.saida) return;
+    let fim = v.chegada ? quando(v.data, v.chegada) : null; const ini = quando(v.data, v.saida);
+    if(fim && fim <= ini){ const dt = new Date(v.data+'T12:00:00'); dt.setDate(dt.getDate()+1); fim = quando(`${dt.getFullYear()}-${z(dt.getMonth()+1)}-${z(dt.getDate())}`, v.chegada); }
+    ev.push(['BEGIN:VEVENT', `UID:${V.pedidoId}-${rot}@vaipraonde`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').slice(0,15)}Z`, `DTSTART:${ini}`, fim?`DTEND:${fim}`:'', `SUMMARY:✈ ${rot} ${de} → ${para}${v.voo?' ('+v.voo+')':''}`, `LOCATION:${de}`, `DESCRIPTION:${loc?'Localizador '+loc+'. ':''}Chegue ao aeroporto com antecedência. Pedido ${V.pedidoId} · Vai pra onde?`, 'BEGIN:VALARM','TRIGGER:-PT3H','ACTION:DISPLAY','DESCRIPTION:Hora de ir para o aeroporto','END:VALARM','END:VEVENT'].filter(Boolean).join('\r\n'));
+  };
+  const L = V.localizadores||[];
+  um('Ida', V.ida, V.origem.iata, V.destino.iata, L[0]); um('Volta', V.volta, V.destino.iata, V.origem.iata, L[1]||L[0]);
+  return ev.length ? ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Vai pra onde//Minha viagem//PT','CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n') : '';
+}
+const ETAPAS = [['Pedido','Pedido recebido! A gente já está procurando as melhores tarifas.','📝'],['Cotação','A sua cotação está pronta para você aprovar.','💬'],['Pago','Pagamento confirmado. Agora a gente emite a sua passagem.','💳'],['Emitida','Passagem emitida! O check-in a gente faz quando abrir.','🎫'],['Check-in','Check-in feito! Os cartões de embarque estão aqui embaixo. Boa viagem!','📲']];
+function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
+const vooTxt = v => v ? [fmtData(v.data), v.voo, (v.saida||v.chegada)?`${v.saida||'?'} → ${v.chegada||'?'}`:''].filter(Boolean).join(' · ') : '';
+let fotoTestada = '';
+function montar(V, cartoes){
+  document.title = `Minha viagem ${V.pedidoId} · Vai pra onde?`;
+  $('#numPed').textContent = `Pedido ${V.pedidoId}`;
+  $('#ola').textContent = (V.nome ? `Olá, ${V.nome}! ` : 'Olá! ') + 'Sua viagem para';
+  $('#destinoNome').textContent = V.destino.cidade;
+  // foto do destino (a mesma dos cartões do site, ex.: salvador.jpg); sem foto, fica a do céu com a asa
+  const foto = slug(V.destino.cidade) + '.jpg';
+  if(fotoTestada !== foto){ fotoTestada = foto; const im = new Image(); im.onload = ()=>$('#topo').style.setProperty('--foto', `url("${foto}")`); im.src = foto; }
+  const ida = new Date(`${V.ida?.data}T12:00:00`), dias = Math.ceil((ida - new Date())/864e5);
+  $('#seloDias').innerHTML = V.cancelado || !V.ida?.data ? '' : dias>0 ? `<div class="selo-dias"><b>${dias}</b><small>${dias>1?'DIAS':'DIA'}</small></div>` : (dias===0 ? `<div class="selo-dias hoje">É hoje!<br>✈</div>` : '');
+  $('#encerrado').innerHTML = V.cancelado ? `<div class="encerrado">Este pedido foi encerrado. Se quiser viajar ainda, fale com a gente pelo WhatsApp.</div>` : '';
+  $('#andamentoBox').hidden = !!V.cancelado;
+  if(!V.cancelado){
+    const feito = i => i<V.etapa || (i===V.etapa && i===4);
+    $('#prog').innerHTML = `<span class="barra" style="width:calc(${(Math.min(V.etapa,4)/4*100).toFixed(1)}% - ${(Math.min(V.etapa,4)/4*36).toFixed(1)}px)"></span>` + ETAPAS.map(([t,,ic],i)=>`<div class="st ${feito(i)?'ok':i===V.etapa?'at':''}"><i>${feito(i)?'✓':ic}</i>${t}</div>`).join('');
+    $('#agora').textContent = (V.etapa>=3 ? '✓ ' : '') + (ETAPAS[V.etapa]||ETAPAS[0])[1];
+  }
+  $('#cotacaoBox').innerHTML = V.cotacao ? `<a class="btn pri" style="margin-top:14px" href="${esc(V.cotacao.link)}">Ver a cotação e aprovar</a><p class="nota" style="text-align:center">Válida até ${fmtHora(V.cotacao.validaAte)} de ${new Date(V.cotacao.validaAte).toLocaleDateString('pt-BR')}</p>` : '';
+  const temVoo = V.ida && (V.ida.voo || V.ida.saida);
+  $('#voosBox').hidden = !temVoo && !(V.localizadores||[]).length;
+  const ciaDe = i => (i ? V.volta?.cia : V.ida?.cia) || '';
+  $('#locs').innerHTML = (V.localizadores||[]).map((l,i,a)=>{ const cia = ciaDe(i), site = SITE_CIA[String(cia).toUpperCase()];
+    return `<div class="loc"><div><small>LOCALIZADOR${a.length>1?(i?' DA VOLTA':' DA IDA'):''}${cia?' · '+esc(cia.toUpperCase()):''}</small><b>${esc(l)}</b>${site?`<a href="${site}" target="_blank" rel="noopener">Conferir no site da ${esc(cia)} →</a>`:''}</div><button type="button" data-copiar="${esc(l)}">Copiar</button></div>`; }).join('');
+  document.querySelectorAll('[data-copiar]').forEach(b=>b.onclick = ()=>copiar(b.dataset.copiar, 'Localizador copiado'));
+  const dif = !!(V.ida?.cia && V.volta?.cia && V.ida.cia!==V.volta.cia);
+  $('#trechos').innerHTML = trechoHTML('Ida', V.ida, V.origem.iata, V.destino.iata, dif) + trechoHTML('Volta', V.volta, V.destino.iata, V.origem.iata, dif);
+  $('#pe').textContent = [V.pax, V.bagagem ? V.bagagem.toLowerCase() : ''].filter(Boolean).join(' · ');
+  $('#cartoesBox').hidden = !cartoes.length;
+  $('#cartoes').innerHTML = cartoes.map((c,i)=>`<a href="${c}" download="cartao-embarque-${V.pedidoId}-${i+1}.jpg" target="_blank"><img src="${c}" alt="Cartão de embarque ${i+1}"><span>Cartão ${i+1} · baixar</span></a>`).join('');
+  $('#zap').href = zap(V.whatsapp||ZAP_AGENCIA, `Olá! Estou acompanhando o meu pedido ${V.pedidoId} (${V.origem.iata} → ${V.destino.iata}).`);
+  const cal = !V.cancelado && V.etapa>=2 ? ics(V) : '';
+  $('#agenda').hidden = !cal;
+  $('#agenda').onclick = ()=>{ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([cal], {type:'text/calendar'})); a.download = `viagem-${V.pedidoId}.ics`; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast('Abra o arquivo para salvar na agenda'); };
+  document.querySelector('.bts').style.gridTemplateColumns = cal ? '' : '1fr';
+  $('#carregando').hidden = true; $('#semViagem').hidden = true; $('#viagem').hidden = false;
+}
+async function carregar(primeira){
+  try{
+    const r = await buscar();
+    if(!r){ if(primeira){ $('#carregando').hidden = true; $('#semViagem').hidden = false; $('#semZap').href = zap(ZAP_AGENCIA, 'Olá! Fiz um pedido de cotação pelo site e queria saber como está.'); } return; }
+    montar(r.dados, r.cartoes);
+  }catch(e){ console.error(e); if(primeira){ $('#carregandoTxt').textContent = 'Não consegui abrir agora. Confira a internet e recarregue a página.'; } }
+}
+if(!token){ $('#carregando').textContent = 'Este link está incompleto. Abra de novo pelo link que mandamos no WhatsApp.'; }
+else { carregar(true); setInterval(()=>{ if(document.visibilityState==='visible') carregar(false); }, 60000); }
+</script>
+</body>
+</html>
