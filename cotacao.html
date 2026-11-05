@@ -107,6 +107,18 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .economia small{display:block;color:var(--tinta-2);font-size:.88rem}
 .economia b{color:var(--ok);font-size:1.08rem}
 .opcoes{display:grid;gap:10px;margin-top:14px}
+.escolha-voo{margin:14px 0;background:#fff;border-radius:20px;padding:16px;box-shadow:0 10px 30px rgba(19,35,63,.08)}
+.escolha-voo[hidden]{display:none}
+.escolha-voo h2{font-size:1.05rem;margin:0 0 4px}
+.escolha-voo .nota{margin:0 0 10px}
+.escolha-voo .ops{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.op-voo{display:flex;flex-direction:column;gap:4px;border:2px solid var(--linha);border-radius:16px;padding:12px 14px;background:#fff;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s,background .15s}
+.op-voo .rot{font-size:.74rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--tinta-2)}
+.op-voo b{font-size:1.2rem;color:var(--sol-esc)}
+.op-voo small{color:var(--tinta-2)}
+.op-voo.on{border-color:var(--sol);background:var(--sol-claro)}
+.op-voo.on .rot{color:var(--sol-esc)}
+@media (max-width:380px){.escolha-voo .ops{grid-template-columns:1fr}}
 .opcao{display:flex;align-items:center;gap:12px;border:2px solid var(--linha);border-radius:14px;padding:13px 14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
 .opcao input{width:20px;height:20px;accent-color:var(--sol);flex:none;margin:0}
 .opcao .t{flex:1}
@@ -186,6 +198,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
       <div class="bl-ft" id="blFt"></div>
       <div class="bl-ex" id="blEx"></div>
     </div>
+    <div class="escolha-voo" id="escolhaVoo" hidden></div>
     <div class="economia" id="economia" hidden></div>
     <div class="validade" id="validade"></div>
 
@@ -327,7 +340,23 @@ function brcode(chave, valor, nome, txid){
 }
 
 /* ---------- tela ---------- */
-let C = null, trocando = false;
+let C = null, trocando = false, opSel = 0;
+// cotação com duas opções de voo (mais barata e mais rápida): troca o bilhete e os valores pela escolhida
+function aplicarOpcao(i){
+  if(!Array.isArray(C.opcoes) || !C.opcoes[i]) return;
+  opSel = i; const o = C.opcoes[i];
+  C.ida = o.ida; C.volta = o.volta; C.valorPix = o.valorPix; C.parcelas = o.parcelas;
+}
+function montarEscolha(){
+  const el = $('#escolhaVoo'); if(!Array.isArray(C.opcoes) || C.opcoes.length<2){ el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<h2>Escolha o seu voo</h2><p class="nota">Separamos duas opções para você.</p><div class="ops">${C.opcoes.map((o,i)=>`<button type="button" class="op-voo ${i===opSel?'on':''}" data-op="${i}" aria-pressed="${i===opSel}"><span class="rot">${esc(o.rotulo)}</span><b>${BRL(o.valorPix)}</b><small>${esc(o.resumo||'')} · no Pix</small></button>`).join('')}</div>`;
+  el.querySelectorAll('[data-op]').forEach(b=>b.addEventListener('click',()=>{
+    const forma = document.querySelector('input[name=forma]:checked')?.value;
+    aplicarOpcao(Number(b.dataset.op)); montarEscolha(); montarBilhete(); montarFormas(forma);
+    $('#economia').hidden = opSel!==0 || !(C.comparacao && C.comparacao.economia>0);
+  }));
+}
 function mostrarSem(tit, txt, msgZap){
   $('#carregando').hidden = true; $('#cotacao').hidden = true; $('#aprovada').hidden = true;
   $('#semCotacao').hidden = false; $('#semTit').textContent = tit; $('#semTxt').textContent = txt;
@@ -376,17 +405,25 @@ function montar(){
   $('#numCot').textContent = `Cotação ${C.pedidoId}`;
   $('#olaTopo').textContent = (C.nome ? `Olá, ${C.nome}! ` : 'Olá! ') + 'Sua viagem para';
   $('#rotaGrande').textContent = C.destino.cidade;
+  if(Array.isArray(C.opcoes) && C.opcoes.length>1){ C.opcoesBase = true; aplicarOpcao(Number(C.resposta?.opcao)||0); }
+  montarEscolha();
   montarBilhete();
   if(C.comparacao && C.comparacao.economia > 0){
     const e = $('#economia'); e.hidden = false;
     e.innerHTML = `<small>Na ${esc(C.comparacao.cia)}, comprando em dinheiro: ${BRL(C.comparacao.preco)}</small><b>Com a gente você economiza ${BRL(C.comparacao.economia)} (${C.comparacao.pct}%)</b>`;
   }
-  // opções de pagamento
+  montarFormas();
+  montarPassageiros();
+}
+function montarFormas(manter){
   const r = C.resposta || {};
   $('#opcoes').innerHTML = `
     <label class="opcao pix"><input type="radio" name="forma" value="pix|0" ${r.forma!=='cartao'?'checked':''}><span class="t"><b>Pix</b><small>à vista, o menor valor</small></span><span class="v">${BRL(C.valorPix)}</span></label>
     <div class="grupo-cartao">Cartão de crédito</div>
     ${(C.parcelas||[]).map(x=>`<label class="opcao"><input type="radio" name="forma" value="cartao|${x.n}" ${r.forma==='cartao'&&r.parcelas===x.n?'checked':''}><span class="t"><b>${x.n}x de ${BRL(x.parcela)}</b><small>${x.n===1?'no cartão':'total '+BRL(x.total)}</small></span></label>`).join('')}`;
+  if(manter){ const i = document.querySelector(`input[name=forma][value="${manter}"]`); if(i) i.checked = true; }
+}
+function montarPassageiros(){
   // passageiros
   const q = C.paxQtd || {adultos:1}, tipos = [];
   for(let i=0;i<(q.adultos||0);i++) tipos.push('Adulto');
@@ -485,7 +522,7 @@ $('#formAprovar').addEventListener('submit', async e=>{
   if(!ok){ primeiro.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>primeiro.focus({preventScroll:true}),300); return; }
   if(!$('#aceite').checked){ $('#erroGeral').hidden = false; $('#erroGeral').textContent = 'Marque a confirmação dos dados para aprovar.'; return; }
   const [forma, parc] = (document.querySelector('input[name=forma]:checked')?.value || 'pix|0').split('|');
-  const resposta = {forma, parcelas: Number(parc)||0, aprovadaEm: new Date().toISOString()};
+  const resposta = {forma, parcelas: Number(parc)||0, aprovadaEm: new Date().toISOString(), ...(Array.isArray(C.opcoes) && C.opcoes.length>1 ? {opcao:opSel} : {})};
   const btn = $('#btnAprovar'); btn.disabled = true; btn.textContent = 'Enviando…'; btn.classList.add('enviando');
   try{
     await comPrazo(gravarResposta(resposta, lista), 20000);

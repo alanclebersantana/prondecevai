@@ -140,6 +140,7 @@ a.btn{text-decoration:none}
 .linha-semdisp{display:flex;gap:8px;align-items:center;font-size:.85rem;font-weight:600}
 .total-milhas{background:var(--fundo);border-radius:9px;padding:8px 10px;font-size:.85rem}
 .total-milhas b{display:block;font-size:1.25rem;color:var(--ceu)}
+.dif-melhor{display:block;margin-top:2px;font-size:.74rem;font-weight:700;color:var(--ok)} .dif-melhor.aviso{color:var(--aviso);font-weight:600}
 .selo-menor{background:var(--card);color:var(--ok);font-size:.7rem;font-weight:800;border-radius:6px;padding:2px 7px}
 .colar{border:1.5px dashed #B6C6D9;border-radius:10px;min-height:86px;display:grid;place-items:center;text-align:center;color:var(--tinta-2);font-size:.8rem;padding:8px;cursor:pointer;position:relative;background:var(--fundo)}
 .colar:focus{outline:none;border-color:var(--ceu-2);background:var(--ceu-claro)}
@@ -401,6 +402,28 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 .auto-chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;padding:4px 8px;border-radius:8px;background:var(--fundo);color:var(--tinta-2)}
 .auto-chip.ok{background:var(--ok-claro);color:var(--ok)} .auto-chip.v{background:#F1F1F1;color:var(--tinta-2)} .auto-chip.e{background:var(--sol-claro);color:var(--aviso)}
 .auto-chip .gira{width:12px;height:12px;border:2px solid var(--linha);border-top-color:var(--ceu-2);border-radius:50%;animation:gira .8s linear infinite;flex:none}
+.fila-busca{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--linha);font-size:.84rem}
+.fila-busca[hidden]{display:none}
+.fila-busca .gira{width:14px;height:14px;border:2px solid var(--linha);border-top-color:var(--sol);border-radius:50%;animation:gira .8s linear infinite;flex:none}
+.fila-busca .btn{margin-left:auto}
+.tag.busca-b,.tag.busca-f{background:var(--fundo);color:var(--tinta-2)} .tag.busca-a{background:var(--sol-claro);color:var(--aviso)} .tag.busca-v{background:#FDE8E8;color:var(--erro)} .tag.busca-ok{background:var(--ok-claro);color:var(--ok)}
+.tag .gira{display:inline-block;width:9px;height:9px;border:2px solid var(--linha);border-top-color:var(--sol);border-radius:50%;animation:gira .8s linear infinite;margin-right:4px;vertical-align:-1px}
+.idade-busca{font-size:.72rem;font-weight:700;color:var(--tinta-2);padding:2px 0}
+.idade-busca.a{color:var(--aviso)} .idade-busca.v{color:var(--erro)}
+.alt-voo{border:1px dashed var(--ceu-2);border-radius:10px;padding:8px 10px;font-size:.8rem;display:flex;flex-direction:column;gap:6px;background:var(--fundo)}
+.alt-voo.off{opacity:.6}
+.alt-voo b{color:var(--ceu)}
+.flex-sug{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.8rem;padding:8px 10px;border-radius:10px;background:var(--ok-claro);color:var(--tinta)}
+.flex-sug .btn{margin-left:auto}
+.flex-sug .gira{width:12px;height:12px;border:2px solid var(--linha);border-top-color:var(--ceu-2);border-radius:50%;animation:gira .8s linear infinite;flex:none}
+.chip-lug{display:inline-block;margin-top:4px;font-size:.74rem;font-weight:800;color:var(--erro);background:#FDE8E8;border-radius:6px;padding:2px 7px}
+.fonte-tx{font-size:.7rem;font-weight:700;color:var(--tinta-2)} .fonte-tx.ok{color:var(--ok)} .fonte-tx.falta{color:var(--aviso)}
+.bebe-nota{margin:0;font-size:.76rem}
+.conta-pp .lnk{background:none;border:0;padding:0;color:var(--ceu-2);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
+.nota.opcao2{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--fundo)}
+.avisos-envio{margin:6px 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.sub-cfg{font-size:.95rem;margin:16px 0 4px}
+.bebe-lin{align-items:end}
 .busca-rodando{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--fundo);border:1px solid var(--linha);font-size:.85rem}
 .busca-rodando .gira{width:16px;height:16px;border:2.5px solid var(--linha);border-top-color:var(--sol);border-radius:50%;animation:gira .8s linear infinite;flex:none}
 .busca-rodando b{font-weight:800}
@@ -792,6 +815,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
       <input type="search" id="busca" placeholder="🔍 Buscar por nome, código ou destino">
       <span class="cont" id="contagem"></span>
     </div>
+    <div class="fila-busca" hidden></div>
     <div class="abas-ped" id="abasPed" role="tablist" aria-label="Etapas"></div>
     <div class="lista-ped" id="quadro"></div>
     <button type="button" class="fab" onclick="abrirNovoPedido()" aria-label="Novo pedido"><span>+</span> Novo pedido</button>
@@ -887,6 +911,20 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
           <div class="campo"><label for="c-zap">Seu WhatsApp (com DDD)</label><input id="c-zap" data-cfg="meuWhatsapp" type="tel" placeholder="41999999999"></div>
           <div class="campo"><label for="c-mp">WhatsApp da Milhas Plus</label><input id="c-mp" data-cfg="whatsappMP" type="tel" placeholder="41999999999"></div>
         </div>
+      </section>
+      <section data-aj="regras">
+        <h2>Regras da busca</h2>
+        <h3 class="sub-cfg">Bebê de colo</h3>
+        <p class="nota">Quanto cada programa cobra por bebê de colo, <b>por trecho</b>. Quando a busca lê o valor no site, vale o do site. Deixe em branco o que não souber: o painel avisa antes de enviar a cotação.</p>
+        <div id="bebeCfg"></div>
+        <h3 class="sub-cfg">Busca velha</h3>
+        <p class="nota">A idade da busca aparece em cada quadro. A partir do limite vermelho, o painel pergunta se quer buscar de novo antes de enviar a cotação.</p>
+        <div class="g2">
+          <div class="campo"><label for="c-bv-a">Amarelo a partir de (horas)</label><input id="c-bv-a" data-cfg="buscaVelha.amarelo" type="number" min="0.5" step="0.5"></div>
+          <div class="campo"><label for="c-bv-v">Vermelho a partir de (horas)</label><input id="c-bv-v" data-cfg="buscaVelha.vermelho" type="number" min="1" step="0.5"></div>
+        </div>
+        <h3 class="sub-cfg">Sites que recusaram a busca (últimos 7 dias)</h3>
+        <div id="bloqCfg" class="nota"></div>
       </section>
       <section data-aj="checkin">
         <h2>Abertura do check-in</h2>
@@ -1096,6 +1134,8 @@ const CFG_PADRAO = {
   taxas:[4.98,9.9,11.28,12.64,13.97,15.27,16.55,17.81,19.04,20.25,21.44,22.61],
   meuWhatsapp:'35920001121', whatsappMP:'',
   checkin:{LATAM:48, GOL:48, Azul:72},
+  bebe:{smiles:{milhas:'', reais:''}, latam:{milhas:'', reais:''}, azul:{milhas:'', reais:''}},   // bebê de colo, por trecho
+  buscaVelha:{amarelo:2, vermelho:6},   // horas
   urls:{
     smiles:'https://www.smiles.com.br/mfe/emissao-passagem/?adults={adultos}&children={criancas}&infants={bebes}&cabin=ALL&searchType=g3&segments=1&tripType=2&originAirport={origem}&destinationAirport={destino}&departureDate={data_ms}&isFlexibleDateChecked=false',
     latam:'https://www.latamairlines.com/br/pt/oferta-voos?origin={origem}&inbound=null&outbound={data}T15%3A00%3A00.000Z&destination={destino}&adt={adultos}&chd={criancas}&inf={bebes}&trip=OW&cabin=Economy&redemption=true&sort=RECOMMENDED',
@@ -1173,10 +1213,11 @@ function textoPet(p){ if(!p.pet) return 'Não'; return `${p.pet.especie==='cao'?
 function token(len=24){ const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'; const a=new Uint32Array(len); crypto.getRandomValues(a); return [...a].map(x=>c[x%c.length]).join(''); }
 function toast(msg, op={}){
   const t = $('#toast'), tipo = op.tipo || (/^(Não |Erro|Sem permissão|Sem internet|Falha|Este arquivo não)/.test(msg) ? 'erro' : op.desfazer ? 'info' : 'ok');
-  t.className = 'toast '+tipo; t.innerHTML = `<i>${tipo==='erro'?'!':tipo==='info'?'i':'✓'}</i><span></span>${op.desfazer?'<button type="button">Desfazer</button>':''}`;
+  t.className = 'toast '+tipo; t.innerHTML = `<i>${tipo==='erro'?'!':tipo==='info'?'i':'✓'}</i><span></span>${op.desfazer?'<button type="button">Desfazer</button>':op.acao?'<button type="button"></button>':''}`;
   t.querySelector('span').textContent = msg;
   if(op.desfazer) t.querySelector('button').onclick = ()=>{ t.classList.remove('on'); op.desfazer(); };
-  requestAnimationFrame(()=>t.classList.add('on')); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'), op.desfazer ? 6000 : 2800);
+  else if(op.acao){ const b = t.querySelector('button'); b.textContent = op.acao.rotulo; b.onclick = ()=>{ t.classList.remove('on'); op.acao.fn(); }; }
+  requestAnimationFrame(()=>t.classList.add('on')); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'), (op.desfazer||op.acao) ? 6000 : 2800);
 }
 function soDigitos(s){ return String(s||'').replace(/\D/g,''); }
 function zapLink(num, txt){ let d=soDigitos(num); if(d && !d.startsWith('55')) d='55'+d; return `https://wa.me/${d}?text=${encodeURIComponent(txt)}`; }
@@ -1186,7 +1227,8 @@ const URLS_ANTIGAS = {smiles:'https://www.smiles.com.br/home', latam:'https://ww
 function mesclarCfg(c){
   c = c || {};
   if(c.urls){ c = {...c, urls:{...c.urls}}; for(const k in URLS_ANTIGAS) if(!c.urls[k] || c.urls[k]===URLS_ANTIGAS[k]) delete c.urls[k]; }
-  return {...CFG_PADRAO, ...c, checkin:{...CFG_PADRAO.checkin,...(c.checkin||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, urlsDinheiro:{...CFG_PADRAO.urlsDinheiro,...(c.urlsDinheiro||{})}, mensagens:{...(c.mensagens||{})},
+  return {...CFG_PADRAO, ...c, checkin:{...CFG_PADRAO.checkin,...(c.checkin||{})},
+    bebe:Object.fromEntries(Object.entries(CFG_PADRAO.bebe).map(([k,v])=>[k,{...v,...((c.bebe||{})[k]||{})}])), buscaVelha:{...CFG_PADRAO.buscaVelha,...(c.buscaVelha||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, urlsDinheiro:{...CFG_PADRAO.urlsDinheiro,...(c.urlsDinheiro||{})}, mensagens:{...(c.mensagens||{})},
     bagagem:Object.fromEntries(Object.entries(CFG_PADRAO.bagagem).map(([k,v])=>[k,{...v,...((c.bagagem||{})[k]||{})}])), taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas], tabelaMP:mesclarTabela(c.tabelaMP)};
 }
 function lerCfg(){ let c={}; try{ c = JSON.parse(localStorage.getItem(CHAVE_CFG))||{}; }catch(e){} return mesclarCfg(c); }
@@ -1405,12 +1447,41 @@ function totalMilhas(p, k){
   const b = p.busca[k], x = p.passageiros||{};
   if(!b || b.semDisp) return null;
   const t = n(b.milhasIda) + (p.tipo==='ida_volta' ? n(b.milhasVolta) : 0);
-  return t>0 ? t : null;
+  return t>0 ? t + bebeMilhas(p,k) : null;
 }
-function menorPrograma(p){
-  let melhor=null, val=Infinity;
-  for(const k in PROG){ const t=totalMilhas(p,k); if(t!=null && t<val){ val=t; melhor=k; } }
-  return melhor;
+/* bebê de colo: os programas cobram à parte. Vale o que a busca leu; senão, o valor das Configurações (por trecho) */
+const qBebes = p => n(p.passageiros?.bebes);
+function trechosComVoo(p, k){ const b = p.busca[k]||{}; return trechosDe(p).filter(T=>n(b['milhas'+T])>0); }
+function bebeCfgTem(k){ const c = (cfg.bebe||{})[k]||{}; return String(c.milhas??'')!=='' || String(c.reais??'')!==''; }
+function bebeTrecho(p, k, T){
+  const b = p.busca[k]||{}, c = (cfg.bebe||{})[k]||{}, q = qBebes(p);
+  if(!q || !n(b['milhas'+T])) return {milhas:0, reais:0, fonte:''};
+  const lidoM = b['bebeMilhas'+T], lidoR = b['bebeReais'+T];
+  if(lidoM!=null || lidoR!=null) return {milhas:q*n(lidoM), reais:q*n(lidoR), fonte:'site'};
+  return {milhas:q*n(c.milhas), reais:q*n(c.reais), fonte: bebeCfgTem(k) ? 'cfg' : 'falta'};
+}
+function bebeMilhas(p, k){ return trechosComVoo(p,k).reduce((s,T)=>s+bebeTrecho(p,k,T).milhas, 0); }
+function bebeReais(p, k){ return trechosComVoo(p,k).reduce((s,T)=>s+bebeTrecho(p,k,T).reais, 0); }
+function bebeFalta(p, k){ return qBebes(p) && trechosComVoo(p,k).some(T=>bebeTrecho(p,k,T).fonte==='falta'); }
+/* programa mais barato: pelo custo na Milhas Plus (milheiro da tabela + taxas). Se algum programa com voo
+   não tiver valor na tabela, compara pela milhagem e avisa. */
+function comparaProgramas(p){
+  const cands = Object.keys(PROG).map(k=>({k, milhas: totalMilhas(p,k), custo: custoMP(p,k)})).filter(c=>c.milhas!=null);
+  if(!cands.length) return {melhor:null, modo:null, lista:[]};
+  const semTabela = cands.filter(c=>!c.custo).map(c=>c.k);
+  const modo = semTabela.length ? 'milhas' : 'reais';
+  const val = c => modo==='reais' ? c.custo.valor : c.milhas;
+  const lista = cands.slice().sort((a,b)=>val(a)-val(b) || a.milhas-b.milhas);
+  const [a, b2] = lista;
+  return {melhor:a.k, modo, lista, semTabela, segundo: b2 ? b2.k : null, dif: b2 ? Math.round((val(b2)-val(a))*100)/100 : null};
+}
+function menorPrograma(p){ return comparaProgramas(p).melhor; }
+function textoSelo(cmp){ return cmp.modo==='milhas' ? 'Menor milhagem' : 'Mais barato'; }
+function textoDifMelhor(cmp){
+  if(!cmp.melhor) return '';
+  if(cmp.modo==='milhas') return cmp.semTabela.length ? `Sem valor na tabela da Milhas Plus para ${cmp.semTabela.map(k=>PROG[k].nome).join(' e ')}: comparei pelas milhas` : '';
+  if(!cmp.segundo) return '';
+  return cmp.dif>0 ? `${BRL(cmp.dif)} a menos que ${PROG[cmp.segundo].nome}` : `mesmo custo que ${PROG[cmp.segundo].nome}`;
 }
 /* ---------- programa de cada trecho (um só ou combinação ida/volta) ---------- */
 const trechosDe = p => p.tipo==='ida_volta' ? ['Ida','Volta'] : ['Ida'];
@@ -1451,8 +1522,8 @@ function opcoesMP(k){ return (cfg.tabelaMP[k]?.linhas||[]).filter(l=>n(l.valor)>
 function custoMP(p, k){
   const t = cfg.tabelaMP[k], mil = totalMilhas(p,k);
   if(!t || mil==null) return null;
-  const m = milheiroDe(p, k, mil / pagantes(p)); if(!m) return null;
-  const taxas = n(p.busca[k].taxas);
+  const m = milheiroDe(p, k, (mil - bebeMilhas(p,k)) / pagantes(p)); if(!m) return null;
+  const taxas = n(p.busca[k].taxas) + bebeReais(p,k);
   return { milhas:mil, porCpf:mil/pagantes(p), milheiro:m.milheiro, taxas, rotulo:m.rotulo, opcao:m.opcao, valor:Math.round((mil/1000*m.milheiro + taxas)*100)/100 };
 }
 function milheiroDe(p, k, porCpf){
@@ -1472,10 +1543,11 @@ function milheiroDe(p, k, porCpf){
 // custo de UM trecho num programa (para a combinação ida/volta em programas diferentes)
 function custoTrecho(p, k, T){
   const b = p.busca[k]; if(!b || b.semDisp) return null;
-  const mil = n(b['milhas'+T]); if(!mil) return null;
-  const m = milheiroDe(p, k, mil / pagantes(p)); if(!m) return null;
+  const mil0 = n(b['milhas'+T]); if(!mil0) return null;
+  const bb = bebeTrecho(p,k,T), mil = mil0 + bb.milhas;
+  const m = milheiroDe(p, k, mil0 / pagantes(p)); if(!m) return null;
   const temTaxa = b['taxas'+T]!=null && b['taxas'+T]!=='';
-  const taxas = temTaxa ? n(b['taxas'+T]) : (p.tipo==='ida_volta' ? n(b.taxas)/2 : n(b.taxas));
+  const taxas = (temTaxa ? n(b['taxas'+T]) : (p.tipo==='ida_volta' ? n(b.taxas)/2 : n(b.taxas))) + bb.reais;
   return { k, T, milhas:mil, milheiro:m.milheiro, rotulo:m.rotulo, opcao:m.opcao, taxas, taxaEstimada:!temTaxa && p.tipo==='ida_volta', valor:Math.round((mil/1000*m.milheiro + taxas)*100)/100 };
 }
 // melhor combinação ida/volta em programas diferentes — só para mostrar como opção, nunca escolhe sozinho
@@ -1646,6 +1718,7 @@ function renderInicio(){
   const chip = (num, txt, aba, quente) => `<button type="button" class="ini-chip${quente&&num?' quente':''}" onclick="irPara('pedidos');abrirAba('${aba}')"><b>${num}</b><span>${txt}</span></button>`;
 
   $('#tela-inicio').innerHTML = `
+    <div class="fila-busca" hidden></div>
     <div class="ini-topo">
       <div class="ini-tx"><h2>${saud}${nomeSaud?', '+esc(nomeSaud):''}! ${h>=18||h<5?'🌙':'✈️'}</h2><p>${agora.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})} · lucro do mês ${BRL(lucroMes)}${meta?' de '+BRL(meta):''}</p></div>
       <div class="ini-chips">${chip(cont.cotar,'para cotar','nova',true)}${chip(cont.vencendo,'vencendo','cotacao_enviada')}${chip(cont.emitir,'para emitir','pago')}${chip(cont.checkin,'check-in','emitido')}</div>
@@ -1700,7 +1773,7 @@ function esqueletoInicio(){
 let abaPed = (()=>{ try{ return localStorage.getItem('vpo_aba_ped')||''; }catch(e){ return ''; } })();
 function abrirAba(st){ abaPed = st; try{ localStorage.setItem('vpo_aba_ped', st); }catch(e){} $('#busca').value=''; renderQuadro(); }
 function renderQuadro(){
-  renderInicio();
+  renderInicio(); setTimeout(atualizarFila, 0);
   const q = norm($('#busca').value);
   const novos = pedidos.filter(p=>p.status==='nova').length;
   $('#badgeNovos').textContent = novos||'';
@@ -2329,6 +2402,7 @@ function cartaoPedido(p){
   const tags = [];
   if(p.pet) tags.push('<span class="tag sol">🐾 Pet</span>');
   if(p.datasFlexiveis) tags.push('<span class="tag">±3 dias</span>');
+  { const eb = estadoBusca(p); if(eb) tags.push(`<span class="tag busca-${eb.c}">${eb.c==='b'?'<span class="gira"></span>':''}${esc(eb.t)}</span>`); }
   if(ic.indicadoPor) tags.push(`<span class="tag sol">🤝 ${esc(ic.indicador ? ic.indicador.nome.split(' ')[0] : ic.indicadoPor)}</span>`);
   if(p.origemPedido==='whatsapp') tags.push('<span class="tag">via WhatsApp</span>');
   if(p.cotacao?.resposta && !p.pagamento?.pagoEm) tags.push(`<span class="tag ok">${p.cotacao.resposta.forma==='pix'?'Pix':'Cartão '+p.cotacao.resposta.parcelas+'x'}</span>`);
@@ -2495,21 +2569,28 @@ function etapaBusca(p, cls, aberto){
   const x = p.passageiros||{};
   const rodandoAqui = !!(autoAtual && autoAtual.pedidoId===p.id);
   const naFila = !rodandoAqui && !!autoAtual && precisaAuto(p);
-  const menor = menorPrograma(p);
+  const cmp = comparaProgramas(p), menor = cmp.melhor;
   const quadros = Object.entries(PROG).map(([k,meta])=>{
     const b = p.busca[k];
     const st = (tr) => { const viva = rodandoAqui && autoAtual.tarefas[k+'|'+tr]; return viva ? {status:viva.status, msg: viva.status==='buscando' ? 'Buscando…' : (p.auto?.st?.[k+'|'+tr]?.msg || viva.msg)} : p.auto?.st?.[k+'|'+tr]; };
     const buscandoProg = rodandoAqui && Object.values(autoAtual.tarefas).some(t=>t.programa===k && t.status==='buscando');
     const chip = (tr, rot) => { const x = st(tr); if(!x) return ''; const cls = {buscando:'b',ok:'ok',vazio:'v'}[x.status]||'e';
       return `<span class="auto-chip ${cls}">${x.status==='buscando'?'<span class="gira"></span>':''}${rot?rot+': ':''}${esc(x.msg||'')}${x.status!=='buscando' && (p.auto?.buscaId || rodandoAqui) ? ` <button type="button" class="lnk" data-veraba="${k}|${tr}">ver no site</button>`:''}${x.status!=='ok' && x.status!=='buscando' && diagAuto[p.id]?.[k+'|'+tr] ? ` <button type="button" class="lnk" data-diag="${k}|${tr}">diagnóstico</button>`:''}</span>`; };
-    const opcoes = (T) => { const tr=T.toLowerCase(), lista = p.auto?.opcoes?.[k+'|'+tr] || []; if(!lista.length) return '';
+    const opcoes = (T) => { const tr=T.toLowerCase(), lista = opcoesTrecho(p,k,tr), pag = pagantes(p); if(!lista.length) return '';
       const atual = lista.findIndex(v=>v.voo===(b['voo'+T]||'') && v.saida===(b['saida'+T]||'') && n(v.milhas)===n(b['pp'+T]));
-      return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(v.saida||'?')}→${esc(v.chegada||'?')} · ${esc(v.voo||'voo ?')} · ${esc(resumoParadas(v.paradas, v.escalas).replace('Voo direto','direto'))} · ${MIL(v.milhas)}/pessoa</option>`).join('')}</select>
-        ${b['auto'+T] && b['pp'+T] ? `<small class="nota">${MIL(b['pp'+T])} milhas por pessoa × ${pagantes(p)} = ${MIL(b['milhas'+T])}</small>`:''}</div>`; };
+      const durT = v => { const d = duracaoVoo(v); return d!=null ? fmtMin(d) : ''; };
+      const rot = v => [`${v.saida||'?'}→${v.chegada||'?'}`, durT(v), v.voo||'voo ?', resumoParadas(v.paradas, v.escalas).replace('Voo direto','direto'), `${MIL(v.milhas)}/pessoa`, !lugarOk(p,v) ? `⚠ só ${v.assentos} lugar${v.assentos>1?'es':''}` : ''].filter(Boolean).join(' · ');
+      const alt = b['alt'+T], tot = ehTotal(p,k,tr);
+      const lug = b['assentos'+T]!=null && n(b['assentos'+T]) <= pag+2 ? `<span class="chip-lug">⚠ últimos ${b['assentos'+T]} lugares</span>` : '';
+      return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(rot(v))}</option>`).join('')}</select>
+        ${b['auto'+T] && b['pp'+T] && pag>1 ? `<small class="nota conta-pp">${MIL(b['pp'+T])} por pessoa × ${pag} = ${MIL(b['milhas'+T])} <button type="button" class="lnk" data-eratotal="${k}|${tr}">${tot?'Era por pessoa':'Era o total'}</button>${tot?' · o site mostrou o total do grupo':''}</small>`:''}
+        ${lug}</div>
+        ${alt ? `<div class="alt-voo ${b.altOff?'off':''}"><div><b>Opção 2 · mais rápida</b> ${esc(alt.saida)}→${esc(alt.chegada)}${alt.dur!=null?' · '+fmtMin(alt.dur):''} · ${esc(alt.voo||'voo ?')} · ${esc(resumoParadas(alt.paradas, alt.escalas).replace('Voo direto','direto'))} · ${MIL(alt.pp)}/pessoa <span class="nota">(${n(alt.pp)-n(b['pp'+T])>=0?'+':'−'}${MIL(Math.abs(n(alt.pp)-n(b['pp'+T])))})</span></div>
+          <label class="linha-semdisp"><input type="checkbox" data-altoff="${k}" ${b.altOff?'':'checked'}> Oferecer ao cliente também</label></div>` : ''}`; };
     const campoParadas = (T) => {
       const np = b['paradas'+T], conhecido = !(np===''||np==null), q = conhecido ? n(np) : 0, es = b['escalas'+T]||[];
-      const sel = (b['paradasMan'+T] || !conhecido) ? `<div class="campo"><label>Quantas paradas?</label><select data-parq="${k}|${T}" class="${conhecido?'':'falta'}">
-        <option value="" ${conhecido?'':'selected'}>— a busca não trouxe —</option>${[0,1,2,3].map(i=>`<option value="${i}" ${conhecido&&q===i?'selected':''}>${i===0?'Direto':i+' parada'+(i>1?'s':'')}</option>`).join('')}</select></div>` : '';
+      const sel = `<div class="campo"><label>Quantas paradas?${b['paradasDed'+T]?' <span class="nota">(pelo número do voo)</span>':''}</label><select data-parq="${k}|${T}" class="${conhecido?'':'falta'}">
+        <option value="" ${conhecido?'':'selected'}>— a busca não trouxe —</option>${[0,1,2,3].map(i=>`<option value="${i}" ${conhecido&&q===i?'selected':''}>${i===0?'Direto':i+' parada'+(i>1?'s':'')}</option>`).join('')}</select></div>`;
       const linhas = Array.from({length:q},(_,i)=>{ const e = es[i]||{}, eL = e.fl || !e.local, eM = e.fm || e.min==null;
         if(!eL && !eM) return '';
         return `<div class="g2">
@@ -2519,40 +2600,44 @@ function etapaBusca(p, cls, aberto){
     };
     const campoMil = (campo, rot) => `<div class="campo"><label>${rot}</label><input type="number" min="0" step="100" inputmode="numeric" data-bind="busca.${k}.${campo}" value="${esc(b[campo]??'')}" placeholder="total de milhas"></div>`;
     return `<div class="prog ${b.semDisp?'semdisp':''} ${p.escolhido===k?'escolhido':''} ${buscandoProg?'buscando':''}" data-prog="${k}">
-      <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>Menor milhagem</span></div>
+      <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>${textoSelo(cmp)}</span></div>
       <div class="corpo">
-        ${(p.auto?.st || rodandoAqui) ? `<div class="auto-st">${chip('ida', p.tipo==='ida_volta'?'Ida':'')}${p.tipo==='ida_volta'?chip('volta','Volta'):''}</div>`:''}
+        ${(p.auto?.st || rodandoAqui) ? `<div class="auto-st">${chip('ida', p.tipo==='ida_volta'?'Ida':'')}${p.tipo==='ida_volta'?chip('volta','Volta'):''}${htmlIdade(p,k)}</div>`:''}
+        ${p.flex?.k===k ? trechosDe(p).map(T=>{ const sg = sugestaoFlex(p,T); return sg ? `<div class="flex-sug"><span>📅 <b>${T}:</b> ${esc(sg.txt)}</span><button type="button" class="btn peq pri" data-flex="${T}">Usar esta data</button></div>` : ''; }).join('') : ''}
+        ${flexAtual && flexAtual.pedidoId===p.id && flexAtual.k===k ? '<div class="flex-sug"><span class="gira"></span> Buscando as datas vizinhas (±3 dias)…</div>' : ''}
         <label class="linha-semdisp"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}> Sem disponibilidade</label>
         <div class="campo"><label>Cia que opera</label>
           <select data-bind="busca.${k}.cia">${['GOL','LATAM','Azul','Outra'].map(c=>`<option ${b.cia===c?'selected':''}>${c}</option>`).join('')}</select></div>
         <div class="sub" style="margin:4px 0 0">Ida · ${fmtDataCurta(p.dataIda)}</div>
         <div class="g-voo">
-          <div class="campo"><label>Voo</label><input data-bind="busca.${k}.vooIda" value="${esc(b.vooIda||'')}" placeholder="G3 1234"></div>
+          <div class="campo"><label>Voo</label><input data-bind="busca.${k}.vooIda" value="${esc(b.vooIda||'')}" placeholder="G3 1234" class="${b.vooFaltaIda&&b.autoIda?'falta':''}" title="${b.vooFaltaIda&&b.autoIda?'A busca não trouxe o número do voo: complete':''}"></div>
           <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaIda" value="${esc(b.saidaIda||'')}"></div>
           <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaIda" value="${esc(b.chegadaIda||'')}"></div>
         </div>
         ${campoParadas('Ida')}
         ${opcoes('Ida')}
-        ${campoMil('milhasIda',`Milhas da ida (total, ${totalPax(p)} pax)`)}
+        ${campoMil('milhasIda',`Milhas da ida (total, ${pagantes(p)} pax${qBebes(p)?', sem o bebê':''})`)}
         ${p.tipo==='ida_volta'?`
         <div class="sub" style="margin:4px 0 0">Volta · ${fmtDataCurta(p.dataVolta)}</div>
         <div class="g-voo">
-          <div class="campo"><label>Voo</label><input data-bind="busca.${k}.vooVolta" value="${esc(b.vooVolta||'')}" placeholder="G3 4321"></div>
+          <div class="campo"><label>Voo</label><input data-bind="busca.${k}.vooVolta" value="${esc(b.vooVolta||'')}" placeholder="G3 4321" class="${b.vooFaltaVolta&&b.autoVolta?'falta':''}" title="${b.vooFaltaVolta&&b.autoVolta?'A busca não trouxe o número do voo: complete':''}"></div>
           <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaVolta" value="${esc(b.saidaVolta||'')}"></div>
           <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaVolta" value="${esc(b.chegadaVolta||'')}"></div>
         </div>
         ${campoParadas('Volta')}
         ${opcoes('Volta')}
-        ${campoMil('milhasVolta',`Milhas da volta (total, ${totalPax(p)} pax)`)}`:''}
+        ${campoMil('milhasVolta',`Milhas da volta (total, ${pagantes(p)} pax${qBebes(p)?', sem o bebê':''})`)}`:''}
         ${p.datasFlexiveis?`<div class="campo"><label>Datas encontradas (se mudou)</label><input data-bind="busca.${k}.datasAlt" value="${esc(b.datasAlt||'')}" placeholder="Ex.: ida 21/12, volta 04/01"></div>`:''}
-        <div class="campo"><label>Taxas total (R$, ida${p.tipo==='ida_volta'?' + volta':''})</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="busca.${k}.taxas" value="${esc(b.taxas??'')}" placeholder="0,00"></div>
+        <div class="campo"><label>Taxas total (R$, ida${p.tipo==='ida_volta'?' + volta':''}) ${notaTaxa(p,k)}</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="busca.${k}.taxas" value="${esc(b.taxas??'')}" placeholder="0,00" class="${!b.taxasMan && trechosComVoo(p,k).some(T=>b['taxasFonte'+T]==='falta') && (b.taxas===''||b.taxas==null) ? 'falta':''}"></div>
+        ${qBebes(p) && trechosComVoo(p,k).length ? `<p class="nota bebe-nota">${bebeFalta(p,k) ? `⚠ Bebê de colo: cadastre quanto a ${PROG[k].nome} cobra em Configurações → Regras da busca.` : `Bebê de colo: ${[bebeMilhas(p,k)?MIL(bebeMilhas(p,k))+' milhas':'', bebeReais(p,k)?BRL(bebeReais(p,k)):''].filter(Boolean).join(' + ')||'sem custo'} já somado ao total.`}</p>` : ''}
         ${cfg.tabelaMP[k]?.tipo==='opcoes' && opcoesMP(k).length ? `<div class="campo"><label>Tabela da Milhas Plus</label><select data-bind="busca.${k}.tabela">${opcoesMP(k).map((o,i)=>`<option ${(b.tabela ? o.nome===b.tabela : i===0)?'selected':''}>${esc(o.nome)}</option>`).join('')}</select></div>`:''}
-        <div class="total-milhas">Total do pedido<b data-total="${k}">—</b><small class="custo-mp" data-custo="${k}"></small></div>
+        <div class="total-milhas">Total do pedido<b data-total="${k}">—</b><small class="custo-mp" data-custo="${k}"></small><small class="dif-melhor" data-dif="${k}"></small></div>
         ${(p.tipo==='ida_volta'?['Ida','Volta']:['Ida']).map(T=>`
         <div class="colar" tabindex="0" data-colar="${k}|${T}" aria-label="Print da ${T.toLowerCase()} em ${meta.nome}">
           ${b['print'+T] ? `<img src="${b['print'+T]}" alt="Print da ${T.toLowerCase()} ${meta.nome}"><button type="button" class="tirar" data-tirar="${k}|${T}" aria-label="Remover print">✕</button>` : `<span><b>Print da ${T.toLowerCase()}</b><br>Use a extensão de captura, cole (Ctrl+V)<br>ou toque para escolher a imagem</span>`}
         </div>
-        <input type="file" accept="image/*" hidden data-arquivo="${k}|${T}">`).join('')}
+        <input type="file" accept="image/*" hidden data-arquivo="${k}|${T}">
+        ${extensaoAtiva && extensaoV18() && b['saida'+T] ? `<button type="button" class="btn peq" data-printauto="${k}|${T}">📸 Tirar print do site${b['print'+T]?' de novo':''}</button>` : ''}`).join('')}
         <button type="button" class="btn ${p.escolhido===k?'azul':''} peq" data-escolher="${k}">${p.escolhido===k?'Escolhido':'Escolher este'}</button>
       </div>
     </div>`;
@@ -2593,6 +2678,72 @@ setInterval(()=>{ if(!autoAtual) return;
   const f = document.getElementById('buscaRodando'); if(f){ const n2 = document.createElement('div'); n2.innerHTML = htmlBuscaRodando(); const novo = n2.firstElementChild; if(novo){ const ba = f.querySelector('.barra-prog span'), bn = novo.querySelector('.barra-prog span'); if(ba && bn) ba.style.width = bn.style.width; } }
 }, 1000);
 
+function notaTaxa(p, k){
+  const b = p.busca[k], ts = trechosComVoo(p,k); if(!ts.length) return '';
+  if(b.taxasMan) return '<span class="fonte-tx">digitada</span>';
+  if(ts.every(T=>b['taxasFonte'+T]==='site')) return '<span class="fonte-tx ok">lida no site</span>';
+  if(ts.some(T=>b['taxasFonte'+T]==='falta')) return '<span class="fonte-tx falta">digite: o site não mostrou</span>';
+  return '';
+}
+function textoTotalProg(p, k){
+  const b = p.busca[k], t = totalMilhas(p,k); if(t==null) return '—';
+  const pag = pagantes(p), bm = bebeMilhas(p,k), tx = n(b.taxas) + bebeReais(p,k);
+  const partes = trechosComVoo(p,k).map(T=>n(b['pp'+T]) && pag>1 ? `${pag} × ${MIL(b['pp'+T])}` : MIL(b['milhas'+T]));
+  const conta = (pag>1 || bm || partes.length>1) ? `${partes.join(' + ')}${bm?` + bebê ${MIL(bm)}`:''} = ` : '';
+  return `${conta}${MIL(t)} milhas${tx?' + '+BRL(tx):''}`;
+}
+/* ---------- duas opções na cotação: a mais barata e a mais rápida (melhoria 2) ---------- */
+function varianteCurta(p){
+  if(!p.escolhido) return null;
+  const q = JSON.parse(JSON.stringify(p)); let mudou = false;
+  for(const T of trechosDe(p)){
+    const k = progTrecho(p,T), b = q.busca[k], a = b && b['alt'+T]; if(!a || b.altOff) continue;
+    b['voo'+T]=a.voo; b['saida'+T]=a.saida; b['chegada'+T]=a.chegada; b['paradas'+T]= a.paradas==null?'':String(a.paradas); b['escalas'+T]=(a.escalas||[]).map(e=>({...e}));
+    b['milhas'+T]=String(a.milhas); b['pp'+T]=a.pp;
+    if(a.taxas!=null && !b.taxasMan){ b['taxas'+T]=a.taxas; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
+    mudou = true;
+  }
+  if(!mudou) return null;
+  const c0 = custoPedido(p), c1 = custoPedido(q); if(!c0 || !c1 || !n(p.valorMP)) return null;
+  q.valorMP = Math.round((n(p.valorMP) + c1.valor - c0.valor)*100)/100;
+  const vc = valorCliente(q); if(!vc) return null;
+  return {q, valorMP:q.valorMP, valorPix:vc};
+}
+function durTotal(pp, T){ const b = bT(pp,T); return duracaoVoo({saida:b['saida'+T], chegada:b['chegada'+T]}); }
+function resumoOpcao(pp){ return trechosDe(pp).map(T=>{ const b = bT(pp,T), d = durTotal(pp,T); return [trechosDe(pp).length>1?T.toLowerCase():'', (resumoParadas(b['paradas'+T], b['escalas'+T])||'').replace(/^Voo direto$/,'direto').split(':')[0], d!=null?fmtMin(d):''].filter(Boolean).join(' '); }).join(' · '); }
+// o cliente escolheu a outra opção: troca o voo principal pela opção 2 (e vice-versa) e o valor da Milhas Plus
+function aplicarOpcaoCliente(p, i){
+  const c = p.cotacao; if(!c?.opcoes || (c.opcaoAplicada||0)===i) return false;
+  for(const T of trechosDe(p)){
+    const k = progTrecho(p,T), b = p.busca[k], a = b && b['alt'+T]; if(!a) continue;
+    const atual = altDe(p, {voo:b['voo'+T], saida:b['saida'+T], chegada:b['chegada'+T], paradas: b['paradas'+T]===''?null:n(b['paradas'+T]), escalas:b['escalas'+T], milhas:n(b['pp'+T]) || n(b['milhas'+T])/pagantes(p), taxas: b['taxas'+T]!==''&&b['taxas'+T]!=null ? n(b['taxas'+T])/pagantes(p) : null});
+    b['voo'+T]=a.voo; b['saida'+T]=a.saida; b['chegada'+T]=a.chegada; b['paradas'+T]= a.paradas==null?'':String(a.paradas); b['escalas'+T]=(a.escalas||[]).map(e=>({...e}));
+    b['milhas'+T]=String(a.milhas); b['pp'+T]=a.pp; if(a.taxas!=null && !b.taxasMan){ b['taxas'+T]=a.taxas; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
+    b['alt'+T] = atual; b['print'+T] = ''; b['auto'+T] = false;
+  }
+  p.valorMP = c.opcoes[i].valorMP; p.valorMPManual = true; c.valorPix = c.opcoes[i].valorPix; c.opcaoAplicada = i;
+  logar(p, `Cliente escolheu a opção ${i===1?'mais rápida':'mais barata'} · ${BRL(c.opcoes[i].valorPix)} no Pix`);
+  return true;
+}
+/* antes de enviar a cotação: busca velha, taxa vazia, bebê sem valor */
+function avisosAntesDeEnviar(p){
+  if(!p.escolhido || p.renovacao) return [];
+  const progs = [...new Set(trechosDe(p).map(T=>progTrecho(p,T)).filter(Boolean))], av = [];
+  const velhos = progs.filter(k=>{ const h = idadeBuscaH(p,k); return h!=null && h >= n(cfg.buscaVelha.vermelho) ; });
+  if(velhos.length) av.push({tipo:'velha', so:velhos, txt:`A busca da ${velhos.map(k=>PROG[k].nome).join(' e ')} é de ${tempoDesde(p.auto.emProg?.[velhos[0]] || p.auto.em).replace(/^há /,'')} atrás. Os preços podem ter mudado.`});
+  for(const k of progs){ const b = p.busca[k]; if(trechosComVoo(p,k).length && (b.taxas===''||b.taxas==null||!n(b.taxas)) && !b.taxasMan) av.push({tipo:'taxa', txt:`As taxas da ${PROG[k].nome} estão vazias: o valor sai sem a taxa de embarque.`}); }
+  for(const k of progs) if(bebeFalta(p,k)) av.push({tipo:'bebe', txt:`O pedido tem bebê de colo e a ${PROG[k].nome} está sem valor cadastrado (Configurações → Regras da busca).`});
+  return av;
+}
+function perguntarAntesDeEnviar(p, av, modelo){
+  const velha = av.find(a=>a.tipo==='velha');
+  abrirModal(`<h2>${velha ? 'Buscar de novo antes de enviar?' : 'Conferir antes de enviar'}</h2>
+    <ul class="avisos-envio">${av.map(a=>`<li>${esc(a.txt)}</li>`).join('')}</ul>
+    ${velha ? '<p class="nota" style="margin:0">A busca nova leva uns 30 segundos, só no programa escolhido. Se as milhas mudarem, você vê o antes e o depois antes de enviar.</p>' : ''}
+    <div class="rodape">${velha ? '<button type="button" class="btn pri" id="avBuscar">Buscar agora</button>' : ''}<button type="button" class="btn ${velha?'':'pri'}" id="avEnviar">Enviar assim mesmo</button><button type="button" class="btn" onclick="fecharModal()">Cancelar</button></div>`);
+  const bb = $('#avBuscar'); if(bb) bb.onclick = ()=>{ fecharModal(); ACOES.renovar(p, velha.so); };
+  $('#avEnviar').onclick = ()=>{ fecharModal(); ACOES.enviarCotacao(p, modelo, true); };
+}
 function htmlCombinacao(p){
   if(p.combo){
     const c = custoPedido(p);
@@ -2650,6 +2801,7 @@ function etapaValor(p, cls, aberto){
         <div class="box lucro" id="boxLucro"><small>Seu lucro</small><b id="vLucro">—</b></div>
       </div>
       <div class="box parc-box"><small>No cartão (até ${MAX_PARCELAS}x)</small><div class="parc-lista" id="vParcelas">—</div></div>
+      <p class="nota opcao2" id="notaOpcao2"></p>
       <div class="aviso" id="avisoLucro">O lucro está abaixo do mínimo de ${BRL(cfg.lucroMinimo)}.</div>
       <div class="acoes">
         <button type="button" class="btn pri" data-acao="enviarCotacao" ${p.escolhido?'':'disabled'}>${p.cotacao?'Reenviar cotação':'Enviar cotação'}</button>
@@ -2797,8 +2949,9 @@ function ligarDetalhe(p){
       setPath(p, el.dataset.bind, v);
       if(el.dataset.bind==='valorMP') p.valorMPManual = v!=='';
       if(el.dataset.bind==='precoCia') p.precoCiaFonte = v!=='' ? 'Digitado à mão' : '';
-      { const m = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/); if(m){ aplicarParadas(p.busca[m[1]], m[2], {}); const q = corpo.querySelector(`[data-par="${m[1]}|${m[2]}"]`); if(q) q.textContent = 'A busca não trouxe — informe abaixo'; } }   // apagou o campo: volta ao cálculo da tabela
+      { const m = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/); if(m) deduzirParadas(p.busca[m[1]], m[2]); }   // "G3 1137 / G3 1614" = 1 parada
       { const m = el.dataset.bind.match(/^busca\.(\w+)\.(?:milhas|voo|saida|chegada)(Ida|Volta)$/); if(m) p.busca[m[1]]['auto'+m[2]] = false; }   // editou à mão: a busca não sobrescreve
+      { const m = el.dataset.bind.match(/^busca\.(\w+)\.taxas$/); if(m) p.busca[m[1]].taxasMan = v!==''; }   // taxa digitada: a busca não troca
       salvar();
       if(el.dataset.bind.endsWith('.semDisp')) el.closest('.prog').classList.toggle('semdisp', v);
       if(el.dataset.rerender) { salvar(true); renderDetalhe(); return; }
@@ -2812,11 +2965,11 @@ function ligarDetalhe(p){
   // paradas preenchidas à mão (só aparece campo para o que a busca não trouxe)
   corpo.querySelectorAll('[data-bind$=".vooIda"],[data-bind$=".vooVolta"]').forEach(el=>el.addEventListener('change',()=>{
     const [,k,T] = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/) || [];
-    if(k && !corpo.querySelector(`[data-parq="${k}|${T}"]`)){ salvar(true); renderDetalhe(); }   // só redesenha se o campo de paradas ainda não está na tela
+    if(k){ salvar(true); renderDetalhe(); }   // mostra as paradas deduzidas e os campos de cada uma
   }));
   corpo.querySelectorAll('[data-parq]').forEach(sel=>sel.addEventListener('change',()=>{
     const [k,T] = sel.dataset.parq.split('|'), b = p.busca[k];
-    b['paradasMan'+T] = true; b['paradas'+T] = sel.value;
+    b['paradasMan'+T] = true; b['paradasDed'+T] = false; b['paradas'+T] = sel.value;
     const q = sel.value==='' ? 0 : n(sel.value), es = (b['escalas'+T]||[]).slice(0,q);
     while(es.length<q) es.push({local:'', min:null, fl:true, fm:true});
     b['escalas'+T] = es; salvar(true); renderDetalhe();
@@ -2853,7 +3006,20 @@ function ligarDetalhe(p){
   });
   corpo.querySelectorAll('[data-tirar]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); const [k,T]=b.dataset.tirar.split('|'); delete p.busca[k]['print'+T]; salvar(true); renderDetalhe(); }));
   corpo.querySelectorAll('[data-escolher]').forEach(b=>b.addEventListener('click',()=>escolherPrograma(p,b.dataset.escolher)));
-  corpo.querySelectorAll('[data-opcao]').forEach(sel=>sel.addEventListener('change',()=>{ const [k,T]=sel.dataset.opcao.split('|'); const v=(p.auto?.opcoes?.[k+'|'+T.toLowerCase()]||[])[Number(sel.value)]; if(!v) return; aplicarVooAuto(p,k,T,v,true); salvar(true); renderDetalhe(); toast(`${PROG[k].nome} · ${T.toLowerCase()}: ${v.saida}→${v.chegada}, ${MIL(n(v.milhas)*pagantes(p))} milhas`); }));
+  corpo.querySelectorAll('[data-opcao]').forEach(sel=>sel.addEventListener('change',()=>{ const [k,T]=sel.dataset.opcao.split('|'); const v=opcoesTrecho(p,k,T.toLowerCase())[Number(sel.value)]; if(!v) return;
+    aplicarVooAuto(p,k,T,v,true); const a = p.busca[k]['alt'+T]; if(a && a.voo===v.voo && a.saida===v.saida) delete p.busca[k]['alt'+T];
+    if(!lugarOk(p,v)) toast(`Atenção: esse voo tem só ${v.assentos} lugar${v.assentos>1?'es':''} para ${pagantes(p)} passageiros.`, {tipo:'info'});
+    else toast(`${PROG[k].nome} · ${T.toLowerCase()}: ${v.saida}→${v.chegada}, ${MIL(n(v.milhas)*pagantes(p))} milhas`);
+    salvar(true); renderDetalhe(); }));
+  // por pessoa × total: corrige com um clique (melhoria 10)
+  corpo.querySelectorAll('[data-eratotal]').forEach(bt=>bt.addEventListener('click',e=>{ e.preventDefault(); const [k,tr] = bt.dataset.eratotal.split('|'), c = k+'|'+tr, T = tr==='volta'?'Volta':'Ida';
+    p.auto.totalMan = p.auto.totalMan || {}; p.auto.totalMan[c] = !ehTotal(p,k,tr);
+    p.busca[k]['auto'+T] = true; escolherEAplicar(p,k,T);
+    logar(p, `${PROG[k].nome} · ${tr}: milhas lidas tratadas como ${p.auto.totalMan[c]?'total do grupo':'por pessoa'}`);
+    salvar(true); renderDetalhe(); }));
+  corpo.querySelectorAll('[data-altoff]').forEach(ch=>ch.addEventListener('change',()=>{ p.busca[ch.dataset.altoff].altOff = !ch.checked; salvar(true); renderDetalhe(); }));
+  corpo.querySelectorAll('[data-flex]').forEach(bt=>bt.addEventListener('click',()=>usarDataFlex(p, bt.dataset.flex)));
+  corpo.querySelectorAll('[data-printauto]').forEach(bt=>bt.addEventListener('click',async e=>{ e.stopPropagation(); const [k,T] = bt.dataset.printauto.split('|'); bt.disabled = true; bt.textContent = 'Tirando o print…'; await capturarPrint(p,k,T); bt.disabled = false; }));
   corpo.querySelectorAll('.auto-chip [data-diag]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const d = diagAuto[p.id]?.[b.dataset.diag]; if(!d) return; const [k,tr]=b.dataset.diag.split('|');
     baixarBlob(new Blob([JSON.stringify({versao:extensaoVersao, quando:new Date().toISOString(), pedido:p.id, programa:k, trecho:tr, ...d},null,1)],{type:'application/json'}), `diagnostico-${k}-${tr}-${p.origem.iata}-${p.destino.iata}.json`); }));
   corpo.querySelectorAll('.auto-chip [data-veraba]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const [programa,trecho]=b.dataset.veraba.split('|'); verNoSite(p, programa, trecho); }));
@@ -2885,11 +3051,12 @@ function comprimir(file, maxW, q){
 
 function atualizarCalculos(p){
   const corpo = $('#detCorpo');
-  const menor = menorPrograma(p);
+  const cmp = comparaProgramas(p), menor = cmp.melhor;
   for(const k in PROG){
     const t = totalMilhas(p,k), el = corpo.querySelector(`[data-total="${k}"]`);
-    if(el) el.textContent = t!=null ? `${MIL(t)} milhas${n(p.busca[k].taxas)?' + '+BRL(p.busca[k].taxas):''}` : '—';
-    const s = corpo.querySelector(`[data-selo="${k}"]`); if(s) s.hidden = menor!==k;
+    if(el) el.textContent = textoTotalProg(p,k);
+    const s = corpo.querySelector(`[data-selo="${k}"]`); if(s){ s.hidden = menor!==k; s.textContent = textoSelo(cmp); }
+    const df = corpo.querySelector(`[data-dif="${k}"]`); if(df){ const t2 = menor===k ? textoDifMelhor(cmp) : ''; df.textContent = t2; df.hidden = !t2; df.classList.toggle('aviso', cmp.modo==='milhas'); }
     const cu = corpo.querySelector(`[data-custo="${k}"]`);
     if(cu){ const c = custoMP(p,k); cu.textContent = c ? `Milhas Plus: ${BRL(c.valor)} (${BRL(c.milheiro)}/mil)` : ''; }
   }
@@ -2899,6 +3066,7 @@ function atualizarCalculos(p){
     if(inp && document.activeElement!==inp) inp.value = p.valorMP;
   }
   notaValorMP(p);
+  { const el = $('#notaOpcao2'); if(el){ const vB = varianteCurta(p); el.innerHTML = vB ? `<b>Opção 2 · mais rápida</b> (${esc(resumoOpcao(vB.q))}): ${BRL(vB.valorPix)} no Pix · lucro ${BRL(lucro(vB.q))}. O cliente escolhe na página da cotação.` : ''; el.hidden = !vB; } }
   notaBagagem(p);
   notaCia(p);
   const ap = $('#avisoParadas');
@@ -2936,22 +3104,22 @@ function htmlRenovacao(p){
       : `<li><b>${tr}:</b> o voo ${esc(a.voo||a.saida||'escolhido')} não apareceu. Mais barato agora${t.outroProg?' na '+PROG[t.k].nome:''}: ${esc(t.v.voo||'voo ?')} ${esc(t.v.saida||'')}→${esc(t.v.chegada||'')}${t.v.paradas!=null?' · '+esc(resumoParadas(t.v.paradas, t.v.escalas)):''} · <b>${MIL(tot)}</b> milhas</li>`;
   }).join('');
   const ok = d.valorPix && !(d.falhou||[]).length;
-  return `<div class="renova"><h4>Conferir a renovação</h4>
+  return `<div class="renova"><h4>${p.cotacao ? 'Conferir a renovação' : 'Conferir a busca nova'}</h4>
     <div class="cmp"><s>${BRL(r.antes.valorPix)}</s> → <b>${d.valorPix?BRL(d.valorPix):'—'}</b> ${d.valorPix?`<span class="${dif>0?'sobe':'desce'}">${dif>0?'subiu':dif<0?'caiu':'igual'}${dif?' '+BRL(Math.abs(dif)):''}</span>`:''}</div>
     <ul>${linhas}</ul>
     ${!ok ? `<p class="nota" style="margin:0 0 8px">Não deu para renovar tudo automaticamente. Ajuste a etapa 1 à mão ou reenvie com o mesmo valor.</p>`:''}
-    <div class="acoes" style="margin-top:0">${ok?`<button type="button" class="btn pri peq" data-acao="confirmarRenovacao">Confirmar e enviar nova cotação</button>`:''}<button type="button" class="btn peq" data-acao="renovarMesmo">Reenviar com o mesmo valor</button><button type="button" class="btn peq" data-acao="cancelarRenovacao">Cancelar</button></div></div>`;
+    <div class="acoes" style="margin-top:0">${ok?`<button type="button" class="btn pri peq" data-acao="confirmarRenovacao">${p.cotacao?'Confirmar e enviar nova cotação':'Confirmar e enviar a cotação'}</button>`:''}<button type="button" class="btn peq" data-acao="renovarMesmo">${p.cotacao?'Reenviar com o mesmo valor':'Enviar com o valor de antes'}</button><button type="button" class="btn peq" data-acao="cancelarRenovacao">Cancelar</button></div></div>`;
 }
 function montarRenovacao(p){
   const r = p.renovacao; if(!r) return;
   const clone = JSON.parse(JSON.stringify(p)); clone.valorMPManual = false; delete clone.cotacao;
   const trechos = {}, falhou = [];
   for(const T of trechosDe(p)){
-    const a = r.antes.trechos[T], tr = T.toLowerCase(), lista = p.auto?.opcoes?.[a.k+'|'+tr] || [];
+    const a = r.antes.trechos[T], tr = T.toLowerCase(), lista = opcoesTrecho(p, a.k, tr);
     let v = lista.find(x=>x.voo && a.voo && vooChave(x.voo)===vooChave(a.voo)) || lista.find(x=>x.saida && a.saida && x.saida===a.saida);
     const mesmo = !!v; let k = a.k, outroProg = false;
     if(!v) v = lista[0];
-    if(!v){ for(const k2 in PROG){ const c = (p.auto?.opcoes?.[k2+'|'+tr]||[])[0]; if(c && (!v || n(c.milhas)<n(v.milhas))){ v = c; k = k2; } } outroProg = !!v; }
+    if(!v){ for(const k2 of (r.so || Object.keys(PROG))){ const c = opcoesTrecho(p, k2, tr)[0]; if(c && (!v || n(c.milhas)<n(v.milhas))){ v = c; k = k2; } } outroProg = !!v; }
     if(!v){ falhou.push(tr); continue; }
     trechos[T] = {k, v:{...v}, mesmo, outroProg};
     aplicarVooAuto(clone, k, T, v, true);
@@ -3083,18 +3251,21 @@ const ACOES = {
   },
   copiarTrecho(p){ copiar(textoTrecho(p),'Dados do trecho copiados'); },
   buscaAuto(p){ if(autoAtual && autoAtual.pedidoId===p.id){ const f=$('#buscaRodando'); if(f){ f.scrollIntoView({block:'nearest',behavior:'smooth'}); f.animate?.([{boxShadow:'0 0 0 0 rgba(255,122,46,.5)'},{boxShadow:'0 0 0 8px rgba(255,122,46,0)'}],{duration:700}); } return; }
-    if(autoAtual && precisaAuto(p) && p.auto===null) return; for(const k in PROG){ const b=p.busca[k]; for(const T of ['Ida','Volta']) if(b['auto'+T]){ b['milhas'+T]=''; } if(b.autoIda||b.autoVolta) b.semDisp=false; } p.auto=null; if(autoAtual){ toast('Há outra busca rodando; este pedido entra em seguida.'); salvar(true); renderDetalhe(); return; } iniciarAuto(p); },
+    if((autoAtual||flexAtual) && precisaAuto(p) && p.auto===null) return; for(const k in PROG){ const b=p.busca[k]; for(const T of ['Ida','Volta']) if(b['auto'+T]){ b['milhas'+T]=''; delete b['alt'+T]; } if(b.autoIda||b.autoVolta) b.semDisp=false; } const tm = p.auto?.totalMan; p.auto=null; delete p.flex;
+    if(autoAtual||flexAtual){ toast('Há outra busca rodando; este pedido entra em seguida.'); salvar(true); renderDetalhe(); atualizarFila(); return; } iniciarAuto(p); if(tm && p.auto) p.auto.totalMan = tm; },
   async compartilharMP(p){
     const c = await cardMP(p);
     const ok = await compartilharCanvas(c, `${p.id}-${p.escolhido}.png`, `Cotação ${p.id} — ${p.origem.iata} → ${p.destino.iata}`);
     if(ok) marcarEnviadoMP(p);
   },
   async baixarMP(p){ await baixarCanvas(await cardMP(p), `${p.id}-${p.escolhido}.png`); marcarEnviadoMP(p); },
-  async enviarCotacao(p, modelo){
+  async enviarCotacao(p, modelo, pular){
     if(!valorCliente(p)){ toast('Preencha o valor da Milhas Plus'); return; }
-    const agora = new Date();
+    if(pular!==true){ const av = avisosAntesDeEnviar(p); if(av.length){ perguntarAntesDeEnviar(p, av, typeof modelo==='string' ? modelo : 'cotacao'); return; } }
+    const agora = new Date(), vB = varianteCurta(p);
     p.cotacao = { token: p.cotacao?.token || token(), enviadaEm: agora.toISOString(), validaAte: new Date(agora.getTime()+validadeHoras(p)*3600e3).toISOString(),
-                  valorPix: valorCliente(p), percLucro: perc(p), lucro: lucro(p) };
+                  valorPix: valorCliente(p), percLucro: perc(p), lucro: lucro(p),
+                  opcoes: vB ? [{valorMP:n(p.valorMP), valorPix:valorCliente(p)}, {valorMP:vB.valorMP, valorPix:vB.valorPix}] : null, opcaoAplicada:0 };
     if(p.percLucro==null) p.percLucro = cfg.percPadrao;
     if(p.cotacao.resposta) delete p.cotacao.resposta;   // nova cotação: a aprovação anterior não vale mais
     p.cotacao.paxSalvos = passageirosSalvos(p);          // documento completo fica só no pedido; a página recebe mascarado
@@ -3127,7 +3298,7 @@ const ACOES = {
     const pax = p.passageirosDados.map((d,i)=>`${i+1}. ${d.nome} — ${d.doc} — nasc. ${fmtData(d.nasc)}`).join('\n');
     const txt = `EMISSÃO ${p.id}\n${p.combo ? `Programas: ida ${PROG[p.combo.Ida].nome} (${b.cia}) + volta ${PROG[p.combo.Volta].nome} (${bv.cia}) — duas emissões` : `Programa: ${PROG[p.escolhido].nome} (${b.cia})`}\nTrecho: ${p.origem.iata} → ${p.destino.iata}\nIda: ${fmtData(p.dataIda)} · ${b.vooIda||''} ${b.saidaIda||''}–${b.chegadaIda||''}${p.combo?' · '+MIL(b.milhasIda)+' milhas':''}`+
       (p.dataVolta?`\nVolta: ${fmtData(p.dataVolta)} · ${bv.vooVolta||''} ${bv.saidaVolta||''}–${bv.chegadaVolta||''}${p.combo?' · '+MIL(bv.milhasVolta)+' milhas':''}`:'')+
-      (b.datasAlt?`\nDatas encontradas: ${b.datasAlt}`:'')+
+      ((b.datasAlt||datasAltAuto(p))?`\nDatas encontradas: ${b.datasAlt||datasAltAuto(p)}`:'')+
       `\nBagagem: ${textoMalas(p)}\nPet: ${textoPet(p)}\nValor combinado: ${BRL(p.valorMP)}\n\nPassageiros:\n${pax}`;
     copiar(txt,'Resumo de emissão copiado');
     if(cfg.whatsappMP) window.open(zapLink(cfg.whatsappMP, txt),'_blank','noopener');
@@ -3179,24 +3350,26 @@ const ACOES = {
     marcarPos(p, 'emitidoEm'); logar(p, 'Cartão da viagem enviado ao cliente'); renderDetalhe();
   },
   lembrar(p){ lembrarCliente(p.id); },
-  renovar(p){
+  renovar(p, so){
     if(!extensaoAtiva || !versaoOk()){ toast('A renovação busca o voo de novo e precisa da extensão neste Chrome. Dá para reenviar com o mesmo valor.'); return; }
-    if(autoAtual){ toast('Há uma busca rodando. Tente de novo em instantes.'); return; }
+    if(autoAtual || flexAtual){ toast('Há uma busca rodando. Tente de novo em instantes.'); return; }
+    if(!Array.isArray(so)) so = null;
     const antes = {valorPix: valorCliente(p), valorMP: n(p.valorMP), trechos:{}};
     for(const T of trechosDe(p)){ const k = progTrecho(p,T), b = p.busca[k]||{}; antes.trechos[T] = {k, voo:b['voo'+T]||'', saida:b['saida'+T]||'', milhas:n(b['milhas'+T])}; }
-    p.renovacao = {estado:'buscando', em:new Date().toISOString(), antes};
-    salvar(true); iniciarAuto(p, true, {renovar:true}); renderDetalhe();
+    p.renovacao = {estado:'buscando', em:new Date().toISOString(), antes, so};
+    salvar(true); iniciarAuto(p, true, {renovar:true, so}); renderDetalhe();
   },
-  async renovarMesmo(p){ delete p.renovacao; logar(p, 'Cotação reenviada com o mesmo valor (renovação)'); await ACOES.enviarCotacao(p, 'renovacao'); },
+  async renovarMesmo(p){ const tinha = !!p.cotacao; delete p.renovacao; logar(p, tinha ? 'Cotação reenviada com o mesmo valor (renovação)' : 'Cotação enviada sem buscar de novo'); await ACOES.enviarCotacao(p, tinha ? 'renovacao' : 'cotacao', true); },
   cancelarRenovacao(p){ delete p.renovacao; if(autoAtual && autoAtual.pedidoId===p.id && autoAtual.renovar) autoAtual = null; salvar(true); renderDetalhe(); },
   async confirmarRenovacao(p){
     const r = p.renovacao; if(!r || !r.depois) return;
     for(const [T,t] of Object.entries(r.depois.trechos)) aplicarVooAuto(p, t.k, T, t.v, true);
     p.escolhido = r.depois.escolhido; if(r.depois.combo) p.combo = r.depois.combo; else delete p.combo;
     p.valorMP = r.depois.valorMP; p.valorMPManual = false;
-    logar(p, `Cotação renovada: ${BRL(r.antes.valorPix)} → ${BRL(r.depois.valorPix)}`);
+    const tinha = !!p.cotacao;
+    logar(p, `${tinha?'Cotação renovada':'Busca refeita antes de enviar'}: ${BRL(r.antes.valorPix)} → ${BRL(r.depois.valorPix)}`);
     delete p.renovacao;
-    await ACOES.enviarCotacao(p, 'renovacao');
+    await ACOES.enviarCotacao(p, tinha ? 'renovacao' : 'cotacao', true);
   },
   buscarCia(p){ iniciarBuscaDinheiro(p); },
   excluir(p){ excluirPedido(p.id); }
@@ -3245,9 +3418,18 @@ function escalasPublicas(b, T){
   return {nParadas:q, escalas: q ? (b['escalas'+T]||[]).slice(0,q).map(e=>({local:String(e?.local||'').slice(0,20), min:(e?.min!=null && isFinite(e.min)) ? Math.round(e.min) : null})) : []};
 }
 function escalasVoo(v){ return Array.isArray(v?.escalas) ? v.escalas.filter(Boolean).map(e=>({local:String(e.local||'').toUpperCase().slice(0,20), min:(e.min!=null && isFinite(e.min)) ? Math.round(e.min) : null})) : []; }
-function paradasVoo(v){ const e = escalasVoo(v); if(v?.paradas!=null && v.paradas!=='') return Math.max(Number(v.paradas)||0, e.length); return e.length ? e.length : null; }
+function paradasPeloVoo(voo){ const s = String(voo||'').split(/\s*\/\s*/).filter(x=>/\d/.test(x)); return s.length>1 ? s.length-1 : null; }
+function paradasVoo(v){ const e = escalasVoo(v); if(v?.paradas!=null && v.paradas!=='') return Math.max(Number(v.paradas)||0, e.length); if(e.length) return e.length; return paradasPeloVoo(v?.voo); }
 // o que a extensão não conseguir ler fica marcado (fl = falta o aeroporto, fm = falta a espera) e vira campo para preencher à mão
 const vooChave = v => String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+// voo digitado com mais de um número: deduz as paradas (só se a quantidade não foi escolhida à mão)
+function deduzirParadas(b, T){
+  const d = paradasPeloVoo(b['voo'+T]), vazio = b['paradas'+T]==='' || b['paradas'+T]==null;
+  if(d!=null && (vazio || b['paradasDed'+T])){
+    b['paradas'+T] = String(d); b['paradasDed'+T] = true; b['paradasMan'+T] = false;
+    const es = (b['escalas'+T]||[]).slice(0,d); while(es.length<d) es.push({local:'', min:null, fl:true, fm:true}); b['escalas'+T] = es;
+  } else if(d==null && b['paradasDed'+T]){ b['paradas'+T] = ''; b['paradasDed'+T] = false; b['escalas'+T] = []; }
+}
 function aplicarParadas(b, T, v){
   // chamar ANTES de trocar b['voo'+T]: compara com o voo que já estava no quadro
   const mesmoVoo = !!v?.voo && vooChave(v.voo)===vooChave(b['voo'+T]);
@@ -3256,6 +3438,7 @@ function aplicarParadas(b, T, v){
   if(mesmoVoo && q0==null && !(antes.q===''||antes.q==null)){ b['paradas'+T]=antes.q; b['paradasMan'+T]=antes.man; b['escalas'+T]=antes.es; return; }
   const q = q0;
   b['paradas'+T] = q!=null ? String(q) : ''; b['paradasMan'+T] = q==null;
+  b['paradasDed'+T] = q!=null && (!!v?.parDed || (v?.paradas==null && !escalasVoo(v).length));   // veio só do número do voo
   const es = escalasVoo(v).slice(0, q||0); while(q && es.length<q) es.push({local:'', min:null});
   es.forEach((e,i)=>{
     e.fl = !e.local; e.fm = e.min==null;
@@ -3306,7 +3489,9 @@ async function cardMP(p){
   if(textoParadas(b,'Ida')) y = linhaDado(ctx,W,P,y, p.tipo==='ida_volta'?'Paradas na ida':'Paradas', textoParadas(b,'Ida'));
   if(p.tipo==='ida_volta') y = linhaDado(ctx,W,P,y,'Volta', vooTxt(p.dataVolta,bv.vooVolta,bv.saidaVolta,bv.chegadaVolta));
   if(p.tipo==='ida_volta' && textoParadas(bv,'Volta')) y = linhaDado(ctx,W,P,y,'Paradas na volta', textoParadas(bv,'Volta'));
-  if(b.datasAlt) y = linhaDado(ctx,W,P,y,'Datas encontradas', b.datasAlt);
+  if(b.datasAlt || datasAltAuto(p)) y = linhaDado(ctx,W,P,y,'Datas encontradas', b.datasAlt || datasAltAuto(p));
+  for(const T of trechosDe(p)){ const bx = bT(p,T), q = bx['assentos'+T]; if(q!=null && n(q) <= pagantes(p)+2) y = linhaDado(ctx,W,P,y, trechosDe(p).length>1 ? `Atenção (${T.toLowerCase()})` : 'Atenção', `últimos ${q} lugares nesta tarifa: emitir rápido`); }
+  if(qBebes(p)) y = linhaDado(ctx,W,P,y,'Bebê de colo', `${qBebes(p)} · ${[bebeMilhas(p,k)?MIL(bebeMilhas(p,k))+' milhas':'', bebeReais(p,k)?BRL(bebeReais(p,k)):''].filter(Boolean).join(' + ') || 'sem custo cadastrado'}`);
   y = linhaDado(ctx,W,P,y,'Passageiros', textoPax(p));
   y = linhaDado(ctx,W,P,y,'Bagagem', textoMalas(p));
   y = linhaDado(ctx,W,P,y,'Pet', textoPet(p));
@@ -3319,7 +3504,7 @@ async function cardMP(p){
   let yy=y+62;
   linhasM.forEach(([a,v])=>{ ctx.fillStyle='#55657F'; ctx.font=F(500,28); ctx.fillText(a,P+32,yy); ctx.textAlign='right'; ctx.fillStyle='#13233F'; ctx.font=F(600,30); ctx.fillText(v,W-P-32,yy); ctx.textAlign='left'; yy+=46; });
   yy+=24; ctx.fillStyle='#55657F'; ctx.font=F(600,28); ctx.fillText(`Total · ${textoPax(p)}`, P+32, yy+20);
-  const totMil = p.combo ? n(b.milhasIda)+n(bv.milhasVolta) : totalMilhas(p,k), totTax = p.combo ? (custoPedido(p)?.taxas||0) : n(b.taxas);
+  const totMil = p.combo ? n(b.milhasIda)+n(bv.milhasVolta) : totalMilhas(p,k), totTax = p.combo ? (custoPedido(p)?.taxas||0) : n(b.taxas) + bebeReais(p,k);
   ctx.textAlign='right'; ctx.fillStyle=meta.cor; ctx.font=F(800,58); ctx.fillText(`${MIL(totMil)} milhas`, W-P-32, yy+24);
   ctx.fillStyle='#13233F'; ctx.font=F(600,30); ctx.fillText(`+ ${BRL(totTax)} de taxas`, W-P-32, yy+70); ctx.textAlign='left';
   y += hBox + 50;
@@ -3397,7 +3582,7 @@ async function cardCliente(p){
   y += 14; ctx.strokeStyle='#DCE4EE'; ctx.lineWidth=4; ctx.setLineDash([12,10]); ctx.beginPath(); ctx.moveTo(X+36,y); ctx.lineTo(X+LW-36,y); ctx.stroke(); ctx.setLineDash([]);
   ctx.fillStyle='#EEF3F9'; ctx.beginPath(); ctx.arc(X,y,20,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(X+LW,y,20,0,Math.PI*2); ctx.fill();
   y += 26;
-  const pe = [['Passageiros', textoPax(p)], ['Bagagem', n(p.malasPorPassageiro) ? `${p.malasPorPassageiro} mala${p.malasPorPassageiro>1?'s':''} de 23 kg` : 'Mala de mão'], [b.datasAlt?'Datas':p.pet?'Pet':'Paradas', b.datasAlt ? b.datasAlt : p.pet ? textoPet(p) : (()=>{ const a = textoParadas(b,'Ida'), v = volta ? textoParadas(bv,'Volta') : ''; const q = x => /direto/i.test(x)?0:(n(String(x).split(' ')[0])||0); return !a ? '—' : (!volta ? (q(a)?q(a)+' parada'+(q(a)>1?'s':''):'voo direto') : (q(a)===q(v) ? (q(a)?q(a)+' em cada trecho':'voos diretos') : `${q(a)} na ida · ${q(v)} na volta`)); })()]];
+  const pe = [['Passageiros', textoPax(p)], ['Bagagem', n(p.malasPorPassageiro) ? `${p.malasPorPassageiro} mala${p.malasPorPassageiro>1?'s':''} de 23 kg` : 'Mala de mão'], [(b.datasAlt||datasAltAuto(p))?'Datas':p.pet?'Pet':'Paradas', (b.datasAlt||datasAltAuto(p)) ? (b.datasAlt||datasAltAuto(p)) : p.pet ? textoPet(p) : (()=>{ const a = textoParadas(b,'Ida'), v = volta ? textoParadas(bv,'Volta') : ''; const q = x => /direto/i.test(x)?0:(n(String(x).split(' ')[0])||0); return !a ? '—' : (!volta ? (q(a)?q(a)+' parada'+(q(a)>1?'s':''):'voo direto') : (q(a)===q(v) ? (q(a)?q(a)+' em cada trecho':'voos diretos') : `${q(a)} na ida · ${q(v)} na volta`)); })()]];
   pe.forEach(([rot,val],i)=>{ const cx = X+36 + i*((LW-72)/3); ctx.fillStyle='#55657F'; ctx.font=F(500,24); ctx.fillText(rot, cx, y+24); ctx.fillStyle='#13233F'; ctx.font=F(700,29); ctx.fillText(quebrar(ctx, String(val), (LW-72)/3-14)[0]||'', cx, y+62); });
 
   // preços
@@ -3414,6 +3599,7 @@ async function cardCliente(p){
   y += 170 + 52;
   ctx.textAlign='center';
   if(comEco){ ctx.fillStyle='#1E8E5A'; ctx.font=F(800,30); ctx.fillText(`Você economiza ${BRL(cmp.economia)} (${cmp.pct}%) em relação à ${cmp.cia}`, W/2, y); y += 46; }
+  { const vB = varianteCurta(p); if(vB){ ctx.fillStyle='#0E3B7A'; ctx.font=F(800,29); const t = `Também tem a opção mais rápida: ${resumoOpcao(vB.q)} · ${BRL(vB.valorPix)} no Pix`; ctx.fillText(quebrar(ctx, t, W-80)[0], W/2, y); y += 40; ctx.fillStyle='#55657F'; ctx.font=F(600,25); ctx.fillText('Escolha a que preferir no link', W/2, y); y += 46; } }
   const ate = p.cotacao?.validaAte ? new Date(p.cotacao.validaAte) : new Date(Date.now()+validadeHoras(p)*3600e3);
   ctx.fillStyle='#55657F'; ctx.font=F(500,27); ctx.fillText(`⏱ Válida até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR').slice(0,5)}. Depois a companhia pode mudar o valor.`, W/2, y);
   ctx.textAlign='left';
@@ -3430,6 +3616,22 @@ async function cardCliente(p){
    Só vai para lá o necessário para o cliente ver e aprovar: nada de telefone nem dados do pedido.
    ========================================================= */
 const CHAVE_COTACOES = 'dcnp_cotacoes_teste';
+function trechosPublicos(pp){
+  const b = bT(pp,'Ida'), bv = bT(pp,'Volta');
+  return {
+    ida:{data:pp.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||'', paradas:textoParadas(b,'Ida'), ...escalasPublicas(b,'Ida'), cia:ciaTrecho(pp,'Ida')||''},
+    volta: pp.tipo==='ida_volta' ? {data:pp.dataVolta||'', voo:bv.vooVolta||'', saida:bv.saidaVolta||'', chegada:bv.chegadaVolta||'', paradas:textoParadas(bv,'Volta'), ...escalasPublicas(bv,'Volta'), cia:ciaTrecho(pp,'Volta')||''} : null
+  };
+}
+function parcelasDe(vc){ return listaParcelas().map(i=>{ const t=valorCartao(vc,i); return {n:i, parcela:Math.round(t/i*100)/100, total:t}; }); }
+function opcoesPublicas(p){
+  const vB = varianteCurta(p); if(!vB) return null;
+  const vA = valorCliente(p);
+  return [
+    {rotulo:'Mais barata', resumo:resumoOpcao(p), ...trechosPublicos(p), valorPix:vA, parcelas:parcelasDe(vA)},
+    {rotulo:'Mais rápida', resumo:resumoOpcao(vB.q), ...trechosPublicos(vB.q), valorPix:vB.valorPix, parcelas:parcelasDe(vB.valorPix)}
+  ];
+}
 function dadosCotacaoPublica(p){
   const b = bT(p,'Ida'), bv = bT(p,'Volta'), vc = valorCliente(p), x = p.passageiros||{};
   const pn = String(p.cliente?.nome||'').trim().split(/\s+/)[0] || '';
@@ -3440,7 +3642,8 @@ function dadosCotacaoPublica(p){
     tipo:p.tipo, cia:ciasTexto(p),
     ida:{data:p.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||'', paradas:textoParadas(b,'Ida'), ...escalasPublicas(b,'Ida'), cia:ciaTrecho(p,'Ida')||''},
     volta: p.tipo==='ida_volta' ? {data:p.dataVolta||'', voo:bv.vooVolta||'', saida:bv.saidaVolta||'', chegada:bv.chegadaVolta||'', paradas:textoParadas(bv,'Volta'), ...escalasPublicas(bv,'Volta'), cia:ciaTrecho(p,'Volta')||''} : null,
-    datasAlt: b.datasAlt||'',
+    datasAlt: b.datasAlt || datasAltAuto(p) || '',
+    opcoes: opcoesPublicas(p),
     pax: textoPax(p), paxQtd:{adultos:x.adultos||0, criancas:x.criancas||0, bebes:x.bebes||0},
     bagagem: textoMalasCliente(p), pet: p.pet ? textoPet(p) : '',
     valorPix: vc,
@@ -3506,7 +3709,8 @@ async function checarRespostas(){
       if(p.cotacao.resposta && p.cotacao.resposta.aprovadaEm === d.resposta.aprovadaEm) continue;   // nada mudou
       const trocou = !!p.cotacao.resposta;
       logar(p, `Cliente ${trocou?'trocou a forma de pagamento':'aprovou a cotação'} pela página: ${d.resposta.forma==='pix'?'Pix':'cartão '+d.resposta.parcelas+'x'}`);
-      p.cotacao.resposta = {forma:d.resposta.forma, parcelas:d.resposta.parcelas||0, aprovadaEm:d.resposta.aprovadaEm};
+      p.cotacao.resposta = {forma:d.resposta.forma, parcelas:d.resposta.parcelas||0, aprovadaEm:d.resposta.aprovadaEm, ...(d.resposta.opcao!=null?{opcao:Number(d.resposta.opcao)||0}:{})};
+      if(Array.isArray(p.cotacao.opcoes)) aplicarOpcaoCliente(p, Number(d.resposta.opcao)||0);   // escolheu a mais rápida (ou voltou para a mais barata)
       p.pagamento = p.pagamento || {};
       if(!p.pagamento.pagoEm){ p.pagamento.forma = d.resposta.forma; if(d.resposta.forma==='cartao') p.pagamento.parcelas = d.resposta.parcelas; }
       if(Array.isArray(d.passageirosEnviados) && d.passageirosEnviados.length){
@@ -3515,7 +3719,8 @@ async function checarRespostas(){
       }
       salvar(true); renderQuadro(); if(abertoId===p.id) renderDetalhe();
       const forma = d.resposta.forma==='pix' ? 'Pix' : `cartão em ${d.resposta.parcelas}x`;
-      bip(); toast(trocou ? `${p.cliente.nome.split(' ')[0]} trocou a forma de pagamento do ${p.id}: ${forma}` : `${p.cliente.nome.split(' ')[0]} aprovou a cotação ${p.id} · ${forma}`);
+      const opc = Array.isArray(p.cotacao.opcoes) ? ` · opção ${(Number(d.resposta.opcao)||0)===1?'mais rápida':'mais barata'}` : '';
+      bip(); toast(trocou ? `${p.cliente.nome.split(' ')[0]} trocou a forma de pagamento do ${p.id}: ${forma}${opc}` : `${p.cliente.nome.split(' ')[0]} aprovou a cotação ${p.id} · ${forma}${opc}`);
       try{ if('Notification' in window && Notification.permission==='granted') new Notification('Cotação aprovada', {body:`${p.id} · ${p.origem.iata} → ${p.destino.iata} · ${forma}`}); }catch(e){}
     }
   } finally { checandoRespostas = false; }
@@ -3559,9 +3764,19 @@ function renderCfg(){
   $$('[data-taxa]').forEach(el=>el.addEventListener('input',()=>{ cfg.taxas[Number(el.dataset.taxa)] = n(el.value); salvarCfg(); }));
   renderTabelaMP();
   renderBagCfg();
+  renderBebeCfg();
   renderMsgsCfg();
   infoBackup();
   if($('#cfgMenu').innerHTML) renderCfgMenu();
+}
+function renderBebeCfg(){
+  const el = $('#bebeCfg'); if(!el) return;
+  el.innerHTML = Object.entries(PROG).map(([k,m])=>`<div class="g3 bebe-lin"><div class="campo"><label>${m.nome}</label><span class="nota">por bebê, por trecho</span></div>
+    <div class="campo"><label for="bb-${k}-m">Milhas</label><input id="bb-${k}-m" type="number" min="0" step="100" data-bebe="${k}|milhas" value="${esc(cfg.bebe?.[k]?.milhas??'')}" placeholder="não sei"></div>
+    <div class="campo"><label for="bb-${k}-r">R$ (taxa)</label><input id="bb-${k}-r" type="number" min="0" step="0.01" data-bebe="${k}|reais" value="${esc(cfg.bebe?.[k]?.reais??'')}" placeholder="não sei"></div></div>`).join('');
+  el.querySelectorAll('[data-bebe]').forEach(inp=>inp.addEventListener('input',()=>{ const [k,c] = inp.dataset.bebe.split('|'); cfg.bebe[k] = cfg.bebe[k]||{}; cfg.bebe[k][c] = inp.value===''?'':n(inp.value); salvarCfg(); }));
+  const bl = bloqueiosSemana(), b = $('#bloqCfg');
+  if(b) b.innerHTML = Object.keys(PROG).map(k=>`${PROG[k].nome}: <b>${bl[k]||0}</b>`).join(' · ') + (Object.values(bl).some(x=>x>=5) ? '<br>Um site recusando muito? Me mande o arquivo de diagnóstico de uma busca para eu ajustar o endereço.' : '');
 }
 function renderBagCfg(){
   const box = $('#bagCfg'); if(!box) return;
@@ -3715,7 +3930,9 @@ function receberDinheiro(m){
 function receberResultado(m){
   if(buscaDinheiro && m.buscaId===buscaDinheiro.id){ receberDinheiro(m); return; }
   if(autoAtual && m.buscaId===autoAtual.id){ receberAuto(m); return; }
-  if(!busca || m.buscaId!==busca.id) return;
+  if(flexAtual && m.buscaId===flexAtual.id){ receberFlex(m); return; }
+  if(String(m.buscaId||'').startsWith('print-')){ printDepoisDaBusca(m); return; }
+  if(!busca || m.buscaId!==busca.id){ receberTardio(m); return; }
   const t = busca.tarefas[m.programa+'|'+m.trecho]; if(!t) return;
   Object.assign(t, {status:m.status, msg:m.msg, voos:(m.voos||[]).filter(v=>v && n(v.milhas)>0), diagnostico:m.diagnostico});
   if(t.status==='ok' && !t.voos.length){ t.status='vazio'; t.msg='Nenhum voo lido'; }
@@ -3796,45 +4013,85 @@ function baixarDiagnostico(){
 }
 /* ---------- busca automática por pedido: roda sozinha e preenche os quadros ---------- */
 const diagAuto = {};   // diagnóstico da última busca automática de cada pedido (só nesta sessão)
-let autoAtual = null;   // {id, pedidoId, tarefas:{'prog|trecho':{programa,trecho,status,msg,voos,url}}, inicio}
+let autoAtual = null;   // {id, pedidoId, tarefas:{'prog|trecho':{programa,trecho,status,msg,voos,url}}, inicio, retentou:{}}
+let flexAtual = null;   // busca das datas vizinhas (datas flexíveis): {id, pedidoId, k, tarefas}
 const AUTO_ETAPAS = ['nova','aguardando_mp'];
 const hojeISO = () => new Date().toISOString().slice(0,10);
 const AUTO_V = 3;   // versão da leitura: pedidos buscados por uma versão antiga são buscados de novo
-function autoTravada(p){ return p.auto && Object.values(p.auto.st||{}).some(x=>x.status==='buscando') && !(autoAtual && autoAtual.pedidoId===p.id) && (Date.now() - Date.parse(p.auto.em||0)) > 180000; }
+function autoTravada(p){ return p.auto && Object.values(p.auto.st||{}).some(x=>x.status==='buscando') && !(autoAtual && autoAtual.pedidoId===p.id) && (Date.now() - Date.parse(p.auto.em||0)) > 240000; }
 function precisaAuto(p){
   return p && AUTO_ETAPAS.includes(p.status) && (!p.auto || p.auto.v!==AUTO_V || autoTravada(p)) && p.dataIda && p.dataIda >= hojeISO()
     && /^[A-Z]{3}$/.test(p.origem?.iata||'') && /^[A-Z]{3}$/.test(p.destino?.iata||'');
 }
 function pagantes(p){ const x=p.passageiros||{}; return Math.max(1,(x.adultos||0)+(x.criancas||0)); }
-function agendarAuto(){
-  if(autoAtual || !extensaoAtiva || !versaoOk()) return;
-  // primeiro o pedido aberto; depois os mais antigos que ainda não foram buscados
-  const fila = [pedido(abertoId), ...pedidos.slice().sort((a,b)=>(a.criadoEm||'').localeCompare(b.criadoEm||''))].filter(precisaAuto);
-  if(fila.length) iniciarAuto(fila[0]);
+
+/* ---------- fila: o pedido aberto, depois os que chegaram há menos de 30 min (cliente esperando), depois pelo voo mais próximo ---------- */
+const buscasPausadas = () => { try{ return localStorage.getItem('vpo_buscas_pausadas')==='1'; }catch(e){ return false; } };
+function filaAuto(){
+  const rec = Date.now() - 30*60e3, resto = pedidos.filter(p=>p.id!==abertoId && precisaAuto(p) && !(autoAtual && autoAtual.pedidoId===p.id));
+  const novos = resto.filter(p=>Date.parse(p.criadoEm||0) >= rec).sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
+  const outros = resto.filter(p=>!novos.includes(p)).sort((a,b)=>(a.dataIda||'').localeCompare(b.dataIda||'') || (a.criadoEm||'').localeCompare(b.criadoEm||''));
+  const ab = pedido(abertoId);
+  return [...(ab && precisaAuto(ab) && !(autoAtual && autoAtual.pedidoId===ab.id) ? [ab] : []), ...novos, ...outros];
 }
+function estadoBusca(p){   // para os cartões: buscando, na fila (Nº) ou buscado há…
+  if((autoAtual && autoAtual.pedidoId===p.id) || (flexAtual && flexAtual.pedidoId===p.id)) return {t:'buscando…', c:'b'};
+  if(extensaoAtiva && precisaAuto(p)){ const i = filaAuto().findIndex(x=>x.id===p.id); if(i>=0) return {t: buscasPausadas() ? 'busca pausada' : `na fila (${i+1+(autoAtual?1:0)}º)`, c:'f'}; }
+  if(p.auto?.em && AUTO_ETAPAS.includes(p.status)){ const h = idadeBuscaH(p); return {t:'buscado '+tempoDesde(p.auto.em), c: h>=n(cfg.buscaVelha.vermelho) ? 'v' : h>=n(cfg.buscaVelha.amarelo) ? 'a' : 'ok'}; }
+  return null;
+}
+function htmlFila(){
+  if(!extensaoAtiva) return '';
+  const f = filaAuto(), at = autoAtual && pedido(autoAtual.pedidoId), fx = flexAtual && pedido(flexAtual.pedidoId), pausa = buscasPausadas();
+  if(!at && !fx && !f.length) return '';
+  const txt = at ? `<span class="gira"></span><span>Buscando <b>${esc(at.id)}</b>${f.length?` · mais ${f.length} na fila`:''}</span>`
+    : fx ? `<span class="gira"></span><span>Datas vizinhas do <b>${esc(fx.id)}</b>${f.length?` · mais ${f.length} na fila`:''}</span>`
+    : `<span>${pausa?'Buscas pausadas':'Na fila'}: <b>${f.length}</b> pedido${f.length>1?'s':''}</span>`;
+  return `${txt}<button type="button" class="btn peq" onclick="pausarBuscas(${!pausa})">${pausa?'Retomar buscas':'Pausar buscas'}</button>`;
+}
+function atualizarFila(){ document.querySelectorAll('.fila-busca').forEach(el=>{ const h = htmlFila(); el.innerHTML = h; el.hidden = !h; }); }
+function pausarBuscas(sim){ try{ localStorage.setItem('vpo_buscas_pausadas', sim?'1':'0'); }catch(e){} toast(sim ? 'Buscas pausadas. A busca que está rodando termina normalmente.' : 'Buscas retomadas'); atualizarFila(); renderQuadro(); if(!sim) setTimeout(agendarAuto, 300); }
+function agendarAuto(){
+  atualizarFila();
+  if(autoAtual || flexAtual || !extensaoAtiva || !versaoOk() || buscasPausadas()) return;
+  const f = filaAuto(); if(f.length) iniciarAuto(f[0]);
+}
+
+/* idade da busca (melhoria 9) */
+function idadeBuscaH(p, k){ const em = (k && p.auto?.emProg?.[k]) || p.auto?.em; return em ? (Date.now() - Date.parse(em))/3600e3 : null; }
+function htmlIdade(p, k){
+  const h = idadeBuscaH(p,k); if(h==null || (autoAtual && autoAtual.pedidoId===p.id)) return '';
+  const c = h>=n(cfg.buscaVelha.vermelho) ? 'v' : h>=n(cfg.buscaVelha.amarelo) ? 'a' : '';
+  return `<span class="idade-busca ${c}" title="Os preços mudam com o tempo">buscado ${tempoDesde(p.auto.emProg?.[k] || p.auto.em)}</span>`;
+}
+
 function iniciarAuto(p, forcar, opts){
   if(!extensaoAtiva || !versaoOk()){ toast('A busca automática precisa da extensão neste Chrome.'); return; }
-  if(autoAtual){ if(forcar && autoAtual.pedidoId!==p.id){ toast('Terminando a busca de outro pedido; este entra em seguida.'); p.auto=null; } return; }
-  const x = p.passageiros||{};
+  if(autoAtual || flexAtual){ if(forcar && autoAtual?.pedidoId!==p.id){ toast('Terminando a busca de outro pedido; este entra em seguida.'); p.auto=null; atualizarFila(); } return; }
+  const x = p.passageiros||{}, so = opts?.so && opts.so.length ? opts.so : Object.keys(PROG);
   const trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
   if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
   const tarefas = {}, envio = [];
-  for(const [trecho,o,d,data] of trechos) for(const k in PROG){
+  for(const [trecho,o,d,data] of trechos) for(const k of so){
     const url = urlBusca(cfg.urls[k], {origem:o, destino:d, data, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0});
     tarefas[k+'|'+trecho] = {programa:k, trecho, status:'buscando', msg:'Buscando…', voos:[], url};
     envio.push({programa:k, trecho, url});
   }
-  autoAtual = {id: token(10), pedidoId:p.id, tarefas, inicio:Date.now(), renovar: !!opts?.renovar};
+  autoAtual = {id: token(10), pedidoId:p.id, tarefas, inicio:Date.now(), renovar: !!opts?.renovar, so: opts?.so || null, retentou:{}};
   // a versão antiga marcava "Sem disponibilidade" por engano: desfaz o que foi marcado automaticamente
   for(const k in PROG){ const b=p.busca[k]; if(b.semDisp && (b.autoIda||b.autoVolta) && !b.milhasIda) b.semDisp=false; }
-  p.auto = {v:AUTO_V, em:new Date().toISOString(), st:{}, opcoes:{}, buscaId:autoAtual.id};
+  const velho = p.auto || {};
+  p.auto = {v:AUTO_V, em:new Date().toISOString(), st:{}, opcoes:{}, emProg:{}, total:{}, totalMan:velho.totalMan||{}, buscaId:autoAtual.id};
+  if(opts?.so){ for(const c in (velho.st||{})) if(!tarefas[c]){ p.auto.st[c] = velho.st[c]; p.auto.opcoes[c] = (velho.opcoes||{})[c]; if(velho.total?.[c]) p.auto.total[c] = true; }
+    for(const k in (velho.emProg||{})) if(!so.includes(k)) p.auto.emProg[k] = velho.emProg[k]; p.auto.em = velho.em || p.auto.em; }
   for(const c in tarefas) p.auto.st[c] = {status:'buscando', msg:'Buscando…'};
-  salvar(true); if(abertoId===p.id) renderDetalheSeguro();
+  salvar(true); if(abertoId===p.id) renderDetalheSeguro(); atualizarFila();
   window.postMessage({tipo:'dcnp-buscar', buscaId:autoAtual.id, pedidoId:p.id, tarefas:envio}, '*');
   const id = autoAtual.id;
+  // as abas abrem espaçadas (3 a 5 s cada): o prazo conta com isso
   setTimeout(()=>{ if(!autoAtual || autoAtual.id!==id) return;
-    for(const t of Object.values(autoAtual.tarefas)) if(t.status==='buscando') receberAuto({buscaId:id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'Sem resposta da aba', voos:[]});
-  }, 130000);
+    for(const t of Object.values(autoAtual.tarefas)) if(t.status==='buscando' && !t.retentativa) receberAuto({buscaId:id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'Sem resposta da aba', voos:[]});
+  }, 130000 + envio.length*5000);
 }
 function renderDetalheSeguro(){
   const corpo = $('#detCorpo');
@@ -3849,31 +4106,203 @@ function renderDetalheSeguro(){
   }, 80);
   corpo.addEventListener('focusout', sair);
 }
-function receberAuto(m){
-  const a = autoAtual; if(!a || m.buscaId!==a.id) return;
-  const chave = m.programa+'|'+m.trecho, t = a.tarefas[chave]; if(!t) return;
+
+/* ---------- bloqueios por site (melhoria 6): conta na semana, para ver se algum site bloqueia sempre ---------- */
+function registrarBloqueio(k){ try{ const b = JSON.parse(localStorage.getItem('vpo_bloqueios')||'{}'), sem = Date.now()-7*864e5; b[k] = [...(b[k]||[]).filter(t=>t>sem), Date.now()]; localStorage.setItem('vpo_bloqueios', JSON.stringify(b)); }catch(e){} }
+function bloqueiosSemana(){ try{ const b = JSON.parse(localStorage.getItem('vpo_bloqueios')||'{}'), sem = Date.now()-7*864e5; return Object.fromEntries(Object.keys(PROG).map(k=>[k,(b[k]||[]).filter(t=>t>sem).length])); }catch(e){ return {}; } }
+
+/* ---------- voos lidos: duração, por pessoa × total, lugares ---------- */
+function minHora(h){ const m = String(h||'').match(/^(\d{1,2}):(\d{2})/); return m ? n(m[1])*60+n(m[2]) : null; }
+function duracaoVoo(v){ if(v?.dur!=null) return v.dur; const a = minHora(v?.saida), b = minHora(v?.chegada); if(a==null || b==null) return null; let d = b-a; if(d<=0) d += 1440; return d; }
+function pareceTotal(p, k, tr){
+  const pag = pagantes(p); if(pag<2) return false;
+  const l = p.auto?.opcoes?.[k+'|'+tr]||[], v = l[0]; if(!v) return false;
+  if(v.milhasTotal && Math.abs(v.milhasTotal - v.milhas*pag) <= v.milhas*pag*0.03) return false;   // o site deu os dois: o lido é por pessoa
+  if(k==='smiles') return false;   // a Smiles sempre informa por pessoa
+  const refs = ['smiles', ...Object.keys(PROG)].filter(x=>x!==k).map(x=>(p.auto?.opcoes?.[x+'|'+tr]||[])[0] && !p.auto?.total?.[x+'|'+tr] ? p.auto.opcoes[x+'|'+tr][0].milhas : null).filter(Boolean);
+  if(refs.length){ const ref = refs[0]; return v.milhas/ref > 1.6 && Math.abs(Math.log(v.milhas/pag/ref)) < Math.abs(Math.log(v.milhas/ref)); }
+  return v.milhas > 150000 && v.milhas/pag <= 150000;
+}
+function ehTotal(p, k, tr){ const c = k+'|'+tr, man = p.auto?.totalMan?.[c]; return man!=null ? man : !!p.auto?.total?.[c]; }
+function opcoesTrecho(p, k, tr){   // voos lidos, com as milhas sempre POR PESSOA
+  const l = p.auto?.opcoes?.[k+'|'+tr]||[], div = ehTotal(p,k,tr) ? pagantes(p) : 1;
+  return l.map(v=>div>1 ? {...v, milhas: Math.round(n(v.milhas)/div)} : v);
+}
+const lugarOk = (p, v) => v.assentos==null || n(v.assentos) >= pagantes(p);
+function voosEscolhidos(p, lista){
+  const ok = lista.filter(v=>lugarOk(p,v)), base = ok.length ? ok : lista;
+  const barato = base[0] || null;
+  const comDur = base.filter(v=>duracaoVoo(v)!=null);
+  const curto = comDur.slice().sort((a,b)=>duracaoVoo(a)-duracaoVoo(b) || n(a.milhas)-n(b.milhas))[0] || null;
+  return {barato, curto: curto && barato && curto!==barato && duracaoVoo(curto) < (duracaoVoo(barato) ?? Infinity) ? curto : null};
+}
+function altDe(p, v){ const pag = pagantes(p); return {voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), escalas:escalasVoo(v), pp:n(v.milhas), milhas:n(v.milhas)*pag, taxas: v.taxas!=null ? Math.round(n(v.taxas)*pag*100)/100 : null, dur:duracaoVoo(v), assentos:v.assentos??null}; }
+function escolherEAplicar(p, k, T){
+  const tr = T.toLowerCase(), b = p.busca[k], lista = opcoesTrecho(p,k,tr);
+  const {barato, curto} = voosEscolhidos(p, lista);
+  if(barato) aplicarVooAuto(p, k, T, barato);
+  if(curto && (b['auto'+T] || !b['milhas'+T])) b['alt'+T] = altDe(p, curto); else delete b['alt'+T];
+}
+function aplicarResultado(p, chave, m, semAplicar){
+  const [k, tr] = chave.split('|'), T = tr==='volta' ? 'Volta' : 'Ida';
   const voos = (m.voos||[]).filter(v=>v && n(v.milhas)>0).sort((x,y)=>n(x.milhas)-n(y.milhas) || ((x.paradas??9)-(y.paradas??9)));
   let status = m.status, msg = m.msg||'';
   if(status==='ok' && !voos.length){ status='erro'; msg='Não consegui ler os voos'; }
-  Object.assign(t, {status, msg, voos});
-  if(m.diagnostico) (diagAuto[a.pedidoId] = diagAuto[a.pedidoId] || {})[chave] = {status, msg, url:m.url||t.url, ...m.diagnostico};
-  const p = pedido(a.pedidoId);
-  if(p){
-    p.auto = p.auto || {st:{}, opcoes:{}, buscaId:a.id};
-    p.auto.st[chave] = {status, msg: status==='ok' ? `${voos.length} voo${voos.length!==1?'s':''}` : (msg || ROTULO_ST[status])};
-    p.auto.opcoes[chave] = voos.slice(0,8).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), escalas:escalasVoo(v), milhas:n(v.milhas), milhasClube:v.milhasClube||null, taxas:v.taxas??null}));
-    const T = m.trecho==='volta' ? 'Volta' : 'Ida', b = p.busca[m.programa];
-    if(status==='ok' && !a.renovar) aplicarVooAuto(p, m.programa, T, p.auto.opcoes[chave][0]);   // na renovação nada muda antes de você conferir
-    salvar(true); if(abertoId===p.id) renderDetalheSeguro();
+  p.auto = p.auto || {st:{}, opcoes:{}, emProg:{}, total:{}, totalMan:{}, buscaId:m.buscaId};
+  p.auto.emProg = p.auto.emProg || {}; p.auto.total = p.auto.total || {};
+  p.auto.st[chave] = {status, msg: status==='ok' ? `${voos.length} voo${voos.length!==1?'s':''}${m.tardio?' · lidos depois da busca no site':''}` : (msg || ROTULO_ST[status])};
+  if(status==='ok' || !(p.auto.opcoes[chave]||[]).length){
+    p.auto.opcoes[chave] = voos.slice(0,12).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), parDed: (v.paradas==null||v.paradas==='') && !escalasVoo(v).length && paradasPeloVoo(v.voo)!=null, escalas:escalasVoo(v), milhas:n(v.milhas), milhasTotal:v.milhasTotal||null,
+      milhasClube:v.milhasClube||null, taxas:v.taxas??null, taxasTotal:v.taxasTotal??null, assentos:v.assentos??null, dur:duracaoVoo(v)}));
+    p.auto.emProg[k] = new Date().toISOString();
   }
-  if(Object.values(a.tarefas).every(x=>x.status!=='buscando')){
+  if(status==='ok'){ p.auto.total[chave] = pareceTotal(p,k,tr); if(!semAplicar) escolherEAplicar(p, k, T); }
+  return status;
+}
+function revisarTotais(p){   // quando todos responderam, confere de novo por pessoa × total com os outros programas como referência
+  if(!p.auto) return;
+  for(const c in (p.auto.opcoes||{})){ if(!(p.auto.opcoes[c]||[]).length) continue; const [k,tr] = c.split('|'); const novo = pareceTotal(p,k,tr);
+    if(novo!==!!p.auto.total?.[c]){ p.auto.total[c] = novo; const T = tr==='volta'?'Volta':'Ida'; if(p.busca[k]['auto'+T]) escolherEAplicar(p,k,T); } }
+}
+function receberAuto(m){
+  const a = autoAtual; if(!a || m.buscaId!==a.id) return;
+  const chave = m.programa+'|'+m.trecho, t = a.tarefas[chave]; if(!t) return;
+  const p = pedido(a.pedidoId);
+  if(m.diagnostico) (diagAuto[a.pedidoId] = diagAuto[a.pedidoId] || {})[chave] = {status:m.status, msg:m.msg, url:m.url||t.url, ...m.diagnostico};
+  // site recusou: tenta de novo no fim, numa aba na frente (melhoria 6)
+  if(m.status==='bloqueado') registrarBloqueio(m.programa);
+  if(m.status==='bloqueado' && !a.retentou[chave]){
+    a.retentou[chave] = true; Object.assign(t, {status:'buscando', aguarda:true, msg:'Site recusou · nova tentativa no fim'});
+    if(p){ p.auto.st[chave] = {status:'buscando', msg:'Site recusou · nova tentativa no fim'}; salvar(true); if(abertoId===p.id) renderDetalheSeguro(); }
+  } else {
+    let status = m.status, msg = m.msg||'';
+    if(status==='bloqueado' && a.retentou[chave]) msg = 'O site recusou de novo. Busque no site: o resultado volta sozinho';
+    Object.assign(t, {status, msg, voos:m.voos||[], aguarda:false});
+    if(p){ status = aplicarResultado(p, chave, {...m, msg}, a.renovar); t.status = status; salvar(true); if(abertoId===p.id) renderDetalheSeguro(); }
+  }
+  const ts = Object.values(a.tarefas);
+  if(ts.some(x=>x.aguarda) && ts.every(x=>x.aguarda || x.status!=='buscando')) dispararRetentativas(a, p);
+  if(ts.every(x=>x.status!=='buscando')){
     autoAtual = null;
+    if(p) revisarTotais(p);
     if(abertoId) renderDetalheSeguro();   // tira o "Buscando…" e a faixa de progresso
-    if(p && a.renovar){ montarRenovacao(p); setTimeout(agendarAuto, 1500); return; }
-    if(p){ const k = menorPrograma(p); toast(`Busca do ${p.id} pronta${k?` · menor: ${PROG[k].nome}, ${MIL(totalMilhas(p,k))} milhas`:''}`); bip(); }
-    setTimeout(agendarAuto, 1500);
+    if(p) salvar(true);
+    if(p && a.renovar){ montarRenovacao(p); atualizarFila(); setTimeout(agendarAuto, 1500); return; }
+    if(p){ const c = comparaProgramas(p), k = c.melhor;
+      toast(`Busca do ${p.id} pronta${k ? (c.modo==='reais' ? ` · mais barato: ${PROG[k].nome}, ${BRL(c.lista[0].custo.valor)}` : ` · menor milhagem: ${PROG[k].nome}, ${MIL(totalMilhas(p,k))} milhas`) : ''}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}}); bip();
+      if(p.datasFlexiveis && !a.so && iniciarFlex(p)) return;
+    }
+    atualizarFila(); setTimeout(agendarAuto, 1500);
   }
 }
+function dispararRetentativas(a, p){
+  const lista = Object.values(a.tarefas).filter(x=>x.aguarda); if(!lista.length) return;
+  lista.forEach(x=>{ x.aguarda = false; x.retentativa = true; x.msg = 'Buscando de novo…'; if(p) p.auto.st[x.programa+'|'+x.trecho] = {status:'buscando', msg:'Buscando de novo (aba na frente)…'}; });
+  if(p && abertoId===p.id) renderDetalheSeguro();
+  window.postMessage({tipo:'dcnp-buscar', buscaId:a.id, pedidoId:a.pedidoId, manter:true, tarefas: lista.map((x,i)=>({programa:x.programa, trecho:x.trecho, url:x.url, frente:i===0}))}, '*');
+  const id = a.id;
+  setTimeout(()=>{ if(!autoAtual || autoAtual.id!==id) return; for(const x of lista) if(x.status==='buscando') receberAuto({buscaId:id, programa:x.programa, trecho:x.trecho, status:'bloqueado', msg:'Sem resposta na nova tentativa', voos:[]}); }, 110000 + lista.length*5000);
+}
+/* resultado que chega depois que a busca terminou (você buscou no próprio site, na aba que ficou aberta) */
+function receberTardio(m){
+  const p = pedidos.find(x=>x.auto?.buscaId===m.buscaId); if(!p || m.status!=='ok') return false;
+  const chave = m.programa+'|'+m.trecho; if(!PROG[m.programa]) return false;
+  aplicarResultado(p, chave, {...m, tardio:true}, false); revisarTotais(p);
+  salvar(true); if(abertoId===p.id) renderDetalheSeguro();
+  bip(); toast(`${PROG[m.programa].nome} · ${m.trecho}: voos recebidos do site no ${p.id}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}});
+  return true;
+}
+
+/* ---------- datas flexíveis (melhoria 7): 3 dias antes e 3 depois, só no programa mais barato ---------- */
+function somarDias(iso, d){ const [a,m,dd] = iso.split('-').map(Number), x = new Date(Date.UTC(a,m-1,dd+d)); return x.toISOString().slice(0,10); }
+function iniciarFlex(p){
+  const k = comparaProgramas(p).melhor || 'smiles', x = p.passageiros||{};
+  const trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  const tarefas = {}, envio = [];
+  for(const [tr,o,d,data] of trechos) for(const dd of [-1,1,-2,2,-3,3]){
+    const dia = somarDias(data, dd); if(dia < hojeISO()) continue;
+    if(tr==='ida' && p.dataVolta && dia > p.dataVolta) continue;
+    if(tr==='volta' && dia < p.dataIda) continue;
+    const url = urlBusca(cfg.urls[k], {origem:o, destino:d, data:dia, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0});
+    const chave = tr+'@'+dia; tarefas[chave] = {tr, dia, status:'buscando', voos:[]};
+    envio.push({programa:k, trecho:chave, url, fechar:true});
+  }
+  if(!envio.length) return false;
+  flexAtual = {id:token(10), pedidoId:p.id, k, tarefas};
+  window.postMessage({tipo:'dcnp-buscar', buscaId:flexAtual.id, pedidoId:p.id+'#flex', tarefas:envio}, '*');
+  atualizarFila(); if(abertoId===p.id) renderDetalheSeguro();
+  const id = flexAtual.id;
+  setTimeout(()=>{ if(flexAtual && flexAtual.id===id) terminarFlex(); }, 120000 + envio.length*5000);
+  return true;
+}
+function receberFlex(m){
+  const f = flexAtual; if(!f || m.buscaId!==f.id) return;
+  const t = f.tarefas[m.trecho]; if(!t) return;
+  t.status = m.status; t.voos = (m.voos||[]).filter(v=>v && n(v.milhas)>0).sort((a,b)=>n(a.milhas)-n(b.milhas));
+  if(Object.values(f.tarefas).every(x=>x.status!=='buscando')) terminarFlex();
+}
+function terminarFlex(){
+  const f = flexAtual; flexAtual = null; if(!f) return;
+  const p = pedido(f.pedidoId);
+  if(p){
+    const pag = pagantes(p), total = {};
+    p.flex = {k:f.k, em:new Date().toISOString(), trechos:{}};
+    for(const t of Object.values(f.tarefas)){
+      if(!t.voos.length) continue;
+      // mesma regra do "por pessoa": compara com o que a busca normal leu
+      const ref = (opcoesTrecho(p, f.k, t.tr)[0]||{}).milhas, bruto = n(t.voos[0].milhas);
+      const div = ehTotal(p, f.k, t.tr) && pag>1 ? pag : 1;
+      const voos = t.voos.slice(0,12).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), escalas:escalasVoo(v), milhas:Math.round(n(v.milhas)/div), taxas:v.taxas??null, assentos:v.assentos??null, dur:duracaoVoo(v)}));
+      const T = t.tr==='volta'?'Volta':'Ida';
+      (p.flex.trechos[T] = p.flex.trechos[T] || []).push({data:t.dia, voos});
+    }
+    for(const T in p.flex.trechos) p.flex.trechos[T].sort((a,b)=>a.data.localeCompare(b.data));
+    salvar(true); if(abertoId===p.id) renderDetalheSeguro();
+    const s = sugestaoFlex(p,'Ida') || sugestaoFlex(p,'Volta');
+    if(s) toast(`${p.id}: ${s.txt}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}});
+  }
+  atualizarFila(); setTimeout(agendarAuto, 1500);
+}
+function sugestaoFlex(p, T){
+  const fx = p.flex, k = fx?.k, dias = fx?.trechos?.[T]; if(!dias || !dias.length || !p.busca[k]) return null;
+  const b = p.busca[k], atualPP = n(b['pp'+T]) || (n(b['milhas'+T]) ? n(b['milhas'+T])/pagantes(p) : 0);
+  const dataPed = T==='Ida' ? p.dataIda : p.dataVolta;
+  const cands = dias.map(d=>({...d, v: voosEscolhidos(p, d.voos).barato})).filter(d=>d.v && d.data!==dataPed);
+  if(!cands.length) return null;
+  const dif = d => Math.round((Date.parse(d.data)-Date.parse(dataPed))/864e5);
+  let melhor;
+  if(!atualPP){ melhor = cands.sort((a,b)=>Math.abs(dif(a))-Math.abs(dif(b)) || n(a.v.milhas)-n(b.v.milhas))[0]; }
+  else { melhor = cands.sort((a,b)=>n(a.v.milhas)-n(b.v.milhas))[0]; if(n(melhor.v.milhas) >= atualPP) return null; }
+  const d = dif(melhor), pag = pagantes(p);
+  const mh = milheiroDe(p, k, n(melhor.v.milhas));
+  const economia = atualPP && mh ? Math.round((atualPP - n(melhor.v.milhas))*pag/1000*mh.milheiro*100)/100 : null;
+  const quando = `${fmtDataCurta(melhor.data)} (${d>0?'+':'−'}${Math.abs(d)} dia${Math.abs(d)>1?'s':''})`;
+  const txt = atualPP ? `mais barato em ${quando}: ${MIL(melhor.v.milhas)} milhas por pessoa${economia>0?`, ${BRL(economia)} a menos que na data pedida`:''}` : `a data pedida não tem voo; o dia mais próximo com voo é ${quando}: ${MIL(melhor.v.milhas)} milhas por pessoa`;
+  return {T, k, data:melhor.data, v:melhor.v, txt, idx: dias.indexOf(dias.find(x=>x.data===melhor.data))};
+}
+function usarDataFlex(p, T){
+  const s = sugestaoFlex(p, T); if(!s) return;
+  const tr = T.toLowerCase(), campo = T==='Ida' ? 'dataIda' : 'dataVolta';
+  p.datasPedidas = p.datasPedidas || {}; if(!p.datasPedidas[T]) p.datasPedidas[T] = p[campo];
+  const antes = p[campo]; p[campo] = s.data;
+  // os voos dos outros programas eram da data antiga: limpa o que a busca tinha preenchido
+  for(const k2 in PROG){ if(k2===s.k) continue; const b2 = p.busca[k2]; if(b2['auto'+T]){ for(const c of ['voo','saida','chegada','milhas','pp','taxas','paradas']) b2[c+T] = ''; b2['escalas'+T] = []; b2['auto'+T] = false; delete b2['alt'+T]; b2.taxas = Math.round((n(b2.taxasIda)+n(b2.taxasVolta))*100)/100; }
+    if(p.auto?.st) p.auto.st[k2+'|'+tr] = {status:'erro', msg:'A data mudou: busque de novo se quiser comparar'}; if(p.auto?.opcoes) p.auto.opcoes[k2+'|'+tr] = []; }
+  const dia = p.flex.trechos[T].find(x=>x.data===s.data);
+  p.auto.opcoes[s.k+'|'+tr] = dia.voos; p.auto.total[s.k+'|'+tr] = false; if(p.auto.totalMan) delete p.auto.totalMan[s.k+'|'+tr];
+  p.busca[s.k]['auto'+T] = true; escolherEAplicar(p, s.k, T);
+  if(!p.combo) p.escolhido = s.k;
+  p.flex.trechos[T] = p.flex.trechos[T].filter(x=>x.data!==s.data);
+  logar(p, `${T} mudou de ${fmtData(antes)} para ${fmtData(s.data)} (datas flexíveis, ${PROG[s.k].nome})`);
+  salvar(true); renderDetalhe(); toast(`${T} em ${fmtDataCurta(s.data)} na ${PROG[s.k].nome}`);
+}
+function datasAltAuto(p){
+  const d = p.datasPedidas||{}, t = [];
+  for(const T of trechosDe(p)){ const campo = T==='Ida'?'dataIda':'dataVolta'; if(d[T] && d[T]!==p[campo]) t.push(`${T} em ${fmtDataCurta(p[campo])} (você pediu ${fmtDataCurta(d[T])})`); }
+  return t.join(' · ');
+}
+
 /* leva para a aba do site que a busca deixou aberta; se ela já foi fechada, abre a busca de novo numa aba */
 const focoPend = {};
 function urlTrecho(p, k, trecho){ const x=p.passageiros||{}, volta = trecho==='volta';
@@ -3889,17 +4318,74 @@ function verNoSite(p, programa, trecho){
   focoPend[chave+'|abrir'] = abrir;
 }
 const extensaoAbasOk = () => { if(!extensaoVersao) return false; const [a,b] = extensaoVersao.split('.').map(Number); return a>1 || (a===1 && b>=7); };
+const extensaoV18 = () => { if(!extensaoVersao) return false; const [a,b] = extensaoVersao.split('.').map(Number); return a>1 || (a===1 && b>=8); };
+
+/* ---------- print automático do voo escolhido (melhoria 12) ---------- */
+const printPend = {};
+function capturarPrint(p, k, T, silencioso){
+  return new Promise(res=>{
+    if(!extensaoAtiva || !extensaoV18()){ if(!silencioso) toast('O print automático precisa da extensão 1.8 neste Chrome.'); return res(false); }
+    const b = p.busca[k], tr = T.toLowerCase();
+    if(!b['saida'+T]){ if(!silencioso) toast('Escolha o voo antes de tirar o print.'); return res(false); }
+    const chave = p.id+'|'+k+'|'+tr;
+    printPend[chave] = {res, p, k, T, silencioso, tentouAbrir:false};
+    window.postMessage({tipo:'dcnp-capturar-voo', pedidoId:p.id, buscaId:p.auto?.buscaId, programa:k, trecho:tr, saida:b['saida'+T], chegada:b['chegada'+T], voo:b['voo'+T]}, '*');
+    setTimeout(()=>{ if(printPend[chave]){ delete printPend[chave]; if(!silencioso) toast('A extensão não respondeu. Tire o print à mão (Alt+Shift+C).'); res(false); } }, 90000);
+  });
+}
+async function receberPrint(m){
+  const chave = m.pedidoId+'|'+m.programa+'|'+m.trecho, pend = printPend[chave]; if(!pend) return;
+  const {p, k, T} = pend;
+  if(!m.ok && m.motivo==='sem-aba' && !pend.tentouAbrir){
+    // a aba foi fechada: busca de novo só este programa/trecho e tira o print quando o resultado chegar
+    pend.tentouAbrir = true; pend.aguardaBusca = true; pend.buscaId = 'print-'+token(8);
+    toast(`Abrindo a busca da ${PROG[k].nome} para tirar o print…`);
+    window.postMessage({tipo:'dcnp-buscar', buscaId:pend.buscaId, pedidoId:p.id, manter:true, tarefas:[{programa:k, trecho:m.trecho, url:urlTrecho(p,k,m.trecho), frente:false}]}, '*');
+    return;
+  }
+  delete printPend[chave];
+  if(!m.ok || !m.imagem){ if(!pend.silencioso) toast('Não consegui tirar o print. Use a captura manual (Alt+Shift+C).'); pend.res(false); return; }
+  const img = await carregarImg(m.imagem); if(!img){ pend.res(false); return; }
+  let sx=0, sy=0, sw=img.width, sh=img.height;
+  if(m.achou && m.rect){ const d = m.dpr || 1, pad = 14*d;
+    sx = Math.max(0, m.rect.x*d - pad); sy = Math.max(0, m.rect.y*d - pad); sw = Math.min(img.width - sx, m.rect.w*d + pad*2); sh = Math.min(img.height - sy, m.rect.h*d + pad*2); }
+  const s = Math.min(1, 1200/sw), c = document.createElement('canvas'); c.width = Math.round(sw*s); c.height = Math.round(sh*s);
+  c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
+  p.busca[k]['print'+T] = c.toDataURL('image/jpeg', .8); p.busca[k]['printAuto'+T] = true;
+  salvar(true); if(abertoId===p.id) renderDetalheSeguro();
+  toast(m.achou ? `Print da ${PROG[k].nome} (${T.toLowerCase()}) anexado` : `Não achei o voo na página da ${PROG[k].nome}: anexei a tela inteira. Confira.`, m.achou ? {} : {tipo:'info'});
+  pend.res(true);
+}
+function printDepoisDaBusca(m){   // a busca aberta para o print terminou: tira o print agora
+  for(const [chave, pend] of Object.entries(printPend)){
+    if(!pend.aguardaBusca || pend.buscaId!==m.buscaId) continue;
+    pend.aguardaBusca = false;
+    if(m.status!=='ok'){ delete printPend[chave]; if(!pend.silencioso) toast('O site não mostrou os voos. Tire o print à mão.'); pend.res(false); return true; }
+    setTimeout(()=>window.postMessage({tipo:'dcnp-capturar-voo', pedidoId:pend.p.id, buscaId:pend.p.auto?.buscaId, programa:pend.k, trecho:m.trecho, saida:pend.p.busca[pend.k]['saida'+pend.T], chegada:pend.p.busca[pend.k]['chegada'+pend.T], voo:pend.p.busca[pend.k]['voo'+pend.T]}, '*'), 1500);
+    return true;
+  }
+  return false;
+}
 
 function aplicarVooAuto(p, k, T, v, manual){
   if(!v) return;
   const b = p.busca[k];
   if(!manual && b['milhas'+T] && !b['auto'+T]) return;   // não passa por cima do que você digitou
-  const tot = n(v.milhas) * pagantes(p);
+  const pag = pagantes(p), tot = n(v.milhas) * pag;
   aplicarParadas(b, T, v);
   b['voo'+T] = v.voo || ''; b['saida'+T] = v.saida || ''; b['chegada'+T] = v.chegada || '';
+  b['vooFalta'+T] = !v.voo;
   b['milhas'+T] = String(tot); b['auto'+T] = true; b['pp'+T] = n(v.milhas);
-  if(v.taxas!=null){ b['taxas'+T] = Math.round(n(v.taxas)*pagantes(p)*100)/100; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
+  b['assentos'+T] = v.assentos ?? null;
+  // taxas: a lida no site (por pessoa × passageiros); o que você digitou não é trocado
+  if(!b.taxasMan){
+    const tx = v.taxas!=null ? Math.round(n(v.taxas)*pag*100)/100 : (v.taxasTotal!=null ? n(v.taxasTotal) : null);
+    if(tx!=null){ b['taxas'+T] = tx; b['taxasFonte'+T] = 'site'; }
+    else if(b['taxasFonte'+T]==='site' || b['taxas'+T]==null || b['taxas'+T]===''){ b['taxas'+T] = ''; b['taxasFonte'+T] = 'falta'; }
+    b.taxas = trechosDe(p).some(t=>b['taxas'+t]!=='' && b['taxas'+t]!=null) ? Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100 : '';
+  }
   if(v.voo){ const c = v.voo.slice(0,2).toUpperCase(); b.cia = c==='G3'?'GOL':c==='LA'||c==='JJ'?'LATAM':c==='AD'?'Azul':b.cia; }
+  else b.cia = {smiles:'GOL', latam:'LATAM', azul:'Azul'}[k] || b.cia;
   b.semDisp = false;
 }
 $('#btnBuscar').addEventListener('click',()=>iniciarBusca(busca && busca.pedidoId && $('#bOrigem').value.toUpperCase()===busca.params.origem ? busca.pedidoId : null));
@@ -3915,6 +4401,7 @@ window.addEventListener('message', e=>{
   if(e.data.tipo==='dcnp-abas-abertas'){ if(!e.data.ok) toast('Não consegui abrir as abas pela extensão. Use os botões de cada site.'); return; }
   if(e.data.tipo==='dcnp-extensao-ativa'){ extensaoAtiva = true; if(e.data.versao) extensaoVersao = e.data.versao; atualizarAvisoExtensao(); setTimeout(agendarAuto, 1500); const a=$('#avisoExtensao'); if(a && abertoId) renderDetalhe(); return; }
   if(e.data.tipo==='dcnp-resultado'){ receberResultado(e.data); return; }
+  if(e.data.tipo==='dcnp-voo-capturado'){ receberPrint(e.data); return; }
   if(e.data.tipo==='dcnp-aba-focada'){ const c = e.data.buscaId+'|'+e.data.programa+'|'+e.data.trecho; clearTimeout(focoPend[c]); const abrir = focoPend[c+'|abrir']; delete focoPend[c]; delete focoPend[c+'|abrir']; if(!e.data.ok && abrir) abrir(); return; }
   if(e.data.tipo==='dcnp-busca-iniciada'){ if(!e.data.ok && autoAtual && e.data.buscaId===autoAtual.id){ const a=autoAtual; for(const t of Object.values(a.tarefas)) receberAuto({buscaId:a.id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'A extensão não abriu a aba', voos:[]}); return; } if(!e.data.ok){ toast('A extensão não conseguiu abrir as abas de busca.'); if(busca){ for(const t of Object.values(busca.tarefas)) if(t.status==='buscando'){ t.status='erro'; t.msg='Não abriu a aba'; } renderBusca(); } } return; }
   if(e.data.tipo==='dcnp-extensao-velha'){
@@ -4092,7 +4579,8 @@ const AJUSTES = [
   ['Busca e companhias', [
     ['urls','busca','','Endereços de busca','busca smiles latam azul url endereco', ()=>'Smiles, LATAM Pass e Azul'],
     ['dinheiro','dinheiro','','Preço em dinheiro','dinheiro companhia gol latam azul preco', ()=>'GOL, LATAM e Azul'],
-    ['checkin','aviao','','Abertura do check-in','check-in checkin horas', ()=>Object.entries(cfg.checkin).map(([k,v])=>`${k} ${v}h`).join(' · ')]
+    ['checkin','aviao','','Abertura do check-in','check-in checkin horas', ()=>Object.entries(cfg.checkin).map(([k,v])=>`${k} ${v}h`).join(' · ')],
+    ['regras','busca','','Regras da busca','bebe colo crianca busca velha horas bloqueio site recusou', ()=>`bebê de colo · busca velha após ${n(cfg.buscaVelha.vermelho)} h`, ()=>Object.keys(PROG).some(k=>!bebeCfgTem(k)) ? 'bebê sem valor' : '']
   ]],
   ['Site e app', [
     ['site','globo','','Endereço do site','site link endereco url', ()=>cfg.urlSite ? cfg.urlSite.replace(/^https?:\/\//,'') : 'o mesmo do painel'],
