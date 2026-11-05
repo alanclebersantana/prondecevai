@@ -307,6 +307,9 @@ a.btn{text-decoration:none}
 .paradas-box{background:var(--fundo);border-radius:9px;padding:8px;display:grid;gap:6px}
 .paradas-box small{color:var(--tinta-2);font-size:.75rem;font-weight:700}
 .paradas-box b{font-size:.85rem;color:var(--tinta)}
+.paradas-box .g2{gap:6px}
+.paradas-box input:disabled{background:#fff;color:var(--tinta);opacity:1}
+input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 .lnk-calc{background:none;border:0;padding:0;color:var(--ceu);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
 
 /* nav inferior */
@@ -1101,7 +1104,17 @@ function etapaBusca(p, cls, aberto){
       const atual = lista.findIndex(v=>v.voo===(b['voo'+T]||'') && v.saida===(b['saida'+T]||'') && n(v.milhas)===n(b['pp'+T]));
       return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(v.saida||'?')}→${esc(v.chegada||'?')} · ${esc(v.voo||'voo ?')} · ${esc(resumoParadas(v.paradas, v.escalas).replace('Voo direto','direto'))} · ${MIL(v.milhas)}/pessoa</option>`).join('')}</select>
         ${b['auto'+T] && b['pp'+T] ? `<small class="nota">${MIL(b['pp'+T])} milhas por pessoa × ${pagantes(p)} = ${MIL(b['milhas'+T])}</small>`:''}</div>`; };
-    const campoParadas = (T) => `<div class="paradas-box"><small>Paradas da ${T.toLowerCase()}</small><b data-par="${T}">${esc(textoParadas(b,T) || 'Vêm com a busca do voo')}</b></div>`;
+    const campoParadas = (T) => {
+      const np = b['paradas'+T], conhecido = !(np===''||np==null), q = conhecido ? n(np) : 0, es = b['escalas'+T]||[];
+      const sel = (b['paradasMan'+T] || !conhecido) ? `<div class="campo"><label>Quantas paradas?</label><select data-parq="${k}|${T}" class="${conhecido?'':'falta'}">
+        <option value="" ${conhecido?'':'selected'}>— a busca não trouxe —</option>${[0,1,2,3].map(i=>`<option value="${i}" ${conhecido&&q===i?'selected':''}>${i===0?'Direto':i+' parada'+(i>1?'s':'')}</option>`).join('')}</select></div>` : '';
+      const linhas = Array.from({length:q},(_,i)=>{ const e = es[i]||{}, eL = e.fl || !e.local, eM = e.fm || e.min==null;
+        if(!eL && !eM) return '';
+        return `<div class="g2">
+          <div class="campo"><label>Parada ${i+1}</label>${eL ? `<input data-esc="${k}|${T}|${i}|local" class="${e.local?'':'falta'}" value="${esc(e.local||'')}" placeholder="GRU">` : `<input value="${esc(e.local)}" disabled>`}</div>
+          <div class="campo"><label>Espera</label>${eM ? `<input data-esc="${k}|${T}|${i}|min" class="${e.min!=null?'':'falta'}" value="${esc(e.esperaTxt ?? fmtMin(e.min))}" placeholder="1h30">` : `<input value="${esc(fmtMin(e.min))}" disabled>`}</div></div>`; }).join('');
+      return `<div class="paradas-box"><small>Paradas da ${T.toLowerCase()}</small><b data-par="${k}|${T}">${esc(textoParadas(b,T) || 'A busca não trouxe — informe abaixo')}</b>${sel}${linhas}</div>`;
+    };
     const campoMil = (campo, rot) => `<div class="campo"><label>${rot}</label><input type="number" min="0" step="100" inputmode="numeric" data-bind="busca.${k}.${campo}" value="${esc(b[campo]??'')}" placeholder="total de milhas"></div>`;
     return `<div class="prog ${b.semDisp?'semdisp':''} ${p.escolhido===k?'escolhido':''}" data-prog="${k}">
       <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>Menor milhagem</span></div>
@@ -1328,7 +1341,7 @@ function ligarDetalhe(p){
       if(el.dataset.bind==='emissao.localizador') v = v.toUpperCase();
       setPath(p, el.dataset.bind, v);
       if(el.dataset.bind==='valorMP') p.valorMPManual = v!=='';
-      { const m = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/); if(m){ aplicarParadas(p.busca[m[1]], m[2], {}); const q = el.closest('.prog')?.querySelector(`[data-par="${m[2]}"]`); if(q) q.textContent = 'Vêm com a busca do voo'; } }   // apagou o campo: volta ao cálculo da tabela
+      { const m = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/); if(m){ aplicarParadas(p.busca[m[1]], m[2], {}); const q = corpo.querySelector(`[data-par="${m[1]}|${m[2]}"]`); if(q) q.textContent = 'A busca não trouxe — informe abaixo'; } }   // apagou o campo: volta ao cálculo da tabela
       { const m = el.dataset.bind.match(/^busca\.(\w+)\.(?:milhas|voo|saida|chegada)(Ida|Volta)$/); if(m) p.busca[m[1]]['auto'+m[2]] = false; }   // editou à mão: a busca não sobrescreve
       salvar();
       if(el.dataset.bind.endsWith('.semDisp')) el.closest('.prog').classList.toggle('semdisp', v);
@@ -1340,6 +1353,25 @@ function ligarDetalhe(p){
       atualizarCalculos(p);
     });
   });
+  // paradas preenchidas à mão (só aparece campo para o que a busca não trouxe)
+  corpo.querySelectorAll('[data-bind$=".vooIda"],[data-bind$=".vooVolta"]').forEach(el=>el.addEventListener('change',()=>{
+    const [,k,T] = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/) || [];
+    if(k && !corpo.querySelector(`[data-parq="${k}|${T}"]`)){ salvar(true); renderDetalhe(); }   // só redesenha se o campo de paradas ainda não está na tela
+  }));
+  corpo.querySelectorAll('[data-parq]').forEach(sel=>sel.addEventListener('change',()=>{
+    const [k,T] = sel.dataset.parq.split('|'), b = p.busca[k];
+    b['paradasMan'+T] = true; b['paradas'+T] = sel.value;
+    const q = sel.value==='' ? 0 : n(sel.value), es = (b['escalas'+T]||[]).slice(0,q);
+    while(es.length<q) es.push({local:'', min:null, fl:true, fm:true});
+    b['escalas'+T] = es; salvar(true); renderDetalhe();
+  }));
+  corpo.querySelectorAll('[data-esc]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [k,T,i,campo] = inp.dataset.esc.split('|'), b = p.busca[k], e = b['escalas'+T][Number(i)];
+    if(campo==='local'){ e.local = localParada(inp.value); e.fl = true; inp.classList.toggle('falta', !e.local); }
+    else { e.esperaTxt = inp.value; e.min = minEspera(inp.value); e.fm = true; inp.classList.toggle('falta', e.min==null); }
+    const t = corpo.querySelector(`[data-par="${k}|${T}"]`); if(t) t.textContent = textoParadas(b,T) || 'A busca não trouxe — informe abaixo';
+    salvar(); atualizarCalculos(p);
+  }));
   // colar prints
   corpo.querySelectorAll('[data-colar]').forEach(box=>{
     const [k,T] = box.dataset.colar.split('|'), arq = corpo.querySelector(`[data-arquivo="${box.dataset.colar}"]`);
@@ -1401,7 +1433,7 @@ function atualizarCalculos(p){
   }
   notaValorMP(p);
   const ap = $('#avisoParadas');
-  if(ap){ const f = p.escolhido ? faltaParadas(p) : []; ap.textContent = f.length ? `Paradas: ${f.join('; ')}. ${extensaoParadasOk() ? 'Refaça a busca deste pedido ou capture o voo de novo' : 'Atualize a extensão no Chrome (versão 1.5) e refaça a busca deste pedido'} — a cotação mostra só o que o site informou.` : ''; ap.classList.toggle('on', !!f.length); }
+  if(ap){ const f = p.escolhido ? faltaParadas(p) : []; ap.textContent = f.length ? `A busca não trouxe ${f.join('; ')}. Preencha na etapa 1, nos campos destacados${extensaoParadasOk() ? '' : ' (ou atualize a extensão para a versão 1.5 e refaça a busca)'}.` : ''; ap.classList.toggle('on', !!f.length); }
   const vc = valorCliente(p), lc = lucro(p);
   if($('#vCliente')){
     $('#vCliente').textContent = vc?BRL(vc):'—';
@@ -1622,14 +1654,30 @@ function resumoParadas(paradas, escalas){
 function textoParadas(b, T){ return resumoParadas(b['paradas'+T], b['escalas'+T]); }
 function escalasVoo(v){ return Array.isArray(v?.escalas) ? v.escalas.filter(Boolean).map(e=>({local:String(e.local||'').toUpperCase().slice(0,20), min:(e.min!=null && isFinite(e.min)) ? Math.round(e.min) : null})) : []; }
 function paradasVoo(v){ const e = escalasVoo(v); if(v?.paradas!=null && v.paradas!=='') return Math.max(Number(v.paradas)||0, e.length); return e.length ? e.length : null; }
-function aplicarParadas(b, T, v){ const q = paradasVoo(v); b['paradas'+T] = q!=null ? String(q) : ''; b['escalas'+T] = escalasVoo(v); }
+// o que a extensão não conseguir ler fica marcado (fl = falta o aeroporto, fm = falta a espera) e vira campo para preencher à mão
+function aplicarParadas(b, T, v){
+  const q = paradasVoo(v);
+  b['paradas'+T] = q!=null ? String(q) : ''; b['paradasMan'+T] = q==null;
+  const es = escalasVoo(v).slice(0, q||0); while(q && es.length<q) es.push({local:'', min:null});
+  es.forEach(e=>{ e.fl = !e.local; e.fm = e.min==null; });
+  b['escalas'+T] = es;
+}
+// espera digitada: "1h30", "1:30", "1h", "90min"; número solto até 12 = horas, acima = minutos
+function minEspera(v){
+  const t = String(v||'').toLowerCase().replace(/\s/g,''); if(!t) return null;
+  let m = t.match(/^(\d+)(?:h|:)(\d{1,2})?(?:min|m)?$/); if(m) return n(m[1])*60 + n(m[2]);
+  m = t.match(/^(\d+)(?:min|m)$/); if(m) return n(m[1]);
+  m = t.match(/^(\d+)$/); if(m) return n(m[1])<=12 ? n(m[1])*60 : n(m[1]);
+  return null;
+}
+function localParada(l){ l = String(l||'').trim(); return l.length<=3 ? l.toUpperCase() : l; }
 const extensaoParadasOk = () => { if(!extensaoVersao) return false; const [a,b] = extensaoVersao.split('.').map(Number); return a>1 || (a===1 && b>=5); };
 function faltaParadas(p){
   const b = p.busca[p.escolhido]||{}, r=[];
   for(const T of (p.tipo==='ida_volta'?['Ida','Volta']:['Ida'])){
     const np = b['paradas'+T], q = n(np), tr = T.toLowerCase();
-    if(np===''||np==null) r.push(`a busca não trouxe as paradas da ${tr}`);
-    else if(q>0 && (b['escalas'+T]||[]).slice(0,q).filter(e=>e?.local && e?.min!=null).length<q) r.push(`o site não informou o tempo de espera de todas as paradas da ${tr}`);
+    if(np===''||np==null) r.push(`quantas paradas tem a ${tr}`);
+    else if(q>0 && (b['escalas'+T]||[]).slice(0,q).filter(e=>e?.local && e?.min!=null).length<q) r.push(`o aeroporto ou o tempo de espera de alguma parada da ${tr}`);
   }
   return r;
 }
