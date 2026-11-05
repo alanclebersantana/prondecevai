@@ -94,7 +94,7 @@ a.btn{text-decoration:none}
 /* detalhe */
 .det-fundo{position:fixed;inset:0;background:rgba(19,35,63,.45);z-index:40;display:none}
 .det-fundo.aberto{display:block}
-.detalhe{position:fixed;top:0;right:0;bottom:0;width:min(860px,100vw);background:var(--fundo);z-index:41;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
+.detalhe{position:fixed;top:0;right:0;bottom:0;width:100vw;background:var(--fundo);z-index:41;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
 .detalhe:not(.aberto){visibility:hidden;transition:transform .25s ease,visibility 0s .25s}
 .detalhe.aberto{transform:none}
 .det-topo{background:var(--card);border-bottom:1px solid var(--linha);padding:12px 16px;display:flex;gap:12px;align-items:center}
@@ -743,6 +743,12 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   .fab{padding:13px 17px}
 }
 @media (max-width:560px){ .nav button{font-size:.56rem;letter-spacing:0;padding:0 1px} .nav button svg{width:21px;height:21px} }
+/* detalhe em tela cheia: o conteúdo fica centralizado em telas largas */
+.detalhe{--lado:max(16px, calc((100vw - 1280px)/2))}
+.det-cab .det-topo,.det-chips,.det-kpis{padding-left:var(--lado);padding-right:var(--lado)}
+.det-corpo{padding-left:var(--lado);padding-right:var(--lado)}
+.det-corpo.com-passos{grid-template-columns:220px minmax(0,1fr);gap:20px}
+@media (max-width:760px){ .det-corpo.com-passos{display:block;padding-top:0} .det-corpo.com-passos .passos-det{top:0;margin:0 calc(-1 * var(--lado)) 12px} }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
