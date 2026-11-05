@@ -795,6 +795,12 @@ function normalizar(p){
   p.historico = p.historico || [{status:p.status, em:p.criadoEm}];
   p.busca = p.busca || {};
   for(const k in PROG){ p.busca[k] = p.busca[k] || {cia:PROG[k].cia}; const b=p.busca[k]; if(b.print && !b.printIda){ b.printIda=b.print; } delete b.print; }
+  for(const k in PROG) for(const T of ['Ida','Volta']){
+    const b = p.busca[k], np = b['paradas'+T]; if(np===''||np==null) continue;
+    const q = n(np), es = Array.isArray(b['escalas'+T]) ? b['escalas'+T] : [];
+    while(es.length < q) es.push({local:'', min:null, fl:true, fm:true});
+    b['escalas'+T] = es;
+  }
   p.passageirosDados = p.passageirosDados || [];
   if(p.valorMPManual===undefined) p.valorMPManual = n(p.valorMP)>0;   // pedidos de antes da tabela: o valor foi digitado
   p.checkin = p.checkin || {cartoes:[]};
@@ -1366,7 +1372,10 @@ function ligarDetalhe(p){
     b['escalas'+T] = es; salvar(true); renderDetalhe();
   }));
   corpo.querySelectorAll('[data-esc]').forEach(inp=>inp.addEventListener('input',()=>{
-    const [k,T,i,campo] = inp.dataset.esc.split('|'), b = p.busca[k], e = b['escalas'+T][Number(i)];
+    const [k,T,i,campo] = inp.dataset.esc.split('|'), b = p.busca[k];
+    const lista = Array.isArray(b['escalas'+T]) ? b['escalas'+T] : (b['escalas'+T] = []);
+    while(lista.length <= Number(i)) lista.push({local:'', min:null, fl:true, fm:true});   // pedidos gravados antes: "1 parada" sem a lista
+    const e = lista[Number(i)];
     if(campo==='local'){ e.local = localParada(inp.value); e.fl = true; inp.classList.toggle('falta', !e.local); }
     else { e.esperaTxt = inp.value; e.min = minEspera(inp.value); e.fm = true; inp.classList.toggle('falta', e.min==null); }
     const t = corpo.querySelector(`[data-par="${k}|${T}"]`); if(t) t.textContent = textoParadas(b,T) || 'A busca não trouxe — informe abaixo';
