@@ -297,6 +297,16 @@ a.btn{text-decoration:none}
 .taxas{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .salvo{color:var(--ok);font-weight:700;font-size:.85rem;opacity:0;transition:opacity .2s}
 .salvo.on{opacity:1}
+.tmp-prog{border:1px solid var(--linha);border-radius:12px;padding:12px;margin-top:10px}
+.tmp-prog h3{font-size:.95rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.tmp-prog h3 i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.tmp-linha{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}
+.tmp-linha .faixa{grid-column:1/-1;font-size:.78rem;color:var(--tinta-2);margin-top:-4px}
+.custo-mp{display:block;font-size:.78rem;color:var(--tinta-2);font-weight:600;margin-top:2px}
+.nota-mp{margin:8px 0 0}
+.paradas-box{background:var(--fundo);border-radius:9px;padding:8px;display:grid;gap:6px}
+.paradas-box .g2{gap:6px}
+.lnk-calc{background:none;border:0;padding:0;color:var(--ceu);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
 
 /* nav inferior */
 .nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:#fff;border-top:1px solid var(--linha);display:flex;z-index:20}
@@ -410,6 +420,12 @@ a.btn{text-decoration:none}
           <div class="campo"><label for="c-min">Lucro mínimo (R$)</label><input id="c-min" data-cfg="lucroMinimo" type="number" step="1" min="0"></div>
           <div class="campo"><label for="c-val">Validade da cotação (horas)</label><input id="c-val" data-cfg="validadeHoras" type="number" step="0.5" min="0.5"></div>
         </div>
+      </section>
+      <section>
+        <h2>Tabela da Milhas Plus (valor do milheiro)</h2>
+        <p class="nota">O painel calcula sozinho o valor da Milhas Plus: milhas ÷ 1.000 × valor do milheiro + taxas. Na Smiles e na LATAM a faixa sai das milhas por CPF (total do pedido ÷ passageiros pagantes, ida e volta somadas). Na Azul você escolhe o tipo dentro do pedido. Quando chegar tabela nova, é só trocar os valores aqui.</p>
+        <div id="tabelaMPCfg"></div>
+        <p class="nota" id="tabelaMPEm" style="margin:8px 0 0"></p>
       </section>
       <section>
         <h2>Pix</h2>
@@ -545,7 +561,19 @@ const PROG = {
   azul:{nome:'Azul Fidelidade', cor:'#1B4AA0', cia:'Azul'}
 };
 
+const TABELA_MP_PADRAO = {
+  smiles:{tipo:'faixas', linhas:[{de:0,valor:17.49},{de:30,valor:16.99},{de:80,valor:16.75}]},
+  latam:{tipo:'faixas', linhas:[{de:0,valor:28.49},{de:25,valor:27.49},{de:40,valor:26.99},{de:60,valor:25.99},{de:80,valor:25.49},{de:150,valor:24.99}]},
+  azul:{tipo:'opcoes', linhas:[{nome:'Azul Liminar',valor:16.49},{nome:'Azul Pelo Mundo/Viagens',valor:13.99}]}
+};
+function mesclarTabela(t){
+  const r = JSON.parse(JSON.stringify(TABELA_MP_PADRAO));
+  if(t) for(const k in r) if(t[k] && Array.isArray(t[k].linhas) && t[k].linhas.length) r[k].linhas = t[k].linhas.map(l=>({...l}));
+  return r;
+}
+
 const CFG_PADRAO = {
+  tabelaMP:mesclarTabela(), tabelaMPEm:'',
   percPadrao:15, lucroMinimo:50, validadeHoras:2,
   chavePix:'', recebedor:'',
   taxas:[4.98,9.9,11.28,12.64,13.97,15.27,16.55,17.81,19.04,20.25,21.44,22.61],
@@ -593,7 +621,7 @@ const URLS_ANTIGAS = {smiles:'https://www.smiles.com.br/home', latam:'https://ww
 function mesclarCfg(c){
   c = c || {};
   if(c.urls){ c = {...c, urls:{...c.urls}}; for(const k in URLS_ANTIGAS) if(!c.urls[k] || c.urls[k]===URLS_ANTIGAS[k]) delete c.urls[k]; }
-  return {...CFG_PADRAO, ...c, checkin:{...CFG_PADRAO.checkin,...(c.checkin||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas]};
+  return {...CFG_PADRAO, ...c, checkin:{...CFG_PADRAO.checkin,...(c.checkin||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas], tabelaMP:mesclarTabela(c.tabelaMP)};
 }
 function lerCfg(){ let c={}; try{ c = JSON.parse(localStorage.getItem(CHAVE_CFG))||{}; }catch(e){} return mesclarCfg(c); }
 let cfg = lerCfg();
@@ -764,6 +792,7 @@ function normalizar(p){
   p.busca = p.busca || {};
   for(const k in PROG){ p.busca[k] = p.busca[k] || {cia:PROG[k].cia}; const b=p.busca[k]; if(b.print && !b.printIda){ b.printIda=b.print; } delete b.print; }
   p.passageirosDados = p.passageirosDados || [];
+  if(p.valorMPManual===undefined) p.valorMPManual = n(p.valorMP)>0;   // pedidos de antes da tabela: o valor foi digitado
   p.checkin = p.checkin || {cartoes:[]};
   p.checkin.cartoes = p.checkin.cartoes || [];
   return p;
@@ -804,6 +833,39 @@ function menorPrograma(p){
 function perc(p){ return p.percLucro!=null && p.percLucro!=='' ? n(p.percLucro) : n(cfg.percPadrao); }
 function valorCliente(p){ const v=n(p.valorMP); return v ? Math.round(v*(1+perc(p)/100)*100)/100 : 0; }
 function lucro(p){ return Math.round((valorCliente(p)-n(p.valorMP))*100)/100; }
+
+/* ---------- valor da Milhas Plus pela tabela do milheiro ---------- */
+const kMil = v => MIL(v)+'k';
+function rotuloFaixa(fx, i){
+  const de = n(fx[i].de), ate = fx[i+1] ? n(fx[i+1].de) : null;
+  if(i===0) return ate!=null ? `abaixo de ${kMil(ate)} por CPF` : 'qualquer quantidade';
+  return ate!=null ? `de ${kMil(de)} a ${kMil(ate)} por CPF` : `acima de ${kMil(de)} por CPF`;
+}
+function opcoesMP(k){ return (cfg.tabelaMP[k]?.linhas||[]).filter(l=>n(l.valor)>0 && String(l.nome||'').trim()); }
+function custoMP(p, k){
+  const t = cfg.tabelaMP[k], mil = totalMilhas(p,k);
+  if(!t || mil==null) return null;
+  const porCpf = mil / pagantes(p);
+  let linha, rotulo;
+  if(t.tipo==='opcoes'){
+    const ops = opcoesMP(k); if(!ops.length) return null;
+    linha = ops.find(l=>l.nome===p.busca[k].tabela) || ops[0];
+    rotulo = linha.nome;
+  } else {
+    const fx = (t.linhas||[]).filter(l=>n(l.valor)>0).sort((a,b)=>n(a.de)-n(b.de)); if(!fx.length) return null;
+    let i = 0; fx.forEach((f,j)=>{ if(porCpf >= n(f.de)*1000) i = j; });
+    linha = fx[i]; rotulo = rotuloFaixa(fx, i);
+  }
+  const milheiro = n(linha.valor), taxas = n(p.busca[k].taxas);
+  return { milhas:mil, porCpf, milheiro, taxas, rotulo, opcao:t.tipo==='opcoes', valor:Math.round((mil/1000*milheiro + taxas)*100)/100 };
+}
+// preenche o valor da Milhas Plus sozinho, enquanto não foi digitado à mão nem enviada a cotação
+function sincronizarValorMP(p){
+  if(!p.escolhido || p.valorMPManual || p.cotacao) return false;
+  const c = custoMP(p, p.escolhido), v = c ? c.valor : '';
+  if(String(p.valorMP??'')===String(v)) return false;
+  p.valorMP = v; p.valorMPManual = false; return true;
+}
 const MAX_PARCELAS = 5;   // parcelamento máximo no cartão
 const listaParcelas = () => Array.from({length:MAX_PARCELAS}, (_,i)=>i+1);
 function valorCartao(base, parcelas){ const t = n(cfg.taxas[parcelas-1])/100; return Math.round(base/(1-t)*100)/100; }
@@ -1038,6 +1100,12 @@ function etapaBusca(p, cls, aberto){
       const atual = lista.findIndex(v=>v.voo===(b['voo'+T]||'') && v.saida===(b['saida'+T]||'') && n(v.milhas)===n(b['pp'+T]));
       return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(v.saida||'?')}→${esc(v.chegada||'?')} · ${esc(v.voo||'voo ?')} · ${v.paradas===0?'direto':v.paradas!=null?v.paradas+' parada'+(v.paradas>1?'s':''):''} · ${MIL(v.milhas)}/pessoa</option>`).join('')}</select>
         ${b['auto'+T] && b['pp'+T] ? `<small class="nota">${MIL(b['pp'+T])} milhas por pessoa × ${pagantes(p)} = ${MIL(b['milhas'+T])}</small>`:''}</div>`; };
+    const campoParadas = (T) => { const np = b['paradas'+T], q = (np===''||np==null) ? 0 : n(np);
+      return `<div class="paradas-box"><div class="campo"><label>Paradas da ${T.toLowerCase()}</label><select data-bind="busca.${k}.paradas${T}" data-rerender="1">
+        <option value="" ${np===''||np==null?'selected':''}>— informe —</option>${[0,1,2,3].map(i=>`<option value="${i}" ${(np!==''&&np!=null&&q===i)?'selected':''}>${i===0?'Direto':i+' parada'+(i>1?'s':'')}</option>`).join('')}</select></div>
+        ${Array.from({length:q},(_,i)=>{ const e=(b['escalas'+T]||[])[i]||{}; return `<div class="g2">
+          <div class="campo"><label>Parada ${i+1}</label><input data-bind="busca.${k}.escalas${T}.${i}.local" value="${esc(e.local||'')}" placeholder="GRU"></div>
+          <div class="campo"><label>Espera</label><input data-bind="busca.${k}.escalas${T}.${i}.espera" value="${esc(e.espera||'')}" placeholder="1h30"></div></div>`; }).join('')}</div>`; };
     const campoMil = (campo, rot) => `<div class="campo"><label>${rot}</label><input type="number" min="0" step="100" inputmode="numeric" data-bind="busca.${k}.${campo}" value="${esc(b[campo]??'')}" placeholder="total de milhas"></div>`;
     return `<div class="prog ${b.semDisp?'semdisp':''} ${p.escolhido===k?'escolhido':''}" data-prog="${k}">
       <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>Menor milhagem</span></div>
@@ -1052,6 +1120,7 @@ function etapaBusca(p, cls, aberto){
           <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaIda" value="${esc(b.saidaIda||'')}"></div>
           <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaIda" value="${esc(b.chegadaIda||'')}"></div>
         </div>
+        ${campoParadas('Ida')}
         ${opcoes('Ida')}
         ${campoMil('milhasIda',`Milhas da ida (total, ${totalPax(p)} pax)`)}
         ${p.tipo==='ida_volta'?`
@@ -1061,11 +1130,13 @@ function etapaBusca(p, cls, aberto){
           <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaVolta" value="${esc(b.saidaVolta||'')}"></div>
           <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaVolta" value="${esc(b.chegadaVolta||'')}"></div>
         </div>
+        ${campoParadas('Volta')}
         ${opcoes('Volta')}
         ${campoMil('milhasVolta',`Milhas da volta (total, ${totalPax(p)} pax)`)}`:''}
         ${p.datasFlexiveis?`<div class="campo"><label>Datas encontradas (se mudou)</label><input data-bind="busca.${k}.datasAlt" value="${esc(b.datasAlt||'')}" placeholder="Ex.: ida 21/12, volta 04/01"></div>`:''}
         <div class="campo"><label>Taxas total (R$, ida${p.tipo==='ida_volta'?' + volta':''})</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="busca.${k}.taxas" value="${esc(b.taxas??'')}" placeholder="0,00"></div>
-        <div class="total-milhas">Total do pedido<b data-total="${k}">—</b></div>
+        ${cfg.tabelaMP[k]?.tipo==='opcoes' && opcoesMP(k).length ? `<div class="campo"><label>Tabela da Milhas Plus</label><select data-bind="busca.${k}.tabela">${opcoesMP(k).map((o,i)=>`<option ${(b.tabela ? o.nome===b.tabela : i===0)?'selected':''}>${esc(o.nome)}</option>`).join('')}</select></div>`:''}
+        <div class="total-milhas">Total do pedido<b data-total="${k}">—</b><small class="custo-mp" data-custo="${k}"></small></div>
         ${(p.tipo==='ida_volta'?['Ida','Volta']:['Ida']).map(T=>`
         <div class="colar" tabindex="0" data-colar="${k}|${T}" aria-label="Print da ${T.toLowerCase()} em ${meta.nome}">
           ${b['print'+T] ? `<img src="${b['print'+T]}" alt="Print da ${T.toLowerCase()} ${meta.nome}"><button type="button" class="tirar" data-tirar="${k}|${T}" aria-label="Remover print">✕</button>` : `<span><b>Print da ${T.toLowerCase()}</b><br>Use a extensão de captura, cole (Ctrl+V)<br>ou toque para escolher a imagem</span>`}
@@ -1119,6 +1190,8 @@ function etapaValor(p, cls, aberto){
         <div class="campo"><label>Seu lucro (%)</label><input type="number" min="0" step="0.5" data-bind="percLucro" value="${esc(p.percLucro ?? cfg.percPadrao)}"></div>
         <div class="campo"><label>Validade (horas)</label><input type="number" min="0.5" step="0.5" data-bind="validadeHoras" value="${esc(p.validadeHoras ?? cfg.validadeHoras)}"></div>
       </div>
+      <p class="nota nota-mp" id="notaMP"></p>
+      <div class="aviso" id="avisoParadas"></div>
       <div class="calc">
         <div class="box"><small>Valor para o cliente no Pix</small><b id="vCliente">—</b></div>
         <div class="box lucro" id="boxLucro"><small>Seu lucro</small><b id="vLucro">—</b></div>
@@ -1258,6 +1331,7 @@ function ligarDetalhe(p){
       let v = el.dataset.tipo==='bool' ? el.checked : el.value;
       if(el.dataset.bind==='emissao.localizador') v = v.toUpperCase();
       setPath(p, el.dataset.bind, v);
+      if(el.dataset.bind==='valorMP') p.valorMPManual = v!=='';   // apagou o campo: volta ao cálculo da tabela
       { const m = el.dataset.bind.match(/^busca\.(\w+)\.(?:milhas|voo|saida|chegada)(Ida|Volta)$/); if(m) p.busca[m[1]]['auto'+m[2]] = false; }   // editou à mão: a busca não sobrescreve
       salvar();
       if(el.dataset.bind.endsWith('.semDisp')) el.closest('.prog').classList.toggle('semdisp', v);
@@ -1320,7 +1394,17 @@ function atualizarCalculos(p){
     const t = totalMilhas(p,k), el = corpo.querySelector(`[data-total="${k}"]`);
     if(el) el.textContent = t!=null ? `${MIL(t)} milhas${n(p.busca[k].taxas)?' + '+BRL(p.busca[k].taxas):''}` : '—';
     const s = corpo.querySelector(`[data-selo="${k}"]`); if(s) s.hidden = menor!==k;
+    const cu = corpo.querySelector(`[data-custo="${k}"]`);
+    if(cu){ const c = custoMP(p,k); cu.textContent = c ? `Milhas Plus: ${BRL(c.valor)} (${BRL(c.milheiro)}/mil)` : ''; }
   }
+  if(sincronizarValorMP(p)){
+    salvar();
+    const inp = corpo.querySelector('[data-bind="valorMP"]');
+    if(inp && document.activeElement!==inp) inp.value = p.valorMP;
+  }
+  notaValorMP(p);
+  const ap = $('#avisoParadas');
+  if(ap){ const f = p.escolhido ? faltaParadas(p) : []; ap.textContent = f.length ? `Falta informar na etapa 1 ${f.join(' e ')} — isso aparece na cotação do cliente.` : ''; ap.classList.toggle('on', !!f.length); }
   const vc = valorCliente(p), lc = lucro(p);
   if($('#vCliente')){
     $('#vCliente').textContent = vc?BRL(vc):'—';
@@ -1332,6 +1416,26 @@ function atualizarCalculos(p){
   }
   clearTimeout(atualizarCalculos._t);
   atualizarCalculos._t = setTimeout(()=>atualizarPrevias(p), 400);
+}
+
+function notaValorMP(p){
+  const el = $('#notaMP'); if(!el) return;
+  if(!p.escolhido){ el.textContent = 'Escolha um programa na etapa 1 para o valor da Milhas Plus ser calculado.'; return; }
+  const c = custoMP(p, p.escolhido);
+  const conta = c ? `${MIL(c.milhas)} milhas × ${BRL(c.milheiro)}/mil (${c.opcao ? esc(c.rotulo) : MIL(Math.round(c.porCpf))+' milhas por CPF, faixa '+c.rotulo})${c.taxas?' + '+BRL(c.taxas)+' de taxas':''}` : '';
+  const difere = c && Math.abs(c.valor-n(p.valorMP))>=0.01;
+  let h;
+  if(!c) h = p.valorMPManual ? 'Valor digitado à mão.' : `Preencha as milhas de ${PROG[p.escolhido].nome} na etapa 1 para calcular.`;
+  else if(p.valorMPManual) h = `Valor digitado à mão.${difere?` <button type="button" class="lnk-calc" data-usarcalc>Usar a tabela: ${BRL(c.valor)}</button>`:''}`;
+  else if(p.cotacao) h = `Valor fixado no envio da cotação.${difere?` Pela tabela de agora seria ${BRL(c.valor)}. <button type="button" class="lnk-calc" data-usarcalc>Usar este valor</button> e reenvie a cotação.`:''}`;
+  else h = `Calculado pela tabela: ${conta}.`;
+  el.innerHTML = h;
+  const bt = el.querySelector('[data-usarcalc]');
+  if(bt) bt.addEventListener('click',()=>{
+    p.valorMP = c.valor; p.valorMPManual = false; salvar(true);
+    const inp = $('#detCorpo [data-bind="valorMP"]'); if(inp) inp.value = p.valorMP;
+    atualizarCalculos(p); toast(`Valor da Milhas Plus: ${BRL(c.valor)}`);
+  });
 }
 
 async function atualizarPrevias(p){
@@ -1510,6 +1614,36 @@ function quebrar(ctx, txt, max){
   ps.forEach(w=>{ const t = l?l+' '+w:w; if(ctx.measureText(t).width>max && l){ r.push(l); l=w; } else l=t; });
   if(l) r.push(l); return r;
 }
+// tempo de espera: aceita "1h30", "1:30", "1h", "90min"; número solto até 12 = horas, acima = minutos
+function minEspera(v){
+  const t = String(v||'').toLowerCase().replace(/\s/g,''); if(!t) return null;
+  let m = t.match(/^(\d+)(?:h|:)(\d{1,2})?(?:min|m)?$/); if(m) return n(m[1])*60 + n(m[2]);
+  m = t.match(/^(\d+)(?:min|m)$/); if(m) return n(m[1]);
+  m = t.match(/^(\d+)$/); if(m) return n(m[1])<=12 ? n(m[1])*60 : n(m[1]);
+  return null;
+}
+function fmtEspera(v){
+  const mi = minEspera(v); if(mi==null) return String(v||'').trim();
+  const h = Math.floor(mi/60), m = mi%60;
+  return h ? `${h}h${m?String(m).padStart(2,'0'):''}` : `${m}min`;
+}
+function localParada(l){ l = String(l||'').trim(); return l.length<=3 ? l.toUpperCase() : l; }
+function textoParadas(b, T){
+  const np = b['paradas'+T]; if(np===''||np==null) return '';
+  const q = n(np); if(q===0) return 'Voo direto';
+  const det = (b['escalas'+T]||[]).slice(0,q).map(e=>{ const l=localParada(e?.local), t=fmtEspera(e?.espera);
+    return (l||t) ? `${l||'?'}${t?` (${t} de espera)`:''}` : ''; }).filter(Boolean);
+  return `${q} parada${q>1?'s':''}${det.length?': '+det.join(', '):''}`;
+}
+function faltaParadas(p){
+  const b = p.busca[p.escolhido]||{}, r=[];
+  for(const T of (p.tipo==='ida_volta'?['Ida','Volta']:['Ida'])){
+    const np = b['paradas'+T], q = n(np), tr = T.toLowerCase();
+    if(np===''||np==null) r.push(`quantas paradas tem a ${tr}`);
+    else if(q>0 && (b['escalas'+T]||[]).slice(0,q).filter(e=>e?.local && minEspera(e?.espera)!=null).length<q) r.push(`o aeroporto e o tempo de espera das paradas da ${tr}`);
+  }
+  return r;
+}
 function vooTxt(data, voo, s, c){ return [fmtData(data), voo, (s||c)?`${s||'?'} → ${c||'?'}`:''].filter(Boolean).join(' · '); }
 
 async function cardMP(p){
@@ -1529,7 +1663,9 @@ async function cardMP(p){
   y+=52; ctx.fillStyle='#55657F'; ctx.font=F(500,32); ctx.fillText(`${p.origem.cidade} → ${p.destino.cidade}  ·  voo ${b.cia}`, P, y);
   y+=84;
   y = linhaDado(ctx,W,P,y,'Ida', vooTxt(p.dataIda,b.vooIda,b.saidaIda,b.chegadaIda));
+  if(textoParadas(b,'Ida')) y = linhaDado(ctx,W,P,y, p.tipo==='ida_volta'?'Paradas na ida':'Paradas', textoParadas(b,'Ida'));
   if(p.tipo==='ida_volta') y = linhaDado(ctx,W,P,y,'Volta', vooTxt(p.dataVolta,b.vooVolta,b.saidaVolta,b.chegadaVolta));
+  if(p.tipo==='ida_volta' && textoParadas(b,'Volta')) y = linhaDado(ctx,W,P,y,'Paradas na volta', textoParadas(b,'Volta'));
   if(b.datasAlt) y = linhaDado(ctx,W,P,y,'Datas encontradas', b.datasAlt);
   y = linhaDado(ctx,W,P,y,'Passageiros', textoPax(p));
   y = linhaDado(ctx,W,P,y,'Bagagem', textoMalas(p));
@@ -1604,7 +1740,9 @@ async function cardCliente(p){
   y+=44; ctx.fillStyle='#13233F'; ctx.font=F(600,30); ctx.fillText(`Voo operado por ${b.cia||'—'}`, P, y);
   y+=70;
   y = linhaDado(ctx,W,P,y,'Ida', vooTxt(p.dataIda,b.vooIda,b.saidaIda,b.chegadaIda));
+  if(textoParadas(b,'Ida')) y = linhaDado(ctx,W,P,y, p.tipo==='ida_volta'?'Paradas na ida':'Paradas', textoParadas(b,'Ida'));
   if(p.tipo==='ida_volta') y = linhaDado(ctx,W,P,y,'Volta', vooTxt(p.dataVolta,b.vooVolta,b.saidaVolta,b.chegadaVolta));
+  if(p.tipo==='ida_volta' && textoParadas(b,'Volta')) y = linhaDado(ctx,W,P,y,'Paradas na volta', textoParadas(b,'Volta'));
   if(b.datasAlt) y = linhaDado(ctx,W,P,y,'Datas', b.datasAlt);
   y = linhaDado(ctx,W,P,y,'Passageiros', textoPax(p));
   y = linhaDado(ctx,W,P,y,'Bagagem', textoMalas(p));
@@ -1662,8 +1800,8 @@ function dadosCotacaoPublica(p){
     nome: pn ? pn.charAt(0).toUpperCase()+pn.slice(1).toLowerCase() : '',
     origem:{iata:p.origem.iata, cidade:p.origem.cidade}, destino:{iata:p.destino.iata, cidade:p.destino.cidade},
     tipo:p.tipo, cia:b.cia||'',
-    ida:{data:p.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||''},
-    volta: p.tipo==='ida_volta' ? {data:p.dataVolta||'', voo:b.vooVolta||'', saida:b.saidaVolta||'', chegada:b.chegadaVolta||''} : null,
+    ida:{data:p.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||'', paradas:textoParadas(b,'Ida')},
+    volta: p.tipo==='ida_volta' ? {data:p.dataVolta||'', voo:b.vooVolta||'', saida:b.saidaVolta||'', chegada:b.chegadaVolta||'', paradas:textoParadas(b,'Volta')} : null,
     datasAlt: b.datasAlt||'',
     pax: textoPax(p), paxQtd:{adultos:x.adultos||0, criancas:x.criancas||0, bebes:x.bebes||0},
     bagagem: textoMalas(p), pet: p.pet ? textoPet(p) : '',
@@ -1758,6 +1896,36 @@ function renderCfg(){
   $$('[data-cfg]').forEach(el=>{ const v = el.dataset.cfg.split('.').reduce((o,k)=>o?.[k], cfg); el.value = v ?? ''; });
   $('#taxasCfg').innerHTML = cfg.taxas.slice(0,MAX_PARCELAS).map((t,i)=>`<div class="campo"><label for="tx${i}">${i+1}x (%)</label><input id="tx${i}" type="number" step="0.01" min="0" max="60" value="${t}" data-taxa="${i}"></div>`).join('');
   $$('[data-taxa]').forEach(el=>el.addEventListener('input',()=>{ cfg.taxas[Number(el.dataset.taxa)] = n(el.value); salvarCfg(); }));
+  renderTabelaMP();
+}
+function renderTabelaMP(){
+  const box = $('#tabelaMPCfg'); if(!box) return;
+  box.innerHTML = Object.entries(PROG).map(([k,meta])=>{
+    const t = cfg.tabelaMP[k], faixas = t.tipo==='faixas';
+    if(faixas) t.linhas.sort((a,b)=>n(a.de)-n(b.de));
+    const linhas = t.linhas.map((l,i)=>`<div class="tmp-linha">
+      ${faixas ? `<div class="campo"><label>A partir de (mil milhas por CPF)</label><input type="number" min="0" step="1" inputmode="decimal" value="${esc(l.de)}" data-tmp="${k}|${i}|de"></div>`
+               : `<div class="campo"><label>Tipo de emissão</label><input type="text" value="${esc(l.nome)}" data-tmp="${k}|${i}|nome"></div>`}
+      <div class="campo"><label>R$ por mil milhas</label><input type="number" min="0" step="0.01" inputmode="decimal" value="${esc(l.valor)}" data-tmp="${k}|${i}|valor"></div>
+      <button type="button" class="btn peq" data-tmpdel="${k}|${i}" ${t.linhas.length<2?'disabled':''} aria-label="Remover linha">✕</button>
+      ${faixas ? `<small class="faixa">${rotuloFaixa(t.linhas,i)}: ${BRL(l.valor)} o milheiro</small>`:''}
+    </div>`).join('');
+    return `<div class="tmp-prog"><h3><i style="background:${meta.cor}"></i>${meta.nome}</h3>${linhas}<button type="button" class="btn peq" data-tmpadd="${k}">+ ${faixas?'faixa':'tipo'}</button></div>`;
+  }).join('');
+  const marcar = () => { cfg.tabelaMPEm = new Date().toISOString(); salvarCfg(); $('#tabelaMPEm').textContent = 'Tabela alterada em '+fmtDataHora(cfg.tabelaMPEm); };
+  box.querySelectorAll('[data-tmp]').forEach(el=>{
+    const [k,i,campo] = el.dataset.tmp.split('|');
+    el.addEventListener('input',()=>{ cfg.tabelaMP[k].linhas[i][campo] = campo==='nome' ? el.value.trim() : n(el.value); marcar(); });
+    el.addEventListener('change',()=>renderTabelaMP());   // reordena as faixas e refaz os textos
+  });
+  box.querySelectorAll('[data-tmpdel]').forEach(b=>b.addEventListener('click',()=>{ const [k,i]=b.dataset.tmpdel.split('|'); cfg.tabelaMP[k].linhas.splice(Number(i),1); marcar(); renderTabelaMP(); }));
+  box.querySelectorAll('[data-tmpadd]').forEach(b=>b.addEventListener('click',()=>{
+    const t = cfg.tabelaMP[b.dataset.tmpadd], u = t.linhas.at(-1) || {};
+    t.linhas.push(t.tipo==='faixas' ? {de:n(u.de)+10, valor:n(u.valor)} : {nome:'Novo tipo', valor:n(u.valor)});
+    marcar(); renderTabelaMP();
+    const ins = box.querySelectorAll(`[data-tmp^="${b.dataset.tmpadd}|${t.linhas.length-1}|"]`); if(ins[0]) ins[0].focus();
+  }));
+  $('#tabelaMPEm').textContent = cfg.tabelaMPEm ? 'Tabela alterada em '+fmtDataHora(cfg.tabelaMPEm) : 'Tabela de 04/11/2026 (ATT Tabela Milhas Plus).';
 }
 $$('[data-cfg]').forEach(el=>el.addEventListener('input',()=>{
   const ks = el.dataset.cfg.split('.'); let o = cfg; ks.slice(0,-1).forEach(k=>o=o[k]);
@@ -1871,6 +2039,8 @@ function usarVoo(v){
   const T = busca.trecho==='volta' ? 'Volta' : 'Ida';
   if(T==='Volta' && p.tipo!=='ida_volta'){ toast('Este pedido é só de ida.'); return; }
   const b = p.busca[v.programa];
+  if(v.voo && (b['voo'+T]||'') !== v.voo) b['escalas'+T] = [];
+  b['paradas'+T] = v.paradas!=null ? String(v.paradas) : '';
   if(v.voo) b['voo'+T] = v.voo;
   if(v.saida) b['saida'+T] = v.saida;
   if(v.chegada) b['chegada'+T] = v.chegada;
@@ -1955,7 +2125,9 @@ function aplicarVooAuto(p, k, T, v, manual){
   const b = p.busca[k];
   if(!manual && b['milhas'+T] && !b['auto'+T]) return;   // não passa por cima do que você digitou
   const tot = n(v.milhas) * pagantes(p);
+  if((b['voo'+T]||'') !== (v.voo||'')) b['escalas'+T] = [];   // outro voo: as paradas anteriores não valem
   b['voo'+T] = v.voo || ''; b['saida'+T] = v.saida || ''; b['chegada'+T] = v.chegada || '';
+  b['paradas'+T] = v.paradas!=null ? String(v.paradas) : '';
   b['milhas'+T] = String(tot); b['auto'+T] = true; b['pp'+T] = n(v.milhas);
   if(v.taxas!=null){ b['taxas'+T] = Math.round(n(v.taxas)*pagantes(p)*100)/100; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
   if(v.voo){ const c = v.voo.slice(0,2).toUpperCase(); b.cia = c==='G3'?'GOL':c==='LA'||c==='JJ'?'LATAM':c==='AD'?'Azul':b.cia; }

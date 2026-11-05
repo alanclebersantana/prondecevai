@@ -262,7 +262,7 @@ function montar(){
   $('#ola').textContent = C.nome ? `Olá, ${C.nome}, seja bem-vindo(a)!` : 'Olá, seja bem-vindo(a)!';
   $('#vai').textContent = `Vai para ${C.destino.cidade}`;
   $('#trajeto').innerHTML = `${esc(C.origem.cidade)} → ${esc(C.destino.cidade)}${C.cia?` · voo operado por <b>${esc(C.cia)}</b>`:''}`;
-  $('#detalhes').innerHTML = linha('Ida', vooTxt(C.ida)) + linha('Volta', vooTxt(C.volta)) + linha('Datas', C.datasAlt) + linha('Passageiros', C.pax) + linha('Bagagem', C.bagagem) + linha('Pet', C.pet);
+  $('#detalhes').innerHTML = linha('Ida', vooTxt(C.ida)) + linha(C.volta?'Paradas na ida':'Paradas', C.ida?.paradas) + linha('Volta', vooTxt(C.volta)) + linha('Paradas na volta', C.volta?.paradas) + linha('Datas', C.datasAlt) + linha('Passageiros', C.pax) + linha('Bagagem', C.bagagem) + linha('Pet', C.pet);
   // opções de pagamento
   const r = C.resposta || {};
   $('#opcoes').innerHTML = `
