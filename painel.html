@@ -1372,6 +1372,8 @@ function ligarDetalhe(p){
     const t = corpo.querySelector(`[data-par="${k}|${T}"]`); if(t) t.textContent = textoParadas(b,T) || 'A busca não trouxe — informe abaixo';
     salvar(); atualizarCalculos(p);
   }));
+  corpo.querySelectorAll('[data-esc]').forEach(inp=>inp.addEventListener('change',()=>{ if(inp.dataset.esc.endsWith('|local')) inp.value = localParada(inp.value); salvar(true); atualizarPrevias(p);
+  }));
   // colar prints
   corpo.querySelectorAll('[data-colar]').forEach(box=>{
     const [k,T] = box.dataset.colar.split('|'), arq = corpo.querySelector(`[data-arquivo="${box.dataset.colar}"]`);
@@ -1655,11 +1657,22 @@ function textoParadas(b, T){ return resumoParadas(b['paradas'+T], b['escalas'+T]
 function escalasVoo(v){ return Array.isArray(v?.escalas) ? v.escalas.filter(Boolean).map(e=>({local:String(e.local||'').toUpperCase().slice(0,20), min:(e.min!=null && isFinite(e.min)) ? Math.round(e.min) : null})) : []; }
 function paradasVoo(v){ const e = escalasVoo(v); if(v?.paradas!=null && v.paradas!=='') return Math.max(Number(v.paradas)||0, e.length); return e.length ? e.length : null; }
 // o que a extensão não conseguir ler fica marcado (fl = falta o aeroporto, fm = falta a espera) e vira campo para preencher à mão
+const vooChave = v => String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 function aplicarParadas(b, T, v){
-  const q = paradasVoo(v);
+  // chamar ANTES de trocar b['voo'+T]: compara com o voo que já estava no quadro
+  const mesmoVoo = !!v?.voo && vooChave(v.voo)===vooChave(b['voo'+T]);
+  const antes = {q:b['paradas'+T], man:b['paradasMan'+T], es:(b['escalas'+T]||[]).map(e=>({...e}))};
+  const q0 = paradasVoo(v);
+  if(mesmoVoo && q0==null && !(antes.q===''||antes.q==null)){ b['paradas'+T]=antes.q; b['paradasMan'+T]=antes.man; b['escalas'+T]=antes.es; return; }
+  const q = q0;
   b['paradas'+T] = q!=null ? String(q) : ''; b['paradasMan'+T] = q==null;
   const es = escalasVoo(v).slice(0, q||0); while(q && es.length<q) es.push({local:'', min:null});
-  es.forEach(e=>{ e.fl = !e.local; e.fm = e.min==null; });
+  es.forEach((e,i)=>{
+    e.fl = !e.local; e.fm = e.min==null;
+    const o = mesmoVoo ? antes.es[i] : null;   // completa com o que você já tinha digitado para este voo
+    if(o && !e.local && o.local) e.local = o.local;
+    if(o && e.min==null && o.min!=null){ e.min = o.min; if(o.esperaTxt!=null) e.esperaTxt = o.esperaTxt; }
+  });
   b['escalas'+T] = es;
 }
 // espera digitada: "1h30", "1:30", "1h", "90min"; número solto até 12 = horas, acima = minutos
@@ -2126,12 +2139,24 @@ function iniciarAuto(p, forcar){
   for(const k in PROG){ const b=p.busca[k]; if(b.semDisp && (b.autoIda||b.autoVolta) && !b.milhasIda) b.semDisp=false; }
   p.auto = {v:AUTO_V, em:new Date().toISOString(), st:{}, opcoes:{}};
   for(const c in tarefas) p.auto.st[c] = {status:'buscando', msg:'Buscando…'};
-  salvar(true); if(abertoId===p.id) renderDetalhe();
+  salvar(true); if(abertoId===p.id) renderDetalheSeguro();
   window.postMessage({tipo:'dcnp-buscar', buscaId:autoAtual.id, tarefas:envio}, '*');
   const id = autoAtual.id;
   setTimeout(()=>{ if(!autoAtual || autoAtual.id!==id) return;
     for(const t of Object.values(autoAtual.tarefas)) if(t.status==='buscando') receberAuto({buscaId:id, programa:t.programa, trecho:t.trecho, status:'erro', msg:'Sem resposta da aba', voos:[]});
   }, 130000);
+}
+function renderDetalheSeguro(){
+  const corpo = $('#detCorpo');
+  if(!corpo || !corpo.contains(document.activeElement)){ renderDetalhe(); return; }
+  if(renderDetalheSeguro.pend) return;
+  renderDetalheSeguro.pend = true;
+  const sair = () => setTimeout(()=>{
+    if(corpo.contains(document.activeElement)) return;   // só pulou para outro campo do pedido
+    corpo.removeEventListener('focusout', sair); renderDetalheSeguro.pend = false;
+    if(abertoId) renderDetalhe();
+  }, 80);
+  corpo.addEventListener('focusout', sair);
 }
 function receberAuto(m){
   const a = autoAtual; if(!a || m.buscaId!==a.id) return;
@@ -2148,7 +2173,7 @@ function receberAuto(m){
     p.auto.opcoes[chave] = voos.slice(0,8).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), escalas:escalasVoo(v), milhas:n(v.milhas), milhasClube:v.milhasClube||null, taxas:v.taxas??null}));
     const T = m.trecho==='volta' ? 'Volta' : 'Ida', b = p.busca[m.programa];
     if(status==='ok') aplicarVooAuto(p, m.programa, T, p.auto.opcoes[chave][0]);
-    salvar(true); if(abertoId===p.id) renderDetalhe();
+    salvar(true); if(abertoId===p.id) renderDetalheSeguro();
   }
   if(Object.values(a.tarefas).every(x=>x.status!=='buscando')){
     autoAtual = null;
@@ -2161,8 +2186,8 @@ function aplicarVooAuto(p, k, T, v, manual){
   const b = p.busca[k];
   if(!manual && b['milhas'+T] && !b['auto'+T]) return;   // não passa por cima do que você digitou
   const tot = n(v.milhas) * pagantes(p);
-  b['voo'+T] = v.voo || ''; b['saida'+T] = v.saida || ''; b['chegada'+T] = v.chegada || '';
   aplicarParadas(b, T, v);
+  b['voo'+T] = v.voo || ''; b['saida'+T] = v.saida || ''; b['chegada'+T] = v.chegada || '';
   b['milhas'+T] = String(tot); b['auto'+T] = true; b['pp'+T] = n(v.milhas);
   if(v.taxas!=null){ b['taxas'+T] = Math.round(n(v.taxas)*pagantes(p)*100)/100; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
   if(v.voo){ const c = v.voo.slice(0,2).toUpperCase(); b.cia = c==='G3'?'GOL':c==='LA'||c==='JJ'?'LATAM':c==='AD'?'Azul':b.cia; }
