@@ -321,10 +321,10 @@ a.btn{text-decoration:none}
 .hist-lista li{display:grid;grid-template-columns:118px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--fundo)}
 .hist-lista time{color:var(--tinta-2);font-variant-numeric:tabular-nums}
 /* menu com mais telas */
-.nav button{font-size:.7rem;min-width:0}
-.nav button svg{width:22px;height:22px}
+.nav button{font-size:.64rem;min-width:0;font-weight:600;letter-spacing:.01em}
+.nav button svg{width:22px;height:22px;margin-bottom:1px}
 .nav .l-curto{display:none}
-@media (max-width:560px){ .nav button{font-size:.62rem;letter-spacing:-.01em;padding:0 1px} .nav .l-longo{display:none} .nav .l-curto{display:inline} .nav .badge{left:calc(50% + 4px)} }
+@media (max-width:560px){ .nav button{font-size:.56rem;letter-spacing:0;padding:0 1px} .nav button svg{width:21px;height:21px} .nav .l-longo{display:none} .nav .l-curto{display:inline} .nav .badge{left:calc(50% + 4px)} }
 /* janela (modal) */
 .modal-fundo{position:fixed;inset:0;background:rgba(19,35,63,.5);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow-y:auto}
 .modal-fundo.aberto{display:flex}
@@ -390,7 +390,7 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 
 /* nav inferior */
 .nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--card);border-top:1px solid var(--linha);display:flex;z-index:20}
-.nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.78rem;font-weight:600;color:var(--tinta-2);cursor:pointer;position:relative}
+.nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.64rem;font-weight:600;color:var(--tinta-2);cursor:pointer;position:relative}
 .nav button svg{width:24px;height:24px}
 .nav button.ativa{color:var(--ceu)}
 .nav button.ativa::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;background:var(--sol);border-radius:0 0 3px 3px}
@@ -722,7 +722,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   .det-kpis{grid-template-columns:1fr 1fr}
   .det-cab .det-topo select{margin:6px 0 0}
   .det-corpo.com-passos{grid-template-columns:1fr;gap:10px}
-  .passos-det{flex-direction:row;overflow-x:auto;gap:6px;background:var(--fundo);z-index:3;margin:-14px -16px 0;padding:10px 16px;scrollbar-width:none;border-bottom:1px solid var(--linha)}
+  .passos-det{flex-direction:row;overflow-x:auto;gap:6px;background:var(--fundo);z-index:5;top:-14px;margin:-14px -16px 0;padding:10px 16px;scrollbar-width:none;border-bottom:1px solid var(--linha);box-shadow:0 6px 12px -8px rgba(14,59,122,.35)}
   .passos-det::-webkit-scrollbar{display:none}
   .passos-det li::after{display:none}
   .passos-det li.hist{margin:0;padding:0;border:0}
@@ -733,6 +733,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   .det-corpo.com-passos > details.etapa,.det-corpo.com-passos > .acoes{grid-column:1}
   .fab{padding:13px 17px}
 }
+@media (max-width:560px){ .nav button{font-size:.56rem;letter-spacing:0;padding:0 1px} .nav button svg{width:21px;height:21px} }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
