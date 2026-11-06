@@ -145,7 +145,8 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .prog::before{content:"";position:absolute;left:18px;right:18px;top:17px;height:4px;background:var(--linha);border-radius:2px}
 .prog .barra{position:absolute;left:18px;top:17px;height:4px;background:var(--ok);border-radius:2px;transition:width .5s}
 .prog .st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:60px;text-align:center;font-size:.72rem;font-weight:700;color:var(--tinta-2)}
-.prog .st i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:#fff;border:2px solid var(--linha);font-size:.95rem;margin-bottom:5px}
+.prog .st i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:#fff;border:2px solid var(--linha);color:var(--tinta-2);margin-bottom:5px}
+.prog .st i svg{width:18px;height:18px}
 .prog .st.ok{color:var(--tinta)}.prog .st.ok i{background:var(--ok);border-color:var(--ok);color:#fff}
 .prog .st.at{color:var(--sol-esc)}.prog .st.at i{background:var(--sol);border-color:var(--sol);color:#fff;box-shadow:0 0 0 5px rgba(255,122,46,.2)}
 .agora{margin-top:12px;background:var(--ok-claro);color:var(--ok);border-radius:12px;padding:10px 14px;font-weight:700;font-size:.92rem}
@@ -178,7 +179,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
 @keyframes ida-volta{from{offset-distance:4%}to{offset-distance:96%}}
 .toast{display:flex;gap:9px;align-items:center;background:#fff;color:var(--tinta);border-left:4px solid var(--ok);box-shadow:0 10px 24px -8px rgba(19,35,63,.35)}
 .toast::before{content:"✓";width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--ok-claro);color:var(--ok);font-size:.8rem;flex:none}
-@media (max-width:420px){ .prog .st{width:52px;font-size:.66rem} .prog .st i{width:32px;height:32px} .lin .h{font-size:1.3rem} }
+@media (max-width:420px){ .prog .st{width:52px;font-size:.66rem} .prog .st i{width:32px;height:32px} .prog .st i svg{width:16px;height:16px} .lin .h{font-size:1.3rem} }
 </style>
 </head>
 <body>
@@ -286,7 +287,17 @@ function ics(V){
   um('Ida', V.ida, V.origem.iata, V.destino.iata, L[0]); um('Volta', V.volta, V.destino.iata, V.origem.iata, L[1]||L[0]);
   return ev.length ? ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Vai pra onde//Minha viagem//PT','CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n') : '';
 }
-const ETAPAS = [['Pedido','Pedido recebido! A gente já está procurando as melhores tarifas.','📝'],['Cotação','A sua cotação está pronta para você aprovar.','💬'],['Pago','Pagamento confirmado. Agora a gente emite a sua passagem.','💳'],['Emitida','Passagem emitida! O check-in a gente faz quando abrir.','🎫'],['Check-in','Check-in feito! Os cartões de embarque estão aqui embaixo. Boa viagem!','📲']];
+// ícones em linha, no mesmo estilo do painel
+const ICO = {
+  pedido:'<path d="M7.5 3.5H14l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1.5-1.5z"/><path d="M14 3.5V8h4M9 12h6M9 15.5h4"/>',
+  cotacao:'<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.4"/>',
+  pago:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18M7 15h4"/>',
+  emitida:'<path d="M4 7.5V6h16v1.5a2 2 0 0 0 0 4v1a2 2 0 0 0 0 4V18H4v-1.5a2 2 0 0 0 0-4v-1a2 2 0 0 0 0-4z"/><path d="M14.5 6v12" stroke-dasharray="1.6 2.2"/>',
+  checkin:'<rect x="7" y="2.8" width="10" height="18.4" rx="2.2"/><path d="M9.8 12.2l1.6 1.6 3.1-3.2M11 18.2h2"/>',
+  feito:'<path d="M5.5 12.5l4.2 4.2 8.8-9.2"/>'
+};
+const svg = nome => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[nome]}</svg>`;
+const ETAPAS = [['Pedido','Pedido recebido! A gente já está procurando as melhores tarifas.','pedido'],['Cotação','A sua cotação está pronta para você aprovar.','cotacao'],['Pago','Pagamento confirmado. Agora a gente emite a sua passagem.','pago'],['Emitida','Passagem emitida! O check-in a gente faz quando abrir.','emitida'],['Check-in','Check-in feito! Os cartões de embarque estão aqui embaixo. Boa viagem!','checkin']];
 function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
 const vooTxt = v => v ? [fmtData(v.data), v.voo, (v.saida||v.chegada)?`${v.saida||'?'} → ${v.chegada||'?'}`:''].filter(Boolean).join(' · ') : '';
 let fotoTestada = '';
@@ -304,7 +315,7 @@ function montar(V, cartoes){
   $('#andamentoBox').hidden = !!V.cancelado;
   if(!V.cancelado){
     const feito = i => i<V.etapa || (i===V.etapa && i===4);
-    $('#prog').innerHTML = `<span class="barra" style="width:calc(${(Math.min(V.etapa,4)/4*100).toFixed(1)}% - ${(Math.min(V.etapa,4)/4*36).toFixed(1)}px)"></span>` + ETAPAS.map(([t,,ic],i)=>`<div class="st ${feito(i)?'ok':i===V.etapa?'at':''}"><i>${feito(i)?'✓':ic}</i>${t}</div>`).join('');
+    $('#prog').innerHTML = `<span class="barra" style="width:calc(${(Math.min(V.etapa,4)/4*100).toFixed(1)}% - ${(Math.min(V.etapa,4)/4*36).toFixed(1)}px)"></span>` + ETAPAS.map(([t,,ic],i)=>`<div class="st ${feito(i)?'ok':i===V.etapa?'at':''}"><i>${svg(feito(i)?'feito':ic)}</i>${t}</div>`).join('');
     const ct = V.cotacao; if(ct && !ct.aprovada && Date.parse(ct.validaAte) < Date.now()) ct.vencida = true;   // venceu depois da última atualização
     $('#agora').textContent = V.etapa===1 && ct?.aprovada ? 'Cotação aprovada! Falta só o pagamento: os dados estão aqui embaixo.'
       : V.etapa===1 && ct?.vencida ? 'O prazo desta cotação acabou. Peça uma nova pelo WhatsApp que a gente atualiza rapidinho.'

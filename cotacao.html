@@ -116,7 +116,6 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .valor-top .vt-eco{grid-column:1/-1;background:var(--ok-claro);border-radius:14px;padding:10px 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
 .valor-top .vt-eco b{color:var(--ok);font-size:1.1rem}
 .valor-top .vt-eco small{color:var(--tinta-2);font-size:.88rem}
-.valor-top .vt-eco s{color:var(--tinta-2)}
 @media (max-width:480px){ .valor-top{grid-template-columns:1fr} .valor-top .vt-v{font-size:2.1rem} .valor-top .vt-bt{width:100%;order:3} .valor-top .vt-eco{order:2} }
 .economia{margin-top:14px;background:var(--ok-claro);border-radius:14px;padding:12px 14px}
 .economia small{display:block;color:var(--tinta-2);font-size:.88rem}
@@ -376,7 +375,7 @@ function montarValorTop(){
   el.innerHTML = `<div class="vt-l"><small>Valor da sua passagem${(C.paxQtd && ((C.paxQtd.adultos||0)+(C.paxQtd.criancas||0)+(C.paxQtd.bebes||0))>1) ? ' · todos os passageiros' : ''}</small>
       <b class="vt-v">${BRL(C.valorPix)}</b><span>no Pix${maior ? ` · ou até ${maior.n}x de ${BRL(maior.parcela)} no cartão` : ''}</span></div>
     <button type="button" class="btn pri vt-bt" id="vtAprovar">Escolher pagamento e aprovar</button>
-    ${eco>0 ? `<div class="vt-eco"><b>Você economiza ${BRL(eco)} (${pct}%)</b><small>Na ${esc(cmp.cia)}, em dinheiro: <s>${BRL(cmp.preco)}</s></small></div>` : ''}`;
+    ${eco>0 ? `<div class="vt-eco"><b>Você economiza ${BRL(eco)} (${pct}%)</b><small>Na ${esc(cmp.cia)}, comprando em dinheiro: ${BRL(cmp.preco)}</small></div>` : ''}`;
   $('#vtAprovar').onclick = () => {
     const alvo = $('#formAprovar');
     if(typeof EMBUTIDA!=='undefined' && EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-rolar', y: alvo.getBoundingClientRect().top + scrollY}, location.origin);
