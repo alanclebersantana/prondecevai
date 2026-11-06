@@ -402,6 +402,18 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 .auto-chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;padding:4px 8px;border-radius:8px;background:var(--fundo);color:var(--tinta-2)}
 .auto-chip.ok{background:var(--ok-claro);color:var(--ok)} .auto-chip.v{background:#F1F1F1;color:var(--tinta-2)} .auto-chip.e{background:var(--sol-claro);color:var(--aviso)}
 .auto-chip .gira{width:12px;height:12px;border:2px solid var(--linha);border-top-color:var(--ceu-2);border-radius:50%;animation:gira .8s linear infinite;flex:none}
+.envio-mp{margin-top:16px;padding-top:14px;border-top:1px dashed var(--linha)}
+.envio-mp h4{margin:0 0 10px;font-size:1rem}
+.envio-mp .travado{opacity:.55}
+.conf-mil{border:1.5px solid var(--sol);background:var(--sol-claro);border-radius:14px;padding:12px 14px}
+.conf-mil.ok{border-color:var(--ok-claro);background:var(--ok-claro)}
+.conf-mil .cm-tit{font-weight:800;margin-bottom:8px}
+.conf-mil.ok .cm-tit{color:var(--ok)}
+.cm-lin{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid rgba(0,0,0,.06)}
+.cm-lin:first-of-type{border-top:0}
+.cm-lin small{display:block;color:var(--tinta-2);font-size:.74rem;font-weight:500}
+.cm-lin .v{font-size:1.05rem;white-space:nowrap} .cm-lin .v small{display:inline;font-weight:600}
+.cm-lin .campo{margin:0;max-width:150px}
 .fila-busca{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--linha);font-size:.84rem}
 .fila-busca[hidden]{display:none}
 .fila-busca .gira{width:14px;height:14px;border:2px solid var(--linha);border-top-color:var(--sol);border-radius:50%;animation:gira .8s linear infinite;flex:none}
@@ -1527,6 +1539,7 @@ function custoMP(p, k){
   return { milhas:mil, porCpf:mil/pagantes(p), milheiro:m.milheiro, taxas, rotulo:m.rotulo, opcao:m.opcao, valor:Math.round((mil/1000*m.milheiro + taxas)*100)/100 };
 }
 function milheiroDe(p, k, porCpf){
+  const cf = p.milheiroConf?.[k]; if(cf && n(cf.valor)>0) return { milheiro:n(cf.valor), rotulo:'confirmado com a Milhas Plus', opcao:false, confirmado:true };
   const t = cfg.tabelaMP[k]; if(!t) return null;
   let linha, rotulo;
   if(t.tipo==='opcoes'){
@@ -2476,23 +2489,22 @@ function renderDetalhe(){
   const i = idx(p.status);
   // etapa atual do fluxo (1..8)
   const passo = p.status==='nova' ? (p.escolhido?2:1)
-              : p.status==='aguardando_mp' ? 3
-              : p.status==='cotacao_enviada' ? 4
-              : p.status==='pago' ? (p.emissaoSolicitadaEm?6:5)
-              : p.status==='emitido' ? 7
-              : p.status==='checkin_feito' ? 8 : 9;
+              : p.status==='aguardando_mp' ? 2
+              : p.status==='cotacao_enviada' ? 3
+              : p.status==='pago' ? (p.emissaoSolicitadaEm?5:4)
+              : p.status==='emitido' ? 6
+              : p.status==='checkin_feito' ? 7 : 8;
   const cls = k => k<passo ? 'feita' : k===passo ? 'atual' : '';
   const aberto = k => k===passo ? 'open' : '';
 
   $('#detCorpo').innerHTML = `
     ${etapaResumo(p, passo<=1)}
     ${etapaBusca(p, cls(1), aberto(1))}
-    ${etapaImagemMP(p, cls(2), aberto(2))}
-    ${etapaValor(p, cls(3), aberto(3))}
-    ${etapaPagamento(p, cls(4), aberto(4))}
-    ${etapaPassageiros(p, cls(5), aberto(5))}
-    ${etapaEmissao(p, cls(6), aberto(6))}
-    ${etapaCheckin(p, cls(7), aberto(7))}
+    ${etapaValor(p, cls(2), aberto(2))}
+    ${etapaPagamento(p, cls(3), aberto(3))}
+    ${etapaPassageiros(p, cls(4), aberto(4))}
+    ${etapaEmissao(p, cls(5), aberto(5))}
+    ${etapaCheckin(p, cls(6), aberto(6))}
     ${p.status!=='perdido' && p.status!=='concluido' ? `<div class="acoes"><button type="button" class="btn perigo peq" data-acao="perdido">Marcar como perdido</button></div>`:''}
     ${(p.log||[]).length ? `<details class="etapa"><summary><span class="n">⏱</span><h3>Histórico de alterações</h3><span class="res">${p.log.length} registro${p.log.length>1?'s':''}</span></summary>
       <div class="conteudo"><ul class="hist-lista">${[...p.log].reverse().map(l=>`<li><time>${fmtDataHora(l.em)}</time><span>${esc(l.txt)}</span></li>`).join('')}</ul></div></details>` : ''}
@@ -2779,7 +2791,7 @@ function etapaImagemMP(p, cls, aberto){
 /* ---------- etapa 3: valor + lucro + cotação ---------- */
 function etapaValor(p, cls, aberto){
   return `<details class="etapa ${cls}" ${aberto}>
-    <summary><span class="n">3</span><h3>Valor e cotação para o cliente</h3><span class="res">${p.cotacao?'Enviada · até '+fmtHora(p.cotacao.validaAte):''}</span></summary>
+    <summary><span class="n">2</span><h3>Valor e cotação para o cliente</h3><span class="res">${p.cotacao?'Enviada · até '+fmtHora(p.cotacao.validaAte):''}</span></summary>
     <div class="conteudo">
       <div class="g3">
         <div class="campo"><label>Valor da Milhas Plus (R$, com taxas)</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="valorMP" value="${esc(p.valorMP??'')}" placeholder="0,00"></div>
@@ -2822,7 +2834,7 @@ function etapaPagamento(p, cls, aberto){
   const base = valorCliente(p);
   const linhas = base ? cfg.taxas.slice(0,MAX_PARCELAS).map((t,i)=>{ const tot=valorCartao(base,i+1); return `<tr class="${pg.forma==='cartao'&&n(pg.parcelas)===i+1?'sel':''}"><td>${i+1}x</td><td>${BRL(tot/(i+1))}</td><td>${BRL(tot)}</td><td>${String(t).replace('.',',')}%</td></tr>`; }).join('') : '';
   return `<details class="etapa ${cls}" ${aberto}>
-    <summary><span class="n">4</span><h3>Pagamento</h3><span class="res">${pg.pagoEm?(pg.forma==='pix'?'Pix':'Cartão '+pg.parcelas+'x')+' · '+BRL(pg.valorCobrado):''}</span></summary>
+    <summary><span class="n">3</span><h3>Pagamento</h3><span class="res">${pg.pagoEm?(pg.forma==='pix'?'Pix':'Cartão '+pg.parcelas+'x')+' · '+BRL(pg.valorCobrado):''}</span></summary>
     <div class="conteudo">
       ${p.cotacao?.resposta ? `<div class="aviso on" style="background:var(--ok-claro);color:var(--ok);margin-top:0">✓ O cliente aprovou pela página em ${fmtDataHora(p.cotacao.resposta.aprovadaEm)} e escolheu <b>${p.cotacao.resposta.forma==='pix'?'Pix':'cartão em '+p.cotacao.resposta.parcelas+'x'}</b>.${p.cotacao.resposta.forma==='cartao'?' Crie o link no Mercado Pago e envie para ele.':' Aguarde o comprovante no WhatsApp.'}</div>` : (p.cotacao ? `<p class="nota" style="margin-top:0">Quando o cliente aprovar pela página, a forma de pagamento e os dados dos passageiros aparecem aqui sozinhos.</p>` : '')}
       ${base ? `
@@ -2844,7 +2856,7 @@ function etapaPagamento(p, cls, aberto){
       <div class="acoes"><button type="button" class="btn pri" data-acao="confirmarPagamento" ${pg.forma && (pg.forma==='pix'||pg.parcelas)?'':'disabled'}>${pg.pagoEm?'Pagamento confirmado':'Confirmar pagamento'}</button></div>
       <details style="margin-top:12px"><summary class="nota" style="cursor:pointer">Ver tabela de parcelas</summary>
         <table class="parcelas"><thead><tr><th>Parcelas</th><th>Parcela</th><th>Total</th><th>Taxa</th></tr></thead><tbody>${linhas}</tbody></table>
-      </details>` : `<p class="nota" style="margin:0">Preencha o valor da Milhas Plus na etapa 3.</p>`}
+      </details>` : `<p class="nota" style="margin:0">Preencha o valor da Milhas Plus na etapa 2.</p>`}
     </div>
   </details>`;
 }
@@ -2864,16 +2876,70 @@ function etapaPassageiros(p, cls, aberto){
   </div>`; }).join('');
   const ok = p.passageirosDados.length && p.passageirosDados.every(d=>d.nome&&d.doc&&d.nasc);
   passageirosOk = ok;
+  const conf = milheiroConfirmado(p);
   return `<details class="etapa ${cls}" ${aberto}>
-    <summary><span class="n">5</span><h3>Dados dos passageiros</h3><span class="res">${ok?'Completos':''}</span></summary>
+    <summary><span class="n">4</span><h3>Dados dos passageiros</h3><span class="res">${[ok?'Completos':'', p.enviadoMPEm?'enviado à Milhas Plus':''].filter(Boolean).join(' · ')}</span></summary>
     <div class="conteudo">
       <p class="nota" style="margin-top:0">${p.cotacao?.resposta ? 'Preenchido pelo cliente na página da cotação. Confira com os documentos.' : 'O cliente preenche estes dados ao aprovar a cotação pela página. Você também pode digitar aqui.'}</p>
       ${linhas}
-      <div class="acoes">
-        <button type="button" class="btn pri" data-acao="copiarEmissao" ${ok&&p.escolhido?'':'disabled'}>Copiar resumo para a Milhas Plus emitir</button>
-      </div>
+      ${p.escolhido ? `
+      <div class="envio-mp">
+        <h4>Enviar para a Milhas Plus emitir</h4>
+        ${htmlConfMilheiro(p)}
+        <div class="${conf?'':'travado'}">
+          <p class="nota" style="margin:10px 0 8px">${conf ? `Imagem com os dados do trecho em ${nomeProgramas(p)}, o milheiro combinado e o print embaixo.` : 'Confirme o milheiro acima para liberar o envio.'}</p>
+          <div class="acoes">
+            <button type="button" class="btn pri" data-acao="compartilharMP" ${conf?'':'disabled'}>Compartilhar imagem</button>
+            <button type="button" class="btn" data-acao="baixarMP" ${conf?'':'disabled'}>Baixar imagem</button>
+            <button type="button" class="btn ${p.enviadoMPEm?'pri':''}" data-acao="copiarEmissao" ${ok&&conf?'':'disabled'}>Copiar resumo para a Milhas Plus emitir</button>
+            ${cfg.whatsappMP?`<a class="btn peq" href="${zapLink(cfg.whatsappMP,'Emissão '+p.id+' — '+p.origem.iata+' → '+p.destino.iata+'. Segue a imagem.')}" target="_blank" rel="noopener">Abrir conversa da Milhas Plus</a>`:''}
+          </div>
+          ${conf ? `<div class="previa"><figure><img id="previaMP" alt="Prévia da imagem para a Milhas Plus"><figcaption>Prévia</figcaption></figure></div>` : ''}
+        </div>
+      </div>` : ''}
     </div>
   </details>`;
+}
+/* ---------- milheiro: confirmar com a Milhas Plus antes de mandar emitir ---------- */
+const milConfEditando = {};
+function progsDoPedido(p){ return [...new Set(trechosDe(p).map(T=>progTrecho(p,T)).filter(Boolean))]; }
+function milheiroTabela(p, k){   // o que a tabela daria, sem o valor confirmado
+  const cf = p.milheiroConf; if(cf) p.milheiroConf = null;
+  try{
+    const T = trechosDe(p).find(t=>progTrecho(p,t)===k);
+    const c = p.combo ? custoTrecho(p,k,T) : custoMP(p,k);
+    if(c) return {milheiro:c.milheiro, rotulo:c.rotulo};
+    const m = milheiroDe(p, k, (totalMilhas(p,k)||0)/pagantes(p)); return m ? {milheiro:m.milheiro, rotulo:m.rotulo} : null;
+  } finally { p.milheiroConf = cf; }
+}
+function milheiroConfirmado(p){ const ks = progsDoPedido(p); return ks.length>0 && ks.every(k=>n(p.milheiroConf?.[k]?.valor)>0) && !milConfEditando[p.id]; }
+function htmlConfMilheiro(p){
+  const ks = progsDoPedido(p), conf = milheiroConfirmado(p), edit = milConfEditando[p.id];
+  const linha = k => { const t = milheiroTabela(p,k), c = p.milheiroConf?.[k];
+    return `<div class="cm-lin"><div><b>${PROG[k].nome}</b><small>${c && !edit ? (n(c.valor)!==n(t?.milheiro) ? `tabela: ${t?BRL(t.milheiro):'—'} · combinado outro valor` : 'igual à tabela') : t ? 'pela tabela · '+esc(t.rotulo) : 'sem valor na tabela'}</small></div>
+      ${edit ? `<div class="campo"><label for="mc-${k}">Milheiro (R$)</label><input id="mc-${k}" type="number" min="1" step="0.01" inputmode="decimal" data-milconf="${k}" value="${esc(c?.valor ?? t?.milheiro ?? '')}"></div>`
+             : `<b class="v">${c ? BRL(c.valor) : t ? BRL(t.milheiro) : '—'} <small>o milheiro</small></b>`}</div>`; };
+  const imp = p.milheiroConf?._impacto;
+  return `<div class="conf-mil ${conf?'ok':''}">
+    <div class="cm-tit">${conf ? '✓ Milheiro confirmado com a Milhas Plus' : 'A Milhas Plus confirmou este milheiro?'}</div>
+    ${ks.map(linha).join('')}
+    ${conf ? `${imp && imp.lucroAntes!==imp.lucroDepois ? `<p class="nota" style="margin:6px 0 0">Custo da Milhas Plus: ${BRL(imp.custoAntes)} → ${BRL(imp.custoDepois)} · seu lucro: ${BRL(imp.lucroAntes)} → <b>${BRL(imp.lucroDepois)}</b></p>`:''}
+        <div class="acoes" style="margin-top:6px"><button type="button" class="btn peq" data-acao="alterarMilheiro">Alterar milheiro</button></div>`
+      : edit ? `<div class="acoes" style="margin-top:8px"><button type="button" class="btn pri peq" data-acao="salvarMilheiro">Salvar milheiro combinado</button><button type="button" class="btn peq" data-acao="cancelarMilheiro">Cancelar</button></div>`
+      : `<div class="acoes" style="margin-top:8px"><button type="button" class="btn pri peq" data-acao="confirmarMilheiro" ${ks.every(k=>milheiroTabela(p,k))?'':'disabled'}>Sim, confirmado</button><button type="button" class="btn peq" data-acao="milheiroOutro">Não, é outro valor</button></div>`}
+  </div>`;
+}
+function aplicarMilheiros(p, valores){
+  // o cliente já recebeu (ou pagou) o valor: muda o custo da Milhas Plus e o seu lucro, nunca o preço do cliente
+  const vcAntes = valorCliente(p), custoAntes = custoBase(p), lucroAntes = lucro(p);
+  p.milheiroConf = p.milheiroConf || {};
+  for(const [k,v] of Object.entries(valores)) p.milheiroConf[k] = {valor:v, em:new Date().toISOString()};
+  const c = custoPedido(p);
+  if(c && Math.abs(c.valor - n(p.valorMP)) > 0.009 && Object.entries(valores).some(([k,v])=>n(v)!==n(milheiroTabela(p,k)?.milheiro))){
+    p.valorMP = c.valor; p.valorMPManual = true;
+    if(vcAntes) p.percLucro = Math.round(((vcAntes/custoBase(p))-1)*100*10000)/10000;   // mantém o preço do cliente
+  }
+  p.milheiroConf._impacto = {custoAntes, custoDepois:custoBase(p), lucroAntes, lucroDepois:lucro(p)};
 }
 
 /* ---------- etapa 6: emissão ---------- */
@@ -2883,7 +2949,7 @@ function etapaEmissao(p, cls, aberto){
   const sugIda = e.partidaIda || (b.saidaIda ? `${p.dataIda}T${b.saidaIda}` : '');
   const sugVolta = e.partidaVolta || (bv.saidaVolta && p.dataVolta ? `${p.dataVolta}T${bv.saidaVolta}` : '');
   return `<details class="etapa ${cls}" ${aberto}>
-    <summary><span class="n">6</span><h3>Emissão</h3><span class="res">${e.localizador?'Localizador '+esc(e.localizador):''}</span></summary>
+    <summary><span class="n">5</span><h3>Emissão</h3><span class="res">${e.localizador?'Localizador '+esc(e.localizador):''}</span></summary>
     <div class="conteudo">
       <div class="g4">
         <div class="campo"><label>Localizador${p.combo?' da ida':''}</label><input data-bind="emissao.localizador" value="${esc(e.localizador||'')}" placeholder="ABC123" style="text-transform:uppercase"></div>
@@ -2911,7 +2977,7 @@ function aberturas(p){
 function etapaCheckin(p, cls, aberto){
   const ab = aberturas(p);
   return `<details class="etapa ${cls}" ${aberto}>
-    <summary><span class="n">7</span><h3>Check-in</h3><span class="res">${ab.map(a=>a.trecho+': '+(a.feito?'feito':'abre '+fmtDataHora(a.abre))).join(' · ')}</span></summary>
+    <summary><span class="n">6</span><h3>Check-in</h3><span class="res">${ab.map(a=>a.trecho+': '+(a.feito?'feito':'abre '+fmtDataHora(a.abre))).join(' · ')}</span></summary>
     <div class="conteudo">
       ${ab.length ? ab.map(a=>`<label class="linha-semdisp" style="margin-bottom:6px"><input type="checkbox" data-bind="checkin.${a.trecho}" data-tipo="bool" ${a.feito?'checked':''}> Check-in da ${a.trecho} feito <span class="nota">· abre ${fmtDataHora(a.abre)} · voo ${fmtDataHora(a.partida)}</span></label>`).join('') : '<p class="nota" style="margin:0">Registre a emissão para calcular a abertura do check-in.</p>'}
       ${ab.length?`
@@ -3254,11 +3320,12 @@ const ACOES = {
     if((autoAtual||flexAtual) && precisaAuto(p) && p.auto===null) return; for(const k in PROG){ const b=p.busca[k]; for(const T of ['Ida','Volta']) if(b['auto'+T]){ b['milhas'+T]=''; delete b['alt'+T]; } if(b.autoIda||b.autoVolta) b.semDisp=false; } const tm = p.auto?.totalMan; p.auto=null; delete p.flex;
     if(autoAtual||flexAtual){ toast('Há outra busca rodando; este pedido entra em seguida.'); salvar(true); renderDetalhe(); atualizarFila(); return; } iniciarAuto(p); if(tm && p.auto) p.auto.totalMan = tm; },
   async compartilharMP(p){
+    if(!milheiroConfirmado(p)){ toast('Confirme o milheiro com a Milhas Plus antes', {tipo:'erro'}); return; }
     const c = await cardMP(p);
     const ok = await compartilharCanvas(c, `${p.id}-${p.escolhido}.png`, `Cotação ${p.id} — ${p.origem.iata} → ${p.destino.iata}`);
     if(ok) marcarEnviadoMP(p);
   },
-  async baixarMP(p){ await baixarCanvas(await cardMP(p), `${p.id}-${p.escolhido}.png`); marcarEnviadoMP(p); },
+  async baixarMP(p){ if(!milheiroConfirmado(p)){ toast('Confirme o milheiro com a Milhas Plus antes', {tipo:'erro'}); return; } await baixarCanvas(await cardMP(p), `${p.id}-${p.escolhido}.png`); marcarEnviadoMP(p); },
   async enviarCotacao(p, modelo, pular){
     if(!valorCliente(p)){ toast('Preencha o valor da Milhas Plus'); return; }
     if(pular!==true){ const av = avisosAntesDeEnviar(p); if(av.length){ perguntarAntesDeEnviar(p, av, typeof modelo==='string' ? modelo : 'cotacao'); return; } }
@@ -3293,13 +3360,33 @@ const ACOES = {
     logar(p, `Pagamento confirmado: ${pg.forma==='pix'?'Pix':'cartão '+pg.parcelas+'x'} · ${BRL(pg.valorCobrado)}`);
     mudarStatus(p,'pago'); renderDetalhe(); toast('Pagamento confirmado');
   },
+  confirmarMilheiro(p){
+    const vals = Object.fromEntries(progsDoPedido(p).map(k=>[k, n(milheiroTabela(p,k)?.milheiro)]));
+    if(Object.values(vals).some(v=>!v)){ toast('Falta valor na tabela: use "Não, é outro valor".', {tipo:'erro'}); return; }
+    aplicarMilheiros(p, vals); delete milConfEditando[p.id];
+    logar(p, `Milheiro confirmado com a Milhas Plus: ${Object.entries(vals).map(([k,v])=>PROG[k].nome+' '+BRL(v)).join(' · ')}`);
+    salvar(true); renderDetalhe(); toast('Milheiro confirmado');
+  },
+  milheiroOutro(p){ milConfEditando[p.id] = true; renderDetalhe(); setTimeout(()=>$('#detCorpo [data-milconf]')?.focus(), 50); },
+  alterarMilheiro(p){ milConfEditando[p.id] = true; renderDetalhe(); setTimeout(()=>$('#detCorpo [data-milconf]')?.focus(), 50); },
+  cancelarMilheiro(p){ delete milConfEditando[p.id]; renderDetalhe(); },
+  salvarMilheiro(p){
+    const vals = {}; let falta = false;
+    $$('#detCorpo [data-milconf]').forEach(el=>{ const v = n(el.value); if(!(v>0)) falta = true; vals[el.dataset.milconf] = Math.round(v*100)/100; });
+    if(falta){ toast('Preencha o milheiro de cada programa', {tipo:'erro'}); return; }
+    aplicarMilheiros(p, vals); delete milConfEditando[p.id];
+    const imp = p.milheiroConf._impacto;
+    logar(p, `Milheiro combinado com a Milhas Plus: ${Object.entries(vals).map(([k,v])=>PROG[k].nome+' '+BRL(v)).join(' · ')}${imp.lucroAntes!==imp.lucroDepois?` · lucro ${BRL(imp.lucroAntes)} → ${BRL(imp.lucroDepois)}`:''}`);
+    salvar(true); renderDetalhe(); toast(imp.lucroAntes!==imp.lucroDepois ? `Milheiro salvo · seu lucro agora é ${BRL(imp.lucroDepois)}` : 'Milheiro salvo');
+  },
   copiarEmissao(p){
+    if(!milheiroConfirmado(p)){ toast('Confirme o milheiro com a Milhas Plus antes', {tipo:'erro'}); return; }
     const b = bT(p,'Ida'), bv = bT(p,'Volta');
     const pax = p.passageirosDados.map((d,i)=>`${i+1}. ${d.nome} — ${d.doc} — nasc. ${fmtData(d.nasc)}`).join('\n');
     const txt = `EMISSÃO ${p.id}\n${p.combo ? `Programas: ida ${PROG[p.combo.Ida].nome} (${b.cia}) + volta ${PROG[p.combo.Volta].nome} (${bv.cia}) — duas emissões` : `Programa: ${PROG[p.escolhido].nome} (${b.cia})`}\nTrecho: ${p.origem.iata} → ${p.destino.iata}\nIda: ${fmtData(p.dataIda)} · ${b.vooIda||''} ${b.saidaIda||''}–${b.chegadaIda||''}${p.combo?' · '+MIL(b.milhasIda)+' milhas':''}`+
       (p.dataVolta?`\nVolta: ${fmtData(p.dataVolta)} · ${bv.vooVolta||''} ${bv.saidaVolta||''}–${bv.chegadaVolta||''}${p.combo?' · '+MIL(bv.milhasVolta)+' milhas':''}`:'')+
       ((b.datasAlt||datasAltAuto(p))?`\nDatas encontradas: ${b.datasAlt||datasAltAuto(p)}`:'')+
-      `\nBagagem: ${textoMalas(p)}\nPet: ${textoPet(p)}\nValor combinado: ${BRL(p.valorMP)}\n\nPassageiros:\n${pax}`;
+      `\nBagagem: ${textoMalas(p)}\nPet: ${textoPet(p)}\nMilheiro combinado: ${progsDoPedido(p).map(k=>(progsDoPedido(p).length>1?PROG[k].nome+' ':'')+BRL(p.milheiroConf?.[k]?.valor)).join(' · ')}\nValor combinado: ${BRL(p.valorMP)}\n\nPassageiros:\n${pax}`;
     copiar(txt,'Resumo de emissão copiado');
     if(cfg.whatsappMP) window.open(zapLink(cfg.whatsappMP, txt),'_blank','noopener');
     p.emissaoSolicitadaEm = new Date().toISOString(); salvar(true); renderDetalhe();
@@ -3336,7 +3423,7 @@ const ACOES = {
     const ida = b.dataset.ida, volta = b.dataset.volta;
     p.combo = {Ida:ida, Volta:volta}; p.escolhido = ida;
     logar(p, `Combinação escolhida: ida ${PROG[ida].nome} + volta ${PROG[volta].nome}`);
-    salvar(true); renderDetalhe(); toast('Combinação escolhida. Confira os valores na etapa 3.');
+    salvar(true); renderDetalhe(); toast('Combinação escolhida. Confira os valores na etapa 2.');
   },
   desfazerCombo(p){ logar(p, 'Combinação desfeita: um programa só'); delete p.combo; salvar(true); renderDetalhe(); },
   copiarLinkViagem(p){ copiar(linkViagem(p), 'Link "Minha viagem" copiado'); },
@@ -3376,8 +3463,8 @@ const ACOES = {
 };
 function marcarEnviadoMP(p){
   p.enviadoMPEm = new Date().toISOString();
-  if(p.status==='nova') mudarStatus(p,'aguardando_mp'); else salvar(true);
-  renderDetalhe();
+  logar(p, 'Imagem com o print enviada à Milhas Plus');
+  salvar(true); renderDetalhe();
 }
 
 /* =========================================================
@@ -3490,6 +3577,7 @@ async function cardMP(p){
   if(p.tipo==='ida_volta') y = linhaDado(ctx,W,P,y,'Volta', vooTxt(p.dataVolta,bv.vooVolta,bv.saidaVolta,bv.chegadaVolta));
   if(p.tipo==='ida_volta' && textoParadas(bv,'Volta')) y = linhaDado(ctx,W,P,y,'Paradas na volta', textoParadas(bv,'Volta'));
   if(b.datasAlt || datasAltAuto(p)) y = linhaDado(ctx,W,P,y,'Datas encontradas', b.datasAlt || datasAltAuto(p));
+  if(progsDoPedido(p).some(k=>n(p.milheiroConf?.[k]?.valor)>0)) y = linhaDado(ctx,W,P,y,'Milheiro combinado', progsDoPedido(p).map(k=>(progsDoPedido(p).length>1?PROG[k].nome+' ':'')+(p.milheiroConf?.[k]?.valor?BRL(p.milheiroConf[k].valor):'—')).join(' · '));
   for(const T of trechosDe(p)){ const bx = bT(p,T), q = bx['assentos'+T]; if(q!=null && n(q) <= pagantes(p)+2) y = linhaDado(ctx,W,P,y, trechosDe(p).length>1 ? `Atenção (${T.toLowerCase()})` : 'Atenção', `últimos ${q} lugares nesta tarifa: emitir rápido`); }
   if(qBebes(p)) y = linhaDado(ctx,W,P,y,'Bebê de colo', `${qBebes(p)} · ${[bebeMilhas(p,k)?MIL(bebeMilhas(p,k))+' milhas':'', bebeReais(p,k)?BRL(bebeReais(p,k)):''].filter(Boolean).join(' + ') || 'sem custo cadastrado'}`);
   y = linhaDado(ctx,W,P,y,'Passageiros', textoPax(p));
