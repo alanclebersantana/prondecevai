@@ -640,6 +640,16 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 #notaMP{background:var(--ceu-claro);border-left:4px solid var(--ceu-2);border-radius:10px;padding:10px 12px;color:var(--tinta)}
 #notaCia:has(.eco){background:var(--ok-claro);border-radius:12px;padding:10px 12px;font-weight:600}
 #notaCia .eco{font-size:1.02rem}
+.conc{margin-top:12px;border:1px solid var(--linha);border-radius:12px;padding:10px 12px}
+.conc-topo{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.conc-topo .btn{margin-left:auto}
+.conc-lin{padding:8px 0;border-top:1px solid var(--linha)}
+.conc-nome{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.conc-dif{font-size:.85rem;font-weight:700;border-radius:8px;padding:2px 8px}
+.conc-dif.caro{color:var(--erro);background:#FDECEA}
+.conc-dif.barato{color:var(--ok);background:var(--ok-claro)}
+.conc-dif.igual{color:var(--tinta-2);background:var(--fundo)}
+.conc a{color:var(--ceu)}
 .calc .box:first-child{background:var(--sol-claro);border:2px solid var(--sol)}
 .calc .box:first-child small{color:var(--sol-esc);font-weight:800;letter-spacing:.05em;text-transform:uppercase}
 .calc .box:first-child b{color:var(--sol-esc);font-size:2rem;letter-spacing:-.02em}
@@ -2797,6 +2807,7 @@ function etapaValor(p, cls, aberto){
       </div>
       <p class="nota nota-mp" id="notaCia"></p>
       <div class="aviso" id="avisoCia"></div>
+      <div class="conc" id="concBox"></div>
       <div class="aviso" id="avisoParadas"></div>
       <div class="calc">
         <div class="box"><small>Valor para o cliente no Pix</small><b id="vCliente">—</b></div>
@@ -3102,6 +3113,7 @@ function atualizarCalculos(p){
   { const el = $('#notaOpcao2'); if(el){ const vB = varianteCurta(p); el.innerHTML = vB ? `<b>Opção 2 · mais rápida</b> (${esc(resumoOpcao(vB.q))}): ${BRL(vB.valorPix)} no Pix · lucro ${BRL(lucro(vB.q))}. O cliente escolhe na página da cotação.` : ''; el.hidden = !vB; } }
   notaBagagem(p);
   notaCia(p);
+  atualizarConc(p);
   const ap = $('#avisoParadas');
   if(ap){ const f = p.escolhido ? faltaParadas(p) : []; ap.textContent = f.length ? `A busca não trouxe ${f.join('; ')}. Preencha na etapa 1, nos campos destacados${extensaoParadasOk() ? '' : ' (ou atualize a extensão para a versão 1.5 e refaça a busca)'}.` : ''; ap.classList.toggle('on', !!f.length); }
   const vc = valorCliente(p), lc = lucro(p);
@@ -3400,6 +3412,7 @@ const ACOES = {
     await ACOES.enviarCotacao(p, tinha ? 'renovacao' : 'cotacao', true);
   },
   buscarCia(p){ iniciarBuscaDinheiro(p); },
+  compararConc(p){ if(iniciarConc(p, true)) toast('Comparando na Vai de Promo e 123milhas…'); else if(p.concPendente){ salvar(true); atualizarFila(); } },
   excluir(p){ excluirPedido(p.id); }
 };
 function marcarEnviadoMP(p){
@@ -3960,6 +3973,7 @@ function receberResultado(m){
   if(buscaDinheiro && m.buscaId===buscaDinheiro.id){ receberDinheiro(m); return; }
   if(autoAtual && m.buscaId===autoAtual.id){ receberAuto(m); return; }
   if(flexAtual && m.buscaId===flexAtual.id){ receberFlex(m); return; }
+  if(concAtual && m.buscaId===concAtual.id){ receberConc(m); return; }
   if(String(m.buscaId||'').startsWith('print-')){ printDepoisDaBusca(m); return; }
   if(!busca || m.buscaId!==busca.id){ receberTardio(m); return; }
   const t = busca.tarefas[m.programa+'|'+m.trecho]; if(!t) return;
@@ -4065,16 +4079,18 @@ function filaAuto(){
 }
 function estadoBusca(p){   // para os cartões: buscando, na fila (Nº) ou buscado há…
   if((autoAtual && autoAtual.pedidoId===p.id) || (flexAtual && flexAtual.pedidoId===p.id)) return {t:'buscando…', c:'b'};
+  if(concAtual && concAtual.pedidoId===p.id) return {t:'comparando preços…', c:'b'};
   if(extensaoAtiva && precisaAuto(p)){ const i = filaAuto().findIndex(x=>x.id===p.id); if(i>=0) return {t: buscasPausadas() ? 'busca pausada' : `na fila (${i+1+(autoAtual?1:0)}º)`, c:'f'}; }
   if(p.auto?.em && AUTO_ETAPAS.includes(p.status)){ const h = idadeBuscaH(p); return {t:'buscado '+tempoDesde(p.auto.em), c: h>=n(cfg.buscaVelha.vermelho) ? 'v' : h>=n(cfg.buscaVelha.amarelo) ? 'a' : 'ok'}; }
   return null;
 }
 function htmlFila(){
   if(!extensaoAtiva) return '';
-  const f = filaAuto(), at = autoAtual && pedido(autoAtual.pedidoId), fx = flexAtual && pedido(flexAtual.pedidoId), pausa = buscasPausadas();
-  if(!at && !fx && !f.length) return '';
+  const f = filaAuto(), at = autoAtual && pedido(autoAtual.pedidoId), fx = flexAtual && pedido(flexAtual.pedidoId), cc = concAtual && pedido(concAtual.pedidoId), pausa = buscasPausadas();
+  if(!at && !fx && !cc && !f.length) return '';
   const txt = at ? `<span class="gira"></span><span>Buscando <b>${esc(at.id)}</b>${f.length?` · mais ${f.length} na fila`:''}</span>`
     : fx ? `<span class="gira"></span><span>Datas vizinhas do <b>${esc(fx.id)}</b>${f.length?` · mais ${f.length} na fila`:''}</span>`
+    : cc ? `<span class="gira"></span><span>Comparando preços do <b>${esc(cc.id)}</b> na Vai de Promo e 123milhas${f.length?` · mais ${f.length} na fila`:''}</span>`
     : `<span>${pausa?'Buscas pausadas':'Na fila'}: <b>${f.length}</b> pedido${f.length>1?'s':''}</span>`;
   return `${txt}<button type="button" class="btn peq" onclick="pausarBuscas(${!pausa})">${pausa?'Retomar buscas':'Pausar buscas'}</button>`;
 }
@@ -4082,7 +4098,8 @@ function atualizarFila(){ document.querySelectorAll('.fila-busca').forEach(el=>{
 function pausarBuscas(sim){ try{ localStorage.setItem('vpo_buscas_pausadas', sim?'1':'0'); }catch(e){} toast(sim ? 'Buscas pausadas. A busca que está rodando termina normalmente.' : 'Buscas retomadas'); atualizarFila(); renderQuadro(); if(!sim) setTimeout(agendarAuto, 300); }
 function agendarAuto(){
   atualizarFila();
-  if(autoAtual || flexAtual || !extensaoAtiva || !versaoOk() || buscasPausadas()) return;
+  if(autoAtual || flexAtual || concAtual || !extensaoAtiva || !versaoOk() || buscasPausadas()) return;
+  const pend = pedidos.find(x=>x.concPendente); if(pend && iniciarConc(pend)) return;
   const f = filaAuto(); if(f.length) iniciarAuto(f[0]);
 }
 
@@ -4096,7 +4113,7 @@ function htmlIdade(p, k){
 
 function iniciarAuto(p, forcar, opts){
   if(!extensaoAtiva || !versaoOk()){ toast('A busca automática precisa da extensão neste Chrome.'); return; }
-  if(autoAtual || flexAtual){ if(forcar && autoAtual?.pedidoId!==p.id){ toast('Terminando a busca de outro pedido; este entra em seguida.'); p.auto=null; atualizarFila(); } return; }
+  if(autoAtual || flexAtual || concAtual){ if(forcar && autoAtual?.pedidoId!==p.id){ toast('Terminando a busca de outro pedido; este entra em seguida.'); p.auto=null; atualizarFila(); } return; }
   const x = p.passageiros||{}, so = opts?.so && opts.so.length ? opts.so : Object.keys(PROG);
   const trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
   if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
@@ -4220,6 +4237,7 @@ function receberAuto(m){
     if(p){ const c = comparaProgramas(p), k = c.melhor;
       toast(`Busca do ${p.id} pronta${k ? (c.modo==='reais' ? ` · mais barato: ${PROG[k].nome}, ${BRL(c.lista[0].custo.valor)}` : ` · menor milhagem: ${PROG[k].nome}, ${MIL(totalMilhas(p,k))} milhas`) : ''}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}}); bip();
       if(p.datasFlexiveis && !a.so && iniciarFlex(p)) return;
+      if(!a.so && iniciarConc(p)) return;
     }
     atualizarFila(); setTimeout(agendarAuto, 1500);
   }
@@ -4241,6 +4259,105 @@ function receberTardio(m){
   bip(); toast(`${PROG[m.programa].nome} · ${m.trecho}: voos recebidos do site no ${p.id}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}});
   return true;
 }
+
+/* ---------- comparativo com a Vai de Promo e a 123milhas: para saber se a cotação está mais cara ou mais barata ---------- */
+const CONC = {
+  vaidepromo: {nome:'Vai de Promo', url:(o,d,data,x)=>{ const [y,m,dd] = data.split('-'); return `https://www.vaidepromo.com.br/passagens-aereas/pesquisa/${o}${d}${y.slice(2)}${m}${dd}/${x.adultos||1}/${x.criancas||0}/${x.bebes||0}/Y/`; }},
+  '123milhas': {nome:'123milhas', url:(o,d,data,x)=>{ const [y,m,dd] = data.split('-'); return `https://123milhas.com/v2/busca?de=${o}&para=${d}&adultos=${x.adultos||1}&criancas=${x.criancas||0}&bebes=${x.bebes||0}&ida=${dd}-${m}-${y}&classe=3`; }}
+};
+let concAtual = null;   // {id, pedidoId, tarefas:{'site|trecho':{site,trecho,status,msg,voos,url}}}
+const extensaoConcOk = () => { if(!extensaoVersao) return false; const [a,b] = extensaoVersao.split('.').map(Number); return a>1 || (a===1 && b>=9); };
+function iniciarConc(p, manual){
+  if(!p || !extensaoAtiva || !extensaoConcOk()){ if(manual) toast('Para comparar com a Vai de Promo e a 123milhas, atualize a extensão no Chrome (versão 1.9).'); return false; }
+  if(autoAtual || flexAtual || concAtual){ if(manual) toast('Termina a busca que está rodando e já compara.'); if(manual) p.concPendente = true; return false; }
+  if(!p.dataIda || p.dataIda < hojeISO() || !/^[A-Z]{3}$/.test(p.origem?.iata||'') || !/^[A-Z]{3}$/.test(p.destino?.iata||'')) { if(manual) toast('O pedido precisa de origem, destino e data de ida futura.'); return false; }
+  const x = p.passageiros||{}, trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  const tarefas = {}, envio = [];
+  for(const [tr,o,d,data] of trechos) for(const s in CONC){
+    const url = CONC[s].url(o, d, data, x);
+    tarefas[s+'|'+tr] = {site:s, trecho:tr, status:'buscando', voos:[], url};
+    envio.push({programa:'conc-'+s, trecho:tr, url, modo:'concorrente', fechar:true});
+  }
+  delete p.concPendente;
+  concAtual = {id:token(10), pedidoId:p.id, tarefas};
+  window.postMessage({tipo:'dcnp-buscar', buscaId:concAtual.id, pedidoId:p.id+'#conc', tarefas:envio}, '*');
+  atualizarFila(); if(abertoId===p.id) renderDetalheSeguro();
+  const id = concAtual.id;
+  setTimeout(()=>{ if(concAtual && concAtual.id===id) terminarConc(); }, 100000 + envio.length*5000);
+  return true;
+}
+function receberConc(m){
+  const a = concAtual; if(!a || m.buscaId!==a.id) return;
+  const t = a.tarefas[String(m.programa||'').replace(/^conc-/,'')+'|'+m.trecho]; if(!t) return;
+  Object.assign(t, {status:m.status, msg:m.msg||'', voos:(m.voos||[]).filter(v=>v && n(v.preco)>0)});
+  if(t.status==='ok' && !t.voos.length){ t.status='erro'; t.msg='Não consegui ler os preços'; }
+  if(Object.values(a.tarefas).every(x=>x.status!=='buscando')) terminarConc();
+}
+function terminarConc(){
+  const a = concAtual; concAtual = null; if(!a) return;
+  const p = pedido(a.pedidoId);
+  if(p){
+    p.concorrentes = {em:new Date().toISOString(), st:{}, voos:{}};
+    for(const [c,t] of Object.entries(a.tarefas)){
+      const ok = t.status==='ok' && t.voos.length;
+      // mesmo voo pode aparecer em várias tarifas: fica a mais barata de cada horário
+      const porVoo = {};
+      for(const v of t.voos){ const k = (v.cia||'')+'|'+v.saida+'|'+v.chegada; if(!porVoo[k] || n(v.preco)<n(porVoo[k].preco)) porVoo[k] = {cia:v.cia||'', voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:v.paradas??null, preco:n(v.preco)}; }
+      p.concorrentes.st[c] = {status: ok ? 'ok' : (t.status==='buscando' ? 'erro' : t.status), msg: ok ? '' : (t.status==='buscando' ? 'Sem resposta da aba' : t.msg || 'Sem preços'), url:t.url};
+      p.concorrentes.voos[c] = ok ? Object.values(porVoo).sort((x,y)=>x.preco-y.preco).slice(0,30) : [];
+    }
+    salvar(true); if(abertoId===p.id) renderDetalheSeguro();
+    const r = comparaConc(p), partes = r.sites.filter(s=>s.total).map(s=>`${s.nome} ${BRL(s.total)}`);
+    if(partes.length) toast(`${p.id} · ${partes.join(' · ')}${r.nosso ? ' · você: '+BRL(r.nosso) : ''}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}});
+  }
+  atualizarFila(); setTimeout(agendarAuto, 1500);
+}
+// valor da cotação sem a bagagem: a Vai de Promo e a 123milhas mostram a tarifa sem mala despachada
+function nossoSemBagagem(p){ const vc = valorCliente(p), bg = custoBagagem(p).total; if(!vc) return {valor:0, bag:0}; const bagC = bg ? Math.round(bg*(1+perc(p)/100)*100)/100 : 0; return {valor:Math.round((vc-bagC)*100)/100, bag:bagC}; }
+function comparaConc(p){
+  const c = p.concorrentes || {}, trs = trechosDe(p), nb = nossoSemBagagem(p);
+  const sites = Object.keys(CONC).map(s=>{
+    let total = 0, barato = 0, mesmo = true, falta = [], linhas = [];
+    for(const T of trs){
+      const ch = s+'|'+T.toLowerCase(), voos = c.voos?.[ch] || [], st = c.st?.[ch];
+      if(!voos.length){ falta.push(`${T.toLowerCase()}: ${st?.msg || 'não buscado'}`); continue; }
+      const b = bT(p,T), cia = ciaTrecho(p,T);
+      const igual = voos.filter(v=>v.saida && v.saida===b['saida'+T] && (!b['chegada'+T] || v.chegada===b['chegada'+T]) && (!v.cia || !cia || v.cia===cia)).sort((x,y)=>x.preco-y.preco)[0];
+      if(!igual) mesmo = false;
+      const v = igual || voos[0];
+      total += v.preco; barato += voos[0].preco;
+      linhas.push({T, v, igual:!!igual, menor:voos[0]});
+    }
+    if(falta.length){ total = 0; barato = 0; }
+    return {site:s, nome:CONC[s].nome, total:Math.round(total*100)/100, barato:Math.round(barato*100)/100, mesmo, falta, linhas, urls:trs.map(T=>c.st?.[s+'|'+T.toLowerCase()]?.url).filter(Boolean)};
+  });
+  return {sites, nosso:nb.valor, bag:nb.bag, em:c.em};
+}
+function difConc(nosso, deles){
+  const d = Math.round((nosso-deles)*100)/100, pct = deles ? Math.round(Math.abs(d)/deles*100) : 0;
+  if(Math.abs(d) < 1) return `<span class="conc-dif igual">mesmo preço</span>`;
+  return d>0 ? `<span class="conc-dif caro">você está ${BRL(d)} mais caro (+${pct}%)</span>` : `<span class="conc-dif barato">você está ${BRL(-d)} mais barato (−${pct}%)</span>`;
+}
+function htmlConc(p){
+  const rodando = concAtual && concAtual.pedidoId===p.id;
+  const btn = `<button type="button" class="btn peq" data-acao="compararConc" ${rodando?'disabled':''}>${rodando?'<span class="gira"></span> Comparando…':(p.concorrentes?'Comparar de novo':'Comparar preços')}</button>`;
+  if(rodando || !p.concorrentes) return `<div class="conc-topo"><b>Vai de Promo e 123milhas</b>${btn}</div>
+    <p class="nota" style="margin:4px 0 0">${rodando ? 'Buscando o mesmo trecho nos dois sites (as abas fecham sozinhas)…' : extensaoConcOk() ? 'Busca o mesmo trecho nos dois sites para você ver se está cobrando mais caro ou mais barato. Roda sozinho depois da busca nos programas.' : 'Precisa da extensão 1.9 neste Chrome.'}</p>`;
+  const r = comparaConc(p);
+  const linhas = r.sites.map(s=>{
+    const ver = s.urls.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${s.urls.length>1?(i?'volta':'ida'):'ver no site'}</a>`).join(' · ');
+    if(!s.total) return `<div class="conc-lin"><div class="conc-nome">${esc(s.nome)}</div><div class="nota" style="margin:0">Não consegui ler (${esc(s.falta.join('; '))}) · ${ver}</div></div>`;
+    const det = s.linhas.map(l=>`${s.linhas.length>1?(l.T==='Ida'?'ida ':'volta '):''}${l.igual?'mesmo voo':'seu voo não apareceu, o mais barato do dia é'} ${esc(l.v.cia)} ${esc(l.v.saida)}→${esc(l.v.chegada)} ${BRL(l.v.preco)}`).join(' · ');
+    const menorDia = s.barato < s.total - 1 ? `<div class="nota" style="margin:2px 0 0">Mais barato do dia lá (outro horário): <b>${BRL(s.barato)}</b>${r.nosso ? ' · '+difConc(r.nosso, s.barato) : ''}</div>` : '';
+    return `<div class="conc-lin"><div class="conc-nome">${esc(s.nome)} <b>${BRL(s.total)}</b> ${r.nosso ? difConc(r.nosso, s.total) : ''}</div>
+      <div class="nota" style="margin:2px 0 0">${det} · no Pix, total · ${ver}</div>${menorDia}</div>`;
+  }).join('');
+  return `<div class="conc-topo"><b>Vai de Promo e 123milhas</b> <span class="nota" style="margin:0">buscado ${tempoDesde(r.em)}</span>${btn}</div>
+    ${r.nosso ? `<p class="nota" style="margin:4px 0 6px">Seu valor no Pix${r.bag ? ' sem a bagagem' : ''}: <b>${BRL(r.nosso)}</b>${r.bag ? ` (tirei ${BRL(r.bag)} de mala: lá a tarifa é sem mala despachada)` : ''}</p>` : `<p class="nota" style="margin:4px 0 6px">Preencha o valor da Milhas Plus para comparar.</p>`}
+    ${linhas}`;
+}
+function atualizarConc(p){ const el = $('#concBox'); if(el) el.innerHTML = htmlConc(p); }
 
 /* ---------- datas flexíveis (melhoria 7): 3 dias antes e 3 depois, só no programa mais barato ---------- */
 function somarDias(iso, d){ const [a,m,dd] = iso.split('-').map(Number), x = new Date(Date.UTC(a,m-1,dd+d)); return x.toISOString().slice(0,10); }
@@ -4290,6 +4407,7 @@ function terminarFlex(){
     salvar(true); if(abertoId===p.id) renderDetalheSeguro();
     const s = sugestaoFlex(p,'Ida') || sugestaoFlex(p,'Volta');
     if(s) toast(`${p.id}: ${s.txt}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}});
+    if(iniciarConc(p)) return;
   }
   atualizarFila(); setTimeout(agendarAuto, 1500);
 }
