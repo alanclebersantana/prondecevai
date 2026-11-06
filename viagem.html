@@ -36,6 +36,8 @@ button,input,select{font:inherit;color:inherit}
 .rota-grande{max-width:640px;margin:34px auto 0;font-weight:800;font-size:clamp(2.6rem,11vw,4rem);letter-spacing:-.02em;line-height:1;text-shadow:0 2px 14px rgba(0,0,0,.3)}
 
 main{max-width:640px;margin:-64px auto 40px;padding:0 14px;position:relative;z-index:1}
+.cot-emb .cot-tit{margin:4px 4px 10px;font-size:1.15rem}
+.cot-emb iframe{display:block;width:100%;height:900px;border:0;background:transparent;transition:height .2s}
 .cartao{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);padding:24px 22px;margin-bottom:16px}
 .ola{font-weight:700;font-size:1.35rem;margin:0}
 .vai{font-weight:800;font-size:clamp(1.8rem,7vw,2.3rem);color:var(--sol-esc);margin:4px 0 2px;line-height:1.1}
@@ -199,6 +201,11 @@ h2{font-size:1.2rem;margin:0 0 4px}
       <div class="agora" id="agora"></div></div>
       <div id="cotacaoBox"></div>
     </div>
+    <div id="cotacaoEmb" class="cot-emb" hidden>
+      <h2 class="cot-tit">Sua cotação</h2>
+      <iframe id="cotFrame" title="Sua cotação" loading="eager"></iframe>
+      <p class="nota" style="text-align:center;margin:6px 0 16px"><a id="cotTela" href="#">Abrir a cotação em tela cheia</a></p>
+    </div>
     <div class="cartao" id="voosBox" hidden>
       <h2 style="margin:0 0 4px">Seus voos</h2>
       <div id="locs"></div>
@@ -298,11 +305,24 @@ function montar(V, cartoes){
   if(!V.cancelado){
     const feito = i => i<V.etapa || (i===V.etapa && i===4);
     $('#prog').innerHTML = `<span class="barra" style="width:calc(${(Math.min(V.etapa,4)/4*100).toFixed(1)}% - ${(Math.min(V.etapa,4)/4*36).toFixed(1)}px)"></span>` + ETAPAS.map(([t,,ic],i)=>`<div class="st ${feito(i)?'ok':i===V.etapa?'at':''}"><i>${feito(i)?'✓':ic}</i>${t}</div>`).join('');
-    $('#agora').textContent = (V.etapa>=3 ? '✓ ' : '') + (ETAPAS[V.etapa]||ETAPAS[0])[1];
+    const ct = V.cotacao; if(ct && !ct.aprovada && Date.parse(ct.validaAte) < Date.now()) ct.vencida = true;   // venceu depois da última atualização
+    $('#agora').textContent = V.etapa===1 && ct?.aprovada ? 'Cotação aprovada! Falta só o pagamento: os dados estão aqui embaixo.'
+      : V.etapa===1 && ct?.vencida ? 'O prazo desta cotação acabou. Peça uma nova pelo WhatsApp que a gente atualiza rapidinho.'
+      : (V.etapa>=3 ? '✓ ' : '') + (ETAPAS[V.etapa]||ETAPAS[0])[1];
   }
-  $('#cotacaoBox').innerHTML = V.cotacao ? `<a class="btn pri" style="margin-top:14px" href="${esc(V.cotacao.link)}">Ver a cotação e aprovar</a><p class="nota" style="text-align:center">Válida até ${fmtHora(V.cotacao.validaAte)} de ${new Date(V.cotacao.validaAte).toLocaleDateString('pt-BR')}</p>` : '';
+  // a cotação aparece aqui mesmo, para aprovar sem sair da página (a página da cotação vem embutida)
+  const ct = V.cotacao, embutir = !!(ct && ct.link && !ct.vencida);
+  $('#cotacaoEmb').hidden = !embutir;
+  if(embutir){
+    const src = ct.link + (ct.link.includes('?') ? '&' : '?') + 'embed=1';
+    if($('#cotFrame').dataset.src !== src){ $('#cotFrame').dataset.src = src; $('#cotFrame').src = src; }
+    $('#cotTela').href = ct.link;
+  }
+  $('#cotacaoBox').innerHTML = ct && ct.vencida
+    ? `<a class="btn zap" style="margin-top:14px" target="_blank" rel="noopener" href="https://wa.me/55${esc(V.whatsapp)}?text=${encodeURIComponent('Olá! A cotação do pedido '+V.pedidoId+' venceu. Pode me mandar uma nova?')}">Pedir uma cotação nova</a><p class="nota" style="text-align:center">Era válida até ${fmtHora(ct.validaAte)} de ${new Date(ct.validaAte).toLocaleDateString('pt-BR')}</p>`
+    : '';
   const temVoo = V.ida && (V.ida.voo || V.ida.saida);
-  $('#voosBox').hidden = !temVoo && !(V.localizadores||[]).length;
+  $('#voosBox').hidden = (!temVoo && !(V.localizadores||[]).length) || embutir;   // com a cotação na tela, os voos já aparecem nela
   const ciaDe = i => (i ? V.volta?.cia : V.ida?.cia) || '';
   $('#locs').innerHTML = (V.localizadores||[]).map((l,i,a)=>{ const cia = ciaDe(i), site = SITE_CIA[String(cia).toUpperCase()];
     return `<div class="loc"><div><small>LOCALIZADOR${a.length>1?(i?' DA VOLTA':' DA IDA'):''}${cia?' · '+esc(cia.toUpperCase()):''}</small><b>${esc(l)}</b>${site?`<a href="${site}" target="_blank" rel="noopener">Conferir no site da ${esc(cia)} →</a>`:''}</div><button type="button" data-copiar="${esc(l)}">Copiar</button></div>`; }).join('');
@@ -326,6 +346,12 @@ async function carregar(primeira){
     montar(r.dados, r.cartoes);
   }catch(e){ console.error(e); if(primeira){ $('#carregandoTxt').textContent = 'Não consegui abrir agora. Confira a internet e recarregue a página.'; } }
 }
+// altura da cotação embutida e aviso de aprovação
+addEventListener('message', e=>{
+  if(e.origin!==location.origin || !e.data) return;
+  if(e.data.tipo==='vpo-cot-altura'){ const f = $('#cotFrame'); if(f && e.data.h>200) f.style.height = e.data.h+'px'; }
+  if(e.data.tipo==='vpo-cot-aprovada'){ $('#agora').textContent = 'Cotação aprovada! Falta só o pagamento: os dados estão aqui embaixo.'; $('#cotacaoEmb').scrollIntoView({behavior:'smooth', block:'start'}); }
+});
 if(!token){ $('#carregando').textContent = 'Este link está incompleto. Abra de novo pelo link que mandamos no WhatsApp.'; }
 else { carregar(true); setInterval(()=>{ if(document.visibilityState==='visible') carregar(false); }, 60000); }
 </script>

@@ -88,6 +88,11 @@ button,input,select{font:inherit;color:inherit}
 .toast::before{content:"✓";width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--ok-claro);color:var(--ok);font-size:.8rem;flex:none}
 
 main{max-width:640px;margin:-64px auto 40px;padding:0 14px;position:relative;z-index:1}
+/* dentro da página "Minha viagem": sem o topo, sem fundo, altura avisada para a página de fora */
+body.embed{background:transparent}
+body.embed header.ceu, body.embed .rodape{display:none}
+body.embed main{margin:0 auto;padding:0;max-width:none}
+body.embed .bilhete, body.embed .cartao{box-shadow:0 10px 30px -18px rgba(14,59,122,.35)}
 .cartao{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);padding:24px 22px;margin-bottom:16px}
 .ola{font-weight:700;font-size:1.35rem;margin:0}
 .vai{font-weight:800;font-size:clamp(1.8rem,7vw,2.3rem);color:var(--sol-esc);margin:4px 0 2px;line-height:1.1}
@@ -341,6 +346,12 @@ function brcode(chave, valor, nome, txid){
 
 /* ---------- tela ---------- */
 let C = null, trocando = false, opSel = 0;
+const EMBUTIDA = new URLSearchParams(location.search).get('embed')==='1' && window.parent!==window;
+if(EMBUTIDA){
+  document.body.classList.add('embed');
+  const avisar = () => window.parent.postMessage({tipo:'vpo-cot-altura', h: Math.ceil(document.documentElement.scrollHeight)}, location.origin);
+  new ResizeObserver(avisar).observe(document.body); addEventListener('load', avisar); setInterval(avisar, 1500);
+}
 // cotação com duas opções de voo (mais barata e mais rápida): troca o bilhete e os valores pela escolhida
 function aplicarOpcao(i){
   if(!Array.isArray(C.opcoes) || !C.opcoes[i]) return;
@@ -527,6 +538,7 @@ $('#formAprovar').addEventListener('submit', async e=>{
   try{
     await comPrazo(gravarResposta(resposta, lista), 20000);
     C.resposta = resposta; trocando = false; mostrarEtapa();
+    if(EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-aprovada'}, location.origin);
   }catch(err){
     console.error(err);
     $('#erroGeral').hidden = false;
