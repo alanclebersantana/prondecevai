@@ -350,6 +350,7 @@ async function carregar(primeira){
 addEventListener('message', e=>{
   if(e.origin!==location.origin || !e.data) return;
   if(e.data.tipo==='vpo-cot-altura'){ const f = $('#cotFrame'); if(f && e.data.h>200) f.style.height = e.data.h+'px'; }
+  if(e.data.tipo==='vpo-cot-rolar'){ const f = $('#cotFrame'); scrollTo({top: f.getBoundingClientRect().top + scrollY + (e.data.y||0) - 12, behavior:'smooth'}); }
   if(e.data.tipo==='vpo-cot-aprovada'){ $('#agora').textContent = 'Cotação aprovada! Falta só o pagamento: os dados estão aqui embaixo.'; $('#cotacaoEmb').scrollIntoView({behavior:'smooth', block:'start'}); }
 });
 if(!token){ $('#carregando').textContent = 'Este link está incompleto. Abra de novo pelo link que mandamos no WhatsApp.'; }

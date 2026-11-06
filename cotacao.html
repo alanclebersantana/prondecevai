@@ -108,6 +108,16 @@ hr{border:0;border-top:1px solid var(--linha);margin:18px 0}
 
 h2{font-size:1.2rem;margin:0 0 4px}
 .nota{color:var(--tinta-2);font-size:.9rem;margin:4px 0 0}
+.valor-top{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);padding:18px 20px;margin-bottom:14px;display:grid;grid-template-columns:1fr auto;gap:12px 16px;align-items:center}
+.valor-top .vt-l small{display:block;font-size:.8rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2)}
+.valor-top .vt-v{display:block;font-size:2.4rem;line-height:1.05;font-weight:800;color:var(--sol-esc);letter-spacing:-.02em;margin:2px 0}
+.valor-top .vt-l span{color:var(--tinta-2);font-size:.92rem}
+.valor-top .vt-bt{white-space:nowrap}
+.valor-top .vt-eco{grid-column:1/-1;background:var(--ok-claro);border-radius:14px;padding:10px 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.valor-top .vt-eco b{color:var(--ok);font-size:1.1rem}
+.valor-top .vt-eco small{color:var(--tinta-2);font-size:.88rem}
+.valor-top .vt-eco s{color:var(--tinta-2)}
+@media (max-width:480px){ .valor-top{grid-template-columns:1fr} .valor-top .vt-v{font-size:2.1rem} .valor-top .vt-bt{width:100%;order:3} .valor-top .vt-eco{order:2} }
 .economia{margin-top:14px;background:var(--ok-claro);border-radius:14px;padding:12px 14px}
 .economia small{display:block;color:var(--tinta-2);font-size:.88rem}
 .economia b{color:var(--ok);font-size:1.08rem}
@@ -195,6 +205,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
 
   <!-- cotação -->
   <section id="cotacao" hidden>
+    <div class="valor-top" id="valorTop"></div>
     <div class="bilhete">
       <div class="bl-hd"><span id="blCod">COTAÇÃO</span><span class="cia" id="blCia" hidden></span></div>
       <div class="bl-rt"><div><b id="blO"></b><small id="blOc"></small></div><div class="av" aria-hidden="true">✈</div><div class="r"><b id="blD"></b><small id="blDc"></small></div></div>
@@ -204,7 +215,6 @@ h2{font-size:1.2rem;margin:0 0 4px}
       <div class="bl-ex" id="blEx"></div>
     </div>
     <div class="escolha-voo" id="escolhaVoo" hidden></div>
-    <div class="economia" id="economia" hidden></div>
     <div class="validade" id="validade"></div>
 
     <!-- escolha + passageiros -->
@@ -358,6 +368,21 @@ function aplicarOpcao(i){
   opSel = i; const o = C.opcoes[i];
   C.ida = o.ida; C.volta = o.volta; C.valorPix = o.valorPix; C.parcelas = o.parcelas;
 }
+/* valor em destaque logo no começo, com a economia: o cliente vê quanto vai pagar sem rolar a página */
+function montarValorTop(){
+  const el = $('#valorTop'); if(!el || !C) return;
+  const par = (C.parcelas||[]), maior = par[par.length-1];
+  const cmp = C.comparacao, eco = cmp && cmp.preco ? Math.round((cmp.preco - C.valorPix)*100)/100 : 0, pct = eco>0 ? Math.round(eco/cmp.preco*100) : 0;
+  el.innerHTML = `<div class="vt-l"><small>Valor da sua passagem${(C.paxQtd && ((C.paxQtd.adultos||0)+(C.paxQtd.criancas||0)+(C.paxQtd.bebes||0))>1) ? ' · todos os passageiros' : ''}</small>
+      <b class="vt-v">${BRL(C.valorPix)}</b><span>no Pix${maior ? ` · ou até ${maior.n}x de ${BRL(maior.parcela)} no cartão` : ''}</span></div>
+    <button type="button" class="btn pri vt-bt" id="vtAprovar">Escolher pagamento e aprovar</button>
+    ${eco>0 ? `<div class="vt-eco"><b>Você economiza ${BRL(eco)} (${pct}%)</b><small>Na ${esc(cmp.cia)}, em dinheiro: <s>${BRL(cmp.preco)}</s></small></div>` : ''}`;
+  $('#vtAprovar').onclick = () => {
+    const alvo = $('#formAprovar');
+    if(typeof EMBUTIDA!=='undefined' && EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-rolar', y: alvo.getBoundingClientRect().top + scrollY}, location.origin);
+    else alvo.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+}
 function montarEscolha(){
   const el = $('#escolhaVoo'); if(!Array.isArray(C.opcoes) || C.opcoes.length<2){ el.hidden = true; return; }
   el.hidden = false;
@@ -365,7 +390,7 @@ function montarEscolha(){
   el.querySelectorAll('[data-op]').forEach(b=>b.addEventListener('click',()=>{
     const forma = document.querySelector('input[name=forma]:checked')?.value;
     aplicarOpcao(Number(b.dataset.op)); montarEscolha(); montarBilhete(); montarFormas(forma);
-    $('#economia').hidden = opSel!==0 || !(C.comparacao && C.comparacao.economia>0);
+    montarValorTop();
   }));
 }
 function mostrarSem(tit, txt, msgZap){
@@ -419,10 +444,7 @@ function montar(){
   if(Array.isArray(C.opcoes) && C.opcoes.length>1){ C.opcoesBase = true; aplicarOpcao(Number(C.resposta?.opcao)||0); }
   montarEscolha();
   montarBilhete();
-  if(C.comparacao && C.comparacao.economia > 0){
-    const e = $('#economia'); e.hidden = false;
-    e.innerHTML = `<small>Na ${esc(C.comparacao.cia)}, comprando em dinheiro: ${BRL(C.comparacao.preco)}</small><b>Com a gente você economiza ${BRL(C.comparacao.economia)} (${C.comparacao.pct}%)</b>`;
-  }
+  montarValorTop();
   montarFormas();
   montarPassageiros();
 }
