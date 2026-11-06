@@ -142,6 +142,17 @@ a{color:inherit}
 .malas .seg span{padding:6px 14px}
 .malas small{display:block;color:var(--tinta-2);font-size:.83rem;margin-top:6px}
 
+.hora-painel{display:none;margin-top:14px;padding:14px 16px;background:#EEF5FC;border-radius:16px;border:1px solid #D3E4F5}
+.hora-painel.aberto{display:block}
+.hora-dica{margin:0 0 8px;color:var(--tinta-2);font-size:.86rem}
+.hora-lin{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:8px 0}
+.hora-lin + .hora-lin{border-top:1px dashed #D3E4F5}
+.hora-lin[hidden]{display:none}
+.hora-tr{min-width:46px}
+.hora-painel .seg{margin:0;background:#fff}
+.hora-painel .seg span{padding:6px 14px}
+.hora-per{display:flex;gap:8px;flex-wrap:wrap}
+.hora-per .chip-chk span{background:#fff;padding:7px 14px}
 .pet-painel{display:none;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;padding:16px;background:#FFF6EF;border-radius:16px;border:1px solid #FFE0C9}
 .pet-painel.aberto{display:grid}
 .pet-painel .seg{margin:0;background:#fff}
@@ -653,7 +664,36 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         </div>
         <div class="chips-op">
           <label class="chip-chk"><input type="checkbox" id="flex"><span>Datas flexíveis<small>até 3 dias antes ou depois</small></span></label>
+          <label class="chip-chk"><input type="checkbox" id="temHora" aria-controls="horaPainel"><span>🕒 Prefiro um horário<small>manhã, tarde ou noite</small></span></label>
           <label class="chip-chk"><input type="checkbox" id="temPet" aria-controls="petPainel"><span>🐾 Vou levar pet<small>cão ou gato</small></span></label>
+        </div>
+      </div>
+
+      <div class="hora-painel" id="horaPainel">
+        <p class="hora-dica">Marque um ou mais períodos. Se não marcar nada num trecho, buscamos em qualquer horário.</p>
+        <div class="hora-lin" data-hora="ida">
+          <b class="hora-tr">Ida</b>
+          <div class="seg" role="radiogroup" aria-label="Ida: horário de saída ou de chegada">
+            <label><input type="radio" name="horaRef-ida" value="saida" checked><span>Sair</span></label>
+            <label><input type="radio" name="horaRef-ida" value="chegada"><span>Chegar</span></label>
+          </div>
+          <div class="hora-per">
+            <label class="chip-chk"><input type="checkbox" name="horaPer-ida" value="manha"><span>Manhã<small>5h às 12h</small></span></label>
+            <label class="chip-chk"><input type="checkbox" name="horaPer-ida" value="tarde"><span>Tarde<small>12h às 18h</small></span></label>
+            <label class="chip-chk"><input type="checkbox" name="horaPer-ida" value="noite"><span>Noite<small>18h às 5h</small></span></label>
+          </div>
+        </div>
+        <div class="hora-lin" data-hora="volta" id="horaVolta">
+          <b class="hora-tr">Volta</b>
+          <div class="seg" role="radiogroup" aria-label="Volta: horário de saída ou de chegada">
+            <label><input type="radio" name="horaRef-volta" value="saida" checked><span>Sair</span></label>
+            <label><input type="radio" name="horaRef-volta" value="chegada"><span>Chegar</span></label>
+          </div>
+          <div class="hora-per">
+            <label class="chip-chk"><input type="checkbox" name="horaPer-volta" value="manha"><span>Manhã<small>5h às 12h</small></span></label>
+            <label class="chip-chk"><input type="checkbox" name="horaPer-volta" value="tarde"><span>Tarde<small>12h às 18h</small></span></label>
+            <label class="chip-chk"><input type="checkbox" name="horaPer-volta" value="noite"><span>Noite<small>18h às 5h</small></span></label>
+          </div>
         </div>
       </div>
 
@@ -1217,6 +1257,21 @@ document.addEventListener('click',e=>{ if(!e.target.closest('.campo-pax')) abrir
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && paxPainel.classList.contains('aberto')){abrirPax(false);paxBtn.focus()} });
 atualizarPax();
 
+/* ---------- preferência de horário ---------- */
+function mostrarHoraVolta(){ $('#horaVolta').hidden = tipoAtual()!=='ida_volta'; }
+$('#temHora').addEventListener('change',e=>$('#horaPainel').classList.toggle('aberto',e.target.checked));
+document.querySelectorAll('input[name="tipo"]').forEach(r=>r.addEventListener('change',mostrarHoraVolta));
+mostrarHoraVolta();
+function lerHorario(){
+  if(!$('#temHora').checked) return null;
+  const r = {};
+  for(const tr of tipoAtual()==='ida_volta' ? ['ida','volta'] : ['ida']){
+    const per = [...document.querySelectorAll(`input[name="horaPer-${tr}"]:checked`)].map(x=>x.value);
+    if(per.length) r[tr] = {ref: document.querySelector(`input[name="horaRef-${tr}"]:checked`).value, periodos: per};
+  }
+  return Object.keys(r).length ? r : null;
+}
+
 /* ---------- pet ---------- */
 $('#temPet').addEventListener('change',e=>{
   $('#petPainel').classList.toggle('aberto',e.target.checked);
@@ -1316,6 +1371,7 @@ function montarPedido(){
     datasFlexiveis: $('#flex').checked,
     passageiros: {...estado.pax},
     malasPorPassageiro: Number(document.querySelector('input[name="malas"]:checked').value),
+    ...(lerHorario() ? {horario: lerHorario()} : {}),
     pet,
     cliente: {
       nome: $('#nome').value.trim(),
@@ -1371,7 +1427,7 @@ $('#continuar').addEventListener('click',()=>{
   if(erros.length) return mostrarErros(erros);
   const o=estado.origem, d=estado.destino, ida=$('#ida').value, volta=$('#volta').value, m=Number(document.querySelector('input[name="malas"]:checked').value);
   $('#resRota').textContent = `${o.iata} → ${d.iata}`;
-  $('#resInfo').textContent = [ida ? dataCurta(ida).split(' · ')[0] + (tipoAtual()==='ida_volta' && volta ? ' a ' + dataCurta(volta).split(' · ')[0] : ' · só ida') : '', textoPax(), m ? `${m} mala${m>1?'s':''} por pessoa` : 'só mala de mão'].filter(Boolean).join(' · ');
+  $('#resInfo').textContent = [ida ? dataCurta(ida).split(' · ')[0] + (tipoAtual()==='ida_volta' && volta ? ' a ' + dataCurta(volta).split(' · ')[0] : ' · só ida') : '', textoPax(), m ? `${m} mala${m>1?'s':''} por pessoa` : 'só mala de mão', lerHorario() ? '🕒 horário escolhido' : ''].filter(Boolean).join(' · ');
   irEtapa(2);
   $('#buscar').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'});
   setTimeout(()=>{ const n=$('#nome'); if(!n.value) n.focus({preventScroll:true}); }, 350);
@@ -1422,6 +1478,7 @@ $('#novo').addEventListener('click',()=>{
   estado.pax={adultos:1,criancas:0,bebes:0}; atualizarPax();
   document.querySelector('input[name="malas"][value="0"]').checked=true;
   $('#temPet').checked=false; $('#petPainel').classList.remove('aberto');
+  $('#temHora').checked=false; $('#horaPainel').classList.remove('aberto'); document.querySelectorAll('#horaPainel input[type=checkbox]').forEach(x=>x.checked=false); document.querySelectorAll('#horaPainel input[value="saida"]').forEach(x=>x.checked=true);
   mostrarData('ida'); mostrarData('volta'); irEtapa(1);
   $('#origem').focus();
 });

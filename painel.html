@@ -602,6 +602,9 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 .chip.ok{background:#DFF7E7;color:#1E8E5A}
 .det-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 16px;background:var(--fundo);border-bottom:1px solid var(--linha)}
 .det-kpis:empty{display:none}
+.det-aviso{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px var(--lado,16px);background:var(--sol-claro);color:var(--aviso);font-weight:600;font-size:.9rem;border-bottom:1px solid var(--linha)}
+.det-aviso[hidden]{display:none}
+.det-aviso .btn{margin-left:auto}
 .kp{display:flex;gap:9px;align-items:center;background:var(--card);border-radius:12px;padding:9px 10px;box-shadow:0 2px 8px -4px rgba(14,59,122,.25);min-width:0}
 .kp .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1rem;flex:none}
 .kp .i1{--ac:#E0611C}.kp .i2{--ac:#2F78C4}.kp .i3{--ac:#1E8E5A}.kp .i4{--ac:#7A3FC4}
@@ -1069,6 +1072,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
     <div class="det-chips" id="detChips"></div>
   </div>
   <div class="det-kpis" id="detKpis"></div>
+  <div class="det-aviso" id="detAvisoCot" hidden></div>
   <div class="det-corpo" id="detCorpo"></div>
 </aside>
 
@@ -1222,6 +1226,13 @@ function textoPax(p){
 }
 function totalPax(p){ const x=p.passageiros||{}; return (x.adultos||0)+(x.criancas||0)+(x.bebes||0); }
 function textoMalas(p){ const m=p.malasPorPassageiro||0; return m ? `${m} mala${m>1?'s':''} de 23 kg por passageiro, por trecho` : 'Só mala de mão'; }
+/* preferência de horário do cliente: {ida:{ref:'saida'|'chegada', periodos:['manha','tarde','noite']}, volta:{...}} */
+const PERIODO = {manha:'manhã', tarde:'tarde', noite:'noite'};
+function prefHorario(p, T){ const h = p.horario?.[String(T).toLowerCase()]; return h && (h.periodos||[]).length ? h : null; }
+function periodoDe(hora){ const m = String(hora||'').match(/^(\d{1,2}):(\d{2})/); if(!m) return null; const x = Number(m[1])*60+Number(m[2]); return x>=300 && x<720 ? 'manha' : x>=720 && x<1080 ? 'tarde' : 'noite'; }
+function noHorario(p, T, v){ const h = prefHorario(p,T); if(!h) return null; const per = periodoDe(h.ref==='chegada' ? v.chegada : v.saida); return per ? h.periodos.includes(per) : null; }
+function textoHorarioT(p, T){ const h = prefHorario(p,T); if(!h) return ''; const ps = h.periodos.map(x=>x==='manha'?'de manhã':x==='tarde'?'à tarde':'à noite'); return (h.ref==='chegada'?'chegar ':'sair ') + (ps.length>1 ? ps.slice(0,-1).join(', ')+' ou '+ps.at(-1) : ps[0]); }
+function textoHorario(p){ const l = trechosDe(p).map(T=>{ const t = textoHorarioT(p,T); return t ? (p.tipo==='ida_volta' ? T.toLowerCase()+': ' : '')+t : ''; }).filter(Boolean); return l.length ? l.join(' · ') : ''; }
 function textoPet(p){ if(!p.pet) return 'Não'; return `${p.pet.especie==='cao'?'Cão':'Gato'}, ${String(p.pet.pesoKg).replace('.',',')} kg com a caixa, ${p.pet.local==='cabine'?'na cabine':'no porão'}`; }
 function token(len=24){ const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'; const a=new Uint32Array(len); crypto.getRandomValues(a); return [...a].map(x=>c[x%c.length]).join(''); }
 function toast(msg, op={}){
@@ -1587,9 +1598,12 @@ function custoPedido(p){
   if(partes.some(x=>!x)) return null;
   return { combo:true, partes, milhas:partes.reduce((s,x)=>s+x.milhas,0), taxas:partes.reduce((s,x)=>s+x.taxas,0), valor:Math.round(partes.reduce((s,x)=>s+x.valor,0)*100)/100 };
 }
-// preenche o valor da Milhas Plus sozinho, enquanto não foi digitado à mão nem enviada a cotação
+// a cotação já foi aprovada ou paga: o valor não muda mais sozinho
+const valorTravado = p => !!(p.cotacao && (p.cotacao.resposta || !['nova','aguardando_mp','cotacao_enviada'].includes(p.status)));
+// preenche o valor da Milhas Plus sozinho, enquanto não foi digitado à mão nem aprovado pelo cliente
+// (com a cotação enviada e ainda não aprovada, o valor acompanha o voo escolhido e aparece o aviso para reenviar)
 function sincronizarValorMP(p){
-  if(!p.escolhido || p.valorMPManual || p.cotacao) return false;
+  if(!p.escolhido || p.valorMPManual || valorTravado(p)) return false;
   const c = custoPedido(p), v = c ? c.valor : '';
   if(String(p.valorMP??'')===String(v)) return false;
   p.valorMP = v; p.valorMPManual = false; return true;
@@ -2072,11 +2086,13 @@ function abrirNovoPedido(){
       <div class="campo"><label for="nvChd">Crianças</label><input id="nvChd" type="number" min="0" max="8" value="0"></div>
       <div class="campo"><label for="nvInf">Bebês</label><input id="nvInf" type="number" min="0" max="8" value="0"></div>
       <div class="campo"><label for="nvMalas">Malas de 23 kg</label><select id="nvMalas"><option value="0">Só mala de mão</option><option value="1">1 por pessoa</option><option value="2">2 por pessoa</option></select></div></div>
+    <div class="g2"><div class="campo"><label for="nvHoraIda">Horário da ida</label><select id="nvHoraIda"><option value="">Qualquer horário</option>${['saida','chegada'].map(r=>['manha','tarde','noite'].map(x=>`<option value="${r}|${x}">${r==='saida'?'Sair':'Chegar'} ${x==='manha'?'de manhã':x==='tarde'?'à tarde':'à noite'}</option>`).join('')).join('')}</select></div>
+      <div class="campo"><label for="nvHoraVolta">Horário da volta</label><select id="nvHoraVolta"><option value="">Qualquer horário</option>${['saida','chegada'].map(r=>['manha','tarde','noite'].map(x=>`<option value="${r}|${x}">${r==='saida'?'Sair':'Chegar'} ${x==='manha'?'de manhã':x==='tarde'?'à tarde':'à noite'}</option>`).join('')).join('')}</select></div></div>
     <label class="linha-semdisp" style="margin-top:8px"><input type="checkbox" id="nvFlex"> Datas flexíveis (±3 dias)</label>
     <div class="campo" style="margin-top:8px"><label for="nvObs">Observação (só você vê)</label><input id="nvObs" maxlength="300"></div>
     <p class="aviso" id="nvErro"></p>
     <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="nvSalvar">Criar pedido</button></div>`);
-  const tipo = () => { $('#nvVolta').disabled = $('#nvTipo').value!=='ida_volta'; };
+  const tipo = () => { $('#nvVolta').disabled = $('#nvHoraVolta').disabled = $('#nvTipo').value!=='ida_volta'; };
   $('#nvTipo').addEventListener('change', tipo); tipo();
   const verCliente = () => {
     const c = clientesMapa().get(chaveCliente($('#nvZap').value));
@@ -2111,9 +2127,10 @@ function salvarNovoPedido(){
   if(!ida) return er('Informe a data de ida.');
   if(tipo==='ida_volta' && (!volta || volta<ida)) return er('Informe a volta (igual ou depois da ida).');
   const limpo = a => ({iata:a.iata, cidade:a.cidade, aeroporto:a.aeroporto, pais:a.pais});
+  const horario = {}; for(const [tr,id] of [['ida','#nvHoraIda'],['volta','#nvHoraVolta']]){ const v = $(id).value; if(v && (tr==='ida' || tipo==='ida_volta')){ const [ref,per] = v.split('|'); horario[tr] = {ref, periodos:[per]}; } }
   const p = normalizar({ id:novoId(), criadoEm:new Date().toISOString(), status:'nova', tipo, origem:limpo(o), destino:limpo(d), dataIda:ida, dataVolta: tipo==='ida_volta'?volta:null,
     datasFlexiveis:$('#nvFlex').checked, passageiros:{adultos:Math.max(1,n($('#nvAdt').value)), criancas:n($('#nvChd').value), bebes:n($('#nvInf').value)},
-    malasPorPassageiro:n($('#nvMalas').value), pet:null, cliente:{nome, whatsapp:zap, email:null}, origemPedido:'whatsapp', obs:$('#nvObs').value.trim(), busca:{} });
+    malasPorPassageiro:n($('#nvMalas').value), ...(Object.keys(horario).length ? {horario} : {}), pet:null, cliente:{nome, whatsapp:zap, email:null}, origemPedido:'whatsapp', obs:$('#nvObs').value.trim(), busca:{} });
   logar(p, 'Pedido criado no painel (cliente chamou no WhatsApp)');
   pedidos.unshift(p); salvar(true); fecharModal(); renderQuadro(); abrirDetalhe(p.id); toast(`Pedido ${p.id} criado`);
   setTimeout(()=>{ if(typeof agendarAuto==='function') agendarAuto(); }, 800);
@@ -2415,6 +2432,7 @@ function cartaoPedido(p){
   const tags = [];
   if(p.pet) tags.push('<span class="tag sol">🐾 Pet</span>');
   if(p.datasFlexiveis) tags.push('<span class="tag">±3 dias</span>');
+  if(textoHorario(p)) tags.push(`<span class="tag" title="${esc(textoHorario(p))}">🕒 ${esc(textoHorario(p))}</span>`);
   { const eb = estadoBusca(p); if(eb) tags.push(`<span class="tag busca-${eb.c}">${eb.c==='b'?'<span class="gira"></span>':''}${esc(eb.t)}</span>`); }
   if(ic.indicadoPor) tags.push(`<span class="tag sol">🤝 ${esc(ic.indicador ? ic.indicador.nome.split(' ')[0] : ic.indicadoPor)}</span>`);
   if(p.origemPedido==='whatsapp') tags.push('<span class="tag">via WhatsApp</span>');
@@ -2526,6 +2544,15 @@ function atualizarKpis(p){
     <div class="kp"><span class="ic i2">${ic('cartao')}</span><div><small>Cliente (Pix)</small><b>${vc?BRL(vc):'—'}</b></div></div>
     <div class="kp lu${baixo?' baixo':''}"><span class="ic i3">${ic('lucro')}</span><div><small>Seu lucro</small><b>${vc?BRL(lc):'—'}</b></div></div>
     <div class="kp ve ${prazo.c||''}"><span class="ic i4">${ic('relogio')}</span><div><small>${prazo.t}</small><b>${esc(prazo.v)}</b></div></div>`;
+  // o voo ou o valor mudou depois que a cotação foi enviada: o cliente ainda vê o valor antigo
+  const av = $('#detAvisoCot');
+  if(av){
+    const c = p.cotacao, enviado = c ? n(c.opcoes?.[c.opcaoAplicada||0]?.valorPix ?? c.valorPix) : 0;
+    const mudou = c && !c.resposta && p.status==='cotacao_enviada' && enviado && vc && Math.abs(vc-enviado) >= 0.01;
+    av.hidden = !mudou;
+    av.innerHTML = mudou ? `<span>⚠️ O valor mudou depois do envio: o cliente recebeu <b>${BRL(enviado)}</b>, agora é <b>${BRL(vc)}</b>. Reenvie a cotação.</span><button type="button" class="btn pri peq" id="detReenviar">Reenviar cotação</button>` : '';
+    const bt = av.querySelector('#detReenviar'); if(bt) bt.onclick = () => ACOES.enviarCotacao(p, 'cotacao');
+  }
 }
 /* etapas do detalhe: lista ao lado (no celular, em cima) e uma etapa aberta por vez */
 const passoSel = {};
@@ -2562,6 +2589,7 @@ function etapaResumo(p, abrir){
         <div><small>Ida</small><b>${fmtData(p.dataIda)}</b></div>
         <div><small>Volta</small><b>${p.dataVolta?fmtData(p.dataVolta):'Somente ida'}</b></div>
         <div><small>Datas flexíveis</small><b>${p.datasFlexiveis?'Sim, ±3 dias':'Não'}</b></div>
+        <div><small>Horário preferido</small><b>${esc(textoHorario(p)||'Qualquer horário')}</b></div>
         <div><small>Passageiros</small><b>${textoPax(p)}</b></div>
         <div><small>Malas despachadas</small><b>${textoMalas(p)}</b></div>
         <div><small>Pet</small><b>${textoPet(p)}</b></div>
@@ -2591,12 +2619,12 @@ function etapaBusca(p, cls, aberto){
     const opcoes = (T) => { const tr=T.toLowerCase(), lista = opcoesTrecho(p,k,tr), pag = pagantes(p); if(!lista.length) return '';
       const atual = lista.findIndex(v=>v.voo===(b['voo'+T]||'') && v.saida===(b['saida'+T]||'') && n(v.milhas)===n(b['pp'+T]));
       const durT = v => { const d = duracaoVoo(v); return d!=null ? fmtMin(d) : ''; };
-      const rot = v => [`${v.saida||'?'}→${v.chegada||'?'}`, durT(v), v.voo||'voo ?', resumoParadas(v.paradas, v.escalas).replace('Voo direto','direto'), `${MIL(v.milhas)}/pessoa`, !lugarOk(p,v) ? `⚠ só ${v.assentos} lugar${v.assentos>1?'es':''}` : ''].filter(Boolean).join(' · ');
+      const rot = v => [`${v.saida||'?'}→${v.chegada||'?'}`, durT(v), v.voo||'voo ?', resumoParadas(v.paradas, v.escalas).replace('Voo direto','direto'), `${MIL(v.milhas)}/pessoa`, noHorario(p,T,v) ? '🕒 no horário pedido' : '', !lugarOk(p,v) ? `⚠ só ${v.assentos} lugar${v.assentos>1?'es':''}` : ''].filter(Boolean).join(' · ');
       const alt = b['alt'+T], tot = ehTotal(p,k,tr);
       const lug = b['assentos'+T]!=null && n(b['assentos'+T]) <= pag+2 ? `<span class="chip-lug">⚠ últimos ${b['assentos'+T]} lugares</span>` : '';
       return `<div class="campo"><label>Voos encontrados (${lista.length})</label><select data-opcao="${k}|${T}">${atual<0?'<option value="">— escolha outro voo —</option>':''}${lista.map((v,i)=>`<option value="${i}" ${i===atual?'selected':''}>${esc(rot(v))}</option>`).join('')}</select>
         ${b['auto'+T] && b['pp'+T] && pag>1 ? `<small class="nota conta-pp">${MIL(b['pp'+T])} por pessoa × ${pag} = ${MIL(b['milhas'+T])} <button type="button" class="lnk" data-eratotal="${k}|${tr}">${tot?'Era por pessoa':'Era o total'}</button>${tot?' · o site mostrou o total do grupo':''}</small>`:''}
-        ${lug}</div>
+        ${lug}${prefHorario(p,T) ? (lista.some(v=>noHorario(p,T,v)) ? `<small class="nota">Cliente pediu ${esc(textoHorarioT(p,T))}: ${noHorario(p,T,lista[atual]||{})===false ? '<b style="color:var(--aviso)">o voo escolhido está fora do horário</b>' : 'escolhi entre os voos desse horário'}.</small>` : `<small class="nota" style="color:var(--aviso);font-weight:600">Cliente pediu ${esc(textoHorarioT(p,T))}, mas nenhum voo lido é desse horário: escolhi o mais barato do dia.</small>`) : ''}</div>
         ${alt ? `<div class="alt-voo ${b.altOff?'off':''}"><div><b>Opção 2 · mais rápida</b> ${esc(alt.saida)}→${esc(alt.chegada)}${alt.dur!=null?' · '+fmtMin(alt.dur):''} · ${esc(alt.voo||'voo ?')} · ${esc(resumoParadas(alt.paradas, alt.escalas).replace('Voo direto','direto'))} · ${MIL(alt.pp)}/pessoa <span class="nota">(${n(alt.pp)-n(b['pp'+T])>=0?'+':'−'}${MIL(Math.abs(n(alt.pp)-n(b['pp'+T])))})</span></div>
           <label class="linha-semdisp"><input type="checkbox" data-altoff="${k}" ${b.altOff?'':'checked'}> Oferecer ao cliente também</label></div>` : ''}`; };
     const campoParadas = (T) => {
@@ -3163,7 +3191,7 @@ function montarRenovacao(p){
     const a = r.antes.trechos[T], tr = T.toLowerCase(), lista = opcoesTrecho(p, a.k, tr);
     let v = lista.find(x=>x.voo && a.voo && vooChave(x.voo)===vooChave(a.voo)) || lista.find(x=>x.saida && a.saida && x.saida===a.saida);
     const mesmo = !!v; let k = a.k, outroProg = false;
-    if(!v) v = lista[0];
+    if(!v) v = voosEscolhidos(p, lista, T).barato || lista[0];
     if(!v){ for(const k2 of (r.so || Object.keys(PROG))){ const c = opcoesTrecho(p, k2, tr)[0]; if(c && (!v || n(c.milhas)<n(v.milhas))){ v = c; k = k2; } } outroProg = !!v; }
     if(!v){ falhou.push(tr); continue; }
     trechos[T] = {k, v:{...v}, mesmo, outroProg};
@@ -3212,7 +3240,7 @@ function notaValorMP(p){
   let h;
   if(!c) h = p.valorMPManual ? 'Valor digitado à mão.' : `Preencha as milhas de ${nomeProgramas(p)} na etapa 1 para calcular.`;
   else if(p.valorMPManual) h = `Valor digitado à mão.${difere?` <button type="button" class="lnk-calc" data-usarcalc>Usar a tabela: ${BRL(c.valor)}</button>`:''}`;
-  else if(p.cotacao) h = `Valor fixado no envio da cotação.${difere?` Pela tabela de agora seria ${BRL(c.valor)}. <button type="button" class="lnk-calc" data-usarcalc>Usar este valor</button> e reenvie a cotação.`:''}`;
+  else if(valorTravado(p)) h = `Valor fixado: o cliente já aprovou a cotação.${difere?` Pela tabela de agora seria ${BRL(c.valor)}. <button type="button" class="lnk-calc" data-usarcalc>Usar este valor</button> e reenvie a cotação.`:''}`;
   else h = `Calculado pela tabela: ${conta}.`;
   el.innerHTML = h;
   const bt = el.querySelector('[data-usarcalc]');
@@ -3235,14 +3263,18 @@ function escolherPrograma(p,k){
   const b=p.busca[k];
   if(b.semDisp){ toast('Esse programa está marcado sem disponibilidade'); return; }
   if(totalMilhas(p,k)==null){ toast('Preencha as milhas desse programa antes de escolher'); return; }
-  p.escolhido = k; logar(p, `Programa escolhido: ${PROG[k].nome}`); salvar(true); renderDetalhe(); toast(`${PROG[k].nome} escolhido`);
+  const trocou = p.escolhido!==k;
+  p.escolhido = k; logar(p, `Programa escolhido: ${PROG[k].nome}`);
+  if(trocou && !valorTravado(p)) p.valorMPManual = false;   // o valor digitado era do outro programa: recalcula pela tabela
+  sincronizarValorMP(p);
+  salvar(true); renderDetalhe(); toast(`${PROG[k].nome} escolhido${p.valorMP?' · Milhas Plus '+BRL(n(p.valorMP)):''}`);
 }
 
 /* =========================================================
    AÇÕES
    ========================================================= */
 function textoTrecho(p){
-  return `${p.origem.iata} → ${p.destino.iata} | Ida ${fmtData(p.dataIda)}${p.dataVolta?' | Volta '+fmtData(p.dataVolta):''} | ${textoPax(p)}${p.datasFlexiveis?' | datas flexíveis ±3 dias':''}`;
+  return `${p.origem.iata} → ${p.destino.iata} | Ida ${fmtData(p.dataIda)}${p.dataVolta?' | Volta '+fmtData(p.dataVolta):''} | ${textoPax(p)}${p.datasFlexiveis?' | datas flexíveis ±3 dias':''}${textoHorario(p)?' | horário: '+textoHorario(p):''}`;
 }
 // Azul: tira os grupos de passageiros com zero (crianças 0, bebês 0) e renumera, como o próprio site faz
 function limparPaxAzul(url){
@@ -4175,8 +4207,10 @@ function opcoesTrecho(p, k, tr){   // voos lidos, com as milhas sempre POR PESSO
   return l.map(v=>div>1 ? {...v, milhas: Math.round(n(v.milhas)/div)} : v);
 }
 const lugarOk = (p, v) => v.assentos==null || n(v.assentos) >= pagantes(p);
-function voosEscolhidos(p, lista){
-  const ok = lista.filter(v=>lugarOk(p,v)), base = ok.length ? ok : lista;
+function voosEscolhidos(p, lista, T){
+  const ok0 = lista.filter(v=>lugarOk(p,v)), ok1 = ok0.length ? ok0 : lista;
+  // horário que o cliente pediu: escolhe entre os voos do período; se nenhum, fica com todos
+  const noPer = T && prefHorario(p,T) ? ok1.filter(v=>noHorario(p,T,v)) : [], base = noPer.length ? noPer : ok1;
   const barato = base[0] || null;
   const comDur = base.filter(v=>duracaoVoo(v)!=null);
   const curto = comDur.slice().sort((a,b)=>duracaoVoo(a)-duracaoVoo(b) || n(a.milhas)-n(b.milhas))[0] || null;
@@ -4185,7 +4219,7 @@ function voosEscolhidos(p, lista){
 function altDe(p, v){ const pag = pagantes(p); return {voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), escalas:escalasVoo(v), pp:n(v.milhas), milhas:n(v.milhas)*pag, taxas: v.taxas!=null ? Math.round(n(v.taxas)*pag*100)/100 : null, dur:duracaoVoo(v), assentos:v.assentos??null}; }
 function escolherEAplicar(p, k, T){
   const tr = T.toLowerCase(), b = p.busca[k], lista = opcoesTrecho(p,k,tr);
-  const {barato, curto} = voosEscolhidos(p, lista);
+  const {barato, curto} = voosEscolhidos(p, lista, T);
   if(barato) aplicarVooAuto(p, k, T, barato);
   if(curto && (b['auto'+T] || !b['milhas'+T])) b['alt'+T] = altDe(p, curto); else delete b['alt'+T];
 }
@@ -4415,7 +4449,7 @@ function sugestaoFlex(p, T){
   const fx = p.flex, k = fx?.k, dias = fx?.trechos?.[T]; if(!dias || !dias.length || !p.busca[k]) return null;
   const b = p.busca[k], atualPP = n(b['pp'+T]) || (n(b['milhas'+T]) ? n(b['milhas'+T])/pagantes(p) : 0);
   const dataPed = T==='Ida' ? p.dataIda : p.dataVolta;
-  const cands = dias.map(d=>({...d, v: voosEscolhidos(p, d.voos).barato})).filter(d=>d.v && d.data!==dataPed);
+  const cands = dias.map(d=>({...d, v: voosEscolhidos(p, d.voos, T).barato})).filter(d=>d.v && d.data!==dataPed);
   if(!cands.length) return null;
   const dif = d => Math.round((Date.parse(d.data)-Date.parse(dataPed))/864e5);
   let melhor;
