@@ -304,6 +304,13 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .pix-pessoa{margin-top:10px}
 .pix-pessoa[hidden]{display:none}
 .zap-falha{display:none}.zap-falha.on{display:flex}
+.reemb{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;margin:0 0 14px;font-weight:700;font-size:.97rem}
+.reemb[hidden]{display:none}
+.reemb.nao{background:#FDECEA;color:#B3261E;border:1px solid #F5C2BE}
+.reemb.multa{background:#FFF1E7;color:#B4500F;border:1px solid #FFD2B3}
+.reemb.sim{background:var(--ok-claro);color:var(--ok);border:1px solid #BFE6CF}
+.reemb small{display:block;font-weight:500;color:var(--tinta-2);font-size:.82rem}
+#reembAprovar{margin:14px 0 0}
 </style>
 </head>
 <body>
@@ -327,6 +334,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
   <!-- cotação -->
   <section id="cotacao" hidden>
     <div class="valor-top" id="valorTop"></div>
+    <div class="reemb" id="reembTopo" hidden></div>
     <div class="bilhete">
       <div class="bl-hd"><span id="blCod">COTAÇÃO</span><span class="cia" id="blCia" hidden></span></div>
       <div class="bl-rt"><div><b id="blO"></b><small id="blOc"></small></div><div class="av" aria-hidden="true">✈</div><div class="r"><b id="blD"></b><small id="blDc"></small></div></div>
@@ -367,6 +375,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
       </details>
       <div id="paxLista"></div>
 
+      <div class="reemb" id="reembAprovar" hidden></div>
       <details class="regras" id="regrasBox" hidden><summary>📄 Regras de cancelamento e remarcação</summary><div class="rg" id="regrasTxt"></div></details>
       <label class="aceite" id="aceiteRegrasLbl" hidden><input type="checkbox" id="aceiteRegras"> <span>Li as regras de cancelamento e remarcação.</span></label>
       <label class="aceite"><input type="checkbox" id="aceite"> <span>Confirmo que os dados estão corretos e entendo que, depois de emitida, a passagem segue as regras da companhia aérea.</span></label>
@@ -628,6 +637,7 @@ function montar(){
   montarFormas();
   montarMalas();
   montarRegras();
+  montarReembolso();
   montarPassageiros();
 }
 function montarFormas(manter){
@@ -778,6 +788,11 @@ $('#formAprovar').addEventListener('submit', async e=>{
    LANÇAMENTO: regras, avisos de nome/idade, colar lista, já paguei, achei caro, horário
    ========================================================= */
 let avisosVistos = false, PUB = {};
+function montarReembolso(){
+  const r = C.reembolso || '', k = /^Não/.test(r) ? 'nao' : /multa/i.test(r) ? 'multa' : r ? 'sim' : '';
+  const html = r ? `<span aria-hidden="true">${k==='nao'?'⚠️':k==='multa'?'💸':'✅'}</span><span>${k==='nao' ? 'Passagem não reembolsável em caso de cancelamento' : k==='multa' ? 'Reembolsável com multa em caso de cancelamento' : 'Passagem reembolsável em caso de cancelamento'}<small>Veja as regras completas antes de aprovar.</small></span>` : '';
+  ['#reembTopo','#reembAprovar'].forEach(s=>{ const el = $(s); el.className = 'reemb ' + k; el.innerHTML = html; el.hidden = !r; });
+}
 function montarRegras(){
   const r = C.regras;
   const txt = Array.isArray(r) ? r.filter(x=>x && x.texto).map(x=>`<b>${esc(x.prog)}</b>\n${esc(x.texto)}`).join('\n\n') : (r ? esc(r) : '');

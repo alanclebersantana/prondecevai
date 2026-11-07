@@ -5897,6 +5897,13 @@ iniciarSync = (orig => function(){ orig.apply(this, arguments); iniciarInbox(); 
 if(!FB.ativo){ setTimeout(()=>publicarPublico(), 2000); }
 
 
+/* reembolso escolhido depois de enviar: atualiza o link do cliente na hora */
+document.addEventListener('change', e=>{
+  const el = e.target; if(!el.matches || !el.matches('#detCorpo [data-bind="reembolso"]')) return;
+  const p = pedido(abertoId); if(!p) return;
+  if(p.cotacao?.token){ marcarCotacaoPublica(p, {reembolso: REEMBOLSO[p.reembolso] || ''}); toast('Link do cliente atualizado'); }
+  logar(p, `Se cancelar: ${REEMBOLSO[p.reembolso] || 'não informado'}`); salvar(true);
+});
 /* ---------- mudar as datas do pedido ---------- */
 function rotaCotada(p){
   const v = p.tipo==='ida_volta';
