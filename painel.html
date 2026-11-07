@@ -1061,6 +1061,9 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 
 .e1-cab button.e1-pill{font:inherit;font-size:.88rem;font-weight:700}
 
+.sky-simples{display:flex;flex-direction:column;gap:12px;background:var(--fundo);border-radius:14px;padding:16px}
+.sky-simples .sky-acoes{margin-left:0}
+
 </style>
 </head>
 <body>
@@ -3804,7 +3807,7 @@ const ACOES = {
     await ACOES.enviarCotacao(p, tinha ? 'renovacao' : 'cotacao', true);
   },
   buscarCia(p){ iniciarBuscaDinheiro(p); },
-  compararConc(p){ if(iniciarConc(p, true)) toast('Buscando no Skyscanner…'); else if(p.concPendente){ salvar(true); atualizarFila(); } },
+  compararConc(p){ iniciarConc(p, true); },
   excluir(p){ excluirPedido(p.id); }
 };
 function marcarEnviadoMP(p){
@@ -4678,6 +4681,8 @@ function urlSkyIdaVolta(p){
 let concAtual = null;   // {id, pedidoId, tarefas:{'site|trecho':{site,trecho,status,msg,voos,url}}}
 const extensaoConcOk = () => { if(!extensaoVersao) return false; const [a] = extensaoVersao.split('.').map(Number); return a>=2; };
 function iniciarConc(p, manual){
+  if(!manual) return false;   // Skyscanner: só abre o site, sem ler preço
+  if(p){ urlsSky(p).forEach(u=>window.open(u.url, '_blank', 'noopener')); return false; }
   if(!p || !extensaoAtiva || !extensaoConcOk()){ if(manual) toast('Para buscar no Skyscanner, instale a extensão 2.0 no Chrome.'); return false; }
   if(autoAtual || flexAtual || concAtual){ if(manual) toast('Termina a busca que está rodando e já compara.'); if(manual) p.concPendente = true; return false; }
   if(!p.dataIda || p.dataIda < hojeISO() || !/^[A-Z]{3}$/.test(p.origem?.iata||'') || !/^[A-Z]{3}$/.test(p.destino?.iata||'')) { if(manual) toast('O pedido precisa de origem, destino e data de ida futura.'); return false; }
@@ -4760,43 +4765,22 @@ function difConc(nosso, deles){
   if(Math.abs(d) < 1) return `<span class="conc-dif igual">mesmo preço</span>`;
   return d>0 ? `<span class="conc-dif caro">você está ${BRL(d)} mais caro (+${pct}%)</span>` : `<span class="conc-dif barato">você está ${BRL(-d)} mais barato (−${pct}%)</span>`;
 }
+function urlsSky(p){
+  const iv = urlSkyIdaVolta(p), x = p.passageiros||{};
+  if(iv) return [{rot:'Abrir ida e volta no Skyscanner', url:iv}];
+  return trechosDe(p).map(T=>({rot:`Abrir ${trechosDe(p).length>1 ? (T==='Ida'?'a ida':'a volta')+' ' : ''}no Skyscanner`, url:CONC.skyscanner.url(T==='Ida'?p.origem.iata:voltaDe(p), T==='Ida'?p.destino.iata:voltaPara(p), T==='Ida'?p.dataIda:p.dataVolta, x)}));
+}
 function htmlConc(p){
-  const rodando = concAtual && concAtual.pedidoId===p.id;
-  if(rodando) return `<div class="conc-topo"><b>Skyscanner</b><span class="nota" style="margin:0"><span class="gira"></span> buscando o mesmo trecho…</span></div>`;
-  if(!p.concorrentes) return `<div class="conc-topo"><b>Skyscanner</b><span class="nota" style="margin:0">ainda não buscado</span><button type="button" class="btn peq" data-irsky>Ver na aba Skyscanner</button></div>`;
-  const r = comparaConc(p), s = r.sites[0];
-  return `<div class="conc-topo"><b>Skyscanner</b> ${s.barato ? `menor do dia <b>${BRL(s.barato)}</b>${r.nosso ? ' '+difConc(r.nosso, s.barato) : ''}` : `<span class="nota" style="margin:0">não consegui ler</span>`}<button type="button" class="btn peq" data-irsky>Ver na aba Skyscanner</button></div>`;
+  return `<div class="conc-topo"><b>Skyscanner</b><span class="nota" style="margin:0">confira o preço em dinheiro do mesmo trecho</span>${urlsSky(p).map(u=>`<a class="btn peq" href="${esc(u.url)}" target="_blank" rel="noopener">${esc(u.rot)}</a>`).join('')}</div>`;
 }
 function htmlSky(p){
-  const rodando = concAtual && concAtual.pedidoId===p.id, trs = trechosDe(p), x = p.passageiros||{};
-  const rota = trs.map(T=>`${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)} ${fmtDataCurta(T==='Ida'?p.dataIda:p.dataVolta)}`).join(' · ') + ' · ' + textoPax(p);
-  const urlIV = urlSkyIdaVolta(p), urls = p.concorrentes ? trs.map(T=>p.concorrentes.st?.['skyscanner|'+T.toLowerCase()]?.url).filter(Boolean) : trs.map(T=>CONC.skyscanner.url(T==='Ida'?p.origem.iata:voltaDe(p), T==='Ida'?p.destino.iata:voltaPara(p), T==='Ida'?p.dataIda:p.dataVolta, x));
-  const abrir = urlIV ? `<a class="btn peq" href="${esc(urlIV)}" target="_blank" rel="noopener">Abrir no Skyscanner</a>` : urls.map((u,i)=>`<a class="btn peq" href="${esc(u)}" target="_blank" rel="noopener">Abrir ${trs.length>1?(i?'volta':'ida'):'no Skyscanner'}</a>`).join('');
-  const btn = extensaoConcOk() ? `<button type="button" class="btn pri peq" data-acao="compararConc" ${rodando?'disabled':''}>${rodando ? '<span class="gira"></span> Buscando…' : p.concorrentes ? 'Buscar de novo' : 'Buscar no Skyscanner'}</button>` : '';
-  const cab = `<div class="sky-cab"><div><div class="e1-l">Mesmo trecho do pedido</div><b class="sky-rota">${esc(rota)}</b></div>${p.concorrentes && !rodando ? `<span class="e1-fonte site">buscado ${tempoDesde(p.concorrentes.em)}</span>` : ''}<div class="sky-acoes">${abrir}${btn}</div></div>`;
-  const nota = `<p class="nota sky-nota">O Skyscanner não deixa ser aberto dentro de outra página. Quem busca é a extensão: abre o Skyscanner numa aba em segundo plano, lê os resultados e traz para cá. ${extensaoConcOk() ? 'Se o Skyscanner pedir verificação ("sou humano"), abra a aba, confirme, e o resultado chega aqui sozinho.' : '<b>Instale a extensão 2.0 no Chrome</b> para a busca rodar daqui; sem ela, use "Abrir no Skyscanner".'} Os preços são em dinheiro, sem mala despachada, para ${pagantes(p)} pagante${pagantes(p)>1?'s':''}${n(x.bebes)?' (o bebê de colo pode variar)':''}.</p>`;
-  if(rodando) return cab + `<div class="sky-vazio"><span class="gira"></span> Buscando ${trs.length>1?'a ida e a volta':'o trecho'} no Skyscanner… leva cerca de 1 minuto.</div>` + nota;
-  if(!p.concorrentes) return cab + `<div class="sky-vazio">${extensaoConcOk() ? 'Ainda não buscado. A busca roda sozinha depois da busca nos programas, ou clique em "Buscar no Skyscanner".' : 'Ainda não buscado.'}</div>` + nota;
-  const r = comparaConc(p), s = r.sites[0], c = p.concorrentes;
-  const resumo = `<div class="sky-boxes">
-      <div class="sky-box"><div class="e1-l">Menor preço no Skyscanner</div><b>${s.barato ? BRL(s.barato) : '—'}</b><small>${s.barato ? (trs.length>1 ? 'ida + volta, mais baratos do dia' : 'mais barato do dia') : esc(s.falta.join('; '))}</small></div>
-      <div class="sky-box"><div class="e1-l">Sua cotação (Pix${r.bag?', sem a mala':''})</div><b>${r.nosso ? BRL(r.nosso) : '—'}</b><small>${p.escolhido ? esc(nomeProgramas(p)) : 'escolha um programa'}${r.bag ? ` · tirei ${BRL(r.bag)} de mala` : ''}</small></div>
-      ${(()=>{ if(!s.barato || !r.nosso) return `<div class="sky-box"><div class="e1-l">Comparação</div><b>—</b><small>falta ${!r.nosso ? 'o valor da cotação' : 'o preço do Skyscanner'}</small></div>`;
-        const d = Math.round((s.barato - r.nosso)*100)/100, pct = Math.round(Math.abs(d)/s.barato*100);
-        return d >= 0 ? `<div class="sky-box ok"><div class="e1-l">Cliente economiza</div><b>${BRL(d)}</b><small>${pct}% a menos que o Skyscanner</small></div>` : `<div class="sky-box caro"><div class="e1-l">Você está mais caro</div><b>${BRL(-d)}</b><small>${pct}% acima do Skyscanner</small></div>`; })()}
-    </div>`;
-  const lista = trs.map(T=>{
-    const ch = 'skyscanner|'+T.toLowerCase(), voos = c.voos?.[ch] || [], st = c.st?.[ch], b = bT(p,T);
-    if(!voos.length) return `<div class="sky-tr"><h4>${T} <small>${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</small></h4><div class="sky-vazio">${esc(st?.msg || 'Sem resultado')}${st?.status==='verificar' && extensaoAtiva ? ` <button type="button" class="btn peq pri" data-skyfoco="${T.toLowerCase()}">Abrir a aba do Skyscanner</button>` : st?.url ? ` · <a href="${esc(st.url)}" target="_blank" rel="noopener">ver no site</a>` : ''}</div></div>`;
-    const rapido = voos.reduce((m,v)=>{ const d = v.dur ?? duracaoVoo(v); return d!=null && (m==null || d < m.d) ? {v, d} : m; }, null);
-    return `<div class="sky-tr"><h4>${T} <small>${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)} · ${fmtDataCurta(T==='Ida'?p.dataIda:p.dataVolta)}</small></h4>
-      ${voos.slice(0,8).map((v,i)=>{ const d = v.dur ?? duracaoVoo(v), seu = b['saida'+T] && v.saida===b['saida'+T] && (!b['chegada'+T] || v.chegada===b['chegada'+T]);
-        const tag = i===0 ? '<span class="sky-tag">MAIS BARATO</span>' : rapido && rapido.v===v ? '<span class="sky-tag az">MAIS RÁPIDO</span>' : '';
-        return `<div class="sky-v ${i===0?'barato':''} ${seu?'seu':''}"><span class="sky-tg">${tag}${seu?'<span class="sky-tag seu">SEU VOO</span>':''}</span><b class="sky-cia">${esc(v.cia||'—')}</b>
-          <span><b class="sky-h">${esc(v.saida)} → ${esc(v.chegada)}${v.mais1?' <span class="mais1">+1</span>':''}</b><small>${[v.paradas===0?'Direto':v.paradas?`${v.paradas} parada${v.paradas>1?'s':''}${(v.escalas||[]).length?' ('+v.escalas.map(esc).join(', ')+')':''}`:'', d!=null?fmtMin(d):''].filter(Boolean).join(' · ')}</small></span>
-          <span class="sky-p"><b>${BRL(v.preco)}</b><small>${v.porPessoa && pagantes(p)>1 ? `${BRL(v.porPessoa)} por pessoa` : 'total'}${v.ofertas?` · ${esc(v.ofertas)}`:''}</small></span></div>`; }).join('')}
-    </div>`; }).join('');
-  return cab + resumo + `<div class="sky-lista">${lista}</div>` + nota;
+  const trs = trechosDe(p), rota = trs.map(T=>`${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)} em ${fmtDataCurta(T==='Ida'?p.dataIda:p.dataVolta)}`).join(' · ') + ' · ' + textoPax(p);
+  const us = urlsSky(p);
+  return `<div class="sky-simples">
+    <div><div class="e1-l">Mesmo trecho da cotação</div><b class="sky-rota">${esc(rota)}</b></div>
+    <div class="sky-acoes">${us.map(u=>`<a class="btn pri" href="${esc(u.url)}" target="_blank" rel="noopener">🔎 ${esc(u.rot)}</a>`).join('')}</div>
+    <p class="nota" style="margin:0">Abre o Skyscanner numa aba nova, já com a busca deste pedido: mesmas datas, aeroportos e passageiros.${us.length>1 ? ' A volta sai de outro aeroporto, então são duas buscas, uma para cada trecho.' : ''}</p>
+  </div>`;
 }
 function atualizarConc(p){ const el = $('#concBox'); if(el) el.innerHTML = htmlConc(p); const sk = $('#skyBox'); if(sk && !sk.contains(document.activeElement)) sk.innerHTML = htmlSky(p); }
 
