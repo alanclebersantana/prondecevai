@@ -772,6 +772,7 @@ $('#formAprovar').addEventListener('submit', async e=>{
   try{
     await comPrazo(gravarResposta(resposta, lista), 20000);
     C.resposta = resposta; trocando = false; $('#zapFalha').classList.remove('on'); mostrarEtapa();
+    avisarPorEmail(resposta, lista);
     if(EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-aprovada'}, location.origin);
   }catch(err){
     console.error(err);
@@ -784,6 +785,19 @@ $('#formAprovar').addEventListener('submit', async e=>{
   } finally { btn.disabled = false; btn.textContent = 'Aprovar cotação'; btn.classList.remove('enviando'); }
 });
 
+// e-mail para a agência quando o cliente aprova e manda os dados (Netlify Forms; em teste/local não envia)
+function avisarPorEmail(resposta, lista){
+  try{
+    if(!/\.netlify\.app$|vaipraonde/i.test(location.hostname) || !FIREBASE_ATIVO) return;
+    const par = (C.parcelas||[]).find(x=>x.n===resposta.parcelas);
+    const pag = resposta.forma==='pix' ? `Pix ${BRL(C.valorPix)}` : `Cartão ${resposta.parcelas}x${par ? ' de '+BRL(par.parcela)+' (total '+BRL(par.total ?? par.parcela*par.n)+')' : ''}`;
+    const dados = {'form-name':'dados-emissao', subject:`Vai pra onde? · ${C.pedidoId} aprovou e mandou os dados para emissão`,
+      pedido:C.pedidoId, cliente:C.nome||'', whatsapp:'', trecho:`${C.origem.iata} → ${C.destino.iata}${C.volta ? ' (ida e volta)' : ''}`,
+      datas:[C.ida?.data || C.dataIda || '', C.volta?.data || C.dataVolta || ''].filter(Boolean).join(' a '), pagamento:pag,
+      passageiros: lista.map((x,i)=>`${i+1}. ${x.nome} (${x.tipo})`).join(' | '), enviado:new Date().toLocaleString('pt-BR'), 'bot-field':''};
+    fetch('/', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(dados).toString(), keepalive:true}).catch(()=>{});
+  }catch(e){ console.warn('aviso por e-mail', e); }
+}
 /* =========================================================
    LANÇAMENTO: regras, avisos de nome/idade, colar lista, já paguei, achei caro, horário
    ========================================================= */
@@ -920,5 +934,10 @@ $('#trocarForma').addEventListener('click', ()=>{ trocando = true; montarMalas()
   }
 })();
 </script>
+<!-- aviso por e-mail (Netlify Forms): só pedido, cliente, valor e nomes; documentos ficam só no painel -->
+<form name="dados-emissao" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="dados-emissao">
+  <input name="subject"><input name="pedido"><input name="cliente"><input name="whatsapp"><input name="trecho"><input name="datas"><input name="pagamento"><input name="passageiros"><input name="enviado"><input name="bot-field">
+</form>
 </body>
 </html>

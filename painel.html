@@ -913,6 +913,139 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .det-corpo.com-passos{grid-template-columns:220px minmax(0,1fr);gap:20px}
 @media (max-width:760px){ .det-corpo.com-passos{display:block;padding-top:0} .det-corpo.com-passos .passos-det{top:0;margin:0 calc(-1 * var(--lado)) 12px} }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* programas: uma tabela por programa */
+.e1-lista{display:flex;flex-direction:column;gap:16px;padding:14px}
+.e1-prog{border-radius:16px;background:var(--card);box-shadow:0 8px 24px -16px rgba(14,59,122,.4);overflow:hidden;border:1.5px solid var(--linha)}
+.e1-prog.melhor{outline:3px solid #1E7B4F;outline-offset:-1px}
+.e1-cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;color:#fff;position:relative}
+.e1-prog.buscando .e1-cab::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:40%;background:rgba(255,255,255,.85);border-radius:3px;animation:varre 1.3s ease-in-out infinite}
+.e1-cab h4{margin:0;font-size:1.25rem}
+.e1-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 12px;font-size:.88rem;font-weight:700;color:#fff;cursor:pointer;text-decoration:none}
+.e1-pill select{background:transparent;border:0;color:#fff;font:inherit;font-weight:800;padding:0;cursor:pointer}
+.e1-pill select option{color:var(--tinta)}
+.e1-pill input{margin:0;accent-color:#fff}
+.e1-link:hover{background:rgba(255,255,255,.28)}
+.e1-selo{background:#fff;color:#1E7B4F;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+.e1-custo{margin-left:auto;text-align:right;line-height:1.15}
+.e1-custo small{display:block;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.9}
+.e1-custo b{font-size:1.45rem}
+.e1-prog.semdisp .e1-corpo{display:none}
+.e1-prog.semdisp{opacity:.75}
+.e1-corpo{padding:14px 16px 0}
+.e1-avisos{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.e1-grade{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:16px;align-items:start}
+.e1-linhas{display:flex;flex-direction:column;gap:12px;min-width:0}
+.e1-cabcol,.e1-linha{display:grid;grid-template-columns:96px minmax(128px,1.1fr) minmax(96px,.85fr) minmax(104px,.9fr) minmax(176px,1.5fr) minmax(104px,1fr) minmax(104px,1fr);gap:8px;align-items:start}
+.e1-cabcol span{font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2)}
+.e1-linha{padding-top:12px;border-top:1.5px solid var(--linha)}
+.e1-linha:first-of-type{border-top:0;padding-top:0}
+.e1-nome b{display:block;font-size:1.08rem}
+.e1-nome small{display:block;color:var(--tinta-2);font-weight:600;font-size:.85rem}
+.e1-fonte{display:inline-block;margin-top:5px;border-radius:999px;padding:2px 9px;font-size:.74rem;font-weight:700}
+.e1-fonte.site{background:#E3F4EA;color:#1E6B45}.e1-fonte.print{background:#E6EEFB;color:#1F4E9E}.e1-fonte.mao{background:var(--ceu-claro);color:var(--ceu)}
+.e1-st{display:block;margin-top:5px}.e1-st .auto-chip{font-size:.74rem}
+.e1-c{display:flex;flex-direction:column;gap:4px;min-width:0}
+.e1-l{font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2)}
+.e1-linha .e1-c > .e1-l{display:none}
+.e1-c input{font:inherit;font-size:1.02rem;font-weight:600;padding:9px 10px;border:1.5px solid var(--linha);border-radius:10px;min-height:44px;width:100%;box-sizing:border-box;background:var(--card);color:var(--tinta)}
+.e1-c input:focus{border-color:var(--ceu-2,#1F5FA8);outline:2px solid rgba(31,95,168,.18)}
+.e1-c input.vazio,.e1-esc input.falta{border-color:#F3C9A8;background:#FFF8F2}
+.e1-c input.est{font-style:italic;color:var(--tinta-2);border-style:dashed}
+.e1-c input.difer{border-color:var(--sol);background:var(--sol-claro)}
+.e1-dur{font-size:.82rem;color:var(--tinta-2)}
+.mais1{font-size:.72rem;font-weight:800;color:#A53C0A;background:#FFF1E7;border-radius:6px;padding:1px 6px}
+.e1-seg{display:flex;border:1.5px solid var(--linha);border-radius:10px;overflow:hidden;min-height:44px}
+.e1-seg button{flex:1;font:inherit;font-weight:700;font-size:.92rem;border:0;background:var(--card);color:var(--tinta-2);cursor:pointer;padding:6px 4px;border-left:1px solid var(--linha)}
+.e1-seg button:first-child{border-left:0;flex:1.6}
+.e1-seg button.on{background:var(--ceu,#0E3B7A);color:var(--card)}
+.e1-esc{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.e1-esc-l{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.e1-esc input{font:inherit;font-size:.95rem;padding:7px 8px;border:1.5px solid var(--linha);border-radius:9px;min-height:38px;width:100%;box-sizing:border-box}
+.e1-extra{grid-column:2 / -1}
+.e1-extra .campo{margin:0}.e1-extra select{max-width:100%}
+.e1-prints{display:flex;flex-direction:column;gap:10px}
+.e1-print{min-height:104px;font-size:.85rem}
+.e1-print img{max-height:150px}
+.e1-rodape{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;border-top:1.5px solid var(--linha);margin:14px -16px 0;padding:12px 16px;font-size:1rem}
+.e1-conta{display:flex;flex-direction:column;gap:4px}
+.e1-falta{color:#A53C0A;font-weight:700;font-size:.92rem}
+.e1-nota{font-size:.85rem;color:var(--tinta-2)}
+.e1-nota.dif{color:var(--sol-esc);font-weight:700}
+.e1-tab{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--tinta-2);font-weight:600}
+.e1-tab select{font:inherit;font-weight:700;color:var(--tinta);padding:6px 8px;border:1.5px solid var(--linha);border-radius:9px}
+/* passageiros na cotação */
+.pax-cot{display:flex;align-items:center;gap:14px 22px;flex-wrap:wrap;background:var(--card);border:1.5px solid var(--linha);border-radius:16px;padding:12px 16px;margin:12px 0}
+.pax-cs{display:flex;gap:12px;flex-wrap:wrap}
+.pax-c{display:flex;flex-direction:column;gap:4px}
+.pax-step{display:flex;align-items:center;border:1.5px solid var(--linha);border-radius:10px;overflow:hidden}
+.pax-step button{font:inherit;font-size:1.2rem;font-weight:700;width:42px;min-height:42px;border:0;background:var(--fundo);color:var(--tinta);cursor:pointer}
+.pax-step button:disabled{opacity:.35;cursor:default}
+.pax-step b{min-width:44px;text-align:center;font-size:1.15rem}
+.pax-tot{margin-left:auto;text-align:right}.pax-tot b{font-size:1.8rem;line-height:1}
+/* pedido do cliente sempre à vista */
+.ped-fixo{position:sticky;top:0;z-index:6;background:var(--card);border:2px solid var(--ceu,#0E3B7A);border-radius:14px;padding:10px 14px;margin:0 0 14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 12px 24px -20px rgba(14,59,122,.7)}
+.pf-cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pf-tit{color:var(--ceu,#0E3B7A)}
+.pf-mud{font-size:.82rem;font-weight:700;color:var(--sol-esc);background:var(--sol-claro);border-radius:999px;padding:2px 10px}
+.pf-cab .btn{margin-left:auto}
+.pf-grade{display:grid;grid-template-columns:1.25fr 1.25fr .9fr 1fr 1.4fr;gap:8px}
+.pf-b{background:var(--fundo);border-radius:10px;padding:7px 10px;min-width:0}
+.pf-b b{display:block;font-size:.98rem;line-height:1.25}
+.pf-b small{display:block;font-size:.8rem;color:var(--tinta-2)}
+.pf-b .pf-av{color:#A53C0A;font-weight:700}
+.pf-pref{background:var(--sol-claro)}
+@media (max-width:1280px){ .e1-grade{grid-template-columns:1fr} .e1-prints{flex-direction:row;flex-wrap:wrap} .e1-print{flex:1 1 200px} .pf-grade{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:900px){
+  .e1-cabcol{display:none}
+  .e1-linha{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .e1-linha .e1-c > .e1-l{display:block}
+  .e1-nome,.e1-linha > .e1-c:nth-child(5),.e1-extra{grid-column:1 / -1}
+  .e1-nome{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.e1-nome b{display:inline}.e1-nome small{display:inline}
+  .e1-custo{margin-left:0;width:100%;text-align:left}
+  .ped-fixo{position:static}
+  .pf-grade{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pax-tot{margin-left:0;text-align:left}
+}
+
+.cap-grade{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px;align-items:start}
+.cap-print{margin:0;display:flex;flex-direction:column;gap:6px}
+.cap-print img{width:100%;max-height:52vh;object-fit:contain;border:1.5px solid var(--linha);border-radius:12px;background:#fff}
+.cap-tab{width:100%;border-collapse:collapse;border:1.5px solid var(--linha);border-radius:12px;overflow:hidden;font-size:1rem}
+.cap-tab th{text-align:left;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2);background:var(--fundo);padding:8px 10px}
+.cap-tab td{padding:10px;border-top:1px solid var(--linha)}
+.cap-tab td.novo{font-weight:800;color:var(--sol-esc)}
+.cap-tab td:last-child,.cap-tab th:last-child{text-align:center}
+.cap-tab input{width:20px;height:20px}
+@media (max-width:760px){ .cap-grade{grid-template-columns:1fr} }
+
+.modal:has(.cap-grade){width:min(980px,100%)}
+
+.abas-busca{display:flex;gap:6px;border-bottom:2px solid var(--linha);margin:0 0 14px}
+.abas-busca button{font:inherit;font-weight:700;font-size:1rem;border:0;background:transparent;color:var(--tinta-2);padding:10px 16px;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;border-radius:10px 10px 0 0}
+.abas-busca button small{font-weight:600;font-size:.8rem}
+.abas-busca button.on{color:var(--ceu);border-bottom-color:var(--sol);background:var(--card)}
+.sky-cab{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin-bottom:12px}
+.sky-rota{font-size:1.1rem}
+.sky-acoes{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.sky-boxes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.sky-box{background:var(--fundo);border-radius:14px;padding:12px 14px}
+.sky-box b{display:block;font-size:1.6rem;line-height:1.15}
+.sky-box small{display:block;color:var(--tinta-2);font-size:.85rem}
+.sky-box.ok{background:var(--ok-claro)}.sky-box.ok b,.sky-box.ok .e1-l{color:var(--ok)}
+.sky-box.caro{background:#FDECEA}.sky-box.caro b,.sky-box.caro .e1-l{color:var(--erro)}
+.sky-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(520px,100%),1fr));gap:14px}
+.sky-tr h4{margin:0 0 8px;font-size:1.05rem}.sky-tr h4 small{color:var(--tinta-2);font-weight:600}
+.sky-v{display:grid;grid-template-columns:118px 72px minmax(0,1fr) auto;gap:10px;align-items:center;border:1.5px solid var(--linha);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
+.sky-v.barato{border-color:#1E7B4F}.sky-v.seu{box-shadow:inset 4px 0 0 var(--sol)}
+.sky-tg{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.sky-tag{background:#1E7B4F;color:#fff;border-radius:999px;padding:2px 9px;font-size:.7rem;font-weight:800;letter-spacing:.03em}
+.sky-tag.az{background:var(--ceu)}.sky-tag.seu{background:var(--sol)}
+.sky-h{font-size:1.1rem}.sky-v small{display:block;color:var(--tinta-2);font-size:.84rem}
+.sky-p{text-align:right}.sky-p b{font-size:1.15rem}
+.sky-vazio{background:var(--fundo);border-radius:12px;padding:14px;color:var(--tinta-2)}
+.sky-nota{margin:12px 0 0}
+@media (max-width:760px){ .sky-boxes{grid-template-columns:1fr} .sky-v{grid-template-columns:1fr auto} .sky-tg{grid-column:1/-1;flex-direction:row} .sky-acoes{margin-left:0} }
+
 </style>
 </head>
 <body>
@@ -2728,6 +2861,7 @@ function renderDetalhe(){
       <div class="conteudo"><ul class="hist-lista">${[...p.log].reverse().map(l=>`<li><time>${fmtDataHora(l.em)}</time><span>${esc(l.txt)}</span></li>`).join('')}</ul></div></details>` : ''}
     ${p.status==='perdido' ? `<div class="acoes"><button type="button" class="btn peq" data-acao="restaurar">↺ Restaurar para ${esc(NOME_ETAPA[etapaAnterior(p)])}</button><button type="button" class="btn perigo peq" data-acao="excluir">Excluir pedido</button></div>`:''}
   `;
+  [...$('#detCorpo').children].filter(e=>e.matches('details.etapa')).slice(1).forEach(d=>{ if(d.querySelector('summary h3')?.textContent.startsWith('Histórico')) return; const c = d.querySelector(':scope > .conteudo'); if(c) c.insertAdjacentHTML('afterbegin', htmlPedidoFixo(p)); });
   montarPassos(p, passo);
   ligarDetalhe(p);
   atualizarCalculos(p);
@@ -2806,6 +2940,10 @@ function etapaResumo(p, abrir){
 function fmtTel(d){ d=soDigitos(d); return d.length>=10?`(${d.slice(0,2)}) ${d.slice(2,d.length-4)}-${d.slice(-4)}`:d; }
 
 /* ---------- etapa 1: busca nos 3 ---------- */
+const abaBusca = {};
+document.addEventListener('click', e=>{ const bt = e.target.closest('[data-skyfoco]'); if(!bt || !abertoId) return; const p = pedido(abertoId); const id = p?.concorrentes?.buscaId; if(!id) return;
+  window.postMessage({tipo:'dcnp-focar-aba', buscaId:id, programa:'conc-skyscanner', trecho:bt.dataset.skyfoco}, '*'); });
+document.addEventListener('click', e=>{ if(!e.target.closest('[data-irsky]') || !abertoId) return; const corpo = $('#detCorpo'); abaBusca[abertoId] = 'sky'; const b1 = corpo.querySelector('.passos-det [data-passo="1"]'); if(b1) b1.click(); const t = corpo.querySelector('[data-abab="sky"]'); if(t) t.click(); });
 function etapaBusca(p, cls, aberto){
   const x = p.passageiros||{};
   const rodandoAqui = !!(autoAtual && autoAtual.pedidoId===p.id);
@@ -2845,52 +2983,14 @@ function etapaBusca(p, cls, aberto){
       const pp = n(b['pp'+T]) || (n(b[campo]) ? Math.round(n(b[campo])/pag) : '');
       return `<div class="g2 mil-pp"><div class="campo"><label>Milhas · por pessoa</label><input type="number" min="0" step="100" inputmode="numeric" data-pp="${k}|${T}" value="${esc(pp)}" placeholder="1 pessoa"></div>
         <div class="campo"><label title="${pag} pagantes${qBebes(p)?', sem o bebê':''}">Total (× ${pag})</label>${tot}</div></div>`; };
-    return `<div class="prog ${b.semDisp?'semdisp':''} ${p.escolhido===k?'escolhido':''} ${buscandoProg?'buscando':''}" data-prog="${k}">
-      <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>${textoSelo(cmp)}</span></div>
-      <div class="corpo">
-        ${(p.auto?.st || rodandoAqui) ? `<div class="auto-st">${chip('ida', p.tipo==='ida_volta'?'Ida':'')}${p.tipo==='ida_volta'?chip('volta','Volta'):''}${htmlIdade(p,k)}</div>`:''}
-        ${p.flex?.k===k ? trechosDe(p).map(T=>{ const sg = sugestaoFlex(p,T); return sg ? `<div class="flex-sug"><span>📅 <b>${T}:</b> ${esc(sg.txt)}</span><button type="button" class="btn peq pri" data-flex="${T}">Usar esta data</button></div>` : ''; }).join('') : ''}
-        ${flexAtual && flexAtual.pedidoId===p.id && flexAtual.k===k ? '<div class="flex-sug"><span class="gira"></span> Buscando as datas vizinhas (±3 dias)…</div>' : ''}
-        <label class="linha-semdisp"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}> Sem disponibilidade</label>
-        <div class="campo"><label>Cia que opera</label>
-          <select data-bind="busca.${k}.cia">${['GOL','LATAM','Azul','Outra'].map(c=>`<option ${b.cia===c?'selected':''}>${c}</option>`).join('')}</select></div>
-        <div class="sub" style="margin:4px 0 0">Ida · ${fmtDataCurta(p.dataIda)}</div>
-        <div class="g-voo">
-          <div class="campo"><label>Voo</label><input data-bind="busca.${k}.vooIda" value="${esc(b.vooIda||'')}" placeholder="G3 1234" class="${b.vooFaltaIda&&b.autoIda?'falta':''}" title="${b.vooFaltaIda&&b.autoIda?'A busca não trouxe o número do voo: complete':''}"></div>
-          <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaIda" value="${esc(b.saidaIda||'')}"></div>
-          <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaIda" value="${esc(b.chegadaIda||'')}"></div>
-        </div>
-        ${campoParadas('Ida')}
-        ${opcoes('Ida')}
-        ${campoMil('milhasIda',`Milhas da ida (total, ${pagantes(p)} pax${qBebes(p)?', sem o bebê':''})`)}
-        ${p.tipo==='ida_volta'?`
-        <div class="sub" style="margin:4px 0 0">Volta · ${fmtDataCurta(p.dataVolta)}</div>
-        <div class="g-voo">
-          <div class="campo"><label>Voo</label><input data-bind="busca.${k}.vooVolta" value="${esc(b.vooVolta||'')}" placeholder="G3 4321" class="${b.vooFaltaVolta&&b.autoVolta?'falta':''}" title="${b.vooFaltaVolta&&b.autoVolta?'A busca não trouxe o número do voo: complete':''}"></div>
-          <div class="campo"><label>Sai</label><input type="time" data-bind="busca.${k}.saidaVolta" value="${esc(b.saidaVolta||'')}"></div>
-          <div class="campo"><label>Chega</label><input type="time" data-bind="busca.${k}.chegadaVolta" value="${esc(b.chegadaVolta||'')}"></div>
-        </div>
-        ${campoParadas('Volta')}
-        ${opcoes('Volta')}
-        ${campoMil('milhasVolta',`Milhas da volta (total, ${pagantes(p)} pax${qBebes(p)?', sem o bebê':''})`)}`:''}
-        ${p.datasFlexiveis?`<div class="campo"><label>Datas encontradas (se mudou)</label><input data-bind="busca.${k}.datasAlt" value="${esc(b.datasAlt||'')}" placeholder="Ex.: ida 21/12, volta 04/01"></div>`:''}
-        <div class="campo"><label>Taxas total (R$, ida${p.tipo==='ida_volta'?' + volta':''}) ${notaTaxa(p,k)}</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="busca.${k}.taxas" value="${esc(b.taxas??'')}" placeholder="0,00" class="${!b.taxasMan && trechosComVoo(p,k).some(T=>b['taxasFonte'+T]==='falta') && (b.taxas===''||b.taxas==null) ? 'falta':''}"></div>
-        ${qBebes(p) && trechosComVoo(p,k).length ? `<p class="nota bebe-nota">${bebeFalta(p,k) ? `⚠ Bebê de colo: cadastre quanto a ${PROG[k].nome} cobra em Configurações → Regras da busca.` : `Bebê de colo: ${[bebeMilhas(p,k)?MIL(bebeMilhas(p,k))+' milhas':'', bebeReais(p,k)?BRL(bebeReais(p,k)):''].filter(Boolean).join(' + ')||'sem custo'} já somado ao total.`}</p>` : ''}
-        ${cfg.tabelaMP[k]?.tipo==='opcoes' && opcoesMP(k).length ? `<div class="campo"><label>Tabela da Milhas Plus</label><select data-bind="busca.${k}.tabela">${opcoesMP(k).map((o,i)=>`<option ${(b.tabela ? o.nome===b.tabela : i===0)?'selected':''}>${esc(o.nome)}</option>`).join('')}</select></div>`:''}
-        <div class="total-milhas">Total do pedido<b data-total="${k}">—</b><small class="custo-mp" data-custo="${k}"></small><small class="dif-melhor" data-dif="${k}"></small></div>
-        ${(p.tipo==='ida_volta'?['Ida','Volta']:['Ida']).map(T=>`
-        <div class="colar" tabindex="0" data-colar="${k}|${T}" aria-label="Print da ${T.toLowerCase()} em ${meta.nome}">
-          ${b['print'+T] ? `<img src="${b['print'+T]}" alt="Print da ${T.toLowerCase()} ${meta.nome}"><button type="button" class="tirar" data-tirar="${k}|${T}" aria-label="Remover print">✕</button>` : `<span><b>Print da ${T.toLowerCase()}</b><br>Use a extensão de captura, cole (Ctrl+V)<br>ou toque para escolher a imagem</span>`}
-        </div>
-        <input type="file" accept="image/*" hidden data-arquivo="${k}|${T}">
-        ${extensaoAtiva && extensaoV18() && b['saida'+T] ? `<button type="button" class="btn peq" data-printauto="${k}|${T}">📸 Tirar print do site${b['print'+T]?' de novo':''}</button>` : ''}`).join('')}
-        <button type="button" class="btn ${p.escolhido===k?'azul':''} peq" data-escolher="${k}">${p.escolhido===k?'Escolhido':'Escolher este'}</button>
-      </div>
-    </div>`;
+    return htmlProgE1(p, k, meta, {chip, opcoes, buscandoProg, menor, cmp});
   }).join('');
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">1</span><h3>Pesquisar nos programas</h3><span class="res">${p.escolhido?'Escolhido: '+nomeProgramas(p):''}</span></summary>
     <div class="conteudo">
+      <div class="abas-busca" role="tablist"><button type="button" role="tab" data-abab="prog" class="${abaBusca[p.id]==='sky'?'':'on'}" aria-selected="${abaBusca[p.id]!=='sky'}">✈️ Programas</button><button type="button" role="tab" data-abab="sky" class="${abaBusca[p.id]==='sky'?'on':''}" aria-selected="${abaBusca[p.id]==='sky'}">🔎 Skyscanner <small>preço em dinheiro</small></button></div>
+      <div class="aba-sky" id="skyBox" ${abaBusca[p.id]==='sky'?'':'hidden'}>${htmlSky(p)}</div>
+      <div class="aba-prog" ${abaBusca[p.id]==='sky'?'hidden':''}>
       <div class="acoes" style="margin-top:0">
         ${rodandoAqui ? `<button type="button" class="btn pri rodando" data-acao="buscaAuto" aria-busy="true" aria-disabled="true"><span class="gira"></span>Buscando… <span data-cron>${cronBusca()}</span></button>`
           : naFila ? `<button type="button" class="btn na-fila" data-acao="buscaAuto" aria-disabled="true">Na fila · começa após a busca atual</button>`
@@ -2902,9 +3002,11 @@ function etapaBusca(p, cls, aberto){
       <p class="nota" style="margin:8px 0 0">${extensaoAtiva ? 'A busca roda sozinha quando o pedido chega e preenche cada programa com o voo de menos milhas. Para trocar, use "Voos encontrados". O que você digitar à mão não é sobrescrito. Os sites ficam abertos depois da busca: use "ver no site" para conferir.' : 'Abra o painel no Chrome com a extensão para a busca rodar sozinha.'} "Pesquisar nos 3" abre Smiles, LATAM Pass e Azul, cada um numa aba, e copia o trecho para você colar. Sem a extensão, o navegador pode bloquear abas: use os botões de cada site.</p>
       <p class="nota" style="margin:6px 0 0" id="avisoExtensao">${extensaoAtiva ? '✓ Extensão de captura ligada: nos sites, clique no ícone dela (ou Alt+Shift+C) e depois no voo. O print e os dados chegam aqui sozinhos, com este pedido aberto.' : 'Instale a extensão de captura para trazer o print e os dados do voo sem printar à mão.'}</p>
       ${rodandoAqui ? htmlBuscaRodando() : ''}
-      ${htmlEscolhaA(p)}
+      ${htmlPaxCot(p)}
+      <div class="esc-wrap" data-escolha>${htmlEscolhaA(p)}</div>
       <details class="det-progs" data-detprogs ${progsAbertos(p) ? 'open' : ''}><summary>Editar voos, milhas, taxas e prints de cada programa</summary>
-      <div class="progs">${quadros}</div></details>
+      <div class="e1-lista">${quadros}</div></details>
+      </div>
     </div>
   </details>`;
 }
@@ -3235,7 +3337,7 @@ function ligarDetalhe(p){
       { const m = el.dataset.bind.match(/^busca\.(\w+)\.(?:milhas|voo|saida|chegada)(Ida|Volta)$/); if(m) p.busca[m[1]]['auto'+m[2]] = false; }   // editou à mão: a busca não sobrescreve
       { const m = el.dataset.bind.match(/^busca\.(\w+)\.taxas$/); if(m) p.busca[m[1]].taxasMan = v!==''; }   // taxa digitada: a busca não troca
       salvar();
-      if(el.dataset.bind.endsWith('.semDisp')) el.closest('.prog').classList.toggle('semdisp', v);
+      if(el.dataset.bind.endsWith('.semDisp')){ el.closest('[data-prog]')?.classList.toggle('semdisp', v); salvar(true); renderDetalhe(); return; }
       if(el.dataset.rerender) { salvar(true); renderDetalhe(); return; }
       if(el.dataset.bind.startsWith('passageirosDados.')){
         const ok = p.passageirosDados.every(d=>d.nome&&d.doc&&d.nasc);
@@ -3246,7 +3348,7 @@ function ligarDetalhe(p){
   });
   // milhas por pessoa: o total vira por pessoa × pagantes
   corpo.querySelectorAll('[data-pp]').forEach(el=>el.addEventListener('input',()=>{
-    const [k,T] = el.dataset.pp.split('|'), b = p.busca[k], v = el.value;
+    const [k,T] = el.dataset.pp.split('|'), b = p.busca[k], v = el.value; fixarTaxaUmTrecho(p, k);
     b['pp'+T] = v==='' ? '' : n(v); b['milhas'+T] = v==='' ? '' : String(Math.round(n(v)*pagantes(p))); b['auto'+T] = false;
     const t = corpo.querySelector(`[data-bind="busca.${k}.milhas${T}"]`); if(t) t.value = b['milhas'+T];
     salvar(); atualizarCalculos(p);
@@ -3317,6 +3419,10 @@ function ligarDetalhe(p){
     logar(p, `${PROG[k].nome} · ${tr}: milhas lidas tratadas como ${p.auto.totalMan[c]?'total do grupo':'por pessoa'}`);
     salvar(true); renderDetalhe(); }));
   corpo.querySelectorAll('[data-altoff]').forEach(ch=>ch.addEventListener('change',()=>{ p.busca[ch.dataset.altoff].altOff = !ch.checked; salvar(true); renderDetalhe(); }));
+  corpo.querySelectorAll('[data-abab]').forEach(bt=>bt.addEventListener('click',()=>{ const a = bt.dataset.abab, et = bt.closest('.conteudo'); abaBusca[p.id] = a;
+    et.querySelectorAll('[data-abab]').forEach(x=>{ x.classList.toggle('on', x===bt); x.setAttribute('aria-selected', x===bt); });
+    et.querySelector('.aba-sky').hidden = a!=='sky'; et.querySelector('.aba-prog').hidden = a==='sky'; }));
+  ligarE1(p, corpo);
   corpo.querySelectorAll('[data-flex]').forEach(bt=>bt.addEventListener('click',()=>usarDataFlex(p, bt.dataset.flex)));
   corpo.querySelectorAll('[data-printauto]').forEach(bt=>bt.addEventListener('click',async e=>{ e.stopPropagation(); const [k,T] = bt.dataset.printauto.split('|'); bt.disabled = true; bt.textContent = 'Tirando o print…'; await capturarPrint(p,k,T); bt.disabled = false; }));
   corpo.querySelectorAll('.auto-chip [data-diag]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const d = diagAuto[p.id]?.[b.dataset.diag]; if(!d) return; const [k,tr]=b.dataset.diag.split('|');
@@ -3380,6 +3486,7 @@ function atualizarCalculos(p){
     $('#boxLucro').classList.toggle('baixo', !!baixo);
     $('#avisoLucro').classList.toggle('on', !!baixo);
   }
+  atualizarE1(p);
   atualizarKpis(p);
   clearTimeout(atualizarCalculos._t);
   atualizarCalculos._t = setTimeout(()=>atualizarPrevias(p), 400);
@@ -3673,7 +3780,7 @@ const ACOES = {
     await ACOES.enviarCotacao(p, tinha ? 'renovacao' : 'cotacao', true);
   },
   buscarCia(p){ iniciarBuscaDinheiro(p); },
-  compararConc(p){ if(iniciarConc(p, true)) toast('Comparando na Vai de Promo e 123milhas…'); else if(p.concPendente){ salvar(true); atualizarFila(); } },
+  compararConc(p){ if(iniciarConc(p, true)) toast('Buscando no Skyscanner…'); else if(p.concPendente){ salvar(true); atualizarFila(); } },
   excluir(p){ excluirPedido(p.id); }
 };
 function marcarEnviadoMP(p){
@@ -4245,6 +4352,7 @@ function receberResultado(m){
   if(flexAtual && m.buscaId===flexAtual.id){ receberFlex(m); return; }
   if(concAtual && m.buscaId===concAtual.id){ receberConc(m); return; }
   if(String(m.buscaId||'').startsWith('print-')){ printDepoisDaBusca(m); return; }
+  if(String(m.programa||'').startsWith('conc-')){ receberConcTardio(m); return; }
   if(!busca || m.buscaId!==busca.id){ receberTardio(m); return; }
   const t = busca.tarefas[m.programa+'|'+m.trecho]; if(!t) return;
   Object.assign(t, {status:m.status, msg:m.msg, voos:(m.voos||[]).filter(v=>v && n(v.milhas)>0), diagnostico:m.diagnostico});
@@ -4360,7 +4468,7 @@ function htmlFila(){
   if(!at && !fx && !cc && !f.length) return '';
   const txt = at ? `<span class="gira"></span><span>Buscando <b>${esc(at.id)}</b>${f.length?` · mais ${f.length} na fila`:''}</span>`
     : fx ? `<span class="gira"></span><span>Datas vizinhas do <b>${esc(fx.id)}</b>${f.length?` · mais ${f.length} na fila`:''}</span>`
-    : cc ? `<span class="gira"></span><span>Comparando preços do <b>${esc(cc.id)}</b> na Vai de Promo e 123milhas${f.length?` · mais ${f.length} na fila`:''}</span>`
+    : cc ? `<span class="gira"></span><span>Buscando o <b>${esc(cc.id)}</b> no Skyscanner${f.length?` · mais ${f.length} na fila`:''}</span>`
     : `<span>${pausa?'Buscas pausadas':'Na fila'}: <b>${f.length}</b> pedido${f.length>1?'s':''}</span>`;
   return `${txt}<button type="button" class="btn peq" onclick="pausarBuscas(${!pausa})">${pausa?'Retomar buscas':'Pausar buscas'}</button>`;
 }
@@ -4534,13 +4642,19 @@ function receberTardio(m){
 
 /* ---------- comparativo com a Vai de Promo e a 123milhas: para saber se a cotação está mais cara ou mais barata ---------- */
 const CONC = {
-  vaidepromo: {nome:'Vai de Promo', url:(o,d,data,x)=>{ const [y,m,dd] = data.split('-'); return `https://www.vaidepromo.com.br/passagens-aereas/pesquisa/${o}${d}${y.slice(2)}${m}${dd}/${x.adultos||1}/${x.criancas||0}/${x.bebes||0}/Y/`; }},
-  '123milhas': {nome:'123milhas', url:(o,d,data,x)=>{ const [y,m,dd] = data.split('-'); return `https://123milhas.com/v2/busca?de=${o}&para=${d}&adultos=${x.adultos||1}&criancas=${x.criancas||0}&bebes=${x.bebes||0}&ida=${dd}-${m}-${y}&classe=3`; }}
+  skyscanner: {nome:'Skyscanner', url:(o,d,data,x)=>{ const [y,m,dd] = data.split('-'); return `https://www.skyscanner.com.br/transporte/passagens-aereas/${o.toLowerCase()}/${d.toLowerCase()}/${y.slice(2)}${m}${dd}/?${skyQuery(x, 0)}`; }}
 };
+function skyQuery(x, rtn){ const kids = [...Array(n(x.criancas)).fill(8), ...Array(n(x.bebes)).fill(1)]; return `adultsv2=${n(x.adultos)||1}&childrenv2=${kids.join('%7C')}&cabinclass=economy&preferdirects=false&outboundaltsenabled=false&inboundaltsenabled=false&rtn=${rtn}`; }
+// ida e volta juntas no Skyscanner (só para abrir e conferir; volta de outro aeroporto abre os dois trechos)
+function urlSkyIdaVolta(p){
+  const x = p.passageiros||{}, f = d => { const [y,m,dd] = d.split('-'); return y.slice(2)+m+dd; };
+  if(p.tipo!=='ida_volta' || !p.dataVolta || voltaDe(p)!==p.destino.iata || voltaPara(p)!==p.origem.iata) return null;
+  return `https://www.skyscanner.com.br/transporte/passagens-aereas/${p.origem.iata.toLowerCase()}/${p.destino.iata.toLowerCase()}/${f(p.dataIda)}/${f(p.dataVolta)}/?${skyQuery(x, 1)}`;
+}
 let concAtual = null;   // {id, pedidoId, tarefas:{'site|trecho':{site,trecho,status,msg,voos,url}}}
-const extensaoConcOk = () => { if(!extensaoVersao) return false; const [a,b] = extensaoVersao.split('.').map(Number); return a>1 || (a===1 && b>=9); };
+const extensaoConcOk = () => { if(!extensaoVersao) return false; const [a] = extensaoVersao.split('.').map(Number); return a>=2; };
 function iniciarConc(p, manual){
-  if(!p || !extensaoAtiva || !extensaoConcOk()){ if(manual) toast('Para comparar com a Vai de Promo e a 123milhas, atualize a extensão no Chrome (versão 1.9).'); return false; }
+  if(!p || !extensaoAtiva || !extensaoConcOk()){ if(manual) toast('Para buscar no Skyscanner, instale a extensão 2.0 no Chrome.'); return false; }
   if(autoAtual || flexAtual || concAtual){ if(manual) toast('Termina a busca que está rodando e já compara.'); if(manual) p.concPendente = true; return false; }
   if(!p.dataIda || p.dataIda < hojeISO() || !/^[A-Z]{3}$/.test(p.origem?.iata||'') || !/^[A-Z]{3}$/.test(p.destino?.iata||'')) { if(manual) toast('O pedido precisa de origem, destino e data de ida futura.'); return false; }
   const x = p.passageiros||{}, trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
@@ -4549,11 +4663,11 @@ function iniciarConc(p, manual){
   for(const [tr,o,d,data] of trechos) for(const s in CONC){
     const url = CONC[s].url(o, d, data, x);
     tarefas[s+'|'+tr] = {site:s, trecho:tr, status:'buscando', voos:[], url};
-    envio.push({programa:'conc-'+s, trecho:tr, url, modo:'concorrente', fechar:true});
+    envio.push({programa:'conc-'+s, trecho:tr, url, modo:'concorrente', fechar:false});
   }
   delete p.concPendente;
   concAtual = {id:token(10), pedidoId:p.id, tarefas};
-  window.postMessage({tipo:'dcnp-buscar', buscaId:concAtual.id, pedidoId:p.id+'#conc', tarefas:envio}, '*');
+  window.postMessage({tipo:'dcnp-buscar', buscaId:concAtual.id, pedidoId:p.id+'#conc', tarefas:envio, espacar:false}, '*');
   atualizarFila(); if(abertoId===p.id) renderDetalheSeguro();
   const id = concAtual.id;
   setTimeout(()=>{ if(concAtual && concAtual.id===id) terminarConc(); }, 100000 + envio.length*5000);
@@ -4570,20 +4684,31 @@ function terminarConc(){
   const a = concAtual; concAtual = null; if(!a) return;
   const p = pedido(a.pedidoId);
   if(p){
-    p.concorrentes = {em:new Date().toISOString(), st:{}, voos:{}};
-    for(const [c,t] of Object.entries(a.tarefas)){
-      const ok = t.status==='ok' && t.voos.length;
-      // mesmo voo pode aparecer em várias tarifas: fica a mais barata de cada horário
-      const porVoo = {};
-      for(const v of t.voos){ const k = (v.cia||'')+'|'+v.saida+'|'+v.chegada; if(!porVoo[k] || n(v.preco)<n(porVoo[k].preco)) porVoo[k] = {cia:v.cia||'', voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:v.paradas??null, preco:n(v.preco)}; }
-      p.concorrentes.st[c] = {status: ok ? 'ok' : (t.status==='buscando' ? 'erro' : t.status), msg: ok ? '' : (t.status==='buscando' ? 'Sem resposta da aba' : t.msg || 'Sem preços'), url:t.url};
-      p.concorrentes.voos[c] = ok ? Object.values(porVoo).sort((x,y)=>x.preco-y.preco).slice(0,30) : [];
-    }
+    p.concorrentes = {em:new Date().toISOString(), st:{}, voos:{}, buscaId:a.id};
+    for(const [c,t] of Object.entries(a.tarefas)) guardarConc(p, c, t);
     salvar(true); if(abertoId===p.id) renderDetalheSeguro();
     const r = comparaConc(p), partes = r.sites.filter(s=>s.total).map(s=>`${s.nome} ${BRL(s.total)}`);
     if(partes.length) toast(`${p.id} · ${partes.join(' · ')}${r.nosso ? ' · você: '+BRL(r.nosso) : ''}`, {acao:{rotulo:'Abrir', fn:()=>abrirDetalhe(p.id)}});
   }
   atualizarFila(); setTimeout(agendarAuto, 1500);
+}
+function guardarConc(p, c, t){
+  const ok = t.status==='ok' && t.voos.length;
+  // mesmo voo pode aparecer em várias tarifas: fica a mais barata de cada horário
+  const porVoo = {};
+  for(const v of t.voos){ const k = (v.cia||'')+'|'+v.saida+'|'+v.chegada; if(!porVoo[k] || n(v.preco)<n(porVoo[k].preco)) porVoo[k] = {cia:v.cia||'', voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:v.paradas??null, escalas:(v.escalas||[]).slice(0,3), dur:v.dur??null, mais1:!!v.mais1, preco:n(v.preco), porPessoa:n(v.porPessoa)||null, ofertas:v.ofertas||null}; }
+  p.concorrentes.st[c] = {status: ok ? 'ok' : (t.status==='buscando' ? 'erro' : t.status), msg: ok ? '' : (t.status==='buscando' ? 'Sem resposta da aba' : t.msg || 'Sem preços'), url:t.url};
+  p.concorrentes.voos[c] = ok ? Object.values(porVoo).sort((x,y)=>x.preco-y.preco).slice(0,30) : [];
+}
+// a aba do Skyscanner pediu verificação e você resolveu: o resultado chega depois e entra no pedido
+function receberConcTardio(m){
+  const p = pedidos.find(x=>x.concorrentes?.buscaId===m.buscaId); if(!p) return false;
+  const c = String(m.programa||'').replace(/^conc-/,'')+'|'+m.trecho;
+  guardarConc(p, c, {status:m.status, msg:m.msg||'', voos:(m.voos||[]).filter(v=>v && n(v.preco)>0), url:p.concorrentes.st?.[c]?.url || m.url});
+  p.concorrentes.em = new Date().toISOString();
+  salvar(true); if(abertoId===p.id) atualizarConc(p);
+  if(m.status==='ok') toast(`${p.id}: Skyscanner lido (${m.trecho})`);
+  return true;
 }
 // valor da cotação sem a bagagem: a Vai de Promo e a 123milhas mostram a tarifa sem mala despachada
 function nossoSemBagagem(p){ const vc = valorCliente(p), bg = custoBagagem(p).total; if(!vc) return {valor:0, bag:0}; const bagC = bg ? Math.round(bg*(1+perc(p)/100)*100)/100 : 0; return {valor:Math.round((vc-bagC)*100)/100, bag:bagC}; }
@@ -4613,23 +4738,43 @@ function difConc(nosso, deles){
 }
 function htmlConc(p){
   const rodando = concAtual && concAtual.pedidoId===p.id;
-  const btn = `<button type="button" class="btn peq" data-acao="compararConc" ${rodando?'disabled':''}>${rodando?'<span class="gira"></span> Comparando…':(p.concorrentes?'Comparar de novo':'Comparar preços')}</button>`;
-  if(rodando || !p.concorrentes) return `<div class="conc-topo"><b>Vai de Promo e 123milhas</b>${btn}</div>
-    <p class="nota" style="margin:4px 0 0">${rodando ? 'Buscando o mesmo trecho nos dois sites (as abas fecham sozinhas)…' : extensaoConcOk() ? 'Busca o mesmo trecho nos dois sites para você ver se está cobrando mais caro ou mais barato. Roda sozinho depois da busca nos programas.' : 'Precisa da extensão 1.9 neste Chrome.'}</p>`;
-  const r = comparaConc(p);
-  const linhas = r.sites.map(s=>{
-    const ver = s.urls.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${s.urls.length>1?(i?'volta':'ida'):'ver no site'}</a>`).join(' · ');
-    if(!s.total) return `<div class="conc-lin"><div class="conc-nome">${esc(s.nome)}</div><div class="nota" style="margin:0">Não consegui ler (${esc(s.falta.join('; '))}) · ${ver}</div></div>`;
-    const det = s.linhas.map(l=>`${s.linhas.length>1?(l.T==='Ida'?'ida ':'volta '):''}${l.igual?'mesmo voo':'seu voo não apareceu, o mais barato do dia é'} ${esc(l.v.cia)} ${esc(l.v.saida)}→${esc(l.v.chegada)} ${BRL(l.v.preco)}`).join(' · ');
-    const menorDia = s.barato < s.total - 1 ? `<div class="nota" style="margin:2px 0 0">Mais barato do dia lá (outro horário): <b>${BRL(s.barato)}</b>${r.nosso ? ' · '+difConc(r.nosso, s.barato) : ''}</div>` : '';
-    return `<div class="conc-lin"><div class="conc-nome">${esc(s.nome)} <b>${BRL(s.total)}</b> ${r.nosso ? difConc(r.nosso, s.total) : ''}</div>
-      <div class="nota" style="margin:2px 0 0">${det} · no Pix, total · ${ver}</div>${menorDia}</div>`;
-  }).join('');
-  return `<div class="conc-topo"><b>Vai de Promo e 123milhas</b> <span class="nota" style="margin:0">buscado ${tempoDesde(r.em)}</span>${btn}</div>
-    ${r.nosso ? `<p class="nota" style="margin:4px 0 6px">Seu valor no Pix${r.bag ? ' sem a bagagem' : ''}: <b>${BRL(r.nosso)}</b>${r.bag ? ` (tirei ${BRL(r.bag)} de mala: lá a tarifa é sem mala despachada)` : ''}</p>` : `<p class="nota" style="margin:4px 0 6px">Preencha o valor da Milhas Plus para comparar.</p>`}
-    ${linhas}`;
+  if(rodando) return `<div class="conc-topo"><b>Skyscanner</b><span class="nota" style="margin:0"><span class="gira"></span> buscando o mesmo trecho…</span></div>`;
+  if(!p.concorrentes) return `<div class="conc-topo"><b>Skyscanner</b><span class="nota" style="margin:0">ainda não buscado</span><button type="button" class="btn peq" data-irsky>Ver na aba Skyscanner</button></div>`;
+  const r = comparaConc(p), s = r.sites[0];
+  return `<div class="conc-topo"><b>Skyscanner</b> ${s.barato ? `menor do dia <b>${BRL(s.barato)}</b>${r.nosso ? ' '+difConc(r.nosso, s.barato) : ''}` : `<span class="nota" style="margin:0">não consegui ler</span>`}<button type="button" class="btn peq" data-irsky>Ver na aba Skyscanner</button></div>`;
 }
-function atualizarConc(p){ const el = $('#concBox'); if(el) el.innerHTML = htmlConc(p); }
+function htmlSky(p){
+  const rodando = concAtual && concAtual.pedidoId===p.id, trs = trechosDe(p), x = p.passageiros||{};
+  const rota = trs.map(T=>`${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)} ${fmtDataCurta(T==='Ida'?p.dataIda:p.dataVolta)}`).join(' · ') + ' · ' + textoPax(p);
+  const urlIV = urlSkyIdaVolta(p), urls = p.concorrentes ? trs.map(T=>p.concorrentes.st?.['skyscanner|'+T.toLowerCase()]?.url).filter(Boolean) : trs.map(T=>CONC.skyscanner.url(T==='Ida'?p.origem.iata:voltaDe(p), T==='Ida'?p.destino.iata:voltaPara(p), T==='Ida'?p.dataIda:p.dataVolta, x));
+  const abrir = urlIV ? `<a class="btn peq" href="${esc(urlIV)}" target="_blank" rel="noopener">Abrir no Skyscanner</a>` : urls.map((u,i)=>`<a class="btn peq" href="${esc(u)}" target="_blank" rel="noopener">Abrir ${trs.length>1?(i?'volta':'ida'):'no Skyscanner'}</a>`).join('');
+  const btn = extensaoConcOk() ? `<button type="button" class="btn pri peq" data-acao="compararConc" ${rodando?'disabled':''}>${rodando ? '<span class="gira"></span> Buscando…' : p.concorrentes ? 'Buscar de novo' : 'Buscar no Skyscanner'}</button>` : '';
+  const cab = `<div class="sky-cab"><div><div class="e1-l">Mesmo trecho do pedido</div><b class="sky-rota">${esc(rota)}</b></div>${p.concorrentes && !rodando ? `<span class="e1-fonte site">buscado ${tempoDesde(p.concorrentes.em)}</span>` : ''}<div class="sky-acoes">${abrir}${btn}</div></div>`;
+  const nota = `<p class="nota sky-nota">O Skyscanner não deixa ser aberto dentro de outra página. Quem busca é a extensão: abre o Skyscanner numa aba em segundo plano, lê os resultados e traz para cá. ${extensaoConcOk() ? 'Se o Skyscanner pedir verificação ("sou humano"), abra a aba, confirme, e o resultado chega aqui sozinho.' : '<b>Instale a extensão 2.0 no Chrome</b> para a busca rodar daqui; sem ela, use "Abrir no Skyscanner".'} Os preços são em dinheiro, sem mala despachada, para ${pagantes(p)} pagante${pagantes(p)>1?'s':''}${n(x.bebes)?' (o bebê de colo pode variar)':''}.</p>`;
+  if(rodando) return cab + `<div class="sky-vazio"><span class="gira"></span> Buscando ${trs.length>1?'a ida e a volta':'o trecho'} no Skyscanner… leva cerca de 1 minuto.</div>` + nota;
+  if(!p.concorrentes) return cab + `<div class="sky-vazio">${extensaoConcOk() ? 'Ainda não buscado. A busca roda sozinha depois da busca nos programas, ou clique em "Buscar no Skyscanner".' : 'Ainda não buscado.'}</div>` + nota;
+  const r = comparaConc(p), s = r.sites[0], c = p.concorrentes;
+  const resumo = `<div class="sky-boxes">
+      <div class="sky-box"><div class="e1-l">Menor preço no Skyscanner</div><b>${s.barato ? BRL(s.barato) : '—'}</b><small>${s.barato ? (trs.length>1 ? 'ida + volta, mais baratos do dia' : 'mais barato do dia') : esc(s.falta.join('; '))}</small></div>
+      <div class="sky-box"><div class="e1-l">Sua cotação (Pix${r.bag?', sem a mala':''})</div><b>${r.nosso ? BRL(r.nosso) : '—'}</b><small>${p.escolhido ? esc(nomeProgramas(p)) : 'escolha um programa'}${r.bag ? ` · tirei ${BRL(r.bag)} de mala` : ''}</small></div>
+      ${(()=>{ if(!s.barato || !r.nosso) return `<div class="sky-box"><div class="e1-l">Comparação</div><b>—</b><small>falta ${!r.nosso ? 'o valor da cotação' : 'o preço do Skyscanner'}</small></div>`;
+        const d = Math.round((s.barato - r.nosso)*100)/100, pct = Math.round(Math.abs(d)/s.barato*100);
+        return d >= 0 ? `<div class="sky-box ok"><div class="e1-l">Cliente economiza</div><b>${BRL(d)}</b><small>${pct}% a menos que o Skyscanner</small></div>` : `<div class="sky-box caro"><div class="e1-l">Você está mais caro</div><b>${BRL(-d)}</b><small>${pct}% acima do Skyscanner</small></div>`; })()}
+    </div>`;
+  const lista = trs.map(T=>{
+    const ch = 'skyscanner|'+T.toLowerCase(), voos = c.voos?.[ch] || [], st = c.st?.[ch], b = bT(p,T);
+    if(!voos.length) return `<div class="sky-tr"><h4>${T} <small>${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</small></h4><div class="sky-vazio">${esc(st?.msg || 'Sem resultado')}${st?.status==='verificar' && extensaoAtiva ? ` <button type="button" class="btn peq pri" data-skyfoco="${T.toLowerCase()}">Abrir a aba do Skyscanner</button>` : st?.url ? ` · <a href="${esc(st.url)}" target="_blank" rel="noopener">ver no site</a>` : ''}</div></div>`;
+    const rapido = voos.reduce((m,v)=>{ const d = v.dur ?? duracaoVoo(v); return d!=null && (m==null || d < m.d) ? {v, d} : m; }, null);
+    return `<div class="sky-tr"><h4>${T} <small>${T==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)} · ${fmtDataCurta(T==='Ida'?p.dataIda:p.dataVolta)}</small></h4>
+      ${voos.slice(0,8).map((v,i)=>{ const d = v.dur ?? duracaoVoo(v), seu = b['saida'+T] && v.saida===b['saida'+T] && (!b['chegada'+T] || v.chegada===b['chegada'+T]);
+        const tag = i===0 ? '<span class="sky-tag">MAIS BARATO</span>' : rapido && rapido.v===v ? '<span class="sky-tag az">MAIS RÁPIDO</span>' : '';
+        return `<div class="sky-v ${i===0?'barato':''} ${seu?'seu':''}"><span class="sky-tg">${tag}${seu?'<span class="sky-tag seu">SEU VOO</span>':''}</span><b class="sky-cia">${esc(v.cia||'—')}</b>
+          <span><b class="sky-h">${esc(v.saida)} → ${esc(v.chegada)}${v.mais1?' <span class="mais1">+1</span>':''}</b><small>${[v.paradas===0?'Direto':v.paradas?`${v.paradas} parada${v.paradas>1?'s':''}${(v.escalas||[]).length?' ('+v.escalas.map(esc).join(', ')+')':''}`:'', d!=null?fmtMin(d):''].filter(Boolean).join(' · ')}</small></span>
+          <span class="sky-p"><b>${BRL(v.preco)}</b><small>${v.porPessoa && pagantes(p)>1 ? `${BRL(v.porPessoa)} por pessoa` : 'total'}${v.ofertas?` · ${esc(v.ofertas)}`:''}</small></span></div>`; }).join('')}
+    </div>`; }).join('');
+  return cab + resumo + `<div class="sky-lista">${lista}</div>` + nota;
+}
+function atualizarConc(p){ const el = $('#concBox'); if(el) el.innerHTML = htmlConc(p); const sk = $('#skyBox'); if(sk && !sk.contains(document.activeElement)) sk.innerHTML = htmlSky(p); }
 
 /* ---------- datas flexíveis (melhoria 7): 3 dias antes e 3 depois, só no programa mais barato ---------- */
 function somarDias(iso, d){ const [a,m,dd] = iso.split('-').map(Number), x = new Date(Date.UTC(a,m-1,dd+d)); return x.toISOString().slice(0,10); }
@@ -4791,10 +4936,11 @@ function aplicarVooAuto(p, k, T, v, manual){
   const b = p.busca[k];
   if(!manual && b['milhas'+T] && !b['auto'+T]) return;   // não passa por cima do que você digitou
   const pag = pagantes(p), tot = n(v.milhas) * pag;
+  fixarTaxaUmTrecho(p, k);
   aplicarParadas(b, T, v);
   b['voo'+T] = v.voo || ''; b['saida'+T] = v.saida || ''; b['chegada'+T] = v.chegada || '';
   b['vooFalta'+T] = !v.voo;
-  b['milhas'+T] = String(tot); b['auto'+T] = true; b['pp'+T] = n(v.milhas);
+  b['milhas'+T] = String(tot); b['auto'+T] = true; b['pp'+T] = n(v.milhas); b['fonte'+T] = 'site';
   b['assentos'+T] = v.assentos ?? null;
   // taxas: a lida no site (por pessoa × passageiros); o que você digitou não é trocado
   if(!b.taxasMan){
@@ -4848,21 +4994,72 @@ function aplicarCaptura(c, p){
   capturasEspera.delete(c.id);
   if(T==='Volta' && p.tipo!=='ida_volta'){ toast(`O ${p.id} é só de ida. A captura da volta foi ignorada.`); capturasAplicadas.add(c.id); window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); mostrarBarraCaptura(); return; }
   const b = p.busca[c.programa];
-  b['print'+T] = c.print;
-  if(c.paradas!=null || (c.escalas && c.escalas.length)) aplicarParadas(b, T, c);
-  else if(c.voo && c.voo!==(b['voo'+T]||'')) aplicarParadas(b, T, {});   // outro voo sem paradas lidas
-  if(c.voo) b['voo'+T] = c.voo;
-  if(c.saida) b['saida'+T] = c.saida;
-  if(c.chegada) b['chegada'+T] = c.chegada;
-  if(c.milhas) b['milhas'+T] = c.milhas;
-  if(c.taxas!=='' && c.taxas!=null){ b['taxas'+T] = c.taxas; b.taxas = Math.round((n(b.taxasIda)+n(b.taxasVolta))*100)/100; }
-  b.semDisp = false;
-  capturasAplicadas.add(c.id);
+  // o trecho já tem dados: pergunta antes de trocar pelo que veio com o print
+  const difs = (n(b['milhas'+T]) || b['saida'+T]) ? difsCaptura(p, b, T, c) : [];
+  if(difs.length){
+    if($('#modalFundo').classList.contains('aberto')){ capturasEspera.set(c.id, c); mostrarBarraCaptura(); return; }
+    perguntarCaptura(c, p, T, difs); return;
+  }
+  aplicarCamposCaptura(p, b, T, c, null);
+  fecharCaptura(c, p, `${PROG[c.programa].nome} · ${T.toLowerCase()} recebida no ${p.id}`);
+}
+function fecharCaptura(c, p, msg){
+  capturasAplicadas.add(c.id); capturasEspera.delete(c.id);
   salvar(true);
   if(abertoId===p.id) renderDetalhe();
   window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*');
-  bip(); toast(`${PROG[c.programa].nome} · ${T.toLowerCase()} recebida no ${p.id}`);
+  if(msg){ bip(); toast(msg); }
   mostrarBarraCaptura();
+}
+function difsCaptura(p, b, T, c){
+  const r = [], pag = pagantes(p);
+  const add = (id, rot, agora, novo) => { if(novo==='' || novo==null) return; if(String(agora||'')!==String(novo)) r.push({id, rot, agora: agora==='' || agora==null ? '—' : agora, novo}); };
+  if(c.data) add('data', 'Data', fmtDataCurta(dataProg(p, c.programa, T)), fmtDataCurta(c.data));
+  add('saida', 'Sai', b['saida'+T], c.saida);
+  add('chegada', 'Chega', b['chegada'+T], c.chegada);
+  if(c.paradas!=null || (c.escalas && c.escalas.length)){ const q = paradasVoo(c); add('par', 'Paradas (onde e espera)', textoParadas(b,T), q==null ? '' : resumoParadas(q, escalasVoo(c))); }
+  if(c.milhas){ const ppA = n(b['pp'+T]) || (n(b['milhas'+T]) ? Math.round(n(b['milhas'+T])/pag) : ''), ppN = Math.round(n(c.milhas)/pag); add('mil', 'Milhas por pessoa', ppA ? MIL(ppA) : '', MIL(ppN)); }
+  if(c.taxas!=='' && c.taxas!=null){ const t = taxaTrechoE1(p, c.programa, T); add('tx', `Taxa da ${T.toLowerCase()}`, t.v==='' ? '' : BRL(t.v), BRL(n(c.taxas))); }
+  return r;
+}
+function aplicarCamposCaptura(p, b, T, c, sel){
+  fixarTaxaUmTrecho(p, c.programa);
+  const quer = id => !sel || sel.has(id);
+  if(c.print) b['print'+T] = c.print;
+  if(quer('par') && (c.paradas!=null || (c.escalas && c.escalas.length))) aplicarParadas(b, T, c);
+  else if(!sel && c.voo && c.voo!==(b['voo'+T]||'')) aplicarParadas(b, T, {});   // outro voo sem paradas lidas
+  if(c.voo && (!sel || sel.has('saida') || sel.has('chegada'))) b['voo'+T] = c.voo;
+  if(c.saida && quer('saida')) b['saida'+T] = c.saida;
+  if(c.chegada && quer('chegada')) b['chegada'+T] = c.chegada;
+  if(c.data && quer('data')){ const ped = T==='Ida' ? p.dataIda : p.dataVolta; if(c.data===ped) delete b['data'+T]; else b['data'+T] = c.data; b.datasAlt = datasAltDe(p, c.programa); }
+  if(c.milhas && quer('mil')){ b['milhas'+T] = String(c.milhas); b['pp'+T] = Math.round(n(c.milhas)/pagantes(p)); b['auto'+T] = false; }
+  if(c.taxas!=='' && c.taxas!=null && quer('tx')){
+    const outro = T==='Ida' ? 'Volta' : 'Ida';
+    if(p.tipo==='ida_volta' && (b['taxas'+outro]==='' || b['taxas'+outro]==null)){ const est = taxaTrechoE1(p, c.programa, outro); if(est.est) b['taxas'+outro] = est.v; }
+    b['taxas'+T] = n(c.taxas); b['taxasFonte'+T] = 'site';
+    b.taxas = Math.round(trechosDe(p).reduce((s,t)=>s+n(b['taxas'+t]),0)*100)/100;
+  }
+  b.semDisp = false;
+  if(!sel || sel.size) b['fonte'+T] = 'print';
+}
+function perguntarCaptura(c, p, T, difs){
+  const b = p.busca[c.programa];
+  abrirModal(`<h2>Substituir pelos dados do print?</h2>
+    <div class="cap-grade">
+      <figure class="cap-print">${c.print ? `<img src="${c.print}" alt="Print recebido">` : '<div class="nota">sem imagem</div>'}<figcaption class="nota">${esc(PROG[c.programa].nome)} · ${T.toLowerCase()} · ${difs.length} campo${difs.length>1?'s':''} diferente${difs.length>1?'s':''} do que está no painel</figcaption></figure>
+      <div>
+        <p class="nota" style="margin:0 0 8px">Já existem dados nessa ${T.toLowerCase()}. Marque o que deve trocar; o resto fica como está.</p>
+        <table class="cap-tab"><thead><tr><th>Campo</th><th>Agora</th><th>No print</th><th>Trocar</th></tr></thead>
+        <tbody>${difs.map(d=>`<tr><td><b>${esc(d.rot)}</b></td><td>${esc(d.agora)}</td><td class="novo">${esc(d.novo)}</td><td><input type="checkbox" data-capsel="${d.id}" checked aria-label="Trocar ${esc(d.rot)}"></td></tr>`).join('')}</tbody></table>
+      </div>
+    </div>
+    <div class="rodape"><button type="button" class="btn pri" id="capSub">Substituir o que marquei</button><button type="button" class="btn" id="capPrint">Só guardar o print</button><button type="button" class="btn" id="capCancel">Descartar</button></div>`);
+  $('#capSub').onclick = ()=>{ const sel = new Set([...$('#modal').querySelectorAll('[data-capsel]:checked')].map(x=>x.dataset.capsel)); fecharModal();
+    aplicarCamposCaptura(p, b, T, c, sel);
+    if(sel.size) logar(p, `${PROG[c.programa].nome} · ${T.toLowerCase()}: trocado pelo print (${difs.filter(d=>sel.has(d.id)).map(d=>d.rot.toLowerCase()).join(', ')})`);
+    fecharCaptura(c, p, sel.size ? `${PROG[c.programa].nome} · ${T.toLowerCase()}: ${sel.size} campo${sel.size>1?'s':''} trocado${sel.size>1?'s':''} pelo print` : 'Print guardado; dados mantidos'); };
+  $('#capPrint').onclick = ()=>{ fecharModal(); if(c.print) b['print'+T] = c.print; fecharCaptura(c, p, 'Print guardado; dados mantidos'); };
+  $('#capCancel').onclick = ()=>{ fecharModal(); fecharCaptura(c, p, ''); toast('Captura descartada'); };
 }
 function mostrarBarraCaptura(modo){
   const bar = $('#barraCaptura');
@@ -6073,7 +6270,7 @@ function htmlEscolhaA(p){
   const tag = !atual ? (misto ? 'MELHOR COMBINAÇÃO' : 'MAIS BARATO') : ehMelhor ? 'ESCOLHIDO · O MAIS BARATO' : 'ESCOLHIDO';
   const dataT = t => t==='Ida' ? p.dataIda : p.dataVolta;
   const blocoT = t => { const k = mostra[t], b = p.busca[k]||{}, ct = custoTrecho(p,k,t), d = durTotal({...p, combo:mostra, escolhido:mostra.Ida}, t);
-    return `<div><div class="esc-lbl">${t} · ${fmtDataCurta(dataT(t))} · ${esc(PROG[k].nome)}</div><div class="esc-big">${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}</div>
+    return `<div><div class="esc-lbl">${t} · ${fmtDataCurta(b['data'+t] || dataT(t))} · ${esc(PROG[k].nome)}</div><div class="esc-big">${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}</div>
       <div class="esc-sub">${[b['voo'+t], d!=null?fmtMin(d):'', textoParadas(b,t), misto && ct ? BRL(ct.valor) : ''].filter(Boolean).map(esc).join(' · ')}</div></div>`; };
   const avisoMelhor = atual && !ehMelhor ? `<div class="esc-aviso"><span>A mais barata seria <b>${esc(T.length===2 && m.sel.Ida!==m.sel.Volta ? `ida ${um(m.sel.Ida)} + volta ${um(m.sel.Volta)}` : um(m.sel.Ida))}</b>, ${BRL(Math.round((c.valor - m.c.valor)*100)/100)} a menos.</span> <button type="button" class="btn peq pri" data-usarsel="${m.sel.Ida}|${m.sel.Volta||''}">Usar a mais barata</button></div>` : '';
   const ecoMisto = misto && sozinho && sozinho.valor > c.valor ? `<span class="esc-chip ok">${BRL(Math.round((sozinho.valor - c.valor)*100)/100)} mais barato que só ${esc(PROG[sozinho.k].nome)}</span>` : '';
@@ -6096,6 +6293,228 @@ function htmlEscolhaA(p){
   const trechos = `<div class="esc-trocar"><h4>Trocar ${T.length===2?'ida ou volta':'o voo'} <small>o total em cima muda na hora</small></h4>
     <div class="esc-cols t${T.length}">${T.map(t=>`<div class="esc-col"><div class="esc-col-cab"><b>${t}</b> <span>${fmtDataCurta(dataT(t))} · ${t==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</span></div>${linhas(t)}</div>`).join('')}</div></div>`;
   return topo + trechos;
+}
+
+/* =========================================================
+   PROGRAMAS · uma tabela por programa (ida e volta lado a lado)
+   ========================================================= */
+const ROT_PAR = ['Direto','1','2','3'];
+function dataProg(p, k, T){ return p.busca[k]?.['data'+T] || (T==='Ida' ? p.dataIda : p.dataVolta) || ''; }
+// taxa de cada trecho: digitada/lida; senão sai do total (metade, ou tudo se o programa só tem um trecho)
+function taxaTrechoE1(p, k, T){
+  const b = p.busca[k]||{}, v = b['taxas'+T];
+  if(v!=='' && v!=null) return {v:n(v), est:false};
+  if(b.taxas==='' || b.taxas==null) return {v:'', est:false};
+  if(p.tipo!=='ida_volta') return {v:n(b.taxas), est:false};
+  const outro = T==='Ida' ? 'Volta' : 'Ida';
+  if(!n(b['milhas'+outro]) && n(b['milhas'+T])) return {v:n(b.taxas), est:false};
+  if(!n(b['milhas'+T])) return {v:'', est:false};
+  return {v:Math.round(n(b.taxas)/2*100)/100, est:true};
+}
+function fonteE1(p, k, T){
+  const b = p.busca[k]||{};
+  if(!n(b['milhas'+T]) && !b['saida'+T]) return null;
+  const f = b['fonte'+T] || (b['auto'+T] ? 'site' : 'mao');
+  return {site:{c:'site', t:'lido do site'}, print:{c:'print', t:'do print'}, mao:{c:'mao', t:'à mão'}}[f] || {c:'mao', t:'à mão'};
+}
+function contaE1(p, k){
+  const b = p.busca[k]||{}, pag = pagantes(p), T2 = trechosDe(p);
+  const pps = T2.map(T=>n(b['pp'+T]) || (n(b['milhas'+T]) ? Math.round(n(b['milhas'+T])/pag) : 0));
+  const tot = totalMilhas(p,k), tx = n(b.taxas) + bebeReais(p,k);
+  if(!tot) return `<span class="e1-nota">Digite as milhas por pessoa e a taxa de cada trecho.</span>`;
+  const bm = bebeMilhas(p,k);
+  const conta = `<b>${pag} passageiro${pag>1?'s':''}</b> × (${pps.map(x=>x?MIL(x):'0').join(' + ')})${bm?` + bebê ${MIL(bm)}`:''} = <b>${MIL(tot)} milhas</b> + <b>${BRL(tx)}</b> de taxas`;
+  const falta = T2.filter(T=>!n(b['milhas'+T]));
+  const aviso = p.tipo==='ida_volta' && falta.length===1 ? `<span class="e1-falta">⚠️ Falta a milhagem da ${falta[0].toLowerCase()}: a ${esc(PROG[k].nome)} só entra na comparação com os dois trechos.</span>` : '';
+  return `<span>${conta}</span>${aviso}`;
+}
+function custoTxtE1(p, k){
+  const b = p.busca[k]||{};
+  if(b.semDisp) return {l:'Sem disponibilidade', v:'—'};
+  const c = custoMP(p,k), T2 = trechosDe(p);
+  if(!c) return {l:'Custo Milhas Plus', v: totalMilhas(p,k) ? 'sem tabela' : '—'};
+  if(T2.length===2 && !progCompleto(p,k)){ const T = T2.find(t=>n(b['milhas'+t])); return {l:`Só a ${T.toLowerCase()}`, v:BRL(c.valor)}; }
+  return {l:`Custo Milhas Plus · ${BRL(c.milheiro)}/mil`, v:BRL(c.valor)};
+}
+// taxa total digitada quando só um trecho tinha voo: ela é toda desse trecho. Fixa antes de o outro trecho ganhar milhas
+function fixarTaxaUmTrecho(p, k){
+  const b = p.busca[k]; if(!b || p.tipo!=='ida_volta' || b.taxas==='' || b.taxas==null) return;
+  const vaz = t => b['taxas'+t]==='' || b['taxas'+t]==null;
+  if(!vaz('Ida') || !vaz('Volta')) return;
+  const com = trechosDe(p).filter(t=>n(b['milhas'+t]));
+  if(com.length===1){ b['taxas'+com[0]] = n(b.taxas); b['taxas'+(com[0]==='Ida'?'Volta':'Ida')] = ''; }
+}
+function htmlProgE1(p, k, meta, x){
+  fixarTaxaUmTrecho(p, k);
+  const b = p.busca[k], T2 = trechosDe(p), cmp = x.cmp, ct = custoTxtE1(p,k);
+  const rotaT = T => T==='Ida' ? `${p.origem.iata} → ${p.destino.iata}` : `${voltaDe(p)} → ${voltaPara(p)}`;
+  const linha = T => {
+    const tr = T.toLowerCase(), pag = pagantes(p);
+    const np = b['paradas'+T], q = (np===''||np==null) ? null : n(np), es = b['escalas'+T]||[];
+    const pp = n(b['pp'+T]) || (n(b['milhas'+T]) ? Math.round(n(b['milhas'+T])/pag) : '');
+    const tx = taxaTrechoE1(p,k,T), f = fonteE1(p,k,T), stc = x.chip(tr, '');
+    const escal = q ? `<div class="e1-esc">${Array.from({length:q},(_,i)=>{ const e = es[i]||{}; return `<div class="e1-esc-l"><input data-esc="${k}|${T}|${i}|local" value="${esc(e.local||'')}" placeholder="onde (GRU)" aria-label="Parada ${i+1}: aeroporto" class="${e.local?'':'falta'}"><input data-esc="${k}|${T}|${i}|min" value="${esc(e.esperaTxt ?? (e.min!=null?fmtMin(e.min):''))}" placeholder="espera (1h30)" aria-label="Parada ${i+1}: espera" class="${e.min!=null?'':'falta'}"></div>`; }).join('')}</div>` : '';
+    const extra = x.opcoes(T);
+    return `<div class="e1-linha" data-e1tr="${k}|${T}">
+      <div class="e1-nome"><b>${T}</b><small>${rotaT(T)}</small>${f ? `<span class="e1-fonte ${f.c}">${f.t}</span>` : ''}${stc && (!f || p.auto?.st?.[k+'|'+tr]?.status!=='ok') ? `<span class="e1-st">${stc}</span>` : ''}</div>
+      <label class="e1-c"><span class="e1-l">Data</span><input type="date" data-e1data="${k}|${T}" value="${esc(dataProg(p,k,T))}" class="${b['data'+T] && b['data'+T]!==(T==='Ida'?p.dataIda:p.dataVolta) ? 'difer' : ''}"></label>
+      <label class="e1-c"><span class="e1-l">Sai</span><input type="time" data-bind="busca.${k}.saida${T}" value="${esc(b['saida'+T]||'')}" class="${b['saida'+T]?'':'vazio'}"></label>
+      <label class="e1-c"><span class="e1-l">Chega</span><input type="time" data-bind="busca.${k}.chegada${T}" value="${esc(b['chegada'+T]||'')}" class="${b['chegada'+T]?'':'vazio'}"><span class="e1-dur" data-e1dur="${k}|${T}">${durE1(b,T)}</span></label>
+      <div class="e1-c"><span class="e1-l">Paradas</span><div class="e1-seg" role="group" aria-label="Paradas da ${tr}">${ROT_PAR.map((r,i)=>`<button type="button" class="${q===i?'on':''}" data-e1par="${k}|${T}|${i}" aria-pressed="${q===i}">${r}</button>`).join('')}</div>${escal}</div>
+      <label class="e1-c"><span class="e1-l">Milhas / pessoa</span><input type="number" min="0" step="100" inputmode="numeric" data-pp="${k}|${T}" value="${esc(pp)}" placeholder="0" class="${pp?'':'vazio'}"></label>
+      <label class="e1-c"><span class="e1-l">Taxa (total)</span><input type="number" min="0" step="0.01" inputmode="decimal" data-e1tx="${k}|${T}" value="${tx.v==='' ? '' : n(tx.v).toFixed(2)}" placeholder="0,00" class="${tx.est?'est':''} ${tx.v===''&&n(b['milhas'+T])?'vazio':''}" title="${tx.est?'Metade da taxa total digitada: confira e corrija se precisar':''}">${tx.est?'<span class="e1-dur">metade do total</span>':''}</label>
+      ${extra ? `<div class="e1-extra">${extra}</div>` : ''}
+    </div>`;
+  };
+  const prints = T2.map(T=>`<div class="colar e1-print" tabindex="0" data-colar="${k}|${T}" aria-label="Print da ${T.toLowerCase()} em ${meta.nome}">
+      ${b['print'+T] ? `<img src="${b['print'+T]}" alt="Print da ${T.toLowerCase()} ${meta.nome}"><button type="button" class="tirar" data-tirar="${k}|${T}" aria-label="Remover print">✕</button>` : `<span><b>📷 Print da ${T.toLowerCase()}</b><br>cole (Ctrl+V) ou toque</span>`}
+    </div><input type="file" accept="image/*" hidden data-arquivo="${k}|${T}">
+    ${extensaoAtiva && extensaoV18() && b['saida'+T] ? `<button type="button" class="btn peq" data-printauto="${k}|${T}">📸 Print do site${b['print'+T]?' de novo':''}</button>` : ''}`).join('');
+  const avisos = [htmlIdade(p,k),
+    ...(p.flex?.k===k ? T2.map(T=>{ const sg = sugestaoFlex(p,T); return sg ? `<div class="flex-sug"><span>📅 <b>${T}:</b> ${esc(sg.txt)}</span><button type="button" class="btn peq pri" data-flex="${T}">Usar esta data</button></div>` : ''; }) : []),
+    flexAtual && flexAtual.pedidoId===p.id && flexAtual.k===k ? '<div class="flex-sug"><span class="gira"></span> Buscando as datas vizinhas (±3 dias)…</div>' : '',
+    qBebes(p) && trechosComVoo(p,k).length ? `<p class="nota bebe-nota">${bebeFalta(p,k) ? `⚠ Bebê de colo: cadastre quanto a ${PROG[k].nome} cobra em Configurações → Regras da busca.` : `Bebê de colo: ${[bebeMilhas(p,k)?MIL(bebeMilhas(p,k))+' milhas':'', bebeReais(p,k)?BRL(bebeReais(p,k)):''].filter(Boolean).join(' + ')||'sem custo'} já somado ao total.`}</p>` : ''].filter(Boolean).join('');
+  const tab = cfg.tabelaMP[k]?.tipo==='opcoes' && opcoesMP(k).length ? `<label class="e1-tab">Tabela da Milhas Plus <select data-bind="busca.${k}.tabela">${opcoesMP(k).map((o,i)=>`<option ${(b.tabela ? o.nome===b.tabela : i===0)?'selected':''}>${esc(o.nome)}</option>`).join('')}</select></label>` : '';
+  return `<section class="e1-prog ${b.semDisp?'semdisp':''} ${x.buscandoProg?'buscando':''} ${x.menor===k?'melhor':''}" data-prog="${k}">
+    <div class="e1-cab" style="background:${meta.cor}">
+      <h4>${meta.nome}</h4>
+      <label class="e1-pill">opera <select data-bind="busca.${k}.cia" aria-label="Cia que opera">${['GOL','LATAM','Azul','Outra'].map(c=>`<option ${b.cia===c?'selected':''}>${c}</option>`).join('')}</select></label>
+      <span class="e1-selo" data-selo="${k}" ${x.menor===k?'':'hidden'}>${textoSelo(cmp)}</span>
+      <label class="e1-pill"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}> Sem disponibilidade</label>
+      <a class="e1-pill e1-link" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener">Abrir no site</a>
+      <div class="e1-custo"><small data-e1custol="${k}">${esc(ct.l)}</small><b data-e1custo="${k}">${ct.v}</b></div>
+    </div>
+    <div class="e1-corpo">
+      ${avisos ? `<div class="e1-avisos">${avisos}</div>` : ''}
+      <div class="e1-grade">
+        <div class="e1-linhas"><div class="e1-cabcol" aria-hidden="true"><span></span><span>Data</span><span>Sai</span><span>Chega</span><span>Paradas</span><span>Milhas / pessoa</span><span>Taxa (total)</span></div>${T2.map(linha).join('')}</div>
+        <div class="e1-prints">${prints}</div>
+      </div>
+      <div class="e1-rodape"><div class="e1-conta" data-e1conta="${k}">${contaE1(p,k)}</div>${tab}</div>
+    </div>
+  </section>`;
+}
+function durE1(b, T){
+  const s = b['saida'+T], c = b['chegada'+T]; if(!s || !c) return '';
+  const d = duracaoVoo({saida:s, chegada:c});
+  return `${c < s ? '<span class="mais1">+1 dia</span> ' : ''}${d!=null ? fmtMin(d) : ''}`;
+}
+function atualizarE1(p){
+  const corpo = $('#detCorpo'); if(!corpo) return;
+  for(const k in PROG){
+    const b = p.busca[k]; if(!b) continue;
+    const c = corpo.querySelector(`[data-e1conta="${k}"]`); if(c) c.innerHTML = contaE1(p,k);
+    const ct = custoTxtE1(p,k);
+    const cu = corpo.querySelector(`[data-e1custo="${k}"]`); if(cu) cu.textContent = ct.v;
+    const cl = corpo.querySelector(`[data-e1custol="${k}"]`); if(cl) cl.textContent = ct.l;
+    for(const T of trechosDe(p)){ const d = corpo.querySelector(`[data-e1dur="${k}|${T}"]`); if(d) d.innerHTML = durE1(b,T); }
+  }
+  clearTimeout(atualizarE1._t);
+  atualizarE1._t = setTimeout(()=>atualizarEscolhaA(p), 250);
+}
+function atualizarEscolhaA(p){
+  const w = $('#detCorpo')?.querySelector('[data-escolha]'); if(!w || abertoId!==p.id) return;
+  if(w.contains(document.activeElement)) return;
+  w.innerHTML = htmlEscolhaA(p);
+  ligarEscolhaA(p, w);
+}
+function ligarEscolhaA(p, raiz){
+  raiz.querySelectorAll('[data-sel]').forEach(r=>r.addEventListener('change',()=>{ const [T,k] = r.dataset.sel.split('|'), a = selAtual(p) || melhorSel(p)?.sel || {}; aplicarSel(p, {...a, [T]:k}); }));
+  raiz.querySelectorAll('[data-usarsel]').forEach(b=>b.addEventListener('click',()=>{ const [i,v] = b.dataset.usarsel.split('|'); aplicarSel(p, v ? {Ida:i, Volta:v} : {Ida:i}); }));
+  raiz.querySelectorAll('[data-verprints]').forEach(b=>b.addEventListener('click',()=>verPrintsSel(p)));
+}
+// datas diferentes encontradas num programa viram o texto "Datas encontradas" da cotação
+function datasAltDe(p, k){
+  const b = p.busca[k], r = [];
+  for(const T of trechosDe(p)){ const d = b['data'+T], ped = T==='Ida' ? p.dataIda : p.dataVolta; if(d && d!==ped) r.push(`${T.toLowerCase()} ${fmtDataCurta(d)}`); }
+  return r.join(', ');
+}
+function ligarE1(p, corpo){
+  // tudo que você mexe numa linha marca o trecho como "à mão"
+  corpo.querySelectorAll('[data-e1tr]').forEach(l=>{ const [k,T] = l.dataset.e1tr.split('|');
+    const marca = e => { if(e.target.closest('.e1-extra')) return; if(p.busca[k]['fonte'+T]!=='mao'){ p.busca[k]['fonte'+T] = 'mao'; const f = l.querySelector('.e1-fonte'); if(f){ f.className = 'e1-fonte mao'; f.textContent = 'à mão'; } } };
+    l.addEventListener('input', marca); l.addEventListener('change', marca); });
+  corpo.querySelectorAll('[data-e1data]').forEach(inp=>inp.addEventListener('change',()=>{
+    const [k,T] = inp.dataset.e1data.split('|'), b = p.busca[k], ped = T==='Ida' ? p.dataIda : p.dataVolta;
+    if(!inp.value || inp.value===ped) delete b['data'+T]; else b['data'+T] = inp.value;
+    b.datasAlt = datasAltDe(p, k);
+    inp.classList.toggle('difer', !!b['data'+T]);
+    if(b['data'+T]) logar(p, `${PROG[k].nome} · ${T.toLowerCase()} encontrada em ${fmtDataCurta(b['data'+T])} (pedido: ${fmtDataCurta(ped)})`);
+    salvar(true); atualizarCalculos(p);
+  }));
+  corpo.querySelectorAll('[data-e1par]').forEach(bt=>bt.addEventListener('click',()=>{
+    const [k,T,qs] = bt.dataset.e1par.split('|'), b = p.busca[k], q = n(qs);
+    b['paradasMan'+T] = true; b['paradasDed'+T] = false; b['paradas'+T] = String(q); b['fonte'+T] = 'mao';
+    const es = (b['escalas'+T]||[]).slice(0,q); while(es.length<q) es.push({local:'', min:null, fl:true, fm:true});
+    b['escalas'+T] = es; salvar(true); renderDetalhe();
+    setTimeout(()=>{ const f = $('#detCorpo')?.querySelector(`[data-esc="${k}|${T}|0|local"]`); if(f && !f.value) f.focus(); }, 30);
+  }));
+  corpo.querySelectorAll('[data-e1tx]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [k,T] = inp.dataset.e1tx.split('|'), b = p.busca[k], outro = T==='Ida' ? 'Volta' : 'Ida';
+    if(p.tipo==='ida_volta' && (b['taxas'+outro]==='' || b['taxas'+outro]==null)){ const est = taxaTrechoE1(p,k,outro); if(est.est){ b['taxas'+outro] = est.v; const o = corpo.querySelector(`[data-e1tx="${k}|${outro}"]`); if(o){ o.classList.remove('est'); o.nextElementSibling?.classList.contains('e1-dur') && o.nextElementSibling.remove(); } } }
+    b['taxas'+T] = inp.value==='' ? '' : n(inp.value); b['taxasFonte'+T] = 'mao';
+    inp.classList.remove('est', 'vazio');
+    const ts = trechosDe(p);
+    b.taxas = ts.some(t=>b['taxas'+t]!=='' && b['taxas'+t]!=null) ? Math.round(ts.reduce((s,t)=>s+n(b['taxas'+t]),0)*100)/100 : '';
+    b.taxasMan = true;
+    salvar(); atualizarCalculos(p);
+  }));
+  corpo.querySelectorAll('[data-pax]').forEach(bt=>bt.addEventListener('click',()=>mudarPax(p, bt.dataset.pax)));
+  corpo.querySelectorAll('[data-verpedido]').forEach(bt=>bt.addEventListener('click',()=>{ const b0 = $('#detCorpo .passos-det [data-passo="0"]'); if(b0) b0.click(); else $('#detCorpo details.etapa')?.scrollIntoView({block:'start'}); }));
+}
+
+/* ---------- passageiros na cotação: multiplicam as milhas por pessoa ---------- */
+function htmlPaxCot(p){
+  const x = p.passageiros||{}, o = p.paxPedido, pag = pagantes(p);
+  const cont = (campo, rot, min) => `<div class="pax-c"><span class="e1-l">${rot}</span><div class="pax-step"><button type="button" data-pax="${campo}|-1" aria-label="Menos ${rot}" ${n(x[campo])<=min?'disabled':''}>−</button><b>${n(x[campo])}</b><button type="button" data-pax="${campo}|1" aria-label="Mais ${rot}">+</button></div></div>`;
+  const dif = o && (n(o.adultos)!==n(x.adultos) || n(o.criancas)!==n(x.criancas) || n(o.bebes)!==n(x.bebes));
+  return `<section class="pax-cot">
+    <div><div class="e1-l">Passageiros na cotação</div><div class="e1-nota">multiplica as milhas por pessoa de todos os programas</div></div>
+    <div class="pax-cs">${cont('adultos','Adultos',1)}${cont('criancas','Crianças (2 a 11)',0)}${cont('bebes','Bebês de colo',0)}</div>
+    <div class="pax-tot"><div class="e1-l">Pagam milhas</div><b>${pag}</b><div class="e1-nota ${dif?'dif':''}">${dif ? `pedido: ${esc(textoPax({passageiros:o}))}` : 'igual ao pedido'}</div></div>
+  </section>`;
+}
+function mudarPax(p, cod){
+  const [campo, d] = cod.split('|'), x = p.passageiros = p.passageiros || {adultos:1, criancas:0, bebes:0};
+  const novo = Math.max(campo==='adultos' ? 1 : 0, n(x[campo]) + n(d));
+  if(campo==='bebes' && novo > n(x.adultos)){ toast('Cada bebê de colo precisa de um adulto.'); return; }
+  if(campo==='adultos' && n(x.bebes) > novo){ toast('Tem mais bebês de colo que adultos: tire um bebê primeiro.'); return; }
+  if(novo===n(x[campo])) return;
+  if(!p.paxPedido) p.paxPedido = {adultos:n(x.adultos), criancas:n(x.criancas), bebes:n(x.bebes)};
+  const pag0 = pagantes(p);
+  const pps = {}; for(const k in PROG){ const b = p.busca[k]; if(!b) continue; for(const T of trechosDe(p)) pps[k+T] = n(b['pp'+T]) || (n(b['milhas'+T]) ? Math.round(n(b['milhas'+T])/pag0) : 0); }
+  x[campo] = novo;
+  const pag1 = pagantes(p);
+  if(pag1!==pag0) for(const k in PROG){ const b = p.busca[k]; if(!b) continue;
+    for(const T of trechosDe(p)){ const pp = pps[k+T]; if(pp){ b['pp'+T] = pp; b['milhas'+T] = String(pp*pag1); }
+      if(b['taxas'+T]!=='' && b['taxas'+T]!=null) b['taxas'+T] = Math.round(n(b['taxas'+T])/pag0*pag1*100)/100; }
+    if(b.taxas!=='' && b.taxas!=null){ const ts = trechosDe(p); b.taxas = ts.some(t=>b['taxas'+t]!=='' && b['taxas'+t]!=null) ? Math.round(ts.reduce((s,t)=>s+n(b['taxas'+t]),0)*100)/100 : Math.round(n(b.taxas)/pag0*pag1*100)/100; } }
+  const o = p.paxPedido; if(o && n(o.adultos)===n(x.adultos) && n(o.criancas)===n(x.criancas) && n(o.bebes)===n(x.bebes)) delete p.paxPedido;
+  if(!valorTravado(p)) p.valorMPManual = false;
+  logar(p, `Passageiros na cotação: ${textoPax(p)}`);
+  salvar(true); renderDetalhe();
+  if(pag1!==pag0) toast(`Milhas e taxas recalculadas para ${pag1} pagante${pag1>1?'s':''}`);
+}
+
+/* ---------- pedido do cliente sempre à vista ---------- */
+function htmlPedidoFixo(p){
+  const o = p.pedidoOriginal || p, x = p.paxPedido ? {passageiros:p.paxPedido} : p, iv = o.tipo==='ida_volta' && o.dataVolta;
+  const dia = d => d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace('.','') : '';
+  const cid = a => a ? `${esc(a.cidade||a.iata)} (${esc(a.iata)})` : '';
+  const vO = o.voltaOrigem || o.destino, vD = o.voltaDestino || o.origem;
+  const outroAero = iv && (vO.iata!==o.destino.iata || vD.iata!==o.origem.iata);
+  const pref = [p.datasFlexiveis ? 'datas flexíveis (±3 dias)' : '', textoHorario(p)].filter(Boolean).join(' · ');
+  const mud = [p.pedidoOriginal ? `cotando ${rotaCotada(p)}` : '', p.paxPedido ? `cotando ${textoPax(p)}` : ''].filter(Boolean).join(' · ');
+  return `<section class="ped-fixo" aria-label="Pedido do cliente">
+    <div class="pf-cab"><span class="e1-l pf-tit">📌 Pedido do cliente</span>${mud ? `<span class="pf-mud">${esc(mud)}</span>` : ''}<button type="button" class="btn peq" data-verpedido>Ver pedido completo</button></div>
+    <div class="pf-grade">
+      <div class="pf-b"><span class="e1-l">Ida · ${dia(o.dataIda)}</span><b>${cid(o.origem)} → ${cid(o.destino)}</b></div>
+      ${iv ? `<div class="pf-b"><span class="e1-l">Volta · ${dia(o.dataVolta)}</span><b>${cid(vO)} → ${cid(vD)}</b>${outroAero ? '<small class="pf-av">volta de outro aeroporto</small>' : ''}</div>` : `<div class="pf-b"><span class="e1-l">Volta</span><b>Somente ida</b></div>`}
+      <div class="pf-b"><span class="e1-l">Passageiros</span><b>${esc(textoPax(x))}</b></div>
+      <div class="pf-b"><span class="e1-l">Bagagem${p.pet?' e pet':''}</span><b>${esc(textoMalas(p))}</b>${p.pet ? `<small>${esc(textoPet(p))}</small>` : ''}</div>
+      <div class="pf-b pf-pref"><span class="e1-l">Preferências do cliente</span><b>${esc(pref || 'nenhuma')}</b>${p.obs ? `<small>"${esc(p.obs)}"</small>` : ''}</div>
+    </div>
+  </section>`;
 }
 
 renderCfg(); renderQuadro(); renderCheckins(); atualizarAvisoExtensao();
