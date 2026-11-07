@@ -484,6 +484,56 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 .cot-rota{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--ceu-claro);border-radius:12px;padding:10px 14px;margin-bottom:12px}
 .cot-rota small{display:block;color:var(--tinta-2);font-size:.75rem}
 .cot-rota b{margin-right:8px}
+
+/* ===== busca: melhor combinação em cima, trechos embaixo ===== */
+.esc-vazio{margin-top:14px;padding:18px;border:2px dashed var(--linha);border-radius:16px;color:var(--tinta-2);font-size:1rem;text-align:center}
+.esc-topo{margin-top:14px;background:var(--card);border:3px solid var(--linha);border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.esc-topo.melhor{border-color:var(--ok)}
+.esc-cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.esc-tag{background:var(--ok);color:#fff;border-radius:999px;padding:6px 13px;font-size:.8rem;font-weight:800;letter-spacing:.05em}
+.esc-tag.neutra{background:var(--ceu)}
+.esc-tit{font-size:1.35rem;letter-spacing:-.01em}
+.esc-chip{border-radius:999px;padding:6px 12px;font-size:.9rem;font-weight:700}
+.esc-chip.ok{background:var(--ok-claro);color:var(--ok)}
+.esc-grade{display:grid;gap:22px;align-items:start}
+.esc-grade.t2{grid-template-columns:repeat(3,minmax(0,1fr))}
+.esc-grade.t1{grid-template-columns:repeat(2,minmax(0,1fr))}
+.esc-lbl{font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--tinta-2)}
+.esc-big{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:6px;font-variant-numeric:tabular-nums}
+.esc-big.verde{color:var(--ok)}
+.esc-sub{font-size:.95rem;color:var(--tinta-2)}
+.esc-custo{background:var(--ok-claro);border-radius:16px;padding:14px 16px}
+.esc-aviso{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--sol-claro);border-radius:14px;padding:12px 14px;font-size:1rem}
+.esc-acoes{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.esc-acoes .btn{min-height:46px;font-size:1rem}
+.esc-trocar{margin-top:18px}
+.esc-trocar h4{margin:0 0 10px;font-size:1.1rem}
+.esc-trocar h4 small{font-weight:500;color:var(--tinta-2);font-size:.9rem;margin-left:6px}
+.esc-cols{display:grid;gap:16px}
+.esc-cols.t2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.esc-col{background:var(--card);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;border:1px solid var(--linha)}
+.esc-col-cab{font-size:1.1rem}
+.esc-col-cab span{color:var(--tinta-2);font-size:.95rem;margin-left:6px}
+.esc-op{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto auto;align-items:center;gap:12px;border:2.5px solid var(--linha);border-radius:14px;padding:12px 14px;cursor:pointer;background:var(--card)}
+.esc-op.sel{border-color:var(--sol);background:var(--sol-claro)}
+.esc-op.off{display:flex;cursor:default;opacity:.65;background:var(--fundo)}
+.esc-op input{width:22px;height:22px;accent-color:var(--sol);margin:0}
+.dot-p{width:14px;height:14px;border-radius:50%;flex:none}
+.esc-op-nome b{display:block;font-size:1.02rem}
+.esc-op-nome small,.esc-op-valor small{display:block;color:var(--tinta-2);font-size:.85rem}
+.esc-op-hora{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.esc-op-valor{text-align:right;min-width:110px}
+.esc-op-valor b{font-size:1.1rem;font-variant-numeric:tabular-nums}
+.det-progs{margin-top:18px;border:1px solid var(--linha);border-radius:16px;background:var(--card)}
+.det-progs > summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:1rem;color:var(--ceu)}
+.det-progs[open] > summary{border-bottom:1px solid var(--linha)}
+.det-progs .progs{margin:0;padding:14px;gap:14px}
+.det-progs .prog .corpo{font-size:1rem;gap:10px;padding:12px 14px}
+.det-progs .prog .cab{font-size:1.05rem;padding:11px 14px}
+.det-progs .campo label{font-size:.88rem}
+.det-progs .campo input,.det-progs .campo select{height:44px;font-size:1rem}
+.det-progs .total-milhas b{font-size:1.35rem}
+@media (max-width:900px){ .esc-grade.t2,.esc-grade.t1,.esc-cols.t2{grid-template-columns:1fr} .esc-op{grid-template-columns:auto auto minmax(0,1fr) auto} .esc-op-hora{grid-column:3} .esc-op-valor{grid-row:1 / span 2;grid-column:4} }
 /* ===== lançamento ===== */
 .det-extras{padding:8px var(--lado,16px);display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--linha);background:var(--card);max-height:40vh;overflow:auto}
 .det-extras[hidden]{display:none}
@@ -2846,8 +2896,9 @@ function etapaBusca(p, cls, aberto){
       <p class="nota" style="margin:8px 0 0">${extensaoAtiva ? 'A busca roda sozinha quando o pedido chega e preenche cada programa com o voo de menos milhas. Para trocar, use "Voos encontrados". O que você digitar à mão não é sobrescrito. Os sites ficam abertos depois da busca: use "ver no site" para conferir.' : 'Abra o painel no Chrome com a extensão para a busca rodar sozinha.'} "Pesquisar nos 3" abre Smiles, LATAM Pass e Azul, cada um numa aba, e copia o trecho para você colar. Sem a extensão, o navegador pode bloquear abas: use os botões de cada site.</p>
       <p class="nota" style="margin:6px 0 0" id="avisoExtensao">${extensaoAtiva ? '✓ Extensão de captura ligada: nos sites, clique no ícone dela (ou Alt+Shift+C) e depois no voo. O print e os dados chegam aqui sozinhos, com este pedido aberto.' : 'Instale a extensão de captura para trazer o print e os dados do voo sem printar à mão.'}</p>
       ${rodandoAqui ? htmlBuscaRodando() : ''}
-      <div class="progs">${quadros}</div>
-      ${htmlCombinacao(p)}
+      ${htmlEscolhaA(p)}
+      <details class="det-progs" data-detprogs ${progsAbertos(p) ? 'open' : ''}><summary>Editar voos, milhas, taxas e prints de cada programa</summary>
+      <div class="progs">${quadros}</div></details>
     </div>
   </details>`;
 }
@@ -3243,6 +3294,11 @@ function ligarDetalhe(p){
   });
   corpo.querySelectorAll('[data-tirar]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); const [k,T]=b.dataset.tirar.split('|'); delete p.busca[k]['print'+T]; salvar(true); renderDetalhe(); }));
   corpo.querySelectorAll('[data-escolher]').forEach(b=>b.addEventListener('click',()=>escolherPrograma(p,b.dataset.escolher)));
+  // layout "melhor combinação em cima, trechos embaixo"
+  corpo.querySelectorAll('[data-sel]').forEach(r=>r.addEventListener('change',()=>{ const [T,k] = r.dataset.sel.split('|'), a = selAtual(p) || melhorSel(p)?.sel || {}; aplicarSel(p, {...a, [T]:k}); }));
+  corpo.querySelectorAll('[data-usarsel]').forEach(b=>b.addEventListener('click',()=>{ const [i,v] = b.dataset.usarsel.split('|'); aplicarSel(p, v ? {Ida:i, Volta:v} : {Ida:i}); }));
+  corpo.querySelectorAll('[data-verprints]').forEach(b=>b.addEventListener('click',()=>verPrintsSel(p)));
+  { const d = corpo.querySelector('[data-detprogs]'); if(d) d.addEventListener('toggle',()=>{ progsAbertosMan[p.id] = d.open; }); }
   corpo.querySelectorAll('[data-opcao]').forEach(sel=>sel.addEventListener('change',()=>{ const [k,T]=sel.dataset.opcao.split('|'); const v=opcoesTrecho(p,k,T.toLowerCase())[Number(sel.value)]; if(!v) return;
     aplicarVooAuto(p,k,T,v,true); const a = p.busca[k]['alt'+T]; if(a && a.voo===v.voo && a.saida===v.saida) delete p.busca[k]['alt'+T];
     if(!lugarOk(p,v)) toast(`Atenção: esse voo tem só ${v.assentos} lugar${v.assentos>1?'es':''} para ${pagantes(p)} passageiros.`, {tipo:'info'});
@@ -5958,6 +6014,82 @@ function abrirEditarDatas(id){
     salvar(true); fecharModal(); renderQuadro(); renderDetalhe(); toast('Pedido atualizado');
     if(buscar && extensaoAtiva) setTimeout(()=>{ const bt = document.querySelector('#detCorpo [data-acao="buscaAuto"]'); if(bt) bt.click(); }, 300);
   };
+}
+
+
+/* =========================================================
+   BUSCA · "melhor combinação em cima, trechos embaixo"
+   ========================================================= */
+const progsAbertosMan = {};
+function progsAbertos(p){
+  if(p.id in progsAbertosMan) return progsAbertosMan[p.id];
+  return !Object.keys(PROG).some(k=>trechosDe(p).some(T=>custoTrecho(p,k,T)));   // nada lido ainda: abre os campos
+}
+function selAtual(p){ if(!p.escolhido) return null; const s = {}; trechosDe(p).forEach(T=>s[T] = progTrecho(p,T)); return s; }
+function custoSel(p, s){
+  const ks = trechosDe(p).map(T=>s[T]); if(ks.some(k=>!k)) return null;
+  if(new Set(ks).size===1){ const c = custoMP(p, ks[0]); return c ? {valor:c.valor, milhas:c.milhas, taxas:c.taxas, um:true} : null; }
+  const partes = trechosDe(p).map(T=>custoTrecho(p, s[T], T)); if(partes.some(x=>!x)) return null;
+  return {valor:Math.round(partes.reduce((a,x)=>a+x.valor,0)*100)/100, milhas:partes.reduce((a,x)=>a+x.milhas,0), taxas:partes.reduce((a,x)=>a+x.taxas,0), um:false};
+}
+function melhorSel(p){
+  const T = trechosDe(p), ks = Object.keys(PROG); let melhor = null;
+  const combos = T.length===1 ? ks.map(k=>({Ida:k})) : ks.flatMap(a=>ks.map(b=>({Ida:a, Volta:b})));
+  for(const s of combos){ const c = custoSel(p, s); if(c && (!melhor || c.valor < melhor.c.valor - 0.009 || (Math.abs(c.valor-melhor.c.valor)<0.01 && c.um && !melhor.c.um))) melhor = {sel:s, c}; }
+  return melhor;
+}
+function aplicarSel(p, s){
+  const T = trechosDe(p), ks = T.map(t=>s[t]);
+  for(const t of T){ const k = s[t]; if(!k || !custoTrecho(p,k,t)){ toast(`${k ? PROG[k].nome : 'Programa'} sem voo ou sem valor na ${t.toLowerCase()}`); return; } }
+  const antes = JSON.stringify(selAtual(p));
+  if(new Set(ks).size===1){ delete p.combo; p.escolhido = ks[0]; }
+  else { p.combo = Object.fromEntries(T.map(t=>[t, s[t]])); p.escolhido = s.Ida; }
+  if(JSON.stringify(selAtual(p)) !== antes){
+    logar(p, p.combo ? `Escolhido: ida ${PROG[p.combo.Ida].nome} + volta ${PROG[p.combo.Volta].nome}` : `Programa escolhido: ${PROG[p.escolhido].nome}`);
+    if(!valorTravado(p)) p.valorMPManual = false;
+  }
+  sincronizarValorMP(p); salvar(true); renderDetalhe();
+  toast(`${nomeProgramas(p)} escolhido${p.valorMP ? ' · Milhas Plus ' + BRL(n(p.valorMP)) : ''}`);
+}
+function verPrintsSel(p){
+  const s = selAtual(p) || melhorSel(p)?.sel || {};
+  const ims = trechosDe(p).map(T=>{ const b = p.busca[s[T]]||{}; return b['print'+T] ? `<figure style="margin:0"><figcaption class="nota">${T} · ${PROG[s[T]].nome}</figcaption><img src="${b['print'+T]}" alt="Print da ${T.toLowerCase()}" style="width:100%;border-radius:10px;border:1px solid var(--linha)"></figure>` : `<p class="nota">${T}: sem print ainda.</p>`; }).join('');
+  abrirModal(`<h2>Prints dos voos escolhidos</h2><div style="display:grid;gap:12px;max-height:70vh;overflow:auto">${ims}</div><div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Fechar</button></div>`);
+}
+function htmlEscolhaA(p){
+  const T = trechosDe(p), m = melhorSel(p);
+  if(!m) return `<div class="esc-vazio">Assim que a busca trouxer os voos (ou você digitar as milhas embaixo), a melhor combinação aparece aqui, grande.</div>`;
+  const atual = selAtual(p), mostra = atual && custoSel(p, atual) ? atual : m.sel, c = custoSel(p, mostra), ehMelhor = JSON.stringify(mostra)===JSON.stringify(m.sel);
+  const misto = T.length===2 && mostra.Ida!==mostra.Volta;
+  const um = ks => PROG[ks].nome;
+  const titulo = T.length===1 ? um(mostra.Ida) : misto ? `Ida ${um(mostra.Ida)} + volta ${um(mostra.Volta)}` : um(mostra.Ida);
+  const sozinho = (()=>{ let b = null; for(const k in PROG){ const x = custoMP(p,k); if(x && (!b || x.valor < b.valor)) b = {k, valor:x.valor}; } return b; })();
+  const tag = !atual ? (misto ? 'MELHOR COMBINAÇÃO' : 'MAIS BARATO') : ehMelhor ? 'ESCOLHIDO · O MAIS BARATO' : 'ESCOLHIDO';
+  const dataT = t => t==='Ida' ? p.dataIda : p.dataVolta;
+  const blocoT = t => { const k = mostra[t], b = p.busca[k]||{}, ct = custoTrecho(p,k,t), d = durTotal({...p, combo:mostra, escolhido:mostra.Ida}, t);
+    return `<div><div class="esc-lbl">${t} · ${fmtDataCurta(dataT(t))} · ${esc(PROG[k].nome)}</div><div class="esc-big">${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}</div>
+      <div class="esc-sub">${[b['voo'+t], d!=null?fmtMin(d):'', textoParadas(b,t), misto && ct ? BRL(ct.valor) : ''].filter(Boolean).map(esc).join(' · ')}</div></div>`; };
+  const avisoMelhor = atual && !ehMelhor ? `<div class="esc-aviso"><span>A mais barata seria <b>${esc(T.length===2 && m.sel.Ida!==m.sel.Volta ? `ida ${um(m.sel.Ida)} + volta ${um(m.sel.Volta)}` : um(m.sel.Ida))}</b>, ${BRL(Math.round((c.valor - m.c.valor)*100)/100)} a menos.</span> <button type="button" class="btn peq pri" data-usarsel="${m.sel.Ida}|${m.sel.Volta||''}">Usar a mais barata</button></div>` : '';
+  const ecoMisto = misto && sozinho && sozinho.valor > c.valor ? `<span class="esc-chip ok">${BRL(Math.round((sozinho.valor - c.valor)*100)/100)} mais barato que só ${esc(PROG[sozinho.k].nome)}</span>` : '';
+  const topo = `<section class="esc-topo ${ehMelhor?'melhor':''}">
+    <div class="esc-cab"><span class="esc-tag ${ehMelhor?'':'neutra'}">${tag}</span><b class="esc-tit">${esc(titulo)}</b>${ecoMisto}</div>
+    <div class="esc-grade t${T.length}">${T.map(blocoT).join('')}
+      <div class="esc-custo"><div class="esc-lbl">Custo Milhas Plus</div><div class="esc-big verde">${BRL(c.valor)}</div><div class="esc-sub">${MIL(c.milhas)} milhas + ${BRL(c.taxas)} de taxas${misto?' · duas emissões':''}</div></div></div>
+    ${avisoMelhor}
+    <div class="esc-acoes">${atual ? '' : `<button type="button" class="btn pri" data-usarsel="${mostra.Ida}|${mostra.Volta||''}">Usar ${misto?'esta combinação':'este programa'}</button>`}
+      <button type="button" class="btn" data-verprints>Ver prints</button>
+      ${atual && p.valorMP ? `<span class="esc-sub" style="margin-left:auto">cliente paga <b>${BRL(valorCliente(p))}</b><span class="so-valor"> · seu lucro <b>${BRL(lucro(p))}</b></span></span>` : ''}</div></section>`;
+  const linhas = t => Object.keys(PROG).map(k=>{
+    const b = p.busca[k]||{}, ct = custoTrecho(p,k,t), min = Math.min(...Object.keys(PROG).map(x=>custoTrecho(p,x,t)?.valor ?? Infinity));
+    const sel = mostra[t]===k, d = ct ? duracaoVoo({saida:b['saida'+t], chegada:b['chegada'+t]}) : null;
+    if(!ct) return `<div class="esc-op off"><span class="dot-p" style="background:${PROG[k].cor}"></span><b>${esc(PROG[k].nome)}</b><span class="esc-sub" style="margin-left:auto">${b.semDisp ? 'sem disponibilidade' : n(b['milhas'+t]) ? 'sem valor na tabela da Milhas Plus' : 'sem voo lido'}</span></div>`;
+    return `<label class="esc-op ${sel?'sel':''}"><input type="radio" name="sel-${t}-${p.id}" data-sel="${t}|${k}" ${sel?'checked':''}><span class="dot-p" style="background:${PROG[k].cor}"></span>
+      <span class="esc-op-nome"><b>${esc(PROG[k].nome)}</b><small>${[b['voo'+t], d!=null?fmtMin(d):'', textoParadas(b,t)].filter(Boolean).map(esc).join(' · ')}</small></span>
+      <span class="esc-op-hora">${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}</span>
+      <span class="esc-op-valor"><b>${BRL(ct.valor)}</b><small>${ct.valor - min < 0.01 ? 'o menor' : '+ ' + BRL(Math.round((ct.valor-min)*100)/100)}</small></span></label>`; }).join('');
+  const trechos = `<div class="esc-trocar"><h4>Trocar ${T.length===2?'ida ou volta':'o voo'} <small>o total em cima muda na hora</small></h4>
+    <div class="esc-cols t${T.length}">${T.map(t=>`<div class="esc-col"><div class="esc-col-cab"><b>${t}</b> <span>${fmtDataCurta(dataT(t))} · ${t==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</span></div>${linhas(t)}</div>`).join('')}</div></div>`;
+  return topo + trechos;
 }
 
 renderCfg(); renderQuadro(); renderCheckins(); atualizarAvisoExtensao();
