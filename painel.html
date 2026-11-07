@@ -2724,7 +2724,7 @@ function etapaResumo(p, abrir){
         <div><small>E-mail</small><b>${esc(c.email||'—')}</b></div>
         <div><small>Trecho</small><b>${esc(p.origem.cidade)} (${p.origem.iata}) → ${esc(p.destino.cidade)} (${p.destino.iata})</b></div>
         <div><small>Ida</small><b>${fmtData(p.dataIda)}</b></div>
-        <div><small>Volta</small><b>${p.dataVolta?fmtData(p.dataVolta):'Somente ida'}</b></div>
+        <div><small>Volta</small><b>${p.dataVolta?fmtData(p.dataVolta):'Somente ida'}</b> <button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">📅 Mudar datas</button></div>
         <div><small>Datas flexíveis</small><b>${p.datasFlexiveis?'Sim, ±3 dias':'Não'}</b></div>
         <div><small>Horário preferido</small><b>${esc(textoHorario(p)||'Qualquer horário')}</b></div>
         <div><small>Passageiros</small><b>${textoPax(p)}</b></div>
@@ -2775,7 +2775,12 @@ function etapaBusca(p, cls, aberto){
           <div class="campo"><label>Espera</label>${eM ? `<input data-esc="${k}|${T}|${i}|min" class="${e.min!=null?'':'falta'}" value="${esc(e.esperaTxt ?? fmtMin(e.min))}" placeholder="1h30">` : `<input value="${esc(fmtMin(e.min))}" disabled>`}</div></div>`; }).join('');
       return `<div class="paradas-box"><small>Paradas da ${T.toLowerCase()}</small><b data-par="${k}|${T}">${esc(textoParadas(b,T) || 'A busca não trouxe — informe abaixo')}</b>${sel}${linhas}</div>`;
     };
-    const campoMil = (campo, rot) => `<div class="campo"><label>${rot}</label><input type="number" min="0" step="100" inputmode="numeric" data-bind="busca.${k}.${campo}" value="${esc(b[campo]??'')}" placeholder="total de milhas"></div>`;
+    const campoMil = (campo, rot) => { const T = campo.slice(6), pag = pagantes(p);
+      const tot = `<input type="number" min="0" step="100" inputmode="numeric" data-bind="busca.${k}.${campo}" value="${esc(b[campo]??'')}" placeholder="total de milhas">`;
+      if(pag < 2) return `<div class="campo"><label>${rot}</label>${tot}</div>`;
+      const pp = n(b['pp'+T]) || (n(b[campo]) ? Math.round(n(b[campo])/pag) : '');
+      return `<div class="g2 mil-pp"><div class="campo"><label>Milhas · por pessoa</label><input type="number" min="0" step="100" inputmode="numeric" data-pp="${k}|${T}" value="${esc(pp)}" placeholder="1 pessoa"></div>
+        <div class="campo"><label title="${pag} pagantes${qBebes(p)?', sem o bebê':''}">Total (× ${pag})</label>${tot}</div></div>`; };
     return `<div class="prog ${b.semDisp?'semdisp':''} ${p.escolhido===k?'escolhido':''} ${buscandoProg?'buscando':''}" data-prog="${k}">
       <div class="cab" style="background:${meta.cor}"><span>${meta.nome}</span><span class="selo-menor" data-selo="${k}" ${menor===k?'':'hidden'}>${textoSelo(cmp)}</span></div>
       <div class="corpo">
@@ -3171,6 +3176,18 @@ function ligarDetalhe(p){
       atualizarCalculos(p);
     });
   });
+  // milhas por pessoa: o total vira por pessoa × pagantes
+  corpo.querySelectorAll('[data-pp]').forEach(el=>el.addEventListener('input',()=>{
+    const [k,T] = el.dataset.pp.split('|'), b = p.busca[k], v = el.value;
+    b['pp'+T] = v==='' ? '' : n(v); b['milhas'+T] = v==='' ? '' : String(Math.round(n(v)*pagantes(p))); b['auto'+T] = false;
+    const t = corpo.querySelector(`[data-bind="busca.${k}.milhas${T}"]`); if(t) t.value = b['milhas'+T];
+    salvar(); atualizarCalculos(p);
+  }));
+  corpo.querySelectorAll('[data-bind$=".milhasIda"],[data-bind$=".milhasVolta"]').forEach(el=>el.addEventListener('input',()=>{
+    const [,k,T] = el.dataset.bind.match(/^busca\.(\w+)\.milhas(Ida|Volta)$/) || []; if(!k) return;
+    const pag = pagantes(p), b = p.busca[k]; b['pp'+T] = el.value==='' ? '' : Math.round(n(el.value)/pag);
+    const pp = corpo.querySelector(`[data-pp="${k}|${T}"]`); if(pp) pp.value = b['pp'+T];
+  }));
   // paradas preenchidas à mão (só aparece campo para o que a busca não trouxe)
   corpo.querySelectorAll('[data-bind$=".vooIda"],[data-bind$=".vooVolta"]').forEach(el=>el.addEventListener('change',()=>{
     const [,k,T] = el.dataset.bind.match(/^busca\.(\w+)\.voo(Ida|Volta)$/) || [];
@@ -5865,6 +5882,35 @@ abrirAjuste = (orig => function(k){ orig.apply(this, arguments); if(['horario','
 }
 iniciarSync = (orig => function(){ orig.apply(this, arguments); iniciarInbox(); setTimeout(()=>{ publicarPublico(); carregarErros(); }, 5000); })(iniciarSync);
 if(!FB.ativo){ setTimeout(()=>publicarPublico(), 2000); }
+
+
+/* ---------- mudar as datas do pedido ---------- */
+function abrirEditarDatas(id){
+  const p = pedido(id); if(!p) return;
+  const temBusca = Object.values(p.busca||{}).some(b=>b && (b.milhasIda || b.milhasVolta));
+  abrirModal(`<h2>Mudar as datas do pedido ${esc(p.id)}</h2>
+    <div class="campo" style="margin-top:6px"><label>Tipo</label><select id="edTipo"><option value="ida_volta" ${p.tipo==='ida_volta'?'selected':''}>Ida e volta</option><option value="ida" ${p.tipo==='ida'?'selected':''}>Somente ida</option></select></div>
+    <div class="g2"><div class="campo"><label for="edIda">Ida</label><input id="edIda" type="date" value="${esc(p.dataIda||'')}"></div><div class="campo"><label for="edVolta">Volta</label><input id="edVolta" type="date" value="${esc(p.dataVolta||'')}"></div></div>
+    ${temBusca ? `<label class="linha-semdisp" style="margin-top:8px"><input type="checkbox" id="edBuscar" checked> Apagar os voos encontrados e buscar de novo nas datas novas</label>` : ''}
+    ${p.cotacao?.token ? '<p class="nota">A cotação já enviada continua com as datas antigas: depois de buscar, mande a cotação de novo.</p>' : ''}
+    <p class="aviso" id="edErro"></p>
+    <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="edSalvar">Salvar datas</button></div>`);
+  const tipo = $('#edTipo'), volta = $('#edVolta'); const sinc = () => { volta.disabled = tipo.value==='ida'; }; tipo.onchange = sinc; sinc();
+  $('#edSalvar').onclick = () => {
+    const ida = $('#edIda').value, vt = tipo.value==='ida' ? null : volta.value, er = t => { $('#edErro').textContent = t; $('#edErro').classList.add('on'); };
+    if(!ida) return er('Informe a ida.');
+    if(tipo.value==='ida_volta' && (!vt || vt < ida)) return er('A volta precisa ser no mesmo dia ou depois da ida.');
+    const antes = `${fmtData(p.dataIda)}${p.dataVolta?' – '+fmtData(p.dataVolta):' (só ida)'}`;
+    const mudouIda = ida !== p.dataIda, mudouVolta = vt !== p.dataVolta;
+    p.tipo = tipo.value; p.dataIda = ida; p.dataVolta = vt;
+    if(p.emissao){ if(p.emissao.partidaIda && mudouIda) p.emissao.partidaIda = ida + p.emissao.partidaIda.slice(10); if(p.emissao.partidaVolta && vt && mudouVolta) p.emissao.partidaVolta = vt + p.emissao.partidaVolta.slice(10); }
+    logar(p, `Datas mudadas: ${antes} → ${fmtData(ida)}${vt?' – '+fmtData(vt):' (só ida)'}`);
+    const buscar = $('#edBuscar')?.checked;
+    if(buscar){ for(const k in p.busca){ const b = p.busca[k]; if(!b) continue; ['Ida','Volta'].forEach(T=>{ ['milhas','voo','saida','chegada','pp','auto','print','taxas','taxasFonte','paradas','escalas','paradasDed','assentos','vooFalta','bebeMilhas','bebeReais'].forEach(c=>delete b[c+T]); }); delete b.taxas; delete b.taxasMan; b.semDisp = false; } delete p.auto; }
+    salvar(true); fecharModal(); renderQuadro(); renderDetalhe(); toast('Datas atualizadas');
+    if(buscar && extensaoAtiva) setTimeout(()=>{ const bt = document.querySelector('#detCorpo [data-acao="buscaAuto"]'); if(bt) bt.click(); }, 300);
+  };
+}
 
 renderCfg(); renderQuadro(); renderCheckins(); atualizarAvisoExtensao();
 renderCfgMenu(); abrirAjuste('', true); if(!FB.ativo) renderAvaliacoes();
