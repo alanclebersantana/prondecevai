@@ -1046,6 +1046,12 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .sky-nota{margin:12px 0 0}
 @media (max-width:760px){ .sky-boxes{grid-template-columns:1fr} .sky-v{grid-template-columns:1fr auto} .sky-tg{grid-column:1/-1;flex-direction:row} .sky-acoes{margin-left:0} }
 
+.modal:has(.print-grande){width:min(1280px,100%);max-height:96vh;overflow:auto}
+.pg-cab{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}.pg-cab h2{margin:0}
+.pg-img{display:block;cursor:zoom-in}
+.pg-img img{display:block;width:100%;max-height:78vh;object-fit:contain;border:1.5px solid var(--linha);border-radius:12px;background:#fff}
+.colar img{cursor:zoom-in}
+
 </style>
 </head>
 <body>
@@ -3391,8 +3397,8 @@ function ligarDetalhe(p){
   // colar prints
   corpo.querySelectorAll('[data-colar]').forEach(box=>{
     const [k,T] = box.dataset.colar.split('|'), arq = corpo.querySelector(`[data-arquivo="${box.dataset.colar}"]`);
-    box.addEventListener('click',e=>{ if(e.target.closest('.tirar')) return; box.focus(); if(!p.busca[k]['print'+T]) arq.click(); });
-    box.addEventListener('keydown',e=>{ if(e.key==='Enter'){ arq.click(); } });
+    box.addEventListener('click',e=>{ if(e.target.closest('.tirar')) return; box.focus(); if(p.busca[k]['print'+T]) verPrintGrande(p,k,T,arq); else arq.click(); });
+    box.addEventListener('keydown',e=>{ if(e.key==='Enter'){ if(p.busca[k]['print'+T]) verPrintGrande(p,k,T,arq); else arq.click(); } });
     box.addEventListener('paste',async e=>{
       const item = [...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));
       if(!item){ toast('Não encontrei imagem na área de transferência'); return; }
@@ -3442,6 +3448,14 @@ function ligarDetalhe(p){
   if(p.escolhido) setTimeout(()=>atualizarPrevias(p), 30);
 }
 
+// print anexado: abre grande para conferir
+function verPrintGrande(p, k, T, arq){
+  const src = p.busca[k]['print'+T]; if(!src) return;
+  abrirModal(`<div class="print-grande"><div class="pg-cab"><h2>Print da ${T.toLowerCase()} · ${esc(PROG[k].nome)}</h2><span class="nota">${esc([p.busca[k]['saida'+T] && p.busca[k]['chegada'+T] ? p.busca[k]['saida'+T]+' → '+p.busca[k]['chegada'+T] : '', fmtDataCurta(dataProg(p,k,T))].filter(Boolean).join(' · '))}</span></div>
+    <a href="${src}" target="_blank" rel="noopener" class="pg-img" title="Abrir em tamanho real numa aba"><img src="${src}" alt="Print da ${T.toLowerCase()} ${esc(PROG[k].nome)}"></a>
+    <div class="rodape"><button type="button" class="btn" id="pgTrocar">Trocar o print</button><button type="button" class="btn pri" onclick="fecharModal()">Fechar</button></div></div>`);
+  $('#pgTrocar').onclick = ()=>{ fecharModal(); arq && arq.click(); };
+}
 async function guardarPrint(p,k,T,file){
   p.busca[k]['print'+T] = await comprimir(file, 1200, .78);
   salvar(true); renderDetalhe(); toast(`Print de ${PROG[k].nome} anexado`);
