@@ -239,7 +239,7 @@ a.btn{text-decoration:none}
 .dica-ios button{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;cursor:pointer}
 
 /* início */
-.ini{max-width:1180px;margin:0 auto}
+.ini{max-width:none;margin:0 auto}
 .ini-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 0 16px;padding:28px 24px 22px;min-height:170px;border-radius:18px;color:#fff;
   background:linear-gradient(90deg,rgba(9,32,70,.85) 0%,rgba(9,32,70,.55) 50%,rgba(9,32,70,.1) 100%),url("ceu-asa.jpg") right 35% / cover no-repeat,var(--ceu)}
 .ini-topo h2{font-size:1.9rem;letter-spacing:-.02em;text-shadow:0 1px 10px rgba(9,32,70,.5)}
@@ -854,7 +854,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 }
 @media (max-width:560px){ .nav button{font-size:.56rem;letter-spacing:0;padding:0 1px} .nav button svg{width:21px;height:21px} }
 /* detalhe em tela cheia: o conteúdo fica centralizado em telas largas */
-.detalhe{--lado:max(16px, calc((100vw - 1280px)/2))}
+.detalhe{--lado:max(16px, calc((100vw - 2400px)/2))}
 .det-cab .det-topo,.det-chips,.det-kpis{padding-left:var(--lado);padding-right:var(--lado)}
 .det-corpo{padding-left:var(--lado);padding-right:var(--lado)}
 .det-corpo.com-passos{grid-template-columns:220px minmax(0,1fr);gap:20px}
@@ -2724,7 +2724,7 @@ function etapaResumo(p, abrir){
         <div><small>E-mail</small><b>${esc(c.email||'—')}</b></div>
         <div><small>Trecho</small><b>${esc(p.origem.cidade)} (${p.origem.iata}) → ${esc(p.destino.cidade)} (${p.destino.iata})</b></div>
         <div><small>Ida</small><b>${fmtData(p.dataIda)}</b></div>
-        <div><small>Volta</small><b>${p.dataVolta?fmtData(p.dataVolta):'Somente ida'}</b> <button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">📅 Mudar datas</button></div>
+        <div><small>Volta</small><b>${p.dataVolta?fmtData(p.dataVolta):'Somente ida'}</b> <button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">📅 Mudar datas e aeroportos</button></div>
         <div><small>Datas flexíveis</small><b>${p.datasFlexiveis?'Sim, ±3 dias':'Não'}</b></div>
         <div><small>Horário preferido</small><b>${esc(textoHorario(p)||'Qualquer horário')}</b></div>
         <div><small>Passageiros</small><b>${textoPax(p)}</b></div>
@@ -2968,6 +2968,8 @@ function etapaValor(p, cls, aberto){
         <div class="campo"><label>Seu lucro (%)</label><input type="number" min="0" step="0.5" data-bind="percLucro" value="${esc(p.percLucro ?? cfg.percPadrao)}"></div>
         <div class="campo"><label>Validade (horas)</label><input type="number" min="0.5" step="0.5" data-bind="validadeHoras" value="${esc(p.validadeHoras ?? cfg.validadeHoras)}"></div>
       </div>
+      <div class="g3" style="margin-top:10px"><div class="campo"><label>Se o cliente cancelar</label><select data-bind="reembolso" class="${p.reembolso?'':'falta'}" onchange="this.classList.toggle('falta', !this.value)">
+        <option value="" ${p.reembolso?'':'selected'}>— escolher —</option>${Object.entries(REEMBOLSO).map(([k,t])=>`<option value="${k}" ${p.reembolso===k?'selected':''}>${t}</option>`).join('')}</select></div></div>
       <p class="nota nota-mp" id="notaMP"></p>
       ${n(p.malasPorPassageiro) ? `<label class="linha-semdisp bag-linha"><input type="checkbox" data-cobrarbag ${p.cobrarBagagem!==false?'checked':''}> <span>Cobrar bagagem <span class="nota" id="notaBag"></span></span></label>
       <div class="aviso" id="avisoBag"></div>` : ''}
@@ -3753,6 +3755,7 @@ async function cardMP(p){
   return recortar(c, Math.min(y+10, c.height));
 }
 
+const REEMBOLSO = {sim:'Reembolsável', multa:'Reembolsável com multa', nao:'Não reembolsável'};
 async function cardCliente(p){
   // formato retrato 4:5 (1080 × 1350): o WhatsApp mostra a imagem inteira na conversa
   await fontesProntas();
@@ -3772,6 +3775,10 @@ async function cardCliente(p){
   ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=12;
   ctx.font=F(800,36); ctx.fillText('Vai pra onde?', 126, 78);
   ctx.font=F(700,28); ctx.textAlign='right'; ctx.fillText(`Cotação ${p.id}`, W-46, 76); ctx.textAlign='left';
+  if(REEMBOLSO[p.reembolso]){ ctx.save(); ctx.shadowBlur=0; ctx.shadowColor='transparent';
+    const tx = (p.reembolso==='nao' ? '✕ ' : '✓ ') + REEMBOLSO[p.reembolso] + ' se cancelar'; ctx.font=F(800,27); const tw = ctx.measureText(tx).width + 40;
+    ctx.fillStyle = p.reembolso==='sim' ? '#1E8E5A' : p.reembolso==='multa' ? '#E0611C' : '#C8382F'; rr(ctx, W-46-tw, 104, tw, 52, 26); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.fillText(tx, W-46-tw+20, 140); ctx.restore(); }
   const pn = primeiroNome(p);
   ctx.font=F(500,32); ctx.globalAlpha=.94; ctx.fillText(`Olá${pn?', '+pn:''}! Sua viagem para`, 46, 190); ctx.globalAlpha=1;
   ctx.font=F(800,68); quebrar(ctx, p.destino.cidade, W-92).slice(0,1).forEach(l=>ctx.fillText(l, 46, 262));
@@ -3784,7 +3791,7 @@ async function cardCliente(p){
   const altB = HD + 14 + TR*(volta?2:1) + 40 + 96;
   ctx.save(); ctx.shadowColor='rgba(19,35,63,.18)'; ctx.shadowBlur=40; ctx.shadowOffsetY=14; ctx.fillStyle='#fff'; rr(ctx,X,T0,LW,altB,40); ctx.fill(); ctx.restore();
   ctx.save(); rr(ctx,X,T0,LW,altB,40); ctx.clip(); ctx.fillStyle='#0E3B7A'; ctx.fillRect(X,T0,LW,HD); ctx.restore();
-  ctx.fillStyle='#fff'; ctx.font=F(800,25); ctx.fillText(`${p.origem.iata} ✈ ${p.destino.iata} · ${volta?'IDA E VOLTA':'SÓ IDA'}`.toUpperCase(), X+36, T0+40);
+  ctx.fillStyle='#fff'; ctx.font=F(800,25); ctx.fillText((volta && (p.voltaOrigem||p.voltaDestino) ? `${p.origem.iata} ✈ ${p.destino.iata} · VOLTA ${voltaDe(p)} ✈ ${voltaPara(p)}` : `${p.origem.iata} ✈ ${p.destino.iata} · ${volta?'IDA E VOLTA':'SÓ IDA'}`).toUpperCase(), X+36, T0+40);
   if(!dif && ciaI){ ctx.font=F(800,26); const tw = ctx.measureText(ciaI).width+30; ctx.fillStyle='#F26B1D'; rr(ctx, X+LW-36-tw, T0+12, tw, 38, 10); ctx.fill(); ctx.fillStyle='#fff'; ctx.fillText(ciaI, X+LW-36-tw+15, T0+41); }
   const DIAS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
   const dataB = iso => { if(!iso) return ''; const [a,m,d] = iso.split('-').map(Number); return `${DIAS[new Date(a,m-1,d).getDay()]} ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`; };
@@ -3806,8 +3813,9 @@ async function cardCliente(p){
     ctx.textAlign='left';
   };
   let y = T0+HD+14;
-  trecho(y, 'Ida', p.dataIda, b.vooIda, b.saidaIda, b.chegadaIda, p.origem.cidade, p.destino.cidade, b, 'Ida', ciaI); y += TR;
-  if(volta){ trecho(y, 'Volta', p.dataVolta, bv.vooVolta, bv.saidaVolta, bv.chegadaVolta, (p.voltaOrigem||p.destino).cidade, (p.voltaDestino||p.origem).cidade, bv, 'Volta', ciaV); y += TR; }
+  const cAe = a => `${a.cidade} · ${a.iata}`;
+  trecho(y, 'Ida', p.dataIda, b.vooIda, b.saidaIda, b.chegadaIda, cAe(p.origem), cAe(p.destino), b, 'Ida', ciaI); y += TR;
+  if(volta){ trecho(y, 'Volta', p.dataVolta, bv.vooVolta, bv.saidaVolta, bv.chegadaVolta, cAe(p.voltaOrigem||p.destino), cAe(p.voltaDestino||p.origem), bv, 'Volta', ciaV); y += TR; }
   // picote
   y += 14; ctx.strokeStyle='#DCE4EE'; ctx.lineWidth=4; ctx.setLineDash([12,10]); ctx.beginPath(); ctx.moveTo(X+36,y); ctx.lineTo(X+LW-36,y); ctx.stroke(); ctx.setLineDash([]);
   ctx.fillStyle='#EEF3F9'; ctx.beginPath(); ctx.arc(X,y,20,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(X+LW,y,20,0,Math.PI*2); ctx.fill();
@@ -5169,7 +5177,7 @@ dadosCotacaoPublica = (orig => p => {
   const d = orig(p), desc = descontoValor(p), vB = varianteCurta(p);
   const malas = malasOpcoesDe(p);
   if(Array.isArray(d.opcoes)){ d.opcoes[0].malasOp = malas; if(vB) d.opcoes[1].malasOp = malasOpcoesDe(vB.q); }
-  return {...d, voltaRota: voltaRotaPub(p), regras: regrasPublicas(p), malasOp: malas, malasAtual: n(p.malasPorPassageiro),
+  return {...d, voltaRota: voltaRotaPub(p), regras: regrasPublicas(p), reembolso: REEMBOLSO[p.reembolso] || '', malasOp: malas, malasAtual: n(p.malasPorPassageiro),
     ...(desc>0 && p.cupomAplicado ? {desconto:{cupom:p.cupomAplicado.codigo, valor:desc}} : {}),
     ...(p.grupo ? {grupo:{total:totalPax(p)}} : {}),
     ...(cfg.numeros && cfg.numeros.on===true ? {clientesTotal: clientesComCompra()} : {}),
@@ -5182,7 +5190,7 @@ dadosViagemPublica = (orig => p => {
   const recibo = et>=3 ? {compraEm: pg.pagoEm || r.aprovadaEm || p.criadoEm, pax:(p.passageirosDados||[]).filter(dd=>dd.nome).map((dd,i)=>({nome:dd.nome, tipo:tipos[i]||'', doc:mascararDoc(dd.doc)})),
     valor: n(pg.valorCobrado) || valorCliente(p), forma: pg.forma||r.forma||'', parcelas: n(pg.parcelas)||0, pagoEm: pg.pagoEm||'',
     ...(p.cupomAplicado && descontoValor(p)>0 ? {cupom:{codigo:p.cupomAplicado.codigo, valor:descontoValor(p)}} : {}),
-    regras: regrasPublicas(p), regrasAceitasEm: r.aceites?.regras || '', alteracoes: !!(p.alteracoesVoo||[]).length} : null;
+    regras: regrasPublicas(p), regrasAceitasEm: r.aceites?.regras || '', reembolso: REEMBOLSO[p.reembolso] || '', alteracoes: !!(p.alteracoesVoo||[]).length} : null;
   return {...d, voltaRota: voltaRotaPub(p), recibo, regras: regrasPublicas(p),
     vooAlterado: (p.alteracoesVoo||[]).map(a=>({trecho:a.trecho, data:a.data, antes:a.antes, depois:a.depois, cancelado:!!a.cancelado, em:a.em})),
     alteracao: p.alteracao ? {tipo:p.alteracao.tipo, status:p.alteracao.status, em:p.alteracao.em, resposta:p.alteracao.resposta||''} : null,
@@ -5888,26 +5896,43 @@ if(!FB.ativo){ setTimeout(()=>publicarPublico(), 2000); }
 function abrirEditarDatas(id){
   const p = pedido(id); if(!p) return;
   const temBusca = Object.values(p.busca||{}).some(b=>b && (b.milhasIda || b.milhasVolta));
-  abrirModal(`<h2>Mudar as datas do pedido ${esc(p.id)}</h2>
+  const vo = p.voltaOrigem||p.destino, vd = p.voltaDestino||p.origem, ae = a => `${a.iata} · ${a.cidade}`;
+  abrirModal(`<h2>Mudar datas e aeroportos · ${esc(p.id)}</h2>
+    <datalist id="dlAeroEd">${AEROPORTOS.map(a=>`<option value="${a.iata} · ${esc(a.cidade)} (${esc(a.aeroporto)})">`).join('')}</datalist>
+    <div class="g2" style="margin-top:6px"><div class="campo"><label for="edO">Ida sai de</label><input id="edO" list="dlAeroEd" value="${esc(ae(p.origem))}"></div><div class="campo"><label for="edD">Ida chega em</label><input id="edD" list="dlAeroEd" value="${esc(ae(p.destino))}"></div></div>
+    <div class="g2" id="edVoltaAe"><div class="campo"><label for="edVO">Volta sai de</label><input id="edVO" list="dlAeroEd" value="${esc(ae(vo))}"></div><div class="campo"><label for="edVD">Volta chega em</label><input id="edVD" list="dlAeroEd" value="${esc(ae(vd))}"></div></div>
+    <p class="nota" style="margin:2px 0 0">Ex.: ida NAT → GRU e volta CGH → NAT. Digite o código ou a cidade e escolha na lista.</p>
     <div class="campo" style="margin-top:6px"><label>Tipo</label><select id="edTipo"><option value="ida_volta" ${p.tipo==='ida_volta'?'selected':''}>Ida e volta</option><option value="ida" ${p.tipo==='ida'?'selected':''}>Somente ida</option></select></div>
     <div class="g2"><div class="campo"><label for="edIda">Ida</label><input id="edIda" type="date" value="${esc(p.dataIda||'')}"></div><div class="campo"><label for="edVolta">Volta</label><input id="edVolta" type="date" value="${esc(p.dataVolta||'')}"></div></div>
-    ${temBusca ? `<label class="linha-semdisp" style="margin-top:8px"><input type="checkbox" id="edBuscar" checked> Apagar os voos encontrados e buscar de novo nas datas novas</label>` : ''}
+    ${temBusca ? `<label class="linha-semdisp" style="margin-top:8px"><input type="checkbox" id="edBuscar" checked> Apagar os voos encontrados e buscar de novo</label>` : ''}
     ${p.cotacao?.token ? '<p class="nota">A cotação já enviada continua com as datas antigas: depois de buscar, mande a cotação de novo.</p>' : ''}
     <p class="aviso" id="edErro"></p>
     <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="edSalvar">Salvar datas</button></div>`);
-  const tipo = $('#edTipo'), volta = $('#edVolta'); const sinc = () => { volta.disabled = tipo.value==='ida'; }; tipo.onchange = sinc; sinc();
+  const tipo = $('#edTipo'), volta = $('#edVolta'); const sinc = () => { volta.disabled = tipo.value==='ida'; $('#edVoltaAe').hidden = tipo.value==='ida'; }; tipo.onchange = sinc; sinc();
+  const lerAe = id => { const v = String($(id).value||'').trim(), c = v.slice(0,3).toUpperCase(); return aeroporto(c) || AEROPORTOS.find(a=>norm(a.cidade)===norm(v)) || null; };
   $('#edSalvar').onclick = () => {
     const ida = $('#edIda').value, vt = tipo.value==='ida' ? null : volta.value, er = t => { $('#edErro').textContent = t; $('#edErro').classList.add('on'); };
     if(!ida) return er('Informe a ida.');
+    const aO = lerAe('#edO'), aD = lerAe('#edD'), aVO = lerAe('#edVO'), aVD = lerAe('#edVD');
+    if(!aO || !aD) return er('Escolha os aeroportos da ida na lista.');
+    if(aO.iata===aD.iata) return er('A ida precisa sair e chegar em aeroportos diferentes.');
+    if(tipo.value==='ida_volta' && (!aVO || !aVD)) return er('Escolha os aeroportos da volta na lista.');
+    if(tipo.value==='ida_volta' && aVO.iata===aVD.iata) return er('A volta precisa sair e chegar em aeroportos diferentes.');
     if(tipo.value==='ida_volta' && (!vt || vt < ida)) return er('A volta precisa ser no mesmo dia ou depois da ida.');
     const antes = `${fmtData(p.dataIda)}${p.dataVolta?' – '+fmtData(p.dataVolta):' (só ida)'}`;
     const mudouIda = ida !== p.dataIda, mudouVolta = vt !== p.dataVolta;
+    const rotaAntes = `${p.origem.iata} → ${p.destino.iata}${p.tipo==='ida_volta' ? ' / ' + voltaDe(p) + ' → ' + voltaPara(p) : ''}`;
+    const lim = a => ({iata:a.iata, cidade:a.cidade, aeroporto:a.aeroporto, pais:a.pais});
+    p.origem = lim(aO); p.destino = lim(aD);
+    if(tipo.value==='ida_volta' && !(aVO.iata===aD.iata && aVD.iata===aO.iata)){ p.voltaOrigem = lim(aVO); p.voltaDestino = lim(aVD); } else { delete p.voltaOrigem; delete p.voltaDestino; }
     p.tipo = tipo.value; p.dataIda = ida; p.dataVolta = vt;
+    const rotaDepois = `${p.origem.iata} → ${p.destino.iata}${p.tipo==='ida_volta' ? ' / ' + voltaDe(p) + ' → ' + voltaPara(p) : ''}`;
+    if(rotaDepois !== rotaAntes) logar(p, `Aeroportos mudados: ${rotaAntes} → ${rotaDepois}`);
     if(p.emissao){ if(p.emissao.partidaIda && mudouIda) p.emissao.partidaIda = ida + p.emissao.partidaIda.slice(10); if(p.emissao.partidaVolta && vt && mudouVolta) p.emissao.partidaVolta = vt + p.emissao.partidaVolta.slice(10); }
     logar(p, `Datas mudadas: ${antes} → ${fmtData(ida)}${vt?' – '+fmtData(vt):' (só ida)'}`);
     const buscar = $('#edBuscar')?.checked;
     if(buscar){ for(const k in p.busca){ const b = p.busca[k]; if(!b) continue; ['Ida','Volta'].forEach(T=>{ ['milhas','voo','saida','chegada','pp','auto','print','taxas','taxasFonte','paradas','escalas','paradasDed','assentos','vooFalta','bebeMilhas','bebeReais'].forEach(c=>delete b[c+T]); }); delete b.taxas; delete b.taxasMan; b.semDisp = false; } delete p.auto; }
-    salvar(true); fecharModal(); renderQuadro(); renderDetalhe(); toast('Datas atualizadas');
+    salvar(true); fecharModal(); renderQuadro(); renderDetalhe(); toast('Pedido atualizado');
     if(buscar && extensaoAtiva) setTimeout(()=>{ const bt = document.querySelector('#detCorpo [data-acao="buscaAuto"]'); if(bt) bt.click(); }, 300);
   };
 }

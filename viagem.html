@@ -713,6 +713,7 @@ async function gerarPdf(V){
     titulo('Pagamento');
     quebra(`Valor pago: ${BRL(R.valor)}${R.forma ? ' · ' + (R.forma === 'pix' ? 'Pix' : `cartão de crédito${R.parcelas > 1 ? ' em ' + R.parcelas + 'x' : ''}`) : ''}${R.pagoEm ? ' · pago em ' + fmtData(R.pagoEm) : ''}`, M, W-2*M);
     if(R.cupom) quebra(`Desconto do cupom ${R.cupom.codigo}: ${BRL(R.cupom.valor)}`, M, W-2*M);
+    if(R.reembolso){ titulo('Se cancelar'); quebra(R.reembolso + ', conforme as regras do programa abaixo.', M, W-2*M); }
     titulo('Bagagem');
     quebra(V.bagagem || 'Mala de mão (até 10 kg)', M, W-2*M);
     titulo('Check-in e embarque');

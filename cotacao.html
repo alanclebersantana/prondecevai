@@ -609,8 +609,8 @@ function montarBilhete(){
   const vr = C.voltaRota;
   $('#blTrechos').innerHTML = trechoHTML('Ida', C.ida, C.origem.iata, C.destino.iata, dif) + trechoHTML('Volta', C.volta, vr ? vr.de.iata : C.destino.iata, vr ? vr.para.iata : C.origem.iata, dif);
   $('#blFt').innerHTML = `<div>Passageiros<b>${esc(C.pax||'—')}</b></div><div>Bagagem<b>${esc(C.bagagem||'Mala de mão')}</b></div><div>Viagem<b>${vr ? 'Cidades diferentes' : C.volta?'Ida e volta':'Só ida'}</b></div>`;
-  $('#blEx').innerHTML = [vr?`<div>↩️ <b>Volta:</b> ${esc(vr.de.cidade)} (${esc(vr.de.iata)}) → ${esc(vr.para.cidade)} (${esc(vr.para.iata)})</div>`:'', C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:'', C.desconto?`<div>🏷️ <b>Cupom ${esc(C.desconto.cupom)}:</b> −${BRL(C.desconto.valor)} (já descontado)</div>`:''].join('');
-  $('#blEx').hidden = !vr && !C.datasAlt && !C.pet && !C.desconto;
+  $('#blEx').innerHTML = [vr?`<div>↩️ <b>Volta:</b> ${esc(vr.de.cidade)} (${esc(vr.de.iata)}) → ${esc(vr.para.cidade)} (${esc(vr.para.iata)})</div>`:'', C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:'', C.desconto?`<div>🏷️ <b>Cupom ${esc(C.desconto.cupom)}:</b> −${BRL(C.desconto.valor)} (já descontado)</div>`:'', C.reembolso?`<div>${/^Não/.test(C.reembolso)?'⚠️':'✅'} <b>Se cancelar:</b> ${esc(C.reembolso)}</div>`:''].join('');
+  $('#blEx').hidden = !vr && !C.datasAlt && !C.pet && !C.desconto && !C.reembolso;
 }
 function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
 function vencida(){ return Date.now() >= (C.validaAteMs || Date.parse(C.validaAte)); }
