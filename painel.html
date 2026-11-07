@@ -481,6 +481,9 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* modo escuro */
 
+.cot-rota{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--ceu-claro);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.cot-rota small{display:block;color:var(--tinta-2);font-size:.75rem}
+.cot-rota b{margin-right:8px}
 /* ===== lançamento ===== */
 .det-extras{padding:8px var(--lado,16px);display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--linha);background:var(--card);max-height:40vh;overflow:auto}
 .det-extras[hidden]{display:none}
@@ -2722,9 +2725,10 @@ function etapaResumo(p, abrir){
         <div><small>Cliente</small><b>${esc(c.nome)}</b></div>
         <div><small>WhatsApp</small><b><a href="${zapLink(c.whatsapp,'Olá, '+c.nome.split(' ')[0]+'!')}" target="_blank" rel="noopener">${esc(fmtTel(c.whatsapp))}</a></b></div>
         <div><small>E-mail</small><b>${esc(c.email||'—')}</b></div>
-        <div><small>Trecho</small><b>${esc(p.origem.cidade)} (${p.origem.iata}) → ${esc(p.destino.cidade)} (${p.destino.iata})</b></div>
-        <div><small>Ida</small><b>${fmtData(p.dataIda)}</b></div>
-        <div><small>Volta</small><b>${p.dataVolta?fmtData(p.dataVolta):'Somente ida'}</b> <button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">📅 Mudar datas e aeroportos</button></div>
+        ${(()=>{ const o = p.pedidoOriginal || p; return `<div><small>Trecho</small><b>${esc(o.origem.cidade)} (${o.origem.iata}) → ${esc(o.destino.cidade)} (${o.destino.iata})${o.voltaOrigem||o.voltaDestino?` · volta ${(o.voltaOrigem||o.destino).iata} → ${(o.voltaDestino||o.origem).iata}`:''}</b></div>
+        <div><small>Ida</small><b>${fmtData(o.dataIda)}</b></div>
+        <div><small>Volta</small><b>${o.tipo==='ida_volta'&&o.dataVolta?fmtData(o.dataVolta):'Somente ida'}</b></div>`; })()}
+        ${p.pedidoOriginal ? `<div style="grid-column:1/-1"><small>Na cotação (mudado por você)</small><b>${esc(rotaCotada(p))}</b></div>` : ''}
         <div><small>Datas flexíveis</small><b>${p.datasFlexiveis?'Sim, ±3 dias':'Não'}</b></div>
         <div><small>Horário preferido</small><b>${esc(textoHorario(p)||'Qualquer horário')}</b></div>
         <div><small>Passageiros</small><b>${textoPax(p)}</b></div>
@@ -2963,6 +2967,7 @@ function etapaValor(p, cls, aberto){
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">2</span><h3>Valor e cotação para o cliente</h3><span class="res">${p.cotacao?'Enviada · até '+fmtHora(p.cotacao.validaAte):''}</span></summary>
     <div class="conteudo">
+      <div class="cot-rota"><span><small>Cotando</small><b>${esc(rotaCotada(p))}</b>${p.pedidoOriginal?' <span class="tag sol">diferente do pedido</span>':''}</span><button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">📅 Mudar datas ou aeroportos</button></div>
       <div class="g3">
         <div class="campo"><label>Valor da Milhas Plus (R$, com taxas)</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="valorMP" value="${esc(p.valorMP??'')}" placeholder="0,00"></div>
         <div class="campo"><label>Seu lucro (%)</label><input type="number" min="0" step="0.5" data-bind="percLucro" value="${esc(p.percLucro ?? cfg.percPadrao)}"></div>
@@ -5893,11 +5898,16 @@ if(!FB.ativo){ setTimeout(()=>publicarPublico(), 2000); }
 
 
 /* ---------- mudar as datas do pedido ---------- */
+function rotaCotada(p){
+  const v = p.tipo==='ida_volta';
+  return `${p.origem.iata} → ${p.destino.iata} em ${fmtDataCurta(p.dataIda)}${v ? ` · volta ${voltaDe(p)} → ${voltaPara(p)} em ${fmtDataCurta(p.dataVolta)}` : ' · só ida'}`;
+}
 function abrirEditarDatas(id){
   const p = pedido(id); if(!p) return;
   const temBusca = Object.values(p.busca||{}).some(b=>b && (b.milhasIda || b.milhasVolta));
   const vo = p.voltaOrigem||p.destino, vd = p.voltaDestino||p.origem, ae = a => `${a.iata} · ${a.cidade}`;
-  abrirModal(`<h2>Mudar datas e aeroportos · ${esc(p.id)}</h2>
+  abrirModal(`<h2>Datas e aeroportos da cotação · ${esc(p.id)}</h2>
+    <p class="nota" style="margin:0">O pedido do cliente fica guardado como ele pediu. Muda só o que vai na cotação, na imagem e na emissão.</p>
     <datalist id="dlAeroEd">${AEROPORTOS.map(a=>`<option value="${a.iata} · ${esc(a.cidade)} (${esc(a.aeroporto)})">`).join('')}</datalist>
     <div class="g2" style="margin-top:6px"><div class="campo"><label for="edO">Ida sai de</label><input id="edO" list="dlAeroEd" value="${esc(ae(p.origem))}"></div><div class="campo"><label for="edD">Ida chega em</label><input id="edD" list="dlAeroEd" value="${esc(ae(p.destino))}"></div></div>
     <div class="g2" id="edVoltaAe"><div class="campo"><label for="edVO">Volta sai de</label><input id="edVO" list="dlAeroEd" value="${esc(ae(vo))}"></div><div class="campo"><label for="edVD">Volta chega em</label><input id="edVD" list="dlAeroEd" value="${esc(ae(vd))}"></div></div>
@@ -5920,6 +5930,7 @@ function abrirEditarDatas(id){
     if(tipo.value==='ida_volta' && aVO.iata===aVD.iata) return er('A volta precisa sair e chegar em aeroportos diferentes.');
     if(tipo.value==='ida_volta' && (!vt || vt < ida)) return er('A volta precisa ser no mesmo dia ou depois da ida.');
     const antes = `${fmtData(p.dataIda)}${p.dataVolta?' – '+fmtData(p.dataVolta):' (só ida)'}`;
+    if(!p.pedidoOriginal){ const cp = x => x ? JSON.parse(JSON.stringify(x)) : x; p.pedidoOriginal = {tipo:p.tipo, origem:cp(p.origem), destino:cp(p.destino), dataIda:p.dataIda, dataVolta:p.dataVolta, ...(p.voltaOrigem?{voltaOrigem:cp(p.voltaOrigem)}:{}), ...(p.voltaDestino?{voltaDestino:cp(p.voltaDestino)}:{})}; }
     const mudouIda = ida !== p.dataIda, mudouVolta = vt !== p.dataVolta;
     const rotaAntes = `${p.origem.iata} → ${p.destino.iata}${p.tipo==='ida_volta' ? ' / ' + voltaDe(p) + ' → ' + voltaPara(p) : ''}`;
     const lim = a => ({iata:a.iata, cidade:a.cidade, aeroporto:a.aeroporto, pais:a.pais});
@@ -5927,9 +5938,10 @@ function abrirEditarDatas(id){
     if(tipo.value==='ida_volta' && !(aVO.iata===aD.iata && aVD.iata===aO.iata)){ p.voltaOrigem = lim(aVO); p.voltaDestino = lim(aVD); } else { delete p.voltaOrigem; delete p.voltaDestino; }
     p.tipo = tipo.value; p.dataIda = ida; p.dataVolta = vt;
     const rotaDepois = `${p.origem.iata} → ${p.destino.iata}${p.tipo==='ida_volta' ? ' / ' + voltaDe(p) + ' → ' + voltaPara(p) : ''}`;
-    if(rotaDepois !== rotaAntes) logar(p, `Aeroportos mudados: ${rotaAntes} → ${rotaDepois}`);
+    if(rotaDepois !== rotaAntes) logar(p, `Aeroportos da cotação mudados: ${rotaAntes} → ${rotaDepois}`);
+    { const o = p.pedidoOriginal; if(o && o.tipo===p.tipo && o.dataIda===p.dataIda && (o.dataVolta||null)===(p.dataVolta||null) && o.origem.iata===p.origem.iata && o.destino.iata===p.destino.iata && (o.voltaOrigem?.iata||'')===(p.voltaOrigem?.iata||'') && (o.voltaDestino?.iata||'')===(p.voltaDestino?.iata||'')) delete p.pedidoOriginal; }
     if(p.emissao){ if(p.emissao.partidaIda && mudouIda) p.emissao.partidaIda = ida + p.emissao.partidaIda.slice(10); if(p.emissao.partidaVolta && vt && mudouVolta) p.emissao.partidaVolta = vt + p.emissao.partidaVolta.slice(10); }
-    logar(p, `Datas mudadas: ${antes} → ${fmtData(ida)}${vt?' – '+fmtData(vt):' (só ida)'}`);
+    if(mudouIda || mudouVolta) logar(p, `Datas da cotação mudadas: ${antes} → ${fmtData(ida)}${vt?' – '+fmtData(vt):' (só ida)'}`);
     const buscar = $('#edBuscar')?.checked;
     if(buscar){ for(const k in p.busca){ const b = p.busca[k]; if(!b) continue; ['Ida','Volta'].forEach(T=>{ ['milhas','voo','saida','chegada','pp','auto','print','taxas','taxasFonte','paradas','escalas','paradasDed','assentos','vooFalta','bebeMilhas','bebeReais'].forEach(c=>delete b[c+T]); }); delete b.taxas; delete b.taxasMan; b.semDisp = false; } delete p.auto; }
     salvar(true); fecharModal(); renderQuadro(); renderDetalhe(); toast('Pedido atualizado');
