@@ -1052,6 +1052,13 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .pg-img img{display:block;width:100%;max-height:78vh;object-fit:contain;border:1.5px solid var(--linha);border-radius:12px;background:#fff}
 .colar img{cursor:zoom-in}
 
+.cap-tab td.novo input,.cap-tab td.novo select{font:inherit;font-weight:700;color:var(--sol-esc);border:1.5px solid var(--linha);border-radius:9px;padding:7px 9px;min-height:40px;width:100%;box-sizing:border-box;background:var(--card)}
+.cap-tab td.novo input + input,.cap-tab td.novo select + input{margin-top:6px}
+.cap-tab td.novo small{display:block;margin-top:3px}
+.cap-tab tr:not(.dif) td.novo input,.cap-tab tr:not(.dif) td.novo select{color:var(--tinta);font-weight:600}
+.cap-tab tr.dif{background:var(--sol-claro)}
+.cap-print a{display:block;cursor:zoom-in}
+
 </style>
 </head>
 <body>
@@ -5029,7 +5036,7 @@ function aplicarCaptura(c0, p){
   const b = p.busca[c.programa];
   // o trecho já tem dados: pergunta antes de trocar pelo que veio com o print
   const difs = (n(b['milhas'+T]) || b['saida'+T]) ? difsCaptura(p, b, T, c) : [];
-  if(difs.length){
+  if(difs.some(d=>d.dif)){
     if($('#modalFundo').classList.contains('aberto')){ capturasEspera.set(c0.id, c0); mostrarBarraCaptura(); return; }
     perguntarCaptura(c, p, T, difs); return;
   }
@@ -5045,17 +5052,23 @@ function fecharCaptura(c, p, msg){
   if(msg){ bip(); toast(msg); }
   mostrarBarraCaptura();
 }
+// campos da captura para conferir e corrigir na pergunta (dif = diferente do que está no painel)
 function difsCaptura(p, b, T, c){
-  const r = [], pag = pagantes(p);
-  const add = (id, rot, agora, novo) => { if(novo==='' || novo==null) return; if(String(agora||'')!==String(novo)) r.push({id, rot, agora: agora==='' || agora==null ? '—' : agora, novo}); };
-  if(c.data) add('data', 'Data', fmtDataCurta(dataProg(p, c.programa, T)), fmtDataCurta(c.data));
-  add('saida', 'Sai', b['saida'+T], c.saida);
-  add('chegada', 'Chega', b['chegada'+T], c.chegada);
-  if(c.paradas!=null || (c.escalas && c.escalas.length)){ const q = paradasVoo(c); add('par', 'Paradas (onde e espera)', textoParadas(b,T), q==null ? '' : resumoParadas(q, escalasVoo(c))); }
-  if(c.milhas){ const ppA = n(b['pp'+T]) || (n(b['milhas'+T]) ? Math.round(n(b['milhas'+T])/pag) : ''), ppN = Math.round(n(c.milhas)/pag); add('mil', 'Milhas por pessoa', ppA ? MIL(ppA) : '', MIL(ppN)); }
-  if(c.taxas!=='' && c.taxas!=null){ const t = taxaTrechoE1(p, c.programa, T); add('tx', `Taxa da ${T.toLowerCase()}`, t.v==='' ? '' : BRL(t.v), BRL(n(c.taxas))); }
+  const r = [], pag = pagantes(p), vaz = v => v==='' || v==null;
+  const add = (id, rot, agora, val, novoTxt, agoraCmp) => r.push({id, rot, agora: vaz(agora) ? '—' : agora, val, dif: !vaz(val) && String(agoraCmp ?? agora ?? '')!==String(novoTxt ?? val)});
+  if(c.data) add('data', 'Data', fmtDataCurta(dataProg(p, c.programa, T)), c.data, fmtDataCurta(c.data));
+  add('saida', 'Sai', b['saida'+T], c.saida||'');
+  add('chegada', 'Chega', b['chegada'+T], c.chegada||'');
+  { const temP = c.paradas!=null || (c.escalas && c.escalas.length), q = temP ? paradasVoo(c) : null;
+    r.push({id:'par', rot:'Paradas', agora: textoParadas(b,T) || '—', val:{q, esc:(escalasVoo(c)||[]).map(e=>[e.local, e.min!=null?fmtMin(e.min):''].filter(Boolean).join(' ')).join(', ')}, dif: temP && q!=null && textoParadas(b,T)!==resumoParadas(q, escalasVoo(c))}); }
+  { const ppA = n(b['pp'+T]) || (n(b['milhas'+T]) ? Math.round(n(b['milhas'+T])/pag) : ''), ppN = c.milhas ? Math.round(n(c.milhas)/pag) : '';
+    add('mil', 'Milhas por pessoa', ppA ? MIL(ppA) : '', ppN, ppN ? MIL(ppN) : '', ppA ? MIL(ppA) : ''); }
+  { const t = taxaTrechoE1(p, c.programa, T), v = c.taxas!=='' && c.taxas!=null ? n(c.taxas) : '';
+    add('tx', `Taxa da ${T.toLowerCase()} (total)`, t.v==='' ? '' : BRL(t.v), v, v==='' ? '' : BRL(v), t.v==='' ? '' : BRL(t.v)); }
   return r;
 }
+// "BSB 1h05, GRU 50min" → [{local, min}]
+function lerEscalasTxt(t){ return String(t||'').split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).map(s=>{ const m = s.match(/^([A-Za-zÀ-ú .]+?)\s*(\d.*)?$/); return {local: localParada(m ? m[1] : s), min: m && m[2] ? minEspera(m[2]) : null}; }); }
 function aplicarCamposCaptura(p, b, T, c, sel){
   fixarTaxaUmTrecho(p, c.programa);
   const quer = id => !sel || sel.has(id);
@@ -5077,19 +5090,43 @@ function aplicarCamposCaptura(p, b, T, c, sel){
   if(!sel || sel.size) b['fonte'+T] = 'print';
 }
 function perguntarCaptura(c, p, T, difs){
-  const b = p.busca[c.programa]; capModalId = c.id;
+  const b = p.busca[c.programa], pag = pagantes(p); capModalId = c.id;
+  const nDif = difs.filter(d=>d.dif).length;
+  const campo = d => {
+    if(d.id==='data') return `<input type="date" data-capv="data" value="${esc(d.val)}">`;
+    if(d.id==='saida' || d.id==='chegada') return `<input type="time" data-capv="${d.id}" value="${esc(d.val)}">`;
+    if(d.id==='mil') return `<input type="number" min="0" step="100" inputmode="numeric" data-capv="mil" value="${esc(d.val)}" placeholder="por pessoa">`;
+    if(d.id==='tx') return `<input type="number" min="0" step="0.01" inputmode="decimal" data-capv="tx" value="${d.val==='' ? '' : n(d.val).toFixed(2)}" placeholder="0,00"><small class="nota">${pag>1 ? `soma dos ${pag} passageiros` : 'do trecho'}</small>`;
+    if(d.id==='par') return `<select data-capv="parq"><option value="" ${d.val.q==null?'selected':''}>—</option>${[0,1,2,3].map(i=>`<option value="${i}" ${d.val.q===i?'selected':''}>${i?i+' parada'+(i>1?'s':''):'Direto'}</option>`).join('')}</select><input data-capv="paresc" value="${esc(d.val.esc)}" placeholder="onde e espera: BSB 1h05" ${d.val.q ? '' : 'hidden'}>`;
+    return '';
+  };
   abrirModal(`<h2>Substituir pelos dados do print?</h2>
     <div class="cap-grade">
-      <figure class="cap-print">${c.print ? `<img src="${c.print}" alt="Print recebido">` : '<div class="nota">sem imagem</div>'}<figcaption class="nota">${esc(PROG[c.programa].nome)} · ${T.toLowerCase()} · ${difs.length} campo${difs.length>1?'s':''} diferente${difs.length>1?'s':''} do que está no painel</figcaption></figure>
+      <figure class="cap-print">${c.print ? `<a href="${c.print}" target="_blank" rel="noopener" title="Abrir o print em tamanho real"><img src="${c.print}" alt="Print recebido"></a>` : '<div class="nota">sem imagem</div>'}<figcaption class="nota">${esc(PROG[c.programa].nome)} · ${T.toLowerCase()} · ${nDif} campo${nDif!==1?'s':''} diferente${nDif!==1?'s':''} do que está no painel. Clique no print para ver grande.</figcaption></figure>
       <div>
-        <p class="nota" style="margin:0 0 8px">Já existem dados nessa ${T.toLowerCase()}. Marque o que deve trocar; o resto fica como está.</p>
-        <table class="cap-tab"><thead><tr><th>Campo</th><th>Agora</th><th>No print</th><th>Trocar</th></tr></thead>
-        <tbody>${difs.map(d=>`<tr><td><b>${esc(d.rot)}</b></td><td>${esc(d.agora)}</td><td class="novo">${esc(d.novo)}</td><td><input type="checkbox" data-capsel="${d.id}" checked aria-label="Trocar ${esc(d.rot)}"></td></tr>`).join('')}</tbody></table>
+        <p class="nota" style="margin:0 0 8px">Já existem dados nessa ${T.toLowerCase()}. Confira com o print, <b>corrija o que a leitura errou</b> e marque o que deve trocar. O resto fica como está.</p>
+        <table class="cap-tab"><thead><tr><th>Campo</th><th>Agora</th><th>No print (editável)</th><th>Trocar</th></tr></thead>
+        <tbody>${difs.map(d=>`<tr class="${d.dif?'dif':''}"><td><b>${esc(d.rot)}</b></td><td>${esc(d.agora)}</td><td class="novo">${campo(d)}</td><td><input type="checkbox" data-capsel="${d.id}" ${d.dif?'checked':''} aria-label="Trocar ${esc(d.rot)}"></td></tr>`).join('')}</tbody></table>
       </div>
     </div>
     <div class="rodape"><button type="button" class="btn pri" id="capSub">Substituir o que marquei</button><button type="button" class="btn" id="capPrint">Só guardar o print</button><button type="button" class="btn" id="capCancel">Descartar</button></div>`);
-  $('#capSub').onclick = ()=>{ const sel = new Set([...$('#modal').querySelectorAll('[data-capsel]:checked')].map(x=>x.dataset.capsel)); fecharModal();
-    aplicarCamposCaptura(p, b, T, c, sel);
+  const md = $('#modal');
+  // mexeu num valor: já marca para trocar
+  md.querySelectorAll('[data-capv]').forEach(inp=>inp.addEventListener('input',()=>{ const tr = inp.closest('tr'), ch = tr.querySelector('[data-capsel]'); if(ch) ch.checked = true; tr.classList.add('dif');
+    if(inp.dataset.capv==='parq'){ const e = tr.querySelector('[data-capv="paresc"]'); if(e) e.hidden = !n(inp.value); } }));
+  $('#capSub').onclick = ()=>{
+    const v = k => md.querySelector(`[data-capv="${k}"]`)?.value ?? '';
+    const sel = new Set([...md.querySelectorAll('[data-capsel]:checked')].map(x=>x.dataset.capsel));
+    const cx = {...c};
+    if(md.querySelector('[data-capv="data"]')) cx.data = v('data');
+    cx.saida = v('saida'); cx.chegada = v('chegada');
+    cx.milhas = v('mil')==='' ? '' : String(Math.round(n(v('mil'))*pag));
+    cx.taxas = v('tx')==='' ? '' : n(v('tx'));
+    if(v('parq')===''){ cx.paradas = null; cx.escalas = []; sel.delete('par'); }
+    else { const q = n(v('parq')); cx.paradas = q; cx.escalas = q ? lerEscalasTxt(v('paresc')).slice(0,q) : []; cx.voo = ''; }
+    ['saida','chegada','data'].forEach(k=>{ if(!cx[k]) sel.delete(k); }); if(cx.milhas==='') sel.delete('mil'); if(cx.taxas==='') sel.delete('tx');
+    fecharModal();
+    aplicarCamposCaptura(p, b, T, cx, sel);
     if(sel.size) logar(p, `${PROG[c.programa].nome} · ${T.toLowerCase()}: trocado pelo print (${difs.filter(d=>sel.has(d.id)).map(d=>d.rot.toLowerCase()).join(', ')})`);
     fecharCaptura(c, p, sel.size ? `${PROG[c.programa].nome} · ${T.toLowerCase()}: ${sel.size} campo${sel.size>1?'s':''} trocado${sel.size>1?'s':''} pelo print` : 'Print guardado; dados mantidos'); };
   $('#capPrint').onclick = ()=>{ fecharModal(); if(c.print) b['print'+T] = c.print; fecharCaptura(c, p, 'Print guardado; dados mantidos'); };
