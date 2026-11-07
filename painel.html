@@ -1059,6 +1059,8 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .cap-tab tr.dif{background:var(--sol-claro)}
 .cap-print a{display:block;cursor:zoom-in}
 
+.e1-cab button.e1-pill{font:inherit;font-size:.88rem;font-weight:700}
+
 </style>
 </head>
 <body>
@@ -3010,6 +3012,7 @@ function etapaBusca(p, cls, aberto){
           : `<button type="button" class="btn pri" data-acao="buscaAuto">${p.auto ? 'Buscar de novo' : 'Buscar agora'}</button>`}
         <button type="button" class="btn" data-acao="pesquisar">Pesquisar nos 3</button>
         <button type="button" class="btn peq" data-acao="copiarTrecho">Copiar dados do trecho</button>
+        <button type="button" class="btn peq perigo" data-limpar="*" style="margin-left:auto">🧹 Limpar todos os programas</button>
       </div>
       <div class="links-busca" id="linksBusca">${Object.entries(PROG).map(([k,m])=>`<a class="btn peq" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener" style="border-color:${m.cor};color:${m.cor}">Abrir ${m.nome}</a>`).join('')}</div>
       <p class="nota" style="margin:8px 0 0">${extensaoAtiva ? 'A busca roda sozinha quando o pedido chega e preenche cada programa com o voo de menos milhas. Para trocar, use "Voos encontrados". O que você digitar à mão não é sobrescrito. Os sites ficam abertos depois da busca: use "ver no site" para conferir.' : 'Abra o painel no Chrome com a extensão para a busca rodar sozinha.'} "Pesquisar nos 3" abre Smiles, LATAM Pass e Azul, cada um numa aba, e copia o trecho para você colar. Sem a extensão, o navegador pode bloquear abas: use os botões de cada site.</p>
@@ -6453,6 +6456,7 @@ function htmlProgE1(p, k, meta, x){
       <span class="e1-selo" data-selo="${k}" ${x.menor===k?'':'hidden'}>${textoSelo(cmp)}</span>
       <label class="e1-pill"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}> Sem disponibilidade</label>
       <a class="e1-pill e1-link" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener">Abrir no site</a>
+      <button type="button" class="e1-pill e1-link" data-limpar="${k}" title="Apagar voos, milhas, taxas e prints da ${esc(meta.nome)}">🧹 Limpar</button>
       <div class="e1-custo"><small data-e1custol="${k}">${esc(ct.l)}</small><b data-e1custo="${k}">${ct.v}</b></div>
     </div>
     <div class="e1-corpo">
@@ -6531,7 +6535,35 @@ function ligarE1(p, corpo){
     salvar(); atualizarCalculos(p);
   }));
   corpo.querySelectorAll('[data-pax]').forEach(bt=>bt.addEventListener('click',()=>mudarPax(p, bt.dataset.pax)));
+  corpo.querySelectorAll('[data-limpar]').forEach(bt=>bt.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); perguntarLimpar(p, bt.dataset.limpar); }));
   corpo.querySelectorAll('[data-verpedido]').forEach(bt=>bt.addEventListener('click',()=>{ const b0 = $('#detCorpo .passos-det [data-passo="0"]'); if(b0) b0.click(); else $('#detCorpo details.etapa')?.scrollIntoView({block:'start'}); }));
+}
+
+/* ---------- limpar um programa ou todos ---------- */
+function perguntarLimpar(p, alvo){
+  const ks = alvo==='*' ? Object.keys(PROG) : [alvo];
+  const nomes = ks.map(k=>PROG[k].nome).join(', ').replace(/, ([^,]*)$/, ' e $1');
+  const usa = ks.some(k=>p.escolhido===k || (p.combo && Object.values(p.combo).includes(k)));
+  abrirModal(`<h2>${alvo==='*' ? 'Limpar todos os programas?' : `Limpar a ${esc(PROG[alvo].nome)}?`}</h2>
+    <p>Apaga ${alvo==='*' ? 'de ' : 'da '}<b>${esc(nomes)}</b>: horários, paradas, milhas, taxas, datas, prints e os voos encontrados pela busca, na ida e na volta. A cia e a tabela da Milhas Plus ficam.</p>
+    ${usa ? `<p class="aviso on" style="display:block">${alvo==='*' ? 'O programa escolhido' : 'Este é o programa escolhido'} para a cotação: a escolha também é desfeita.</p>` : ''}
+    <div class="rodape"><button type="button" class="btn perigo" id="limparSim">Limpar</button><button type="button" class="btn" onclick="fecharModal()">Cancelar</button></div>`);
+  $('#limparSim').onclick = ()=>{ fecharModal(); limparProgramas(p, ks); };
+}
+function limparProgramas(p, ks){
+  for(const k of ks){
+    const b = p.busca[k] || {};
+    p.busca[k] = {cia: b.cia || PROG[k].cia, ...(b.tabela ? {tabela:b.tabela} : {})};
+    for(const tr of ['ida','volta']){ const c = k+'|'+tr;
+      if(p.auto){ ['st','opcoes','total','totalMan'].forEach(x=>{ if(p.auto[x]) delete p.auto[x][c]; }); if(p.auto.emProg) delete p.auto.emProg[k]; } }
+    if(p.flex?.k===k) delete p.flex;
+  }
+  if(p.combo && Object.values(p.combo).some(k=>ks.includes(k))){ delete p.combo; p.escolhido = null; }
+  if(ks.includes(p.escolhido)) p.escolhido = null;
+  if(!valorTravado(p)) p.valorMPManual = false;
+  logar(p, ks.length>1 ? 'Programas limpos (todos)' : `${PROG[ks[0]].nome} limpa`);
+  salvar(true); renderDetalhe();
+  toast(ks.length>1 ? 'Todos os programas limpos' : `${PROG[ks[0]].nome} limpa`);
 }
 
 /* ---------- passageiros na cotação: multiplicam as milhas por pessoa ---------- */
