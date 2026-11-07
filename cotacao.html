@@ -22,6 +22,67 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E3B7A">
 <script src="firebase-config.js"></script>
+<script>
+/* ---------- erros desta página: vão para o painel (sem dado pessoal), no máximo 5 por visita ---------- */
+(function(){
+  let n = 0;
+  const pg = (location.pathname.split('/').pop() || 'index.html').slice(0,60);
+  async function enviar(msg){
+    if(n++ >= 5) return;
+    const d = {pg, msg:String(msg||'erro').slice(0,600), ua:navigator.userAgent.slice(0,250), em:new Date().toISOString()};
+    try{
+      if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)){ const l = JSON.parse(localStorage.getItem('dcnp_erros_teste')||'[]'); l.push(d); localStorage.setItem('dcnp_erros_teste', JSON.stringify(l.slice(-100))); return; }
+      const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+      const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+      const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+      await f.addDoc(f.collection(f.getFirestore(a), 'erros'), d);
+    }catch(e){}
+  }
+  addEventListener('error', e=>{ if(e.message) enviar(`${e.message} @${String(e.filename||'').split('/').pop()}:${e.lineno||''}`); });
+  addEventListener('unhandledrejection', e=>{ const r = e.reason; enviar('promessa: ' + (r && (r.message||r.code) || r || '')); });
+  window.vpoErro = enviar;
+})();
+/* ---------- caixa de entrada do painel: o que o cliente manda pelas páginas ---------- */
+async function enviarAoPainel(tipo, tk, dados){
+  const m = {tipo, token:tk, em:new Date().toISOString(), dados:dados||{}};
+  if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)){
+    const l = JSON.parse(localStorage.getItem('dcnp_inbox_teste')||'[]'); l.push({id:Math.random().toString(36).slice(2,12), ...m});
+    localStorage.setItem('dcnp_inbox_teste', JSON.stringify(l)); return;
+  }
+  const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+  const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+  const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+  await f.addDoc(f.collection(f.getFirestore(a), 'mensagens'), m);
+}
+/* ---------- configuração pública do site (horário, achados, números, assentos, seguro, dicas) ---------- */
+async function lerPublico(){
+  try{
+    if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)) return JSON.parse(localStorage.getItem('dcnp_publico_teste')||'null') || {};
+    const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+    const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+    const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+    const s = await f.getDoc(f.doc(f.getFirestore(a), 'publico', 'site'));
+    return s.exists() ? s.data() : {};
+  }catch(e){ return {}; }
+}
+/* horário de atendimento: {aberto, txt, proximo} */
+function estadoAtendimento(at){
+  if(!at || !at.dias) return null;
+  const DN = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const agora = new Date(), min = h => { const [a,b] = String(h||'0:0').split(':').map(Number); return a*60+(b||0); };
+  const hoje = at.dias[agora.getDay()] || at.dias[String(agora.getDay())], m = agora.getHours()*60+agora.getMinutes();
+  if(hoje && hoje.on && m >= min(hoje.ini) && m < min(hoje.fim)) return {aberto:true};
+  for(let i=0;i<8;i++){
+    const d = new Date(agora); d.setDate(d.getDate()+i); const dia = at.dias[d.getDay()] || at.dias[String(d.getDay())];
+    if(!dia || !dia.on) continue;
+    if(i===0 && m >= min(dia.ini)) continue;
+    const h = String(dia.ini).replace(/:00$/,'h').replace(':','h');
+    return {aberto:false, proximo: i===0 ? `hoje a partir das ${h}` : i===1 ? `amanhã a partir das ${h}` : `${DN[d.getDay()]} a partir das ${h}`};
+  }
+  return {aberto:false, proximo:''};
+}
+
+</script>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -198,6 +259,51 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:50}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (max-width:640px){ .ceu{background-image:linear-gradient(180deg,rgba(9,32,70,.55) 0%,rgba(9,32,70,.35) 50%,rgba(9,32,70,.65) 100%),url("ceu-asa-celular.jpg"),linear-gradient(180deg,var(--ceu),var(--ceu-2));background-position:center 30%;background-size:cover} }
+
+/* ===== lançamento ===== */
+.vt-pp{grid-column:1/-1;font-size:.92rem;color:var(--tinta-2);margin-top:-6px}
+.vt-pp b{color:var(--tinta)}
+.vt-cup{grid-column:1/-1;background:#F3F0FF;color:#4B2BB3;border-radius:12px;padding:8px 12px;font-weight:700;font-size:.92rem}
+.vt-cli{grid-column:1/-1;font-size:.88rem;color:var(--tinta-2)}
+.caro{margin:-4px 0 14px;text-align:center}
+.caro > button{border:0;background:none;color:var(--ceu-2);font-weight:700;cursor:pointer;padding:8px;font-size:.95rem}
+.caro-box{background:#fff;border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(19,35,63,.08);text-align:left;margin-top:6px}
+.caro-box[hidden]{display:none}
+.caro-box .lin2{display:flex;gap:8px;margin-top:8px}
+.caro-box input{flex:1;border:1.5px solid var(--linha);border-radius:12px;padding:12px;font:inherit;min-width:0}
+.caro-box .btn{width:auto;padding:12px 16px}
+.caro-ok{background:var(--ok-claro);color:var(--ok);border-radius:14px;padding:12px 14px;font-weight:700;margin:0 0 14px}
+.malas-op{margin-top:14px}
+.malas-op[hidden]{display:none}
+.malas-op .ms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.malas-op label{display:flex;flex-direction:column;align-items:center;border:2px solid var(--linha);border-radius:14px;padding:10px 6px;cursor:pointer;text-align:center;font-size:.9rem}
+.malas-op label b{font-size:1rem}
+.malas-op label small{color:var(--tinta-2);font-size:.8rem}
+.malas-op input{position:absolute;opacity:0;pointer-events:none}
+.malas-op label:has(input:checked){border-color:var(--sol);background:var(--sol-claro)}
+.malas-op label:has(input:focus-visible){outline:3px solid var(--sol);outline-offset:2px}
+.regras{background:#F6F9FC;border:1px solid var(--linha);border-radius:14px;padding:12px 14px;margin-top:16px;font-size:.9rem}
+.regras summary{font-weight:700;cursor:pointer;color:var(--ceu)}
+.regras .rg{white-space:pre-line;color:var(--tinta-2);margin-top:8px}
+.regras .rg b{color:var(--tinta)}
+.colar{margin-top:10px}
+.colar summary{font-weight:700;color:var(--ceu-2);cursor:pointer}
+.colar textarea{width:100%;min-height:120px;border:1.5px solid var(--linha);border-radius:12px;padding:10px;font:inherit;font-size:.9rem;margin-top:8px}
+.colar .btn{margin-top:8px}
+.avisos-pax{background:#FFF4E5;border:1px solid #FFD8A8;border-radius:14px;padding:14px;margin-top:14px}
+.avisos-pax[hidden]{display:none}
+.avisos-pax ul{margin:6px 0 10px;padding-left:20px;color:#7A4A12;font-size:.92rem}
+.avisos-pax .g2 .btn{margin-top:0}
+.pagou{margin-top:14px;border:2px dashed var(--linha);border-radius:16px;padding:14px}
+.pagou h3{margin:0 0 4px;font-size:1.05rem}
+.pagou .btn{margin-top:8px}
+.pagou-ok{background:var(--ok-claro);border-radius:14px;padding:12px 14px;margin-top:14px}
+.pagou-ok b{color:var(--ok)}
+.fora-hora{background:#EEF5FC;border-radius:14px;padding:12px 14px;margin-top:12px;font-size:.92rem}
+.fora-hora[hidden]{display:none}
+.pix-pessoa{margin-top:10px}
+.pix-pessoa[hidden]{display:none}
+.zap-falha{display:none}.zap-falha.on{display:flex}
 </style>
 </head>
 <body>
@@ -214,7 +320,8 @@ h2{font-size:1.2rem;margin:0 0 4px}
   <div class="cartao" id="semCotacao" hidden>
     <h2 id="semTit">Não encontramos esta cotação</h2>
     <p class="sub" id="semTxt">Confira se o link está completo, ou fale com a gente pelo WhatsApp.</p>
-    <a class="btn zap" id="semZap" href="#" target="_blank" rel="noopener" hidden>Falar no WhatsApp</a>
+    <a class="btn zap" id="semZap" href="#" target="_blank" rel="noopener">💬 Falar no WhatsApp</a>
+    <a class="btn sec" href="./">Ir para o site</a>
   </div>
 
   <!-- cotação -->
@@ -230,21 +337,46 @@ h2{font-size:1.2rem;margin:0 0 4px}
     </div>
     <div class="escolha-voo" id="escolhaVoo" hidden></div>
     <div class="validade" id="validade"></div>
+    <div class="caro" id="caro">
+      <button type="button" id="caroBt" aria-expanded="false" aria-controls="caroBox">💸 Achei caro. Me avisa se baixar?</button>
+      <div class="caro-box" id="caroBox" hidden>
+        <b>A gente fica de olho no preço pra você</b>
+        <p class="nota">Se baixar, mandamos uma cotação nova no WhatsApp. Se quiser, diga até quanto pagaria (opcional).</p>
+        <div class="lin2"><input id="caroValor" inputmode="decimal" placeholder="Ex.: 900,00" aria-label="Até quanto você pagaria, em reais"><button type="button" class="btn pri" id="caroEnviar">Me avise</button></div>
+      </div>
+    </div>
 
     <!-- escolha + passageiros -->
     <form class="cartao" id="formAprovar" novalidate>
       <h2>1. Como você quer pagar?</h2>
       <p class="nota">Os valores já incluem as taxas de embarque.</p>
       <div class="opcoes" id="opcoes"></div>
+      <div class="malas-op" id="malasOp" hidden>
+        <b>Malas despachadas (23 kg)</b>
+        <p class="nota">Por passageiro, em cada trecho. Mudou de ideia? Troque aqui e o valor já se ajusta.</p>
+        <div class="ms" id="malasLista" role="radiogroup" aria-label="Malas despachadas por passageiro"></div>
+      </div>
 
       <hr>
       <h2>2. Dados de quem vai viajar</h2>
       <p class="nota">Escreva o nome completo exatamente como está no documento. A emissão usa estes dados.</p>
+      <details class="colar" id="colarBox" hidden><summary>📋 Colar a lista de passageiros</summary>
+        <p class="nota">Uma pessoa por linha: <b>nome completo; CPF; nascimento</b>. Ex.: <i>Maria da Silva; 123.456.789-09; 15/03/1990</i></p>
+        <textarea id="colarTxt" aria-label="Lista de passageiros"></textarea>
+        <button type="button" class="btn sec" id="colarBt">Preencher com a lista</button>
+      </details>
       <div id="paxLista"></div>
 
+      <details class="regras" id="regrasBox" hidden><summary>📄 Regras de cancelamento e remarcação</summary><div class="rg" id="regrasTxt"></div></details>
+      <label class="aceite" id="aceiteRegrasLbl" hidden><input type="checkbox" id="aceiteRegras"> <span>Li as regras de cancelamento e remarcação.</span></label>
       <label class="aceite"><input type="checkbox" id="aceite"> <span>Confirmo que os dados estão corretos e entendo que, depois de emitida, a passagem segue as regras da companhia aérea.</span></label>
+      <label class="aceite"><input type="checkbox" id="aceitePriv"> <span>Concordo com o uso dos dados dos passageiros só para emitir as passagens e fazer o check-in, conforme a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>
+      <label class="aceite" id="promoLbl"><input type="checkbox" id="optPromo"> <span>Quero receber promoções e achados de passagem no WhatsApp (opcional).</span></label>
+      <div class="avisos-pax" id="avisosPax" role="alert" hidden><b>Confira antes de aprovar:</b><ul id="avisosLista"></ul>
+        <div class="g2"><button type="button" class="btn sec" id="avisoCorrigir">Corrigir</button><button type="button" class="btn pri" id="avisoOk">Está certo, aprovar</button></div></div>
       <div class="erro-geral" id="erroGeral" hidden></div>
       <button type="submit" class="btn pri" id="btnAprovar" style="margin-top:16px">Aprovar cotação</button>
+      <a class="btn zap zap-falha" id="zapFalha" href="#" target="_blank" rel="noopener">💬 Enviar a aprovação pelo WhatsApp</a>
     </form>
   </section>
 
@@ -252,6 +384,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
   <section id="aprovada" hidden>
     <div class="cartao">
       <div class="ok-topo"><div class="sel">✓</div><div><h2 style="margin:0">Cotação aprovada!</h2><p class="sub" id="aprovadaSub"></p></div></div>
+      <div class="fora-hora" id="foraHora" role="status" hidden></div>
       <div id="pagarPix" hidden>
         <hr>
         <h2>Pague com Pix</h2>
@@ -270,6 +403,9 @@ h2{font-size:1.2rem;margin:0 0 4px}
           <div class="copia"><code id="pixChave"></code></div>
           <button type="button" class="btn sec" id="copiarChave">Copiar chave Pix</button>
           <p class="nota" id="pixRecebedor"></p>
+          <div class="pix-pessoa" id="pixPessoa" hidden>
+            <button type="button" class="btn sec" id="pixPessoaBt">👥 Cada um paga a sua parte? Gerar Pix de uma pessoa</button>
+          </div>
         </div>
         <a class="btn zap" id="zapComprovante" href="#" target="_blank" rel="noopener">Enviar comprovante no WhatsApp</a>
       </div>
@@ -279,6 +415,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
         <p class="sub" id="cartaoTxt"></p>
         <a class="btn zap" id="zapCartao" href="#" target="_blank" rel="noopener">Falar com a gente no WhatsApp</a>
       </div>
+      <div id="pagouArea"></div>
       <button type="button" class="btn sec" id="trocarForma">Trocar a forma de pagamento</button>
     </div>
   </section>
@@ -390,12 +527,39 @@ function montarValorTop(){
   el.innerHTML = `<div class="vt-l"><small>Valor da sua passagem${(C.paxQtd && ((C.paxQtd.adultos||0)+(C.paxQtd.criancas||0)+(C.paxQtd.bebes||0))>1) ? ' · todos os passageiros' : ''}</small>
       <b class="vt-v">${BRL(C.valorPix)}</b><span>no Pix${maior ? ` · ou até ${maior.n}x de ${BRL(maior.parcela)} no cartão` : ''}</span></div>
     <button type="button" class="btn pri vt-bt" id="vtAprovar">Escolher pagamento e aprovar</button>
-    ${eco>0 ? `<div class="vt-eco"><b>Você economiza ${BRL(eco)} (${pct}%)</b><small>Na ${esc(cmp.cia)}, comprando em dinheiro: ${BRL(cmp.preco)}</small></div>` : ''}`;
+    ${porPessoa() ? `<div class="vt-pp">${C.grupo ? '👥 Grupo de ' + C.grupo.total + ' · ' : ''}<b>${BRL(porPessoa())}</b> por pessoa (pagantes)</div>` : ''}
+    ${C.desconto ? `<div class="vt-cup">🏷️ Cupom ${esc(C.desconto.cupom)}: −${BRL(C.desconto.valor)} já descontado</div>` : ''}
+    ${eco>0 ? `<div class="vt-eco"><b>Você economiza ${BRL(eco)} (${pct}%)</b><small>Na ${esc(cmp.cia)}, comprando em dinheiro: ${BRL(cmp.preco)}</small></div>` : ''}
+    ${Number(C.clientesTotal) > 0 ? `<div class="vt-cli">✈️ Você está entre os ${Number(C.clientesTotal).toLocaleString('pt-BR')} clientes que já voaram com a gente.</div>` : ''}`;
   $('#vtAprovar').onclick = () => {
     const alvo = $('#formAprovar');
     if(typeof EMBUTIDA!=='undefined' && EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-rolar', y: alvo.getBoundingClientRect().top + scrollY}, location.origin);
     else alvo.scrollIntoView({behavior:'smooth', block:'start'});
   };
+}
+function pagantesQtd(){ const q = C.paxQtd||{}; return Math.max(1, (q.adultos||0)+(q.criancas||0)); }
+function porPessoa(){ const n = pagantesQtd(); return n > 1 && (C.grupo || n >= 3) ? Math.round(C.valorPix/n*100)/100 : 0; }
+/* malas: o cliente pode trocar a quantidade antes de aprovar (o painel manda o valor de cada opção) */
+let malasSel = null;
+function malasDaOpcao(){ const o = Array.isArray(C.opcoes) && C.opcoes[opSel]; return (o && o.malasOp) || C.malasOp || null; }
+function aplicarMalas(nm){
+  const l = malasDaOpcao(); if(!l) return;
+  const it = l.find(x=>x.n===nm); if(!it) return;
+  malasSel = nm; C.valorPix = it.valorPix; C.parcelas = it.parcelas;
+  C.bagagem = nm ? `Inclui ${nm} mala${nm>1?'s':''} de 23 kg por passageiro, por trecho` : 'Só mala de mão';
+}
+function montarMalas(){
+  const l = malasDaOpcao(), box = $('#malasOp');
+  if(!l || l.length < 2 || C.resposta && !trocando){ box.hidden = true; return; }
+  if(malasSel==null) malasSel = Number(C.malasAtual)||0;
+  const base = (l.find(x=>x.n===malasSel)||l[0]).valorPix;
+  $('#malasLista').innerHTML = l.map(x=>{ const d = Math.round((x.valorPix-base)*100)/100;
+    return `<label><input type="radio" name="malasCot" value="${x.n}" ${x.n===malasSel?'checked':''}><b>${x.n ? x.n + ' mala' + (x.n>1?'s':'') : 'Nenhuma'}</b><small>${d===0 ? 'atual' : (d>0?'+ ':'− ') + BRL(Math.abs(d))}</small></label>`; }).join('');
+  box.hidden = false;
+  box.querySelectorAll('input').forEach(i=>i.addEventListener('change',()=>{
+    const forma = document.querySelector('input[name=forma]:checked')?.value;
+    aplicarMalas(Number(i.value)); montarBilhete(); montarFormas(forma); montarValorTop(); montarMalas();
+  }));
 }
 function montarEscolha(){
   const el = $('#escolhaVoo'); if(!Array.isArray(C.opcoes) || C.opcoes.length<2){ el.hidden = true; return; }
@@ -403,14 +567,14 @@ function montarEscolha(){
   el.innerHTML = `<h2>Escolha o seu voo</h2><p class="nota">Separamos duas opções para você.</p><div class="ops">${C.opcoes.map((o,i)=>`<button type="button" class="op-voo ${i===opSel?'on':''}" data-op="${i}" aria-pressed="${i===opSel}"><span class="rot">${esc(o.rotulo)}</span><b>${BRL(o.valorPix)}</b><small>${esc(o.resumo||'')} · no Pix</small></button>`).join('')}</div>`;
   el.querySelectorAll('[data-op]').forEach(b=>b.addEventListener('click',()=>{
     const forma = document.querySelector('input[name=forma]:checked')?.value;
-    aplicarOpcao(Number(b.dataset.op)); montarEscolha(); montarBilhete(); montarFormas(forma);
-    montarValorTop();
+    aplicarOpcao(Number(b.dataset.op)); if(malasSel!=null) aplicarMalas(malasSel); montarEscolha(); montarBilhete(); montarFormas(forma);
+    montarValorTop(); montarMalas();
   }));
 }
 function mostrarSem(tit, txt, msgZap){
   $('#carregando').hidden = true; $('#cotacao').hidden = true; $('#aprovada').hidden = true;
   $('#semCotacao').hidden = false; $('#semTit').textContent = tit; $('#semTxt').textContent = txt;
-  if(C && C.whatsapp && msgZap){ $('#semZap').hidden = false; $('#semZap').href = zap(C.whatsapp, msgZap); }
+  $('#semZap').href = zap((C && C.whatsapp) || '35920001121', msgZap || 'Olá! Tentei abrir o link da minha cotação e não funcionou. Pode me ajudar?');
 }
 const vooTxt = v => v ? [fmtData(v.data), v.voo, (v.saida||v.chegada)?`${v.saida||'?'} → ${v.chegada||'?'}`:''].filter(Boolean).join(' · ') : '';
 /* ---------- bilhete ---------- */
@@ -442,10 +606,11 @@ function montarBilhete(){
   const cia = dif ? '' : (ciaI || C.cia || ''); $('#blCia').hidden = !cia; $('#blCia').textContent = cia;
   $('#blO').textContent = C.origem.iata; $('#blOc').textContent = C.origem.cidade;
   $('#blD').textContent = C.destino.iata; $('#blDc').textContent = C.destino.cidade;
-  $('#blTrechos').innerHTML = trechoHTML('Ida', C.ida, C.origem.iata, C.destino.iata, dif) + trechoHTML('Volta', C.volta, C.destino.iata, C.origem.iata, dif);
-  $('#blFt').innerHTML = `<div>Passageiros<b>${esc(C.pax||'—')}</b></div><div>Bagagem<b>${esc(C.bagagem||'Mala de mão')}</b></div><div>Viagem<b>${C.volta?'Ida e volta':'Só ida'}</b></div>`;
-  $('#blEx').innerHTML = [C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:''].join('');
-  $('#blEx').hidden = !C.datasAlt && !C.pet;
+  const vr = C.voltaRota;
+  $('#blTrechos').innerHTML = trechoHTML('Ida', C.ida, C.origem.iata, C.destino.iata, dif) + trechoHTML('Volta', C.volta, vr ? vr.de.iata : C.destino.iata, vr ? vr.para.iata : C.origem.iata, dif);
+  $('#blFt').innerHTML = `<div>Passageiros<b>${esc(C.pax||'—')}</b></div><div>Bagagem<b>${esc(C.bagagem||'Mala de mão')}</b></div><div>Viagem<b>${vr ? 'Cidades diferentes' : C.volta?'Ida e volta':'Só ida'}</b></div>`;
+  $('#blEx').innerHTML = [vr?`<div>↩️ <b>Volta:</b> ${esc(vr.de.cidade)} (${esc(vr.de.iata)}) → ${esc(vr.para.cidade)} (${esc(vr.para.iata)})</div>`:'', C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:'', C.desconto?`<div>🏷️ <b>Cupom ${esc(C.desconto.cupom)}:</b> −${BRL(C.desconto.valor)} (já descontado)</div>`:''].join('');
+  $('#blEx').hidden = !vr && !C.datasAlt && !C.pet && !C.desconto;
 }
 function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
 function vencida(){ return Date.now() >= (C.validaAteMs || Date.parse(C.validaAte)); }
@@ -456,10 +621,13 @@ function montar(){
   $('#olaTopo').textContent = (C.nome ? `Olá, ${C.nome}! ` : 'Olá! ') + 'Sua viagem para';
   $('#rotaGrande').textContent = C.destino.cidade;
   if(Array.isArray(C.opcoes) && C.opcoes.length>1){ C.opcoesBase = true; aplicarOpcao(Number(C.resposta?.opcao)||0); }
+  if(C.resposta && C.resposta.malas!=null && malasDaOpcao()) aplicarMalas(Number(C.resposta.malas));
   montarEscolha();
   montarBilhete();
   montarValorTop();
   montarFormas();
+  montarMalas();
+  montarRegras();
   montarPassageiros();
 }
 function montarFormas(manter){
@@ -486,6 +654,7 @@ function montarPassageiros(){
       <div class="campo"><label for="b${i}">Nascimento</label><input id="b${i}" data-c="nasc" type="date" max="${new Date().toISOString().slice(0,10)}"><div class="msg"></div></div>
     </div></div>`; }).join('');
   document.querySelectorAll('.pax').forEach(el=>el.querySelectorAll('[data-salvo]').forEach(b=>b.addEventListener('click',()=>usarSalvo(el, Number(b.dataset.salvo)))));
+  $('#colarBox').hidden = tipos.length < 4;
   atualizarValidade(); setInterval(atualizarValidade, 30000);
   if(vencida() && !C.resposta) return;   // atualizarValidade já mostrou o aviso de vencida
   $('#carregando').hidden = true;
@@ -512,7 +681,7 @@ function atualizarValidade(){
   el.innerHTML = `<div>⏱ Esse valor vale por mais<small>até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}. Depois a companhia aérea pode mudar o valor.</small></div><span>${h?h+'h ':''}${m}min</span>`;
 }
 function mostrarEtapa(){
-  if(C.resposta && !trocando){ $('#cotacao').hidden = true; $('#aprovada').hidden = false; montarPagamento(); }
+  if(C.resposta && !trocando){ $('#cotacao').hidden = true; $('#aprovada').hidden = false; montarPagamento(); montarPagou(); avisoForaHora(); }
   else { $('#aprovada').hidden = true; $('#cotacao').hidden = false; }
   scrollTo(0,0);
 }
@@ -534,6 +703,13 @@ function montarPagamento(){
       $('#pixCodigo').textContent = cod;
       try{ const q = qrcode(0, 'M'); q.addData(cod); q.make(); $('#pixQR').innerHTML = q.createSvgTag({cellSize:5, margin:2, scalable:true}); }catch(e){ console.warn('QR', e); $('#pixQR').hidden = true; }
     }
+    $('#pixPessoa').hidden = !(C.grupo || pagantesQtd() >= 3);
+    $('#pixPessoaBt').onclick = () => {
+      const v = Math.round(C.valorPix/pagantesQtd()*100)/100, cod = brcode(ch, v, C.pix?.recebedor, C.pedidoId);
+      $('#pixValor').textContent = `${BRL(v)} (1 pessoa de ${pagantesQtd()})`; $('#pixCodigo').textContent = cod;
+      try{ const q = qrcode(0, 'M'); q.addData(cod); q.make(); $('#pixQR').innerHTML = q.createSvgTag({cellSize:5, margin:2, scalable:true}); }catch(e){}
+      toast('Pix de uma pessoa gerado. Cada um paga o seu e manda o comprovante.');
+    };
     $('#zapComprovante').href = zap(C.whatsapp, `Olá! Aprovei a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}) e paguei no Pix ${BRL(C.valorPix)}. Segue o comprovante.`);
     $('#zapComprovante').hidden = !C.whatsapp;
   } else {
@@ -567,23 +743,153 @@ $('#formAprovar').addEventListener('submit', async e=>{
   if(vencida()){ atualizarValidade(); return; }
   const {ok, lista, primeiro} = validar();
   if(!ok){ primeiro.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>primeiro.focus({preventScroll:true}),300); return; }
+  if(!$('#aceiteRegrasLbl').hidden && !$('#aceiteRegras').checked){ $('#erroGeral').hidden = false; $('#erroGeral').textContent = 'Leia e marque as regras de cancelamento e remarcação para aprovar.'; $('#regrasBox').open = true; return; }
   if(!$('#aceite').checked){ $('#erroGeral').hidden = false; $('#erroGeral').textContent = 'Marque a confirmação dos dados para aprovar.'; return; }
+  if(!$('#aceitePriv').checked){ $('#erroGeral').hidden = false; $('#erroGeral').textContent = 'Marque a concordância com o uso dos dados para aprovar.'; return; }
+  const avisos = avisosPassageiros(lista);
+  if(avisos.length && !avisosVistos){
+    $('#avisosLista').innerHTML = avisos.map(a=>`<li>${esc(a)}</li>`).join(''); $('#avisosPax').hidden = false;
+    $('#avisosPax').scrollIntoView({behavior:'smooth', block:'center'}); return;
+  }
+  avisosVistos = false; $('#avisosPax').hidden = true;
   const [forma, parc] = (document.querySelector('input[name=forma]:checked')?.value || 'pix|0').split('|');
-  const resposta = {forma, parcelas: Number(parc)||0, aprovadaEm: new Date().toISOString(), ...(Array.isArray(C.opcoes) && C.opcoes.length>1 ? {opcao:opSel} : {})};
+  const agora = new Date().toISOString();
+  const resposta = {forma, parcelas: Number(parc)||0, aprovadaEm: agora, ...(Array.isArray(C.opcoes) && C.opcoes.length>1 ? {opcao:opSel} : {}),
+    ...(malasDaOpcao() && malasSel!=null ? {malas: malasSel} : {}),
+    aceites: {privacidade: agora, ...(!$('#aceiteRegrasLbl').hidden ? {regras: agora} : {})},
+    ...(!$('#promoLbl').hidden && $('#optPromo').checked ? {promo: true} : {})};
   const btn = $('#btnAprovar'); btn.disabled = true; btn.textContent = 'Enviando…'; btn.classList.add('enviando');
   try{
     await comPrazo(gravarResposta(resposta, lista), 20000);
-    C.resposta = resposta; trocando = false; mostrarEtapa();
+    C.resposta = resposta; trocando = false; $('#zapFalha').classList.remove('on'); mostrarEtapa();
     if(EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-aprovada'}, location.origin);
   }catch(err){
     console.error(err);
     $('#erroGeral').hidden = false;
-    $('#erroGeral').textContent = /permission/i.test(err.code||err.message||'') ? 'Esta cotação não pode mais ser aprovada (ela pode ter vencido). Fale com a gente pelo WhatsApp.' : 'Não consegui enviar. Confira a internet e tente de novo.';
+    $('#erroGeral').textContent = /permission/i.test(err.code||err.message||'') ? 'Esta cotação não pode mais ser aprovada (ela pode ter vencido). Fale com a gente pelo WhatsApp.' : 'Não consegui enviar. Tente de novo ou mande a aprovação pelo WhatsApp:';
+    const fp = forma==='pix' ? `Pix ${BRL(C.valorPix)}` : `cartão em ${resposta.parcelas}x`;
+    $('#zapFalha').href = zap(C.whatsapp, [`Olá! Quero aprovar a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}), pagando no ${fp}.`, 'Passageiros:', ...lista.map(x=>`• ${x.nome} · ${x.doc || 'documento já cadastrado'} · nasc. ${fmtData(x.nasc)}`)].join('\n'));
+    $('#zapFalha').classList.add('on');
+    window.vpoErro && vpoErro('aprovar cotação: ' + (err && (err.code || err.message) || err));
   } finally { btn.disabled = false; btn.textContent = 'Aprovar cotação'; btn.classList.remove('enviando'); }
+});
+
+/* =========================================================
+   LANÇAMENTO: regras, avisos de nome/idade, colar lista, já paguei, achei caro, horário
+   ========================================================= */
+let avisosVistos = false, PUB = {};
+function montarRegras(){
+  const r = C.regras;
+  const txt = Array.isArray(r) ? r.filter(x=>x && x.texto).map(x=>`<b>${esc(x.prog)}</b>\n${esc(x.texto)}`).join('\n\n') : (r ? esc(r) : '');
+  $('#regrasBox').hidden = !txt; $('#aceiteRegrasLbl').hidden = !txt; $('#regrasTxt').innerHTML = txt;
+  $('#promoLbl').hidden = !!C.promo;
+}
+$('#avisoCorrigir').addEventListener('click', ()=>{ $('#avisosPax').hidden = true; const p = document.querySelector('.pax input'); if(p) p.scrollIntoView({behavior:'smooth', block:'center'}); });
+$('#avisoOk').addEventListener('click', ()=>{ avisosVistos = true; $('#formAprovar').requestSubmit(); });
+function idadeEm(nasc, ref){ const [a,m,d] = nasc.split('-').map(Number), [ra,rm,rd] = ref.split('-').map(Number); let i = ra - a; if(rm < m || (rm===m && rd < d)) i--; return i; }
+function avisosPassageiros(lista){
+  const av = [], ref = (C.ida && C.ida.data) || new Date().toISOString().slice(0,10), refV = (C.volta && C.volta.data) || ref;
+  lista.forEach((x,i)=>{
+    const nome = x.nome, pr = nome.split(' ')[0];
+    if(/(^|\s)[A-Za-zÀ-ú]\.?(\s|$)/.test(nome) || /\.\s?/.test(nome)) av.push(`${i+1}. ${nome}: parece ter uma abreviação. Escreva o nome completo, igual ao documento.`);
+    else if(nome.split(' ').length === 2 && nome.length < 12) av.push(`${i+1}. ${nome}: confira se está faltando algum sobrenome. O nome precisa ser igual ao do documento.`);
+    if(x.nasc){
+      const id = idadeEm(x.nasc, ref), idV = idadeEm(x.nasc, refV);
+      if(x.tipo==='Adulto' && id < 12) av.push(`${i+1}. ${pr} terá ${id} ano${id===1?'':'s'} no voo, mas foi pedido como adulto (12 anos ou mais). O valor pode mudar.`);
+      if(x.tipo==='Criança' && (id < 2 || id > 11)) av.push(`${i+1}. ${pr} terá ${id} ano${id===1?'':'s'} no voo, mas foi pedido como criança (2 a 11 anos). O valor pode mudar.`);
+      if(x.tipo==='Bebê' && idV >= 2) av.push(`${i+1}. ${pr} terá ${idV} anos na data da ${idV!==id?'volta':'viagem'}. Bebê de colo é só até 1 ano: com 2, precisa de assento e passagem de criança.`);
+    }
+  });
+  return av;
+}
+// grupo: colar a lista inteira (nome; CPF; nascimento)
+$('#colarBt').addEventListener('click', ()=>{
+  const linhas = $('#colarTxt').value.split(/\n+/).map(l=>l.trim()).filter(Boolean), caixas = [...document.querySelectorAll('.pax')];
+  let ok = 0;
+  linhas.slice(0, caixas.length).forEach((l,i)=>{
+    const p = l.split(/\s*[;\t|]\s*|\s{2,}/), g = k => caixas[i].querySelector(`[data-c="${k}"]`);
+    if(p[0]) g('nome').value = p[0].replace(/\s+/g,' ');
+    if(p[1]){ g('doc').readOnly = false; delete g('doc').dataset.salvo; g('doc').value = p[1]; }
+    const dt = (p[2]||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+    if(dt){ const a = dt[3].length===2 ? (Number(dt[3]) > 30 ? '19' : '20') + dt[3] : dt[3]; g('nasc').value = `${a}-${dt[2].padStart(2,'0')}-${dt[1].padStart(2,'0')}`; }
+    ok++;
+  });
+  toast(ok ? `${ok} passageiro${ok>1?'s':''} preenchido${ok>1?'s':''}. Confira cada um.` : 'Não encontrei nenhuma linha. Use: nome; CPF; nascimento');
+  if(linhas.length > caixas.length) toast(`A lista tem ${linhas.length} nomes, mas o pedido é para ${caixas.length}.`);
+});
+
+// "Já paguei": com ou sem foto do comprovante
+const chPagou = () => 'vpo-pagou-' + token;
+function comprimirImagem(arq){
+  return new Promise((res, rej)=>{
+    const img = new Image(), url = URL.createObjectURL(arq);
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight; const max = 1280, k = Math.min(1, max/Math.max(w,h)); w = Math.round(w*k); h = Math.round(h*k);
+      const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      let q = .7, d = c.toDataURL('image/jpeg', q);
+      while(d.length > 900000 && q > .3){ q -= .1; d = c.toDataURL('image/jpeg', q); }
+      d.length > 900000 ? rej(new Error('imagem grande demais')) : res(d);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('não é imagem')); };
+    img.src = url;
+  });
+}
+function montarPagou(){
+  const el = $('#pagouArea'); let feito = null; try{ feito = JSON.parse(localStorage.getItem(chPagou())); }catch(e){}
+  if(C.pagoConfirmado){ el.innerHTML = `<div class="pagou-ok"><b>✓ Pagamento confirmado!</b><p class="nota">Agora é com a gente: emitimos a passagem e mandamos tudo no WhatsApp.</p></div>`; return; }
+  if(feito || C.pagouInformado){ el.innerHTML = `<div class="pagou-ok"><b>⏳ Aguardando conferência</b><p class="nota">Recebemos o seu aviso de pagamento${feito && feito.foto ? ' com o comprovante' : ''}. Assim que conferirmos, emitimos e avisamos no WhatsApp.</p></div>`; return; }
+  el.innerHTML = `<div class="pagou"><h3>Já pagou?</h3><p class="nota">Mande o comprovante por aqui e a gente já confere.</p>
+    <input type="file" id="pagouArq" accept="image/*" hidden>
+    <button type="button" class="btn pri" id="pagouFoto">📎 Já paguei, enviar comprovante</button>
+    <button type="button" class="btn sec" id="pagouSem">Já paguei (sem comprovante)</button>
+    <p class="erro-geral" id="pagouErro" hidden></p></div>`;
+  const enviar = async (img) => {
+    const r = C.resposta || {}, bts = el.querySelectorAll('button'); bts.forEach(b=>b.disabled = true);
+    try{
+      await comPrazo(enviarAoPainel('pagou', token, {forma: r.forma||'', valor: C.valorPix, ...(img ? {img} : {})}), 30000);
+      localStorage.setItem(chPagou(), JSON.stringify({em: Date.now(), foto: !!img})); montarPagou(); toast('Aviso de pagamento enviado');
+    }catch(e){
+      bts.forEach(b=>b.disabled = false); const er = $('#pagouErro'); er.hidden = false;
+      er.innerHTML = `Não consegui enviar agora. <a href="${zap(C.whatsapp, `Olá! Paguei a cotação ${C.pedidoId}. Segue o comprovante.`)}" target="_blank" rel="noopener">Mande pelo WhatsApp</a>.`;
+      window.vpoErro && vpoErro('já paguei: ' + (e.code || e.message || e));
+    }
+  };
+  $('#pagouFoto').onclick = () => $('#pagouArq').click();
+  $('#pagouArq').onchange = async e => {
+    const f = e.target.files[0]; if(!f) return;
+    try{ toast('Preparando a imagem…'); enviar(await comprimirImagem(f)); }
+    catch(er){ const x = $('#pagouErro'); x.hidden = false; x.textContent = 'Não consegui ler essa imagem. Tente um print do comprovante.'; }
+  };
+  $('#pagouSem').onclick = () => enviar(null);
+}
+function avisoForaHora(){
+  const at = estadoAtendimento(PUB.atendimento), pausa = PUB.atendimento && PUB.atendimento.pausa && PUB.atendimento.pausa.on, el = $('#foraHora');
+  if(C.pagoConfirmado || !(pausa || (at && !at.aberto))){ el.hidden = true; return; }
+  el.hidden = false;
+  el.textContent = pausa ? `⏸ ${PUB.atendimento.pausa.texto || 'Estamos com o atendimento pausado.'} A emissão acontece assim que voltarmos; se a companhia mudar o preço até lá, avisamos antes.`
+    : `🌙 Agora estamos fora do horário de atendimento. A emissão acontece ${at.proximo || 'no próximo horário'}. Se a companhia mudar o preço até lá, avisamos antes de qualquer cobrança.`;
+}
+lerPublico().then(p=>{ PUB = p || {}; if(C && C.resposta && !trocando) avisoForaHora(); });
+
+// "Achei caro, me avisa se baixar"
+const chAvise = () => 'vpo-avise-' + token;
+function montarCaro(){
+  if(!C || C.resposta || C.semAvise){ $('#caro').hidden = true; return; }
+  if(localStorage.getItem(chAvise()) || C.avisoPedido){ $('#caro').innerHTML = '<div class="caro-ok">✓ Combinado! Estamos de olho no preço e avisamos no WhatsApp se baixar.</div>'; return; }
+}
+$('#caroBt').addEventListener('click', ()=>{ const b = $('#caroBox'); b.hidden = !b.hidden; $('#caroBt').setAttribute('aria-expanded', String(!b.hidden)); if(!b.hidden) $('#caroValor').focus(); });
+$('#caroEnviar').addEventListener('click', async ()=>{
+  const v = Number(String($('#caroValor').value).replace(/[^\d,.]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.')) || 0;
+  const bt = $('#caroEnviar'); bt.disabled = true;
+  try{
+    await comPrazo(enviarAoPainel('avise', token, {...(v > 0 ? {valor: Math.round(v*100)/100} : {}), atual: C.valorPix}), 20000);
+    localStorage.setItem(chAvise(), String(Date.now())); montarCaro();
+  }catch(e){ bt.disabled = false; toast('Não consegui enviar. Tente de novo.'); window.vpoErro && vpoErro('avise: ' + (e.code || e.message || e)); }
 });
 $('#copiarCodigo').addEventListener('click', ()=>copiar($('#pixCodigo').textContent, 'Código Pix copiado'));
 $('#copiarChave').addEventListener('click', ()=>copiar(C.pix.chave, 'Chave Pix copiada'));
-$('#trocarForma').addEventListener('click', ()=>{ trocando = true; mostrarEtapa(); toast('Escolha a nova forma e confirme os dados'); });
+$('#trocarForma').addEventListener('click', ()=>{ trocando = true; montarMalas(); mostrarEtapa(); toast('Escolha a nova forma e confirme os dados'); });
 
 (async ()=>{
   if(!token){ mostrarSem('Link incompleto', 'Este link de cotação está faltando um pedaço. Abra de novo pelo link que mandamos no WhatsApp.'); return; }
@@ -591,6 +897,7 @@ $('#trocarForma').addEventListener('click', ()=>{ trocando = true; mostrarEtapa(
     C = await comPrazo(buscar(), 20000);
     if(!C){ mostrarSem('Não encontramos esta cotação', 'Ela pode ter sido substituída por uma mais nova. Fale com a gente pelo WhatsApp.'); return; }
     montar();
+    montarCaro();
     registrarVista();
   }catch(e){
     console.error(e);

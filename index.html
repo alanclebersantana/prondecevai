@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vai pra onde? · Passagens com milhas</title>
+<title>Passagens aéreas com milhas mais baratas · Vai pra onde?</title>
+<link rel="canonical" href="https://vaipraondeagencia.netlify.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vai pra onde?">
 <meta property="og:title" content="Vai pra onde? · Passagens com milhas">
@@ -18,9 +19,85 @@
 <meta property="og:image:alt" content="Vai pra onde? — passagens nacionais com milhas">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://vaipraondeagencia.netlify.app/og-image.jpg">
-<meta name="description" content="Passagens aéreas emitidas com milhas. Diga para onde vai e receba a cotação no WhatsApp.">
+<meta name="description" content="Passagens aéreas nacionais emitidas com milhas, geralmente mais baratas que no site da companhia. Peça a cotação grátis e receba no WhatsApp. GOL, LATAM e Azul.">
 <meta name="theme-color" content="#0E3B7A">
+<meta name="google-site-verification" content="2PSXW0kUzFqxkIBxUjlqVlgcdJaT_fdrOo8TN3X7XkM" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TravelAgency","name":"Vai pra onde?","alternateName":"Vai pra onde? Passagens com milhas",
+ "url":"https://vaipraondeagencia.netlify.app/","logo":"https://vaipraondeagencia.netlify.app/logo-192.png","image":"https://vaipraondeagencia.netlify.app/og-image.jpg",
+ "description":"Passagens aéreas nacionais emitidas com milhas, com cotação pelo WhatsApp, check-in feito pela agência e atendimento de pessoa de verdade.",
+ "telephone":"+55-35-92000-1121","areaServed":{"@type":"Country","name":"Brasil"},"priceRange":"$$","paymentAccepted":"Pix, Cartão de crédito",
+ "contactPoint":{"@type":"ContactPoint","telephone":"+55-35-92000-1121","contactType":"customer service","availableLanguage":"Portuguese"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+ {"@type":"Question","name":"Preciso ter milhas?","acceptedAnswer":{"@type":"Answer","text":"Não. A gente cuida da emissão com milhas e você só paga o valor da cotação."}},
+ {"@type":"Question","name":"A passagem fica no meu nome?","acceptedAnswer":{"@type":"Answer","text":"Sim. A passagem é emitida no nome de cada passageiro, direto na companhia aérea, e você recebe o localizador para conferir."}},
+ {"@type":"Question","name":"Como eu pago?","acceptedAnswer":{"@type":"Answer","text":"No Pix, à vista, ou no cartão de crédito, parcelado."}},
+ {"@type":"Question","name":"Quem faz o check-in?","acceptedAnswer":{"@type":"Answer","text":"A gente faz o check-in e manda o cartão de embarque no WhatsApp."}}]}
+</script>
 <script src="firebase-config.js"></script>
+<script>
+/* ---------- erros desta página: vão para o painel (sem dado pessoal), no máximo 5 por visita ---------- */
+(function(){
+  let n = 0;
+  const pg = (location.pathname.split('/').pop() || 'index.html').slice(0,60);
+  async function enviar(msg){
+    if(n++ >= 5) return;
+    const d = {pg, msg:String(msg||'erro').slice(0,600), ua:navigator.userAgent.slice(0,250), em:new Date().toISOString()};
+    try{
+      if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)){ const l = JSON.parse(localStorage.getItem('dcnp_erros_teste')||'[]'); l.push(d); localStorage.setItem('dcnp_erros_teste', JSON.stringify(l.slice(-100))); return; }
+      const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+      const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+      const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+      await f.addDoc(f.collection(f.getFirestore(a), 'erros'), d);
+    }catch(e){}
+  }
+  addEventListener('error', e=>{ if(e.message) enviar(`${e.message} @${String(e.filename||'').split('/').pop()}:${e.lineno||''}`); });
+  addEventListener('unhandledrejection', e=>{ const r = e.reason; enviar('promessa: ' + (r && (r.message||r.code) || r || '')); });
+  window.vpoErro = enviar;
+})();
+/* ---------- caixa de entrada do painel: o que o cliente manda pelas páginas ---------- */
+async function enviarAoPainel(tipo, tk, dados){
+  const m = {tipo, token:tk, em:new Date().toISOString(), dados:dados||{}};
+  if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)){
+    const l = JSON.parse(localStorage.getItem('dcnp_inbox_teste')||'[]'); l.push({id:Math.random().toString(36).slice(2,12), ...m});
+    localStorage.setItem('dcnp_inbox_teste', JSON.stringify(l)); return;
+  }
+  const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+  const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+  const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+  await f.addDoc(f.collection(f.getFirestore(a), 'mensagens'), m);
+}
+/* ---------- configuração pública do site (horário, achados, números, assentos, seguro, dicas) ---------- */
+async function lerPublico(){
+  try{
+    if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)) return JSON.parse(localStorage.getItem('dcnp_publico_teste')||'null') || {};
+    const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+    const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+    const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+    const s = await f.getDoc(f.doc(f.getFirestore(a), 'publico', 'site'));
+    return s.exists() ? s.data() : {};
+  }catch(e){ return {}; }
+}
+/* horário de atendimento: {aberto, txt, proximo} */
+function estadoAtendimento(at){
+  if(!at || !at.dias) return null;
+  const DN = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const agora = new Date(), min = h => { const [a,b] = String(h||'0:0').split(':').map(Number); return a*60+(b||0); };
+  const hoje = at.dias[agora.getDay()] || at.dias[String(agora.getDay())], m = agora.getHours()*60+agora.getMinutes();
+  if(hoje && hoje.on && m >= min(hoje.ini) && m < min(hoje.fim)) return {aberto:true};
+  for(let i=0;i<8;i++){
+    const d = new Date(agora); d.setDate(d.getDate()+i); const dia = at.dias[d.getDay()] || at.dias[String(d.getDay())];
+    if(!dia || !dia.on) continue;
+    if(i===0 && m >= min(dia.ini)) continue;
+    const h = String(dia.ini).replace(/:00$/,'h').replace(':','h');
+    return {aberto:false, proximo: i===0 ? `hoje a partir das ${h}` : i===1 ? `amanhã a partir das ${h}` : `${DN[d.getDay()]} a partir das ${h}`};
+  }
+  return {aberto:false, proximo:''};
+}
+
+</script>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -528,12 +605,99 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
   .rod-cols{grid-template-columns:1fr}
   .canhoto .ca b{font-size:1.05rem}
 }
+
+/* ===== lançamento: novos blocos ===== */
+.pular{position:absolute;left:-999px;top:8px;z-index:100;background:#fff;color:var(--ceu);padding:10px 16px;border-radius:10px;font-weight:700}
+.pular:focus{left:12px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+.status-at{position:relative;display:inline-flex;align-items:center;gap:8px;margin:16px 0 0;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--tinta);font-weight:700;font-size:.9rem}
+.status-at i{width:9px;height:9px;border-radius:50%;background:#9AA8BC}
+.status-at.on i{background:#22B35E;box-shadow:0 0 0 4px rgba(34,179,94,.22)}
+.status-at[hidden]{display:none}
+.aviso-pausa{background:#FFF4E5;border:1px solid #FFD8A8;color:#7A4A12;border-radius:14px;padding:12px 14px;margin:0 0 16px;font-weight:600;font-size:.95rem}
+.aviso-pausa[hidden]{display:none}
+.seg-tipo span{white-space:nowrap}
+.rota-volta{margin-top:14px;padding:14px;border-radius:16px;background:#F4F8FC;border:1px dashed #C9D8EA}
+.rota-volta[hidden]{display:none}
+.rota-volta .rv-tit{font-weight:700;font-size:.9rem;margin:0 0 10px;color:var(--ceu)}
+.rota-volta .g-rota{grid-template-columns:1fr 1fr}
+.grupo-link{display:block;width:100%;margin:8px 0 0;border:0;background:#FFF1E7;color:var(--sol-esc);font-weight:700;border-radius:10px;padding:10px;cursor:pointer}
+.grupo-link[hidden]{display:none}
+.grupo-box{display:none;padding:6px 0}
+.pax-painel.grupo .grupo-box{display:block}
+.pax-painel.grupo .pax-linha,.pax-painel.grupo .pax-aviso,.pax-painel.grupo .grupo-link{display:none}
+.grupo-box label{display:block;font-weight:600;font-size:.88rem;margin:10px 0 4px}
+.grupo-box .entrada{height:44px}
+.grupo-box .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grupo-box .gr-sair{border:0;background:none;color:var(--ceu-2);font-weight:700;cursor:pointer;padding:8px 0}
+.grupo-box .chk{margin-top:10px;font-weight:500;font-size:.88rem}
+.assento-painel{display:none;margin-top:14px;padding:14px 16px;background:#F3F0FF;border-radius:16px;border:1px solid #DDD5FB}
+.assento-painel.aberto{display:block}
+.assento-painel p{margin:0 0 10px;font-size:.88rem;color:var(--tinta-2)}
+.assento-painel .seg{margin:0;background:#fff;display:flex;width:100%;max-width:420px}
+.assento-painel .seg label{flex:1}
+.assento-painel .seg span{text-align:center;padding:8px 6px;white-space:nowrap}
+.assento-painel ul{margin:0 0 10px;padding-left:18px;font-size:.88rem}
+.cupom-area{margin-top:14px}
+.cupom-area .link-cupom{border:0;background:none;color:var(--ceu-2);font-weight:700;cursor:pointer;padding:6px 0;font-size:.93rem}
+.cupom-lin{display:flex;gap:8px;max-width:360px}
+.cupom-lin[hidden]{display:none}
+.cupom-lin .entrada{height:46px;text-transform:uppercase}
+.cupom-lin button{border:0;border-radius:12px;background:var(--ceu);color:#fff;font-weight:700;padding:0 16px;cursor:pointer}
+.cupom-msg{font-size:.88rem;margin:6px 0 0;font-weight:600}
+.cupom-msg.ok{color:var(--ok)}.cupom-msg.no{color:var(--erro)}
+.opt-promo{margin-top:14px}
+.hp{position:absolute!important;left:-5000px!important;width:1px;height:1px;opacity:0}
+.rodape-form a{color:var(--ceu-2);font-weight:700}
+.suc-hora{background:#EEF5FC;border-radius:12px;padding:10px 12px;font-size:.92rem;color:var(--tinta)}
+.suc-hora[hidden]{display:none}
+.btn-vcard{display:flex;justify-content:center;align-items:center;height:50px;margin-top:10px;border:1.5px solid var(--linha);border-radius:14px;font-weight:700;color:var(--ceu);background:#fff;cursor:pointer;width:100%;font-size:1rem}
+.erro-zap{display:none;margin-top:10px}
+.erro-zap.on{display:flex}
+.numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}
+.numeros[hidden]{display:none}
+.numeros div{background:#fff;border-radius:18px;padding:16px;text-align:center;box-shadow:0 8px 20px -14px rgba(14,59,122,.4)}
+.numeros b{display:block;font-size:1.6rem;color:var(--ceu);letter-spacing:-.02em}
+.numeros span{font-size:.86rem;color:var(--tinta-2);font-weight:600}
+.achados{margin-top:26px}
+.achados[hidden]{display:none}
+.achados h2{font-size:1.35rem;margin:0 0 4px}
+.achados .lead-a{margin:0 0 14px;color:var(--tinta-2);font-size:.95rem}
+.achados ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.achado{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;background:#fff;border-radius:18px;padding:16px;box-shadow:0 8px 22px -14px rgba(14,59,122,.45);border:1.5px solid transparent}
+.achado:hover,.achado:focus-visible{border-color:var(--sol)}
+.achado .rt{font-weight:800;font-size:1.15rem;color:var(--ceu)}
+.achado .ct{font-size:.86rem;color:var(--tinta-2)}
+.achado .pr{margin:10px 0 2px;font-size:.84rem;color:var(--tinta-2)}
+.achado .pr b{display:block;font-size:1.35rem;color:var(--tinta)}
+.achado .vs{font-size:.78rem;color:var(--tinta-2)}
+.achado .bt{display:inline-block;margin-top:10px;background:var(--sol);color:#fff;border-radius:999px;padding:6px 13px;font-weight:700;font-size:.86rem}
+.achados .nota{font-size:.8rem;color:var(--tinta-2);margin:10px 0 0}
+.nota-data{font-size:.82rem;color:var(--sol-esc);font-weight:600;margin-top:5px}
+.nota-data:empty{display:none}
+dialog.dlg-novo{border:0;border-radius:20px;padding:22px;max-width:360px;box-shadow:var(--sombra)}
+dialog.dlg-novo::backdrop{background:rgba(9,25,55,.45)}
+dialog.dlg-novo h3{margin:0 0 6px}
+dialog.dlg-novo p{margin:0 0 16px;color:var(--tinta-2)}
+dialog.dlg-novo .bts{display:flex;flex-direction:column;gap:8px}
+dialog.dlg-novo .bts button{height:48px;border-radius:12px;border:1.5px solid var(--linha);background:#fff;font-weight:700;font-size:1rem;cursor:pointer}
+dialog.dlg-novo .bts .sim{background:var(--sol);border-color:var(--sol);color:#fff}
+@media (max-width:640px){
+  .seg-tipo{display:flex;width:100%}
+  .seg-tipo label{flex:1}
+  .seg-tipo span{padding:8px 6px;text-align:center;font-size:.84rem}
+  .numeros{grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .numeros div{padding:12px 6px}.numeros b{font-size:1.2rem}.numeros span{font-size:.74rem}
+  .achados ul{grid-template-columns:1fr}
+  .rota-volta .g-rota{grid-template-columns:1fr}
+}
 @media (prefers-reduced-motion:reduce){
   *{transition:none !important;animation:none !important;scroll-behavior:auto !important}
 }
 </style>
 </head>
 <body>
+<a class="pular" href="#buscar">Pular para o pedido de cotação</a>
 
 <header class="topo">
   <div class="wrap">
@@ -591,6 +755,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
   <div class="wrap">
     <h1 id="h1"><span>Bora voar?</span><span class="baixo">Vai pra onde?</span></h1>
     <p class="sub">Passagens emitidas com milhas, geralmente mais baratas que no site da companhia aérea. Conte para onde vai e mandamos a cotação no seu WhatsApp.</p>
+    <p class="status-at" id="statusAt" role="status" hidden><i></i><span></span></p>
   </div>
 </section>
 
@@ -602,12 +767,14 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         <span class="pf on" id="pf1"><b>1</b>A viagem</span><span class="pf-ln" id="pfLn"></span><span class="pf" id="pf2"><b>2</b>Seus dados</span>
       </div>
       <div class="etapa" id="etapa1">
+      <div class="aviso-pausa" id="avisoPausa" role="status" hidden></div>
       <h2>Para onde você vai?</h2>
       <p class="dica">Preencha a viagem e enviamos a cotação completa, com valor no Pix e no cartão.</p>
 
-      <div class="seg" role="radiogroup" aria-label="Tipo de viagem">
+      <div class="seg seg-tipo" role="radiogroup" aria-label="Tipo de viagem">
         <label><input type="radio" name="tipo" value="ida_volta" checked><span>Ida e volta</span></label>
         <label><input type="radio" name="tipo" value="ida"><span>Somente ida</span></label>
+        <label><input type="radio" name="tipo" value="multi"><span>Cidades diferentes</span></label>
       </div>
 
       <div class="grade g-rota">
@@ -632,10 +799,33 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         </div>
       </div>
 
+
+      <div class="rota-volta" id="rotaVolta" hidden>
+        <p class="rv-tit">Volta (de outra cidade ou para outra cidade)</p>
+        <div class="grade g-rota">
+          <div class="campo com-iata" data-campo="voltaOrigem">
+            <label for="voltaOrigem">Volta saindo de</label>
+            <input class="entrada" id="voltaOrigem" type="text" autocomplete="off" placeholder="Cidade ou aeroporto"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-voltaOrigem">
+            <span class="iata" id="iata-voltaOrigem"></span>
+            <ul class="lista" id="lista-voltaOrigem" role="listbox"></ul>
+            <div class="msg-erro"></div>
+          </div>
+          <div class="campo com-iata" data-campo="voltaDestino">
+            <label for="voltaDestino">Volta chegando em</label>
+            <input class="entrada" id="voltaDestino" type="text" autocomplete="off" placeholder="Cidade ou aeroporto"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-voltaDestino">
+            <span class="iata" id="iata-voltaDestino"></span>
+            <ul class="lista" id="lista-voltaDestino" role="listbox"></ul>
+            <div class="msg-erro"></div>
+          </div>
+        </div>
+      </div>
       <div class="grade g-datas">
         <div class="campo" data-campo="ida">
           <label for="ida">Data de ida</label>
           <div class="data-cx"><span class="data-txt vazio" id="idaTxt">Escolher data</span><input class="entrada data-in" id="ida" type="date"></div>
+          <div class="nota-data" id="notaIda"></div>
           <div class="msg-erro"></div>
         </div>
         <div class="campo" data-campo="volta" id="campoVolta">
@@ -660,6 +850,20 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
               <div class="passo" data-tipo="bebes"><button type="button" data-d="-1" aria-label="Menos bebês">−</button><output>0</output><button type="button" data-d="1" aria-label="Mais bebês">+</button></div>
             </div>
             <p class="pax-aviso">Cada bebê viaja no colo de um adulto. Até 9 passageiros por pedido.</p>
+            <button type="button" class="grupo-link" id="grupoLink" hidden>👥 São 10 pessoas ou mais? Pedir cotação de grupo</button>
+            <div class="grupo-box" id="grupoBox">
+              <b>👥 Viagem em grupo</b>
+              <label for="grTotal">Quantas pessoas no total? (10 a 60)</label>
+              <input class="entrada" id="grTotal" type="number" inputmode="numeric" min="10" max="60" value="10">
+              <div class="g2">
+                <div><label for="grCri">Crianças (2 a 11)</label><input class="entrada" id="grCri" type="number" inputmode="numeric" min="0" max="59" value="0"></div>
+                <div><label for="grBeb">Bebês de colo</label><input class="entrada" id="grBeb" type="number" inputmode="numeric" min="0" max="30" value="0"></div>
+              </div>
+              <label for="grMotivo">Motivo da viagem</label>
+              <select class="entrada" id="grMotivo"><option value="">Escolher (opcional)</option><option>Família</option><option>Amigos</option><option>Empresa</option><option>Igreja ou excursão</option><option>Evento ou casamento</option><option>Time ou esporte</option><option>Outro</option></select>
+              <label class="chk"><input type="checkbox" id="grFlex"><span>Podemos ir em voos ou horários diferentes, se sair mais barato</span></label>
+              <button type="button" class="gr-sair" id="grSair">← Voltar para até 9 pessoas</button>
+            </div>
             <button type="button" class="pax-ok" id="paxOk">Pronto</button>
           </div>
           <div class="msg-erro"></div>
@@ -680,6 +884,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
           <label class="chip-chk"><input type="checkbox" id="flex"><span>Datas flexíveis<small>até 3 dias antes ou depois</small></span></label>
           <label class="chip-chk"><input type="checkbox" id="temHora" aria-controls="horaPainel"><span>🕒 Prefiro um horário<small>manhã, tarde ou noite</small></span></label>
           <label class="chip-chk"><input type="checkbox" id="temPet" aria-controls="petPainel"><span>🐾 Vou levar pet<small>cão ou gato</small></span></label>
+          <label class="chip-chk" id="chipAssento" hidden><input type="checkbox" id="temAssento" aria-controls="assentoPainel"><span>💺 Quero escolher assento<small>pago à parte</small></span></label>
         </div>
       </div>
 
@@ -708,6 +913,17 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
             <label class="chip-chk"><input type="checkbox" name="horaPer-volta" value="tarde"><span>Tarde<small>12h às 18h</small></span></label>
             <label class="chip-chk"><input type="checkbox" name="horaPer-volta" value="noite"><span>Noite<small>18h às 5h</small></span></label>
           </div>
+        </div>
+      </div>
+
+      <div class="assento-painel" id="assentoPainel">
+        <p><b>A escolha de assento é paga.</b> A companhia cobra por pessoa, em cada trecho. Valores aproximados:</p>
+        <ul id="assentoValores"></ul>
+        <p>Se você não marcar, a companhia escolhe um assento <b>sem custo</b> no check-in (pode não ser janela nem ficar junto). O valor exato vem na cotação.</p>
+        <div class="seg" role="radiogroup" aria-label="Preferência de assento">
+          <label><input type="radio" name="assentoPref" value="janela" checked><span>Janela</span></label>
+          <label><input type="radio" name="assentoPref" value="corredor"><span>Corredor</span></label>
+          <label><input type="radio" name="assentoPref" value="juntos"><span>Sentar juntos</span></label>
         </div>
       </div>
 
@@ -748,7 +964,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         <div class="grade g-contato">
           <div class="campo" data-campo="nome">
             <label for="nome">Seu nome</label>
-            <input class="entrada" id="nome" type="text" autocomplete="name" placeholder="Nome e sobrenome">
+            <input class="entrada" id="nome" type="text" autocomplete="name" maxlength="120" placeholder="Nome e sobrenome">
             <div class="msg-erro"></div>
           </div>
           <div class="campo" data-campo="whatsapp">
@@ -758,15 +974,26 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
           </div>
           <div class="campo campo-email" data-campo="email">
             <label for="email">E-mail <span class="opc">(opcional)</span></label>
-            <input class="entrada" id="email" type="email" autocomplete="email" placeholder="voce@email.com">
+            <input class="entrada" id="email" type="email" autocomplete="email" maxlength="120" placeholder="voce@email.com">
             <div class="msg-erro"></div>
           </div>
         </div>
       </div>
 
+        <input class="hp" type="text" id="hpEmpresa" name="empresa" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="cupom-area">
+          <button type="button" class="link-cupom" id="abrirCupom" aria-expanded="false" aria-controls="cupomLin">🏷️ Tem cupom?</button>
+          <div class="cupom-lin" id="cupomLin" hidden>
+            <input class="entrada" id="cupom" type="text" maxlength="20" autocomplete="off" placeholder="Código do cupom" aria-label="Código do cupom">
+            <button type="button" id="aplicarCupom">Aplicar</button>
+          </div>
+          <p class="cupom-msg" id="cupomMsg" role="status"></p>
+        </div>
+        <label class="chk opt-promo"><input type="checkbox" id="optPromo"><span>Quero receber promoções e achados de passagem no WhatsApp<small>Opcional. Para sair, é só responder SAIR.</small></span></label>
       <p class="erro-envio" id="erroEnvio" role="alert"></p>
+      <a class="btn-zap-sec erro-zap" id="erroZap" href="#" target="_blank" rel="noopener">💬 Enviar o pedido pelo WhatsApp</a>
       <div class="rodape-form">
-        <p>Seus dados servem só para enviar a cotação. Os documentos dos passageiros pedimos depois, quando você aprovar.</p>
+        <p>Seus dados servem só para enviar a cotação. Os documentos dos passageiros pedimos depois, quando você aprovar. Veja a <a href="privacidade.html">Política de Privacidade</a>.</p>
         <button class="cta" type="submit" id="enviar">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
           <span>Pedir cotação</span>
@@ -783,6 +1010,7 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
       <div class="selo-ok" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
       <h2>Pedido enviado!</h2>
       <p id="sucessoTxt">Em breve você recebe a cotação no WhatsApp.</p>
+      <p class="suc-hora" id="sucHora" hidden></p>
       <div class="canhoto">
         <div class="ca"><small>SUA VIAGEM</small><b id="sucRota">—</b><span id="sucInfo"></span></div>
         <div class="cb"><small>PROTOCOLO</small><b id="protocolo">DC-0000</b></div>
@@ -793,10 +1021,18 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         <li><i>3</i>Você recebe a imagem e o link para aprovar</li>
       </ol>
       <a class="cta cta-larga" id="linkViagem" href="#">Acompanhe o seu pedido <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn-zap-sec" id="sucZap" href="#" target="_blank" rel="noopener">💬 Salvar nosso WhatsApp</a>
+      <a class="btn-zap-sec" id="sucZap" href="#" target="_blank" rel="noopener">💬 Chamar no WhatsApp</a>
+      <button type="button" class="btn-vcard" id="vcard">📇 Salvar nosso contato</button>
       <button type="button" class="link-sec" id="novo">Pedir outra cotação</button>
     </div>
   </div>
+  <div class="numeros" id="numeros" hidden aria-label="Nossos números"></div>
+  <section class="achados" id="achados" aria-labelledby="h-achados" hidden>
+    <h2 id="h-achados">🔥 Achados da semana</h2>
+    <p class="lead-a">Passagens boas que encontramos nos últimos dias. Toque para pedir a sua.</p>
+    <ul id="listaAchados"></ul>
+    <p class="nota">Valor encontrado na data da busca, por pessoa, sujeito a mudança. A cotação confirma o preço do dia.</p>
+  </section>
 </main>
 
 <!-- ================= DESTINOS ================= -->
@@ -891,18 +1127,24 @@ dialog::backdrop{background:rgba(19,35,63,.55)}
         <p>Aqui quem decola é você. O preço fica no chão.</p>
         <p>Passagens emitidas com milhas, com atendimento de pessoa de verdade.</p>
       </div>
-      <div><h4>Navegue</h4><ul><li><a href="#buscar">Pedir cotação</a></li><li><a href="#h-dest">Para onde ir</a></li><li><a href="#h-como">Como funciona</a></li><li><a href="#h-faq">Dúvidas frequentes</a></li><li><a href="#" class="acompanhar">Acompanhar meu pedido</a></li></ul></div>
+      <div><h4>Navegue</h4><ul><li><a href="#buscar">Pedir cotação</a></li><li><a href="#h-dest">Para onde ir</a></li><li><a href="#h-como">Como funciona</a></li><li><a href="#h-faq">Dúvidas frequentes</a></li><li><a href="#" class="acompanhar">Acompanhar meu pedido</a></li><li><a href="privacidade.html">Política de Privacidade</a></li></ul></div>
       <div><h4>Atendimento</h4><p>WhatsApp<br><a class="rodape-zap" id="rodapeZap" href="#" target="_blank" rel="noopener">(35) 92000-1121</a></p><a class="rod-zap" id="rodZapBt" href="#" target="_blank" rel="noopener">💬 Chamar agora</a></div>
       <div><h4>Pagamento</h4><div class="rod-chips"><span>Pix</span><span>Cartão de crédito</span><span>Parcelado</span></div>
         <h4 style="margin-top:16px">Emitimos pela</h4><div class="rod-chips"><span>GOL · Smiles</span><span>LATAM Pass</span><span>Azul Fidelidade</span></div></div>
     </div>
-    <div class="rod-base"><span>© <span id="ano">2026</span> Vai pra onde? · CNPJ 32.937.916/0001-69</span><button type="button" class="link-teste" id="verTeste">Pedidos de teste</button></div>
+    <div class="rod-base"><span>© <span id="ano">2026</span> Vai pra onde? · CNPJ 32.937.916/0001-69 · <a href="privacidade.html" style="color:inherit">Privacidade</a></span><button type="button" class="link-teste" id="verTeste">Pedidos de teste</button></div>
   </div>
 </footer>
 
 <a class="zap" id="zap" href="#" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
 </a>
+
+<dialog class="dlg-novo" id="dlgNovo" aria-labelledby="dlgNovoT">
+  <h3 id="dlgNovoT">É um pedido novo?</h3>
+  <p>Já recebemos 3 pedidos seus nesta última hora. Este é um pedido novo?</p>
+  <div class="bts"><button type="button" class="sim" id="novoSim">Sim, é outro pedido</button><button type="button" id="novoNao">Não, foi engano</button></div>
+</dialog>
 
 <dialog id="dlgTeste">
   <div class="dlg-topo">
@@ -1047,7 +1289,8 @@ function norm(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
    ========================================================= */
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const estado = { origem:null, destino:null, pax:{adultos:1,criancas:0,bebes:0} };
+const estado = { origem:null, destino:null, voltaOrigem:null, voltaDestino:null, pax:{adultos:1,criancas:0,bebes:0}, grupo:false, cupom:null, achado:'' };
+let PUB = {};
 
 /* ---------- foto do topo (se existir) ---------- */
 (()=>{ const celular = matchMedia('(max-width:640px)').matches;
@@ -1057,7 +1300,7 @@ const estado = { origem:null, destino:null, pax:{adultos:1,criancas:0,bebes:0} }
 /* ---------- WhatsApp ---------- */
 const linkZap = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.msgWhatsapp)}`;
 ['#zap','#topoZap','#rodapeZap','#rodZapBt','#barraZap','#faqZap'].forEach(id=>{ const a=$(id); if(a) a.href = linkZap; });
-$('#sucZap').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('Olá! Acabei de pedir uma cotação pelo site. Salvei o contato de vocês 😊')}`;
+$('#sucZap').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('Olá! Acabei de pedir uma cotação pelo site 😊')}`;
 $('#ano').textContent = new Date().getFullYear();
 
 /* ---------- datas ---------- */
@@ -1073,21 +1316,31 @@ function mostrarData(qual){
   inp.addEventListener('click',()=>{ try{ inp.showPicker && inp.showPicker(); }catch(e){} });
   inp.addEventListener('input',()=>mostrarData(q)); });
 $('#ida').min = hojeISO(); $('#volta').min = hojeISO();
+const MAX_DIAS = 330;
+function maxISO(){ const d=new Date(); d.setDate(d.getDate()+MAX_DIAS); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+$('#ida').max = maxISO(); $('#volta').max = maxISO();
 $('#ida').addEventListener('change',()=>{
   $('#volta').min = $('#ida').value || hojeISO();
   if($('#volta').value && $('#volta').value < $('#ida').value) $('#volta').value='';
-  limparErro('ida'); mostrarData('ida'); mostrarData('volta');
+  limparErro('ida'); mostrarData('ida'); mostrarData('volta'); $('#notaIda').textContent = '';
 });
 $('#volta').addEventListener('change',()=>{ limparErro('volta'); mostrarData('volta'); });
 
 /* ---------- tipo de viagem ---------- */
 function tipoAtual(){return document.querySelector('input[name="tipo"]:checked').value}
+function temVolta(){ return tipoAtual()!=='ida'; }
 document.querySelectorAll('input[name="tipo"]').forEach(r=>r.addEventListener('change',()=>{
   const soIda = tipoAtual()==='ida';
   $('#volta').disabled = soIda;
   $('#campoVolta').style.opacity = soIda ? .45 : 1;
   if(soIda){ $('#volta').value=''; limparErro('volta'); }
   mostrarData('volta');
+  const multi = tipoAtual()==='multi';
+  $('#rotaVolta').hidden = !multi;
+  if(multi){
+    if(!estado.voltaOrigem && estado.destino) autoVoltaOrigem.set(estado.destino);
+    if(!estado.voltaDestino && estado.origem) autoVoltaDestino.set(estado.origem);
+  } else { limparErro('voltaOrigem'); limparErro('voltaDestino'); }
 }));
 
 /* ---------- autocomplete de aeroportos ---------- */
@@ -1149,6 +1402,8 @@ function montarAuto(qual){
 }
 const autoOrigem = montarAuto('origem');
 const autoDestino = montarAuto('destino');
+const autoVoltaOrigem = montarAuto('voltaOrigem');
+const autoVoltaDestino = montarAuto('voltaDestino');
 
 /* ---------- destinos sugeridos (por região) ----------
    foto: arquivo .jpg com esse nome na pasta do site. Sem a foto, o cartão usa um degradê da cor da região. */
@@ -1244,7 +1499,7 @@ function textoPax(){
   p.push(`${a} adulto${a>1?'s':''}`);
   if(c) p.push(`${c} criança${c>1?'s':''}`);
   if(b) p.push(`${b} bebê${b>1?'s':''}`);
-  return p.join(', ');
+  return (estado.grupo ? `👥 Grupo de ${a+c+b} · ` : '') + p.join(', ');
 }
 function atualizarPax(){
   const {adultos,criancas,bebes} = estado.pax, total = adultos+criancas+bebes;
@@ -1255,6 +1510,7 @@ function atualizarPax(){
     menos.disabled = t==='adultos' ? v<=1 : v<=0;
     mais.disabled = total>=9 || (t==='bebes' && bebes>=adultos);
   });
+  $('#grupoLink').hidden = total < 9;
   paxBtn.textContent = textoPax();
   limparErro('pax');
 }
@@ -1270,16 +1526,32 @@ $('#paxOk').addEventListener('click',()=>{abrirPax(false);paxBtn.focus()});
 document.addEventListener('click',e=>{ if(!e.target.closest('.campo-pax')) abrirPax(false) });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && paxPainel.classList.contains('aberto')){abrirPax(false);paxBtn.focus()} });
 atualizarPax();
+function lerGrupo(){
+  const n = v => Math.max(0, Math.floor(Number(v)||0));
+  let total = Math.min(60, Math.max(10, n($('#grTotal').value))), c = n($('#grCri').value), b = n($('#grBeb').value);
+  if(c + b > total - 1) c = Math.max(0, total - 1 - b);
+  let a = total - c - b; if(b > a){ b = Math.floor(total/2); a = total - c - b; }
+  estado.pax = {adultos:a, criancas:c, bebes:b};
+  paxBtn.textContent = textoPax(); limparErro('pax');
+}
+function modoGrupo(sim){
+  estado.grupo = sim; paxPainel.classList.toggle('grupo', sim);
+  if(sim){ $('#grTotal').value = Math.max(10, estado.pax.adultos+estado.pax.criancas+estado.pax.bebes+1); lerGrupo(); setTimeout(()=>$('#grTotal').focus(),50); }
+  else { estado.pax = {adultos:1,criancas:0,bebes:0}; atualizarPax(); }
+}
+$('#grupoLink').addEventListener('click',()=>modoGrupo(true));
+$('#grSair').addEventListener('click',()=>modoGrupo(false));
+['grTotal','grCri','grBeb'].forEach(id=>$('#'+id).addEventListener('input',lerGrupo));
 
 /* ---------- preferência de horário ---------- */
-function mostrarHoraVolta(){ $('#horaVolta').hidden = tipoAtual()!=='ida_volta'; }
+function mostrarHoraVolta(){ $('#horaVolta').hidden = !temVolta(); }
 $('#temHora').addEventListener('change',e=>$('#horaPainel').classList.toggle('aberto',e.target.checked));
 document.querySelectorAll('input[name="tipo"]').forEach(r=>r.addEventListener('change',mostrarHoraVolta));
 mostrarHoraVolta();
 function lerHorario(){
   if(!$('#temHora').checked) return null;
   const r = {};
-  for(const tr of tipoAtual()==='ida_volta' ? ['ida','volta'] : ['ida']){
+  for(const tr of temVolta() ? ['ida','volta'] : ['ida']){
     const per = [...document.querySelectorAll(`input[name="horaPer-${tr}"]:checked`)].map(x=>x.value);
     if(per.length) r[tr] = {ref: document.querySelector(`input[name="horaRef-${tr}"]:checked`).value, periodos: per};
   }
@@ -1294,6 +1566,7 @@ $('#temPet').addEventListener('change',e=>{
 document.querySelectorAll('input[name="petEspecie"]').forEach(r=>r.addEventListener('change',()=>limparErro('petEspecie')));
 document.querySelectorAll('input[name="petLocal"]').forEach(r=>r.addEventListener('change',()=>limparErro('petLocal')));
 $('#petPeso').addEventListener('input',()=>limparErro('petPeso'));
+$('#temAssento').addEventListener('change',e=>$('#assentoPainel').classList.toggle('aberto',e.target.checked));
 
 /* ---------- máscara WhatsApp ---------- */
 $('#whatsapp').addEventListener('input',e=>{
@@ -1314,6 +1587,7 @@ function erro(n,msg){const c=campo(n);c.classList.add('erro');c.querySelector('.
 function limparErro(n){const c=campo(n);if(c){c.classList.remove('erro');c.querySelector('.msg-erro').textContent=''}}
 
 function validar(){ return [...validarViagem(), ...validarContato()]; }
+const DDDS = '11 12 13 14 15 16 17 18 19 21 22 24 27 28 31 32 33 34 35 37 38 41 42 43 44 45 46 47 48 49 51 53 54 55 61 62 63 64 65 66 67 68 69 71 73 74 75 77 79 81 82 83 84 85 86 87 88 89 91 92 93 94 95 96 97 98 99'.split(' ');
 function validarViagem(){
   const erros = [];
   const add = (n,m)=>{erro(n,m);erros.push(n)};
@@ -1323,10 +1597,19 @@ function validarViagem(){
   const ida = $('#ida').value, volta = $('#volta').value, hoje = hojeISO();
   if(!ida) add('ida','Informe a data de ida.');
   else if(ida < hoje) add('ida','A data de ida já passou.');
-  if(tipoAtual()==='ida_volta'){
+  const lim = maxISO(), limTxt = lim.split('-').reverse().join('/');
+  if(ida && ida >= hoje && ida > lim) add('ida',`As companhias só vendem passagens até uns 11 meses antes. Escolha uma data até ${limTxt}.`);
+  if(temVolta()){
     if(!volta) add('volta','Informe a data de volta ou marque "Somente ida".');
     else if(ida && volta < ida) add('volta','A volta precisa ser depois da ida.');
+    else if(volta > lim) add('volta',`As companhias só vendem passagens até uns 11 meses antes. Escolha uma data até ${limTxt}.`);
   }
+  if(tipoAtual()==='multi'){
+    if(!estado.voltaOrigem) add('voltaOrigem','Escolha de onde sai a volta.');
+    if(!estado.voltaDestino) add('voltaDestino','Escolha onde a volta chega.');
+    if(estado.voltaOrigem && estado.voltaDestino && estado.voltaOrigem.iata===estado.voltaDestino.iata) add('voltaDestino','A volta precisa chegar em outra cidade.');
+  }
+  if(estado.grupo){ lerGrupo(); }
   if($('#temPet').checked){
     if(!document.querySelector('input[name="petEspecie"]:checked')) add('petEspecie','Escolha cão ou gato.');
     const p = parseFloat(String($('#petPeso').value).replace(',','.'));
@@ -1342,6 +1625,8 @@ function validarContato(){
   if(nome.split(/\s+/).length<2) add('nome','Informe nome e sobrenome.');
   const zap = $('#whatsapp').value.replace(/\D/g,'');
   if(zap.length<10) add('whatsapp','Informe o WhatsApp com DDD.');
+  else if(!DDDS.includes(zap.slice(0,2))) add('whatsapp','Esse DDD não existe. Confira os 2 primeiros números.');
+  else if(zap.length!==11 || zap[2]!=='9') add('whatsapp','Celular com DDD tem 11 números e começa com 9 depois do DDD.');
   const email = $('#email').value.trim();
   if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) add('email','Esse e-mail parece incompleto.');
   return erros;
@@ -1363,6 +1648,10 @@ function gerarId(){
   for(let i=0;i<5;i++) s+=c[Math.floor(Math.random()*c.length)];
   return 'PV-'+s;
 }
+function openJaw(){
+  return tipoAtual()==='multi' && estado.voltaOrigem && estado.voltaDestino
+    && !(estado.voltaOrigem.iata===estado.destino.iata && estado.voltaDestino.iata===estado.origem.iata);
+}
 function montarPedido(){
   const pet = $('#temPet').checked ? {
     especie: document.querySelector('input[name="petEspecie"]:checked').value,
@@ -1377,16 +1666,23 @@ function montarPedido(){
     id: gerarId(),
     criadoEm: new Date().toISOString(),
     status: 'nova',
-    tipo: tipoAtual(),
+    tipo: tipoAtual()==='ida' ? 'ida' : 'ida_volta',
     origem: limpo(estado.origem),
     destino: limpo(estado.destino),
+    ...(openJaw() ? {voltaOrigem: limpo(estado.voltaOrigem), voltaDestino: limpo(estado.voltaDestino)} : {}),
     dataIda: $('#ida').value,
-    dataVolta: tipoAtual()==='ida_volta' ? $('#volta').value : null,
+    dataVolta: temVolta() ? $('#volta').value : null,
     datasFlexiveis: $('#flex').checked,
     passageiros: {...estado.pax},
     malasPorPassageiro: Number(document.querySelector('input[name="malas"]:checked').value),
     ...(lerHorario() ? {horario: lerHorario()} : {}),
     pet,
+    ...(origemVisita()!=='direto' ? {de: origemVisita()} : {}),
+    ...($('#optPromo').checked ? {promo: true} : {}),
+    ...(estado.cupom ? {cupom: estado.cupom.codigo} : {}),
+    ...(estado.achado ? {achado: estado.achado} : {}),
+    ...(estado.grupo ? {grupo: {total: estado.pax.adultos+estado.pax.criancas+estado.pax.bebes, motivo: $('#grMotivo').value, flexivel: $('#grFlex').checked}} : {}),
+    ...(!$('#chipAssento').hidden && $('#temAssento').checked ? {assento: {pref: document.querySelector('input[name="assentoPref"]:checked').value}} : {}),
     cliente: {
       nome: $('#nome').value.trim(),
       whatsapp: $('#whatsapp').value.replace(/\D/g,''),
@@ -1440,8 +1736,9 @@ $('#continuar').addEventListener('click',()=>{
   const erros = validarViagem();
   if(erros.length) return mostrarErros(erros);
   const o=estado.origem, d=estado.destino, ida=$('#ida').value, volta=$('#volta').value, m=Number(document.querySelector('input[name="malas"]:checked').value);
-  $('#resRota').textContent = `${o.iata} → ${d.iata}`;
-  $('#resInfo').textContent = [ida ? dataCurta(ida).split(' · ')[0] + (tipoAtual()==='ida_volta' && volta ? ' a ' + dataCurta(volta).split(' · ')[0] : ' · só ida') : '', textoPax(), m ? `${m} mala${m>1?'s':''} por pessoa` : 'só mala de mão', lerHorario() ? '🕒 horário escolhido' : ''].filter(Boolean).join(' · ');
+  $('#resRota').textContent = openJaw() ? `${o.iata} → ${d.iata} · ${estado.voltaOrigem.iata} → ${estado.voltaDestino.iata}` : `${o.iata} → ${d.iata}`;
+  contarComecou();
+  $('#resInfo').textContent = [ida ? dataCurta(ida).split(' · ')[0] + (temVolta() && volta ? ' a ' + dataCurta(volta).split(' · ')[0] : ' · só ida') : '', textoPax(), m ? `${m} mala${m>1?'s':''} por pessoa` : 'só mala de mão', lerHorario() ? '🕒 horário escolhido' : ''].filter(Boolean).join(' · ');
   irEtapa(2);
   $('#buscar').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'});
   setTimeout(()=>{ const n=$('#nome'); if(!n.value) n.focus({preventScroll:true}); }, 350);
@@ -1457,16 +1754,23 @@ $('#form').addEventListener('submit',async e=>{
   if(erros.length){
     return mostrarErros(erros);
   }
+  // robôs: campo escondido preenchido ou formulário enviado rápido demais → finge que deu certo
+  const robo = $('#hpEmpresa').value.trim() !== '' || (performance.now() - T_ABERTURA) < 4000;
+  if(!robo && enviosUltimaHora() >= 3 && !(await perguntarNovo())) return;
   const btn = $('#enviar'); btn.disabled = true; btn.classList.add('enviando'); btn.querySelector('span').textContent = 'Enviando…';
   const pedido = montarPedido();
-  $('#erroEnvio').textContent = '';
-  try{ await enviarPedido(pedido); }
+  $('#erroEnvio').textContent = ''; $('#erroZap').classList.remove('on');
+  try{ if(robo) await new Promise(r=>setTimeout(r,600)); else await enviarPedido(pedido); }
   catch(err){
     console.error(err);
     btn.disabled = false; btn.classList.remove('enviando'); btn.querySelector('span').textContent = 'Pedir cotação';
-    $('#erroEnvio').textContent = 'Não conseguimos enviar seu pedido agora. Confira a internet e tente de novo, ou chame a gente no WhatsApp.';
+    $('#erroEnvio').textContent = 'Não conseguimos enviar seu pedido agora. Tente de novo ou mande pelo WhatsApp, com tudo já preenchido:';
+    $('#erroZap').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(textoPedidoZap(pedido))}`;
+    $('#erroZap').classList.add('on');
+    window.vpoErro && vpoErro('envio do pedido: ' + (err && (err.code || err.message) || err));
     return;
   }
+  if(!robo) registrarEnvio();
   btn.classList.remove('enviando'); btn.classList.add('pronto'); btn.querySelector('span').textContent = 'Enviado';
   await new Promise(r=>setTimeout(r,450));
   btn.disabled = false; btn.classList.remove('pronto'); btn.querySelector('span').textContent = 'Pedir cotação';
@@ -1476,7 +1780,11 @@ $('#form').addEventListener('submit',async e=>{
   const z = pedido.cliente.whatsapp;
   const zFmt = `(${z.slice(0,2)}) ${z.slice(2,z.length-4)}-${z.slice(-4)}`;
   $('#sucessoTxt').innerHTML = `Em breve você recebe a cotação no WhatsApp <b>${zFmt}</b>.`;
-  $('#sucRota').textContent = `${pedido.origem.iata} → ${pedido.destino.iata}`;
+  const at = estadoAtendimento(PUB.atendimento), pausa = PUB.atendimento && PUB.atendimento.pausa && PUB.atendimento.pausa.on;
+  $('#sucHora').hidden = !(pausa || (at && !at.aberto));
+  $('#sucHora').textContent = pausa ? (PUB.atendimento.pausa.texto || 'Estamos com o atendimento pausado. Seu pedido ficou guardado e respondemos assim que voltarmos.')
+    : at && !at.aberto ? `🌙 Agora estamos fora do horário. Seu pedido ficou guardado e respondemos ${at.proximo || 'no próximo horário de atendimento'}.` : '';
+  $('#sucRota').textContent = openJaw() ? `${pedido.origem.iata} → ${pedido.destino.iata} · ${pedido.voltaOrigem.iata} → ${pedido.voltaDestino.iata}` : `${pedido.origem.iata} → ${pedido.destino.iata}`;
   $('#sucInfo').textContent = (pedido.dataVolta ? `${dataCurta(pedido.dataIda).split(' · ')[0]} a ${dataCurta(pedido.dataVolta).split(' · ')[0]}` : `${dataCurta(pedido.dataIda).split(' · ')[0]} · só ida`) + ' · ' + textoPax();
   $('#form').style.display='none';
   const s = $('#sucesso'); s.classList.remove('aberto'); void s.offsetWidth; s.classList.add('aberto');
@@ -1492,6 +1800,10 @@ $('#novo').addEventListener('click',()=>{
   estado.pax={adultos:1,criancas:0,bebes:0}; atualizarPax();
   document.querySelector('input[name="malas"][value="0"]').checked=true;
   $('#temPet').checked=false; $('#petPainel').classList.remove('aberto');
+  autoVoltaOrigem.set(null); autoVoltaDestino.set(null); estado.achado=''; $('#notaIda').textContent='';
+  if(tipoAtual()==='multi'){ const r = document.querySelector('input[name="tipo"][value="ida_volta"]'); r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+  if(estado.grupo) modoGrupo(false);
+  $('#temAssento').checked=false; $('#assentoPainel').classList.remove('aberto');
   $('#temHora').checked=false; $('#horaPainel').classList.remove('aberto'); document.querySelectorAll('#horaPainel input[type=checkbox]').forEach(x=>x.checked=false); document.querySelectorAll('#horaPainel input[value="saida"]').forEach(x=>x.checked=true);
   mostrarData('ida'); mostrarData('volta'); irEtapa(1);
   $('#origem').focus();
@@ -1545,6 +1857,159 @@ async function carregarAvaliacoes(){
   $('#secAval').hidden = false;
 }
 carregarAvaliacoes();
+
+
+/* =========================================================
+   LANÇAMENTO: anti-robô, limite, funil, cupom, achados, horário
+   ========================================================= */
+const T_ABERTURA = performance.now();
+function enviosUltimaHora(){ try{ return (JSON.parse(localStorage.getItem('vpo_envios'))||[]).filter(t=>Date.now()-t < 36e5).length; }catch(e){ return 0; } }
+function registrarEnvio(){ try{ const l = (JSON.parse(localStorage.getItem('vpo_envios'))||[]).filter(t=>Date.now()-t < 36e5); l.push(Date.now()); localStorage.setItem('vpo_envios', JSON.stringify(l)); }catch(e){} }
+function perguntarNovo(){
+  return new Promise(res=>{
+    const d = $('#dlgNovo');
+    const fim = v => { d.close(); $('#novoSim').onclick = $('#novoNao').onclick = null; res(v); };
+    $('#novoSim').onclick = ()=>fim(true); $('#novoNao').onclick = ()=>fim(false);
+    d.addEventListener('cancel', ()=>res(false), {once:true});
+    d.showModal();
+  });
+}
+function textoPedidoZap(p){
+  const f = iso => iso ? iso.split('-').reverse().join('/') : '';
+  const l = [`Olá! Quero uma cotação (pedido ${p.id}):`,
+    `✈️ ${p.origem.cidade} (${p.origem.iata}) → ${p.destino.cidade} (${p.destino.iata})`,
+    p.voltaOrigem ? `↩️ Volta: ${p.voltaOrigem.cidade} (${p.voltaOrigem.iata}) → ${p.voltaDestino.cidade} (${p.voltaDestino.iata})` : '',
+    `📅 Ida ${f(p.dataIda)}${p.dataVolta ? ' · Volta ' + f(p.dataVolta) : ' · só ida'}${p.datasFlexiveis ? ' (datas flexíveis)' : ''}`,
+    `👤 ${textoPax()}`, `🧳 ${p.malasPorPassageiro ? p.malasPorPassageiro + ' mala(s) de 23 kg por pessoa' : 'só mala de mão'}`,
+    p.pet ? `🐾 Pet: ${p.pet.especie}, ${p.pet.pesoKg} kg, ${p.pet.local}` : '',
+    p.cupom ? `🏷️ Cupom: ${p.cupom}` : '', `Nome: ${p.cliente.nome}`];
+  return l.filter(Boolean).join('\n');
+}
+
+/* ---------- funil: de onde veio (?de=), visita por dia, começou a preencher ---------- */
+(function(){
+  const d = (new URLSearchParams(location.search).get('de')||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,30);
+  if(d) try{ localStorage.setItem('vpo_de', JSON.stringify({d, em:Date.now()})); }catch(e){}
+})();
+function origemVisita(){ try{ const x = JSON.parse(localStorage.getItem('vpo_de')); return x && Date.now()-x.em < 30*864e5 ? x.d : 'direto'; }catch(e){ return 'direto'; } }
+function diaLocal(){ return hojeISO(); }
+async function contar(campo){
+  const dia = diaLocal(), o = origemVisita();
+  try{
+    if(!FIREBASE_ATIVO){
+      const m = JSON.parse(localStorage.getItem('dcnp_metricas_teste')||'{}'); m[dia] = m[dia] || {dia, v:{}, c:{}};
+      m[dia][campo][o] = (m[dia][campo][o]||0) + 1; localStorage.setItem('dcnp_metricas_teste', JSON.stringify(m)); return;
+    }
+    await comPrazo(conectar(), 15000);
+    await fsSite.setDoc(fsSite.doc(dbSite,'metricas',dia), {dia, [campo]: {[o]: fsSite.increment(1)}}, {merge:true});
+  }catch(e){ console.warn('métrica', e); }
+}
+(function(){ try{ if(localStorage.getItem('vpo_visita') !== diaLocal()){ localStorage.setItem('vpo_visita', diaLocal()); contar('v'); } }catch(e){} })();
+function contarComecou(){ try{ if(sessionStorage.getItem('vpo_comecou')) return; sessionStorage.setItem('vpo_comecou','1'); }catch(e){} contar('c'); }
+$('#etapa1').addEventListener('focusin', ()=>{ if(!contarComecou._f){ contarComecou._f = 1; contarComecou(); } }, {once:true});
+
+/* ---------- cupom ---------- */
+async function lerCupom(cod){
+  if(!FIREBASE_ATIVO){ const l = JSON.parse(localStorage.getItem('dcnp_cupons_teste')||'[]'); return (Array.isArray(l) ? l : Object.values(l)).find(c=>c.codigo===cod) || null; }
+  await comPrazo(conectar(), 15000);
+  const s = await comPrazo(fsSite.getDoc(fsSite.doc(dbSite,'cupons',cod)), 15000);
+  return s.exists() ? s.data() : null;
+}
+async function aplicarCupom(){
+  const cod = $('#cupom').value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,20), msg = $('#cupomMsg');
+  $('#cupom').value = cod; estado.cupom = null; msg.className = 'cupom-msg';
+  if(!cod){ msg.textContent = ''; return; }
+  msg.textContent = 'Conferindo…';
+  let c = null; try{ c = await lerCupom(cod); }catch(e){ msg.textContent = 'Não deu para conferir agora. Vamos aplicar na cotação se o cupom valer.'; estado.cupom = {codigo:cod}; return; }
+  const hoje = hojeISO();
+  if(!c || c.ativo === false){ msg.textContent = 'Esse cupom não existe. Confira o código.'; msg.classList.add('no'); return; }
+  if(c.validade && c.validade < hoje){ msg.textContent = 'Esse cupom já venceu.'; msg.classList.add('no'); return; }
+  estado.cupom = {codigo:cod};
+  const valor = c.tipo==='valor' && Number(c.valor) ? `: R$ ${Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2})} de desconto` : '';
+  msg.textContent = `✓ Cupom ${cod} aplicado${valor}. O desconto aparece na sua cotação${c.primeiro ? ' (vale na primeira compra)' : ''}.`;
+  msg.classList.add('ok');
+  try{ localStorage.setItem('vpo_cupom', JSON.stringify({c:cod, em:Date.now()})); }catch(e){}
+}
+$('#abrirCupom').addEventListener('click',()=>{ const l = $('#cupomLin'); l.hidden = !l.hidden; $('#abrirCupom').setAttribute('aria-expanded', String(!l.hidden)); if(!l.hidden) $('#cupom').focus(); });
+$('#aplicarCupom').addEventListener('click', aplicarCupom);
+$('#cupom').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); aplicarCupom(); } });
+(function(){
+  let c = (new URLSearchParams(location.search).get('cupom')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,20);
+  if(!c) try{ const x = JSON.parse(localStorage.getItem('vpo_cupom')); if(x && Date.now()-x.em < 30*864e5) c = x.c; }catch(e){}
+  if(c){ $('#cupom').value = c; $('#cupomLin').hidden = false; $('#abrirCupom').setAttribute('aria-expanded','true'); aplicarCupom(); }
+})();
+
+/* ---------- salvar contato (vCard) ---------- */
+$('#vcard').addEventListener('click',()=>{
+  const n = CONFIG.whatsapp;
+  const v = ['BEGIN:VCARD','VERSION:3.0','FN:Vai pra onde? Passagens','ORG:Vai pra onde?',`TEL;TYPE=CELL:+${n}`,'URL:https://vaipraondeagencia.netlify.app/','NOTE:Passagens com milhas · cotação pelo WhatsApp','END:VCARD'].join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([v],{type:'text/vcard'})); a.download = 'vai-pra-onde.vcf';
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+});
+
+/* ---------- configuração pública: horário, pausa, números, assentos, achados ---------- */
+const fmtR = v => 'R$ ' + Math.round(Number(v)||0).toLocaleString('pt-BR');
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function aplicarPublico(pub){
+  PUB = pub || {};
+  // horário de atendimento e pausa
+  const at = PUB.atendimento, st = $('#statusAt'), pausa = at && at.pausa && at.pausa.on;
+  if(pausa){
+    $('#avisoPausa').textContent = '⏸ ' + (at.pausa.texto || 'Estamos com o atendimento pausado por alguns dias. Pode mandar seu pedido: ele fica guardado e respondemos assim que voltarmos.');
+    $('#avisoPausa').hidden = false;
+    st.hidden = false; st.classList.remove('on'); st.querySelector('span').textContent = 'Atendimento pausado';
+  } else {
+    $('#avisoPausa').hidden = true;
+    const e = estadoAtendimento(at);
+    if(e){ st.hidden = false; st.classList.toggle('on', e.aberto); st.querySelector('span').textContent = e.aberto ? 'Online agora' : (e.proximo ? `Respondemos ${e.proximo}` : 'Fora do horário'); }
+  }
+  // números (só se o dono ligou no painel)
+  const nu = PUB.numeros;
+  if(nu && nu.on === true && Number(nu.emitidas) > 0){
+    const it = [[Number(nu.emitidas).toLocaleString('pt-BR'), 'passagens emitidas']];
+    if(Number(nu.economia) > 0) it.push([fmtR(nu.economia), 'de economia para os clientes']);
+    if(Number(nu.media) > 0) it.push([fmtR(nu.media), 'de economia média por passagem']);
+    $('#numeros').innerHTML = it.map(([b,s])=>`<div><b>${b}</b><span>${s}</span></div>`).join('');
+    $('#numeros').style.gridTemplateColumns = `repeat(${it.length},1fr)`;
+    $('#numeros').hidden = false;
+  } else $('#numeros').hidden = true;
+  // assentos: só aparece com valores preenchidos no painel
+  const as = PUB.assentos, CIAS = {gol:'GOL', latam:'LATAM', azul:'Azul'};
+  const vals = as && as.on === true && as.valores ? Object.entries(as.valores).filter(([k,v])=>CIAS[k] && Number(v) > 0) : [];
+  $('#chipAssento').hidden = !vals.length;
+  if(vals.length) $('#assentoValores').innerHTML = vals.map(([k,v])=>`<li>${CIAS[k]}: a partir de <b>${fmtR(v)}</b> por assento</li>`).join('');
+  // achados da semana
+  const dias = Number(PUB.achadosDias) || 7, agora = Date.now();
+  const ach = (PUB.achados||[]).filter(a=>a && a.origem && a.destino && a.em && agora - Date.parse(a.em) < dias*864e5)
+    .sort((a,b)=>String(b.em).localeCompare(String(a.em))).slice(0,6);
+  if(ach.length){
+    $('#listaAchados').innerHTML = ach.map((a,i)=>{
+      const d = Math.floor((agora - Date.parse(a.em))/864e5), mes = a.mes ? MESES[Number(a.mes.slice(5,7))-1] : '';
+      return `<li><button type="button" class="achado" data-achado="${i}" aria-label="Pedir ${escH(a.origem.cidade)} para ${escH(a.destino.cidade)}${mes ? ' em ' + mes : ''}">
+        <span class="rt">${escH(a.origem.iata)} → ${escH(a.destino.iata)}</span><br><span class="ct">${escH(a.origem.cidade)} → ${escH(a.destino.cidade)}${mes ? ' · ' + mes : ''}</span>
+        <div class="pr">a partir de<b>${fmtR(a.preco)} <small style="font-size:.8rem;font-weight:600;color:var(--tinta-2)">por pessoa</small></b></div>
+        <span class="vs">visto ${d===0 ? 'hoje' : d===1 ? 'ontem' : 'há ' + d + ' dias'}</span><br><span class="bt">Quero essa →</span></button></li>`; }).join('');
+    $$('[data-achado]').forEach(b=>b.addEventListener('click',()=>usarAchado(ach[Number(b.dataset.achado)])));
+    $('#achados').hidden = false;
+  } else $('#achados').hidden = true;
+}
+function usarAchado(a){
+  if($('#form').style.display==='none') $('#novo').click();
+  irEtapa(1);
+  const o = AEROPORTOS.find(x=>x.iata===a.origem.iata), d = AEROPORTOS.find(x=>x.iata===a.destino.iata);
+  if(o) autoOrigem.set(o); if(d) autoDestino.set(d);
+  estado.achado = String(a.id||'').slice(0,20);
+  if(a.mes){
+    let dia = a.mes + '-01'; const amanha = (()=>{ const x = new Date(); x.setDate(x.getDate()+1); x.setMinutes(x.getMinutes()-x.getTimezoneOffset()); return x.toISOString().slice(0,10); })();
+    if(dia < amanha) dia = amanha;
+    if(dia <= maxISO()){ $('#ida').value = dia; $('#ida').dispatchEvent(new Event('change')); mostrarData('ida');
+      $('#notaIda').textContent = `📅 Achado de ${MESES[Number(a.mes.slice(5,7))-1]}: troque pelos dias que você quer.`; }
+  }
+  $('#buscar').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'});
+  setTimeout(()=>$('#ida').focus({preventScroll:true}), 450);
+}
+lerPublico().then(aplicarPublico);
+setInterval(()=>aplicarPublico(PUB), 5*60e3);
 
 /* ---------- pedidos de teste ---------- */
 const dlg = $('#dlgTeste');

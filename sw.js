@@ -1,10 +1,10 @@
-// Service worker do painel Vai pra onde?
+// Service worker do Vai pra onde? (painel e página "Minha viagem" do cliente)
 // Páginas e configuração: busca na internet primeiro (sempre a versão mais nova) e usa a cópia guardada se estiver sem internet.
 // Imagens, fontes e o SDK do Firebase: usa a cópia guardada e atualiza por trás.
 // O Firestore cuida dos próprios dados offline; este arquivo não mexe nas chamadas dele.
-const VERSAO = 'vaipraonde-v5';
+const VERSAO = 'vaipraonde-v6';
 const ESSENCIAIS = [
-  './painel.html', './painel.webmanifest', './firebase-config.js',
+  './painel.html', './painel.webmanifest', './viagem.html', './viagem.webmanifest', './firebase-config.js',
   './logo-192.png', './logo-512.png', './logo-maskable-512.png', './favicon.png', './ceu-asa.jpg', './ceu-asa-celular.jpg'
 ];
 
@@ -25,7 +25,11 @@ const deRede = async (req) => {
   } catch (e) {
     const c = await caches.match(req, { ignoreSearch: true });
     if (c) return c;
-    if (req.mode === 'navigate') return caches.match('./painel.html');
+    if (req.mode === 'navigate') {
+      // sem internet: devolve a página certa (Minha viagem abre a última viagem guardada no aparelho)
+      const pg = new URL(req.url).pathname.split('/').pop() || 'index.html';
+      return (await caches.match('./' + pg, { ignoreSearch: true })) || Response.error();
+    }
     throw e;
   }
 };
@@ -44,6 +48,7 @@ self.addEventListener('fetch', (e) => {
   if (mesmo && /\.(png|jpe?g|webp|svg|ico)$/.test(url.pathname)) { e.respondWith(doCache(req)); return; }
   if (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/')) { e.respondWith(doCache(req)); return; }
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') { e.respondWith(doCache(req)); return; }
+  if (url.hostname === 'cdnjs.cloudflare.com' || url.hostname === 'cdn.sheetjs.com') { e.respondWith(doCache(req)); return; }
 });
 
 // tocar na notificação de pedido novo abre o painel

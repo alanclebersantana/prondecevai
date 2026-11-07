@@ -22,6 +22,68 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E3B7A">
 <script src="firebase-config.js"></script>
+<script>
+/* ---------- erros desta página: vão para o painel (sem dado pessoal), no máximo 5 por visita ---------- */
+(function(){
+  let n = 0;
+  const pg = (location.pathname.split('/').pop() || 'index.html').slice(0,60);
+  async function enviar(msg){
+    if(n++ >= 5) return;
+    const d = {pg, msg:String(msg||'erro').slice(0,600), ua:navigator.userAgent.slice(0,250), em:new Date().toISOString()};
+    try{
+      if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)){ const l = JSON.parse(localStorage.getItem('dcnp_erros_teste')||'[]'); l.push(d); localStorage.setItem('dcnp_erros_teste', JSON.stringify(l.slice(-100))); return; }
+      const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+      const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+      const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+      await f.addDoc(f.collection(f.getFirestore(a), 'erros'), d);
+    }catch(e){}
+  }
+  addEventListener('error', e=>{ if(e.message) enviar(`${e.message} @${String(e.filename||'').split('/').pop()}:${e.lineno||''}`); });
+  addEventListener('unhandledrejection', e=>{ const r = e.reason; enviar('promessa: ' + (r && (r.message||r.code) || r || '')); });
+  window.vpoErro = enviar;
+})();
+/* ---------- caixa de entrada do painel: o que o cliente manda pelas páginas ---------- */
+async function enviarAoPainel(tipo, tk, dados){
+  const m = {tipo, token:tk, em:new Date().toISOString(), dados:dados||{}};
+  if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)){
+    const l = JSON.parse(localStorage.getItem('dcnp_inbox_teste')||'[]'); l.push({id:Math.random().toString(36).slice(2,12), ...m});
+    localStorage.setItem('dcnp_inbox_teste', JSON.stringify(l)); return;
+  }
+  const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+  const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+  const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+  await f.addDoc(f.collection(f.getFirestore(a), 'mensagens'), m);
+}
+/* ---------- configuração pública do site (horário, achados, números, assentos, seguro, dicas) ---------- */
+async function lerPublico(){
+  try{
+    if(!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey)) return JSON.parse(localStorage.getItem('dcnp_publico_teste')||'null') || {};
+    const S = 'https://www.gstatic.com/firebasejs/10.14.1/';
+    const [app, f] = await Promise.all([import(S+'firebase-app.js'), import(S+'firebase-firestore.js')]);
+    const a = app.getApps().length ? app.getApp() : app.initializeApp(window.FIREBASE_CONFIG);
+    const s = await f.getDoc(f.doc(f.getFirestore(a), 'publico', 'site'));
+    return s.exists() ? s.data() : {};
+  }catch(e){ return {}; }
+}
+/* horário de atendimento: {aberto, txt, proximo} */
+function estadoAtendimento(at){
+  if(!at || !at.dias) return null;
+  const DN = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const agora = new Date(), min = h => { const [a,b] = String(h||'0:0').split(':').map(Number); return a*60+(b||0); };
+  const hoje = at.dias[agora.getDay()] || at.dias[String(agora.getDay())], m = agora.getHours()*60+agora.getMinutes();
+  if(hoje && hoje.on && m >= min(hoje.ini) && m < min(hoje.fim)) return {aberto:true};
+  for(let i=0;i<8;i++){
+    const d = new Date(agora); d.setDate(d.getDate()+i); const dia = at.dias[d.getDay()] || at.dias[String(d.getDay())];
+    if(!dia || !dia.on) continue;
+    if(i===0 && m >= min(dia.ini)) continue;
+    const h = String(dia.ini).replace(/:00$/,'h').replace(':','h');
+    return {aberto:false, proximo: i===0 ? `hoje a partir das ${h}` : i===1 ? `amanhã a partir das ${h}` : `${DN[d.getDay()]} a partir das ${h}`};
+  }
+  return {aberto:false, proximo:''};
+}
+
+</script>
+<link rel="manifest" href="viagem.webmanifest">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -195,6 +257,50 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .toast{display:flex;gap:9px;align-items:center;background:#fff;color:var(--tinta);border-left:4px solid var(--ok);box-shadow:0 10px 24px -8px rgba(19,35,63,.35)}
 .toast::before{content:"✓";width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--ok-claro);color:var(--ok);font-size:.8rem;flex:none}
 @media (max-width:420px){ .prog .st{width:52px;font-size:.66rem} .prog .st i{width:32px;height:32px} .prog .st i svg{width:16px;height:16px} .lin .h{font-size:1.3rem} }
+
+/* ===== lançamento ===== */
+.offline{background:#FFF4E5;border:1px solid #FFD8A8;color:#7A4A12;border-radius:14px;padding:10px 14px;margin:0 0 12px;font-weight:600;font-size:.9rem}
+.alterado{background:#FDECEA;border:1px solid #F5C2BE;border-radius:16px;padding:14px 16px;margin-bottom:16px}
+.alterado b{color:var(--erro)}
+.alterado .ab{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:10px 0;text-align:center}
+.alterado .ab div{background:#fff;border-radius:12px;padding:8px}
+.alterado .ab s{color:var(--tinta-2)}
+.alterado .ab small{display:block;font-size:.72rem;font-weight:800;letter-spacing:.05em;color:var(--tinta-2)}
+.alterado p{margin:4px 0 0;font-size:.92rem}
+.dica{background:linear-gradient(135deg,#FFF6EF,#FFEEDF);border:1px solid #FFE0C9}
+.dica .tp{white-space:pre-line;color:var(--tinta);margin:6px 0 0}
+.tempo{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:10px 14px;margin-top:12px}
+.tempo .ic{font-size:2rem;line-height:1}
+.tempo b{display:block}
+.tempo small{color:var(--tinta-2)}
+.status-voo a{display:block;margin-top:8px}
+.recibo .btn{margin-top:10px}
+.seguro{border:1.5px solid #CFE3F7;background:#F4F9FF}
+.seguro small{display:block;color:var(--tinta-2);font-size:.8rem;margin-top:8px}
+.estrelas{display:flex;gap:6px;margin:10px 0}
+.estrelas label{cursor:pointer;font-size:2.1rem;line-height:1;color:#C9D3E0}
+.estrelas input{position:absolute;opacity:0;pointer-events:none}
+.estrelas label.on{color:#F5A623}
+.estrelas label:has(input:focus-visible){outline:3px solid var(--sol);outline-offset:2px;border-radius:6px}
+textarea.tx{width:100%;min-height:90px;border:1.5px solid var(--linha);border-radius:12px;padding:10px;font:inherit;margin-top:6px}
+.campo-v{margin-top:10px}
+.campo-v label{display:block;font-weight:600;font-size:.9rem;margin-bottom:4px}
+.campo-v input,.campo-v select{width:100%;border:1.5px solid var(--linha);border-radius:12px;padding:11px 12px;background:#fff}
+.chk-v{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:.92rem}
+.chk-v input{width:20px;height:20px;accent-color:var(--sol);margin-top:2px;flex:none}
+.tipos-alt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.tipos-alt label{border:2px solid var(--linha);border-radius:12px;padding:10px;cursor:pointer;font-weight:700;text-align:center;font-size:.92rem}
+.tipos-alt input{position:absolute;opacity:0;pointer-events:none}
+.tipos-alt label:has(input:checked){border-color:var(--sol);background:var(--sol-claro)}
+.tipos-alt label:has(input:focus-visible){outline:3px solid var(--sol);outline-offset:2px}
+.regras-alt{background:#F6F9FC;border-radius:12px;padding:10px 12px;font-size:.88rem;color:var(--tinta-2);white-space:pre-line;margin-top:10px}
+.etapas-alt{display:flex;gap:6px;margin-top:10px}
+.etapas-alt span{flex:1;text-align:center;font-size:.8rem;font-weight:700;padding:8px 4px;border-radius:10px;background:var(--nevoa);color:var(--tinta-2)}
+.etapas-alt span.on{background:var(--ok);color:#fff}
+.instalar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:16px;box-shadow:0 10px 30px -18px rgba(14,59,122,.35)}
+.instalar p{margin:0;flex:1;font-size:.9rem}
+.instalar button{border:0;background:var(--ceu);color:#fff;font-weight:700;border-radius:10px;padding:10px 14px;cursor:pointer}
+.instalar .x{background:none;color:var(--tinta-2);padding:6px}
 </style>
 </head>
 <body>
@@ -203,6 +309,8 @@ h2{font-size:1.2rem;margin:0 0 4px}
   <div class="topo-tx"><p id="ola">&nbsp;</p><h1 id="destinoNome">&nbsp;</h1><div id="seloDias"></div></div>
 </header>
 <main>
+  <div class="offline" id="offline" role="status" hidden></div>
+  <div class="instalar" id="instalar" hidden><p>📲 Tenha a sua viagem na tela do celular, até sem internet.</p><button type="button" id="instalarBt">Instalar</button><button type="button" class="x" id="instalarX" aria-label="Agora não">✕</button></div>
   <div class="cartao carregando" id="carregando"><div class="voando"><svg viewBox="0 0 220 64" aria-hidden="true"><path d="M10 52 Q110 -6 210 52" fill="none" stroke="#B9C6D8" stroke-width="2.5" stroke-dasharray="3 8" stroke-linecap="round"/><circle cx="10" cy="52" r="5" fill="#FF7A2E"/><circle cx="210" cy="52" r="5" fill="#0E3B7A"/><g class="av"><path transform="rotate(90) translate(-12 -12)" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="#0E3B7A"/></g></svg><span id="carregandoTxt">Buscando a sua viagem…</span></div></div>
   <div class="cartao" id="semViagem" hidden>
     <h2>Recebemos o seu pedido! ✈️</h2>
@@ -210,11 +318,12 @@ h2{font-size:1.2rem;margin:0 0 4px}
     <a class="btn zap" id="semZap" href="#" target="_blank" rel="noopener">Falar com a agência no WhatsApp</a>
   </div>
   <section id="viagem" hidden>
+    <div id="alteradoBox"></div>
     <div class="cartao">
       <div id="encerrado"></div>
       <div id="andamentoBox"><h2 style="margin:0 0 6px">Andamento</h2>
       <div class="prog" id="prog"></div>
-      <div class="agora" id="agora"></div></div>
+      <div class="agora" id="agora" aria-live="polite"></div></div>
       <div id="cotacaoBox"></div>
     </div>
     <div id="cotacaoEmb" class="cot-emb" hidden>
@@ -228,11 +337,21 @@ h2{font-size:1.2rem;margin:0 0 4px}
       <div id="trechos" style="margin-top:6px"></div>
       <div class="pe" id="pe"></div>
     </div>
+    <div class="cartao dica" id="dicaBox" hidden></div>
+    <div class="cartao status-voo" id="statusVoo" hidden></div>
+    <div class="cartao recibo" id="reciboBox" hidden>
+      <h2 style="margin:0 0 4px">Comprovante da compra</h2>
+      <p class="nota">PDF com passageiros, voos, localizadores, valor pago e as regras da passagem.</p>
+      <button type="button" class="btn sec" id="baixarPdf">📄 Baixar comprovante (PDF)</button>
+    </div>
     <div class="cartao" id="cartoesBox" hidden>
       <h2 style="margin:0 0 4px">Cartões de embarque</h2>
       <p class="nota">Toque para abrir e salvar no celular. Mostre no embarque junto com o documento.</p>
       <div class="cartoes" id="cartoes"></div>
     </div>
+    <div class="cartao seguro" id="seguroBox" hidden></div>
+    <div class="cartao" id="avaliarBox" hidden></div>
+    <div class="cartao" id="alteracaoBox" hidden></div>
     <div class="bts"><a class="btn zap" id="zap" href="#" target="_blank" rel="noopener">💬 WhatsApp</a><button type="button" class="btn agd" id="agenda" hidden>📅 Salvar na agenda</button></div>
   </section>
   <p class="rodape">Vai pra onde? · passagens com milhas<br>Emitimos a sua passagem e ainda fazemos o seu check-in.</p>
@@ -247,7 +366,12 @@ const zap = (num, msg) => num ? `https://wa.me/${String(num).replace(/\D/g,'').r
 const ZAP_AGENCIA = '35920001121';
 const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
 const FIREBASE_ATIVO = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey);
-const token = (new URLSearchParams(location.search).get('v') || '').replace(/[^A-Za-z0-9_-]/g,'').slice(0,64);
+const token = (()=>{
+  let t = (new URLSearchParams(location.search).get('v') || '').replace(/[^A-Za-z0-9_-]/g,'').slice(0,64);
+  if(!t){ try{ t = localStorage.getItem('vpo_ultima_viagem') || (JSON.parse(localStorage.getItem('vpo_ultimo_pedido'))||{}).v || ''; }catch(e){} }
+  if(t) try{ localStorage.setItem('vpo_ultima_viagem', t); }catch(e){}
+  return t;
+})();
 let fs = null, db = null;
 async function conectar(){
   if(db) return;
@@ -299,7 +423,7 @@ function ics(V){
     ev.push(['BEGIN:VEVENT', `UID:${V.pedidoId}-${rot}@vaipraonde`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').slice(0,15)}Z`, `DTSTART:${ini}`, fim?`DTEND:${fim}`:'', `SUMMARY:✈ ${rot} ${de} → ${para}${v.voo?' ('+v.voo+')':''}`, `LOCATION:${de}`, `DESCRIPTION:${loc?'Localizador '+loc+'. ':''}Chegue ao aeroporto com antecedência. Pedido ${V.pedidoId} · Vai pra onde?`, 'BEGIN:VALARM','TRIGGER:-PT3H','ACTION:DISPLAY','DESCRIPTION:Hora de ir para o aeroporto','END:VALARM','END:VEVENT'].filter(Boolean).join('\r\n'));
   };
   const L = V.localizadores||[];
-  um('Ida', V.ida, V.origem.iata, V.destino.iata, L[0]); um('Volta', V.volta, V.destino.iata, V.origem.iata, L[1]||L[0]);
+  um('Ida', V.ida, V.origem.iata, V.destino.iata, L[0]); um('Volta', V.volta, V.voltaRota ? V.voltaRota.de.iata : V.destino.iata, V.voltaRota ? V.voltaRota.para.iata : V.origem.iata, L[1]||L[0]);
   return ev.length ? ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Vai pra onde//Minha viagem//PT','CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n') : '';
 }
 // ícones em linha, no mesmo estilo do painel
@@ -324,7 +448,7 @@ function montar(V, cartoes){
   // foto do destino (a mesma dos cartões do site, ex.: salvador.jpg); sem foto, fica a do céu com a asa
   const foto = slug(V.destino.cidade) + '.jpg';
   if(fotoTestada !== foto){ fotoTestada = foto; const im = new Image(); im.onload = ()=>$('#topo').style.setProperty('--foto', `url("${foto}")`); im.src = foto; }
-  const ida = new Date(`${V.ida?.data}T12:00:00`), dias = Math.ceil((ida - new Date())/864e5);
+  const dias = V.ida?.data ? diasAte(V.ida.data) : 0;
   $('#seloDias').innerHTML = V.cancelado || !V.ida?.data ? '' : dias>0 ? `<div class="selo-dias"><b>${dias}</b><small>${dias>1?'DIAS':'DIA'}</small></div>` : (dias===0 ? `<div class="selo-dias hoje">É hoje!<br>✈</div>` : '');
   $('#encerrado').innerHTML = V.cancelado ? `<div class="encerrado">Este pedido foi encerrado. Se quiser viajar ainda, fale com a gente pelo WhatsApp.</div>` : '';
   $('#andamentoBox').hidden = !!V.cancelado;
@@ -354,7 +478,7 @@ function montar(V, cartoes){
     return `<div class="loc"><div><small>LOCALIZADOR${a.length>1?(i?' DA VOLTA':' DA IDA'):''}${cia?' · '+esc(cia.toUpperCase()):''}</small><b>${esc(l)}</b>${site?`<a href="${site}" target="_blank" rel="noopener">Conferir no site da ${esc(cia)} →</a>`:''}</div><button type="button" data-copiar="${esc(l)}">Copiar</button></div>`; }).join('');
   document.querySelectorAll('[data-copiar]').forEach(b=>b.onclick = ()=>copiar(b.dataset.copiar, 'Localizador copiado'));
   const dif = !!(V.ida?.cia && V.volta?.cia && V.ida.cia!==V.volta.cia);
-  $('#trechos').innerHTML = trechoHTML('Ida', V.ida, V.origem.iata, V.destino.iata, dif) + trechoHTML('Volta', V.volta, V.destino.iata, V.origem.iata, dif);
+  $('#trechos').innerHTML = trechoHTML('Ida', V.ida, V.origem.iata, V.destino.iata, dif) + trechoHTML('Volta', V.volta, V.voltaRota ? V.voltaRota.de.iata : V.destino.iata, V.voltaRota ? V.voltaRota.para.iata : V.origem.iata, dif);
   $('#pe').textContent = [V.pax, V.bagagem ? V.bagagem.toLowerCase() : ''].filter(Boolean).join(' · ');
   $('#cartoesBox').hidden = !cartoes.length;
   $('#cartoes').innerHTML = cartoes.map((c,i)=>`<a href="${c}" download="cartao-embarque-${V.pedidoId}-${i+1}.jpg" target="_blank"><img src="${c}" alt="Cartão de embarque ${i+1}"><span>Cartão ${i+1} · baixar</span></a>`).join('');
@@ -364,14 +488,247 @@ function montar(V, cartoes){
   $('#agenda').onclick = ()=>{ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([cal], {type:'text/calendar'})); a.download = `viagem-${V.pedidoId}.ics`; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast('Abra o arquivo para salvar na agenda'); };
   document.querySelector('.bts').style.gridTemplateColumns = cal ? '' : '1fr';
   $('#carregando').hidden = true; $('#semViagem').hidden = true; $('#viagem').hidden = false;
+  VA = V; extras(V);
 }
 async function carregar(primeira){
   try{
-    const r = await buscar();
+    let r;
+    try{ r = await comPrazoV(buscar(), 15000); }
+    catch(er){ const c = lerCache(); if(c){ montar(c.dados, c.cartoes||[]); mostrarOffline(c.em); return; } throw er; }
+    if(r) guardarCache(r); $('#offline').hidden = true;
     if(!r){ if(primeira){ $('#carregando').hidden = true; $('#semViagem').hidden = false; $('#semZap').href = zap(ZAP_AGENCIA, 'Olá! Fiz um pedido de cotação pelo site e queria saber como está.'); } return; }
     montar(r.dados, r.cartoes);
   }catch(e){ console.error(e); if(primeira){ $('#carregandoTxt').textContent = 'Não consegui abrir agora. Confira a internet e recarregue a página.'; } }
 }
+
+/* =========================================================
+   LANÇAMENTO: offline, app, comprovante PDF, voo alterado, dicas, clima, seguro, avaliação, alteração
+   ========================================================= */
+let VA = null, PUB = null;
+const comPrazoV = (p, ms) => Promise.race([p, new Promise((_,r)=>setTimeout(()=>r(new Error('tempo esgotado')), ms))]);
+const BRL = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const hojeISO = () => { const d = new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
+const diasAte = iso => iso ? Math.round((Date.parse(iso+'T12:00:00') - Date.parse(hojeISO()+'T12:00:00'))/864e5) : null;
+function guardarCache(r){
+  const k = 'vpo_viagem_cache_' + token, em = new Date().toISOString();
+  try{ localStorage.setItem(k, JSON.stringify({dados:r.dados, cartoes:r.cartoes, em})); }
+  catch(e){ try{ localStorage.setItem(k, JSON.stringify({dados:r.dados, cartoes:[], em})); }catch(x){} }
+}
+function lerCache(){ try{ return JSON.parse(localStorage.getItem('vpo_viagem_cache_' + token)); }catch(e){ return null; } }
+function mostrarOffline(em){ const o = $('#offline'); o.hidden = false; o.textContent = `📴 Sem internet: mostrando a última versão salva neste aparelho${em ? ' (' + new Date(em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) + ')' : ''}.`; }
+addEventListener('online', ()=>carregar(false));
+
+// instalar como app
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
+let pedidoInstalar = null;
+addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); pedidoInstalar = e; if(!localStorage.getItem('vpo_instalar_nao')) $('#instalar').hidden = false; });
+$('#instalarBt').addEventListener('click', async ()=>{ $('#instalar').hidden = true; if(pedidoInstalar){ pedidoInstalar.prompt(); pedidoInstalar = null; } });
+$('#instalarX').addEventListener('click', ()=>{ $('#instalar').hidden = true; try{ localStorage.setItem('vpo_instalar_nao','1'); }catch(e){} });
+
+function extras(V){
+  const et = V.etapa||0, ativo = !V.cancelado, emitida = ativo && et >= 3;
+  const dIda = diasAte(V.ida && V.ida.data), dFim = diasAte((V.volta && V.volta.data) || (V.ida && V.ida.data));
+  // voo alterado pela companhia
+  const alts = (V.vooAlterado||[]).filter(a=>a && a.antes);
+  $('#alteradoBox').innerHTML = alts.length ? alts.slice(-2).map(a=>`<div class="alterado" role="alert"><b>⚠️ ${a.cancelado ? 'A companhia cancelou' : 'A companhia alterou'} o seu voo ${esc(a.trecho==='Volta'?'da volta':'da ida')}${a.data ? ' de ' + fmtData(a.data) : ''}</b>
+    <div class="ab"><div><small>ERA</small><s>${esc(a.antes)}</s></div><span aria-hidden="true">→</span><div><small>${a.cancelado ? 'NOVA OPÇÃO' : 'AGORA'}</small><b style="color:var(--tinta)">${esc(a.depois||'a combinar')}</b></div></div>
+    <p>Se esse horário não servir, você tem direito a remarcar sem custo ou pedir reembolso. Fale com a gente que a gente resolve.</p></div>`).join('') : '';
+  // comprovante
+  $('#reciboBox').hidden = !(emitida && V.recibo);
+  // dicas por dias que faltam + clima
+  montarDica(V, emitida, dIda);
+  // status do voo no dia
+  const hoje = hojeISO(), vs = [['Ida', V.ida], ['Volta', V.volta]].filter(([,v])=>v && v.data===hoje && v.voo);
+  $('#statusVoo').hidden = !(emitida && vs.length);
+  if(vs.length){
+    $('#statusVoo').innerHTML = '<h2 style="margin:0 0 4px">✈️ Hoje é dia de voar!</h2><p class="nota">Confira se o voo está no horário antes de sair para o aeroporto.</p>' + vs.map(([t,v])=>{
+      const site = SITE_CIA[String(v.cia||'').toUpperCase()];
+      return `<a class="btn sec" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent('status voo ' + v.voo)}">Status do voo ${esc(v.voo)} (${t.toLowerCase()})</a>${site ? `<a class="nota" style="text-align:center" target="_blank" rel="noopener" href="${site}">ou no site da ${esc(v.cia)} →</a>` : ''}`; }).join('');
+  }
+  // seguro viagem (parceiro)
+  const sg = PUB && PUB.seguro;
+  $('#seguroBox').hidden = !(emitida && sg && sg.on && sg.link && dIda != null && dIda >= 0);
+  if(!$('#seguroBox').hidden) $('#seguroBox').innerHTML = `<h2 style="margin:0 0 4px">🛡️ Seguro viagem</h2><p class="nota">${esc(sg.texto || 'Despesas médicas, bagagem extraviada e imprevistos cobertos. Cote em 2 minutos.')}</p>
+    <a class="btn pri" style="margin-top:12px" href="${esc(sg.link)}" target="_blank" rel="noopener sponsored">Cotar seguro viagem</a><small>Indicação de parceiro. A contratação é feita direto no site do parceiro.</small>`;
+  montarAvaliar(V, emitida, dFim);
+  montarAlteracao(V, emitida, dFim);
+  if(new URLSearchParams(location.search).get('pdf')==='1' && V.recibo && !extras._pdf){ extras._pdf = 1; gerarPdf(V); }
+}
+
+/* ---------- dicas e clima ---------- */
+const DICAS_PADRAO = {
+  d7: 'Falta uma semana! Confira se o documento com foto está válido (RG, CNH ou passaporte) e se o nome está igual ao da passagem.',
+  d3: 'Faltam poucos dias. Separe o que vai na mala de mão (até 10 kg) e lembre: líquidos em frascos de até 100 ml na bagagem de mão.',
+  d1: 'É amanhã! A gente faz o seu check-in e manda o cartão de embarque aqui e no WhatsApp. Chegue ao aeroporto 2 horas antes.',
+  d0: 'Boa viagem! Leve o documento com foto e o cartão de embarque. Confira o portão no painel do aeroporto.'
+};
+function montarDica(V, emitida, d){
+  const box = $('#dicaBox');
+  if(!emitida || d == null || d < 0 || d > 7){ box.hidden = true; return; }
+  const D = Object.assign({}, DICAS_PADRAO, (PUB && PUB.dicas) || {});
+  const k = d >= 4 ? 'd7' : d >= 2 ? 'd3' : d === 1 ? 'd1' : 'd0';
+  let t = D[k] || DICAS_PADRAO[k];
+  const sg = PUB && PUB.seguro;
+  if(k === 'd1' && sg && sg.on && sg.link) t += '\n\n🛡️ Ainda dá tempo de fazer o seguro viagem (link aqui embaixo).';
+  box.hidden = false;
+  box.innerHTML = `<h2 style="margin:0">💡 ${d === 0 ? 'Hoje é o dia!' : d === 1 ? 'Falta 1 dia' : `Faltam ${d} dias`}</h2><p class="tp">${esc(t)}</p><div id="clima"></div>`;
+  climaDestino(V, d);
+}
+const TEMPO_IC = c => c === 0 ? ['☀️','céu limpo'] : c <= 3 ? ['⛅','parcialmente nublado'] : c <= 48 ? ['🌫️','neblina'] : c <= 67 ? ['🌧️','chuva'] : c <= 77 ? ['🌨️','neve'] : c <= 82 ? ['🌦️','pancadas de chuva'] : ['⛈️','tempestade'];
+async function climaDestino(V, d){
+  try{
+    const cid = V.destino.cidade, k = 'vpo_geo_' + cid; let g = null;
+    try{ g = JSON.parse(localStorage.getItem(k)); }catch(e){}
+    if(!g){
+      const r = await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cid)}&count=1&language=pt`)).json();
+      const x = r && r.results && r.results[0]; if(!x) return;
+      g = {lat:x.latitude, lon:x.longitude}; try{ localStorage.setItem(k, JSON.stringify(g)); }catch(e){}
+    }
+    const dia = V.ida.data;
+    const f = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FSao_Paulo&start_date=${dia}&end_date=${dia}`)).json();
+    const dd = f && f.daily; if(!dd || !dd.time || !dd.time.length) return;
+    const [ic, tx] = TEMPO_IC(Number(dd.weathercode[0])||0), ch = dd.precipitation_probability_max ? dd.precipitation_probability_max[0] : null;
+    const el = document.getElementById('clima'); if(!el) return;
+    el.innerHTML = `<div class="tempo"><span class="ic" aria-hidden="true">${ic}</span><div><b>${esc(cid)} no dia ${fmtData(dia).slice(0,5)}: ${Math.round(dd.temperature_2m_max[0])}° / ${Math.round(dd.temperature_2m_min[0])}°</b><small>${tx}${ch != null ? ` · ${ch}% de chance de chuva` : ''} · previsão Open-Meteo</small></div></div>`;
+  }catch(e){ /* sem clima, sem problema */ }
+}
+
+/* ---------- avaliação (no dia seguinte à volta) ---------- */
+const chAval = () => 'vpo_aval_' + token;
+function montarAvaliar(V, emitida, dFim){
+  const box = $('#avaliarBox');
+  if(!emitida || dFim == null || dFim > -1 || dFim < -60){ box.hidden = true; return; }
+  let feito = null; try{ feito = JSON.parse(localStorage.getItem(chAval())); }catch(e){}
+  box.hidden = false;
+  if(feito || V.avaliado){
+    const n = feito ? feito.n : 0;
+    box.innerHTML = `<h2 style="margin:0 0 4px">Obrigado pela avaliação! 💛</h2><p class="nota">Ela ajuda muito quem está pensando em viajar com a gente.</p>` +
+      (n === 5 && V.indicacao ? `<p style="margin:12px 0 0"><b>Que bom que deu tudo certo!</b> Indica a gente para um amigo? Quem chegar pelo seu link já é atendido sabendo que veio de você.</p>
+        <a class="btn zap" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Comprei minha passagem com milhas no Vai pra onde? e saiu bem mais barato. Pede uma cotação por aqui: ' + V.indicacao)}">Indicar pelo WhatsApp</a>` : '');
+    return;
+  }
+  box.innerHTML = `<h2 style="margin:0 0 4px">Como foi a viagem? ✈️</h2><p class="nota">Conta pra gente em 30 segundos.</p>
+    <div class="estrelas" role="radiogroup" aria-label="Nota de 1 a 5 estrelas">${[1,2,3,4,5].map(i=>`<label title="${i} estrela${i>1?'s':''}"><input type="radio" name="estr" value="${i}" aria-label="${i} estrela${i>1?'s':''}">★</label>`).join('')}</div>
+    <textarea class="tx" id="avTexto" maxlength="800" placeholder="O que achou do atendimento e da viagem? (opcional)" aria-label="Comentário"></textarea>
+    <div class="campo-v"><label for="avCidade">Sua cidade (opcional)</label><input id="avCidade" maxlength="60" placeholder="Ex.: Pouso Alegre"></div>
+    <label class="chk-v"><input type="checkbox" id="avPub"><span>Pode publicar no site com o meu primeiro nome e a cidade.</span></label>
+    <button type="button" class="btn pri" id="avEnviar" style="margin-top:14px">Enviar avaliação</button><p class="erro-geral" id="avErro" hidden></p>`;
+  const lb = [...box.querySelectorAll('.estrelas label')];
+  box.querySelectorAll('input[name=estr]').forEach(r=>r.addEventListener('change',()=>lb.forEach((l,i)=>l.classList.toggle('on', i < Number(r.value)))));
+  $('#avEnviar').onclick = async ()=>{
+    const n = Number((box.querySelector('input[name=estr]:checked')||{}).value)||0, er = $('#avErro');
+    if(!n){ er.hidden = false; er.textContent = 'Escolha de 1 a 5 estrelas.'; return; }
+    $('#avEnviar').disabled = true;
+    try{
+      await comPrazoV(enviarAoPainel('avaliacao', token, {estrelas:n, texto:$('#avTexto').value.trim().slice(0,800), cidade:$('#avCidade').value.trim().slice(0,60), publicar:$('#avPub').checked}), 20000);
+      localStorage.setItem(chAval(), JSON.stringify({n, em:Date.now()})); montarAvaliar(V, emitida, dFim);
+    }catch(e){ $('#avEnviar').disabled = false; er.hidden = false; er.textContent = 'Não consegui enviar. Tente de novo.'; window.vpoErro && vpoErro('avaliação: ' + (e.code||e.message||e)); }
+  };
+}
+
+/* ---------- pedido de alteração (remarcar, cancelar, corrigir nome) ---------- */
+const chAlt = () => 'vpo_alt_' + token;
+const ALT_TIPOS = {remarcar:'Remarcar', cancelar:'Cancelar', nome:'Corrigir nome', outro:'Outro'};
+function montarAlteracao(V, emitida, dFim){
+  const box = $('#alteracaoBox');
+  if(!emitida || dFim == null || dFim < 0){ box.hidden = true; return; }
+  box.hidden = false;
+  let loc = null; try{ loc = JSON.parse(localStorage.getItem(chAlt())); }catch(e){}
+  const a = loc && (!V.alteracao || String(loc.em) > String(V.alteracao.em||'')) ? {tipo:loc.tipo, status:'recebida', em:loc.em} : (V.alteracao || null);
+  if(a && !(a.status === 'concluida' && montarAlteracao._novo)){
+    {
+      const st = ['recebida','analise','concluida'], i = Math.max(0, st.indexOf(a.status));
+      box.innerHTML = `<h2 style="margin:0 0 4px">🔄 Pedido de alteração: ${esc(ALT_TIPOS[a.tipo]||'Alteração')}</h2>
+        <div class="etapas-alt">${['Recebida','Em análise','Concluída'].map((t,j)=>`<span class="${j<=i?'on':''}">${t}</span>`).join('')}</div>
+        ${a.resposta ? `<p class="nota" style="margin-top:10px">${esc(a.resposta)}</p>` : `<p class="nota" style="margin-top:10px">A gente responde pelo WhatsApp com as opções e os valores, se houver.</p>`}
+        ${a.status === 'concluida' ? `<button type="button" class="btn sec" id="altNovo">Pedir outra alteração</button>` : ''}`;
+      const nb = document.getElementById('altNovo'); if(nb) nb.onclick = ()=>{ montarAlteracao._novo = 1; try{ localStorage.removeItem(chAlt()); }catch(e){} V.alteracao = null; montarAlteracao(V, emitida, dFim); };
+      return;
+    }
+  }
+  const regras = Array.isArray(V.regras) ? V.regras.filter(x=>x && x.texto).map(x=>`${x.prog}: ${x.texto}`).join('\n\n') : (V.regras||'');
+  box.innerHTML = `<h2 style="margin:0 0 4px">Precisa mudar algo?</h2><p class="nota">Peça por aqui. A gente confere as regras da sua passagem e responde no WhatsApp.</p>
+    <button type="button" class="btn sec" id="altAbrir" aria-expanded="false">Pedir alteração</button>
+    <div id="altForm" hidden>
+      <div class="tipos-alt" role="radiogroup" aria-label="O que você precisa">${Object.entries(ALT_TIPOS).map(([k,t])=>`<label><input type="radio" name="altTipo" value="${k}">${t}</label>`).join('')}</div>
+      <div id="altRemarcar" hidden>
+        <div class="campo-v"><label for="altData">Nova data</label><input type="date" id="altData" min="${hojeISO()}"></div>
+        <div class="campo-v"><label for="altTrecho">Qual trecho</label><select id="altTrecho"><option value="ida">Ida</option>${V.volta ? '<option value="volta">Volta</option><option value="ambos">Ida e volta</option>' : ''}</select></div>
+        <div class="campo-v"><label for="altPer">Horário preferido</label><select id="altPer"><option value="">Qualquer horário</option><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
+      </div>
+      <div class="campo-v"><label for="altTexto">Conte o motivo ou o que precisa</label><textarea class="tx" id="altTexto" maxlength="800"></textarea></div>
+      ${regras ? `<div class="regras-alt"><b>Regras da sua passagem</b>\n${esc(regras)}</div>` : ''}
+      <button type="button" class="btn pri" id="altEnviar" style="margin-top:12px">Enviar pedido</button><p class="erro-geral" id="altErro" hidden></p>
+    </div>`;
+  $('#altAbrir').onclick = ()=>{ const f = $('#altForm'); f.hidden = !f.hidden; $('#altAbrir').setAttribute('aria-expanded', String(!f.hidden)); };
+  box.querySelectorAll('input[name=altTipo]').forEach(r=>r.addEventListener('change',()=>{ $('#altRemarcar').hidden = r.value !== 'remarcar'; }));
+  $('#altEnviar').onclick = async ()=>{
+    const tipo = (box.querySelector('input[name=altTipo]:checked')||{}).value, er = $('#altErro'), texto = $('#altTexto').value.trim();
+    if(!tipo){ er.hidden = false; er.textContent = 'Escolha o que você precisa.'; return; }
+    if(tipo === 'remarcar' && !$('#altData').value){ er.hidden = false; er.textContent = 'Escolha a nova data.'; return; }
+    if(tipo !== 'remarcar' && !texto){ er.hidden = false; er.textContent = 'Conte em poucas palavras o que precisa.'; return; }
+    $('#altEnviar').disabled = true;
+    try{
+      await comPrazoV(enviarAoPainel('alteracao', token, {tipo, texto:texto.slice(0,800), ...(tipo === 'remarcar' ? {data:$('#altData').value, trecho:$('#altTrecho').value, periodo:$('#altPer').value} : {})}), 20000);
+      localStorage.setItem(chAlt(), JSON.stringify({tipo, em:new Date().toISOString()})); montarAlteracao._novo = 0; montarAlteracao(V, emitida, dFim); toast('Pedido de alteração enviado');
+    }catch(e){ $('#altEnviar').disabled = false; er.hidden = false; er.innerHTML = `Não consegui enviar. <a href="${zap(V.whatsapp||ZAP_AGENCIA, 'Olá! Preciso de uma alteração no pedido ' + V.pedidoId + ': ' + ALT_TIPOS[tipo] + '. ' + texto)}" target="_blank" rel="noopener">Peça pelo WhatsApp</a>.`; }
+  };
+}
+
+/* ---------- comprovante em PDF ---------- */
+function carregarJsPdf(){
+  if(window.jspdf) return Promise.resolve();
+  return new Promise((ok, falha)=>{ const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload = ok; s.onerror = ()=>falha(new Error('não carregou o gerador de PDF')); document.head.appendChild(s); });
+}
+const semSimb = t => String(t??'').replace(/→/g,'>').replace(/[^\x00-\xFF]/g,'');
+async function logoData(){ try{ const b = await (await fetch('logo-192.png')).blob(); return await new Promise(r=>{ const f = new FileReader(); f.onload = ()=>r(f.result); f.readAsDataURL(b); }); }catch(e){ return null; } }
+async function gerarPdf(V){
+  const bt = $('#baixarPdf'); bt.disabled = true; bt.textContent = 'Gerando o PDF…';
+  try{
+    await carregarJsPdf();
+    const R = V.recibo, doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'}), W = 210, M = 16;
+    let y = 18;
+    const azul = [14,59,122], cinza = [74,91,118], lar = [224,97,28];
+    const txt = (t, x, yy, o) => doc.text(semSimb(t), x, yy, o);
+    const quebra = (t, x, larg) => { const l = doc.splitTextToSize(semSimb(t), larg); l.forEach(s=>{ if(y > 280){ doc.addPage(); y = 18; } doc.text(s, x, y); y += 5; }); };
+    const titulo = t => { if(y > 265){ doc.addPage(); y = 18; } y += 4; doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...azul); txt(t, M, y); y += 2; doc.setDrawColor(211,222,234); doc.line(M, y, W-M, y); y += 6; doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(19,35,63); };
+    const lg = await logoData(); if(lg) try{ doc.addImage(lg, 'PNG', M, 10, 16, 16); }catch(e){}
+    doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...azul); txt('Vai pra onde?', M + 20, 17);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...cinza); txt('Passagens com milhas', M + 20, 22.5); txt('vaipraondeagencia.netlify.app · WhatsApp (35) 92000-1121', M + 20, 27);
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...lar); txt('COMPROVANTE DE COMPRA', W - M, 17, {align:'right'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...cinza); txt(`Pedido ${V.pedidoId}${R.compraEm ? ' · compra em ' + fmtData(R.compraEm) : ''}`, W - M, 22.5, {align:'right'});
+    y = 36;
+    titulo('Passageiros');
+    (R.pax||[]).forEach((x,i)=>{ quebra(`${i+1}. ${x.nome}${x.tipo ? ' (' + x.tipo + ')' : ''}${x.doc ? ' · Documento: ' + x.doc : ''}`, M, W-2*M); });
+    titulo('Voos');
+    const L = V.localizadores||[];
+    [['Ida', V.ida, V.origem, V.destino, L[0]], ['Volta', V.volta, V.voltaRota ? V.voltaRota.de : V.destino, V.voltaRota ? V.voltaRota.para : V.origem, L[1]||L[0]]].forEach(([t,v,de,para,loc])=>{
+      if(!v || !v.data) return;
+      doc.setFont('helvetica','bold'); quebra(`${t}: ${de.cidade} (${de.iata}) > ${para.cidade} (${para.iata})`, M, W-2*M); doc.setFont('helvetica','normal');
+      quebra(`${fmtData(v.data)} · saída ${v.saida||'--:--'} · chegada ${v.chegada||'--:--'}${v.voo ? ' · voo ' + v.voo : ''}${v.cia ? ' · ' + v.cia : ''}${loc ? ' · localizador ' + loc : ''}`, M, W-2*M);
+      if(v.paradas) quebra(v.paradas, M, W-2*M);
+      y += 1;
+    });
+    if(R.alteracoes) quebra('Horários atualizados após alteração da companhia aérea.', M, W-2*M);
+    titulo('Pagamento');
+    quebra(`Valor pago: ${BRL(R.valor)}${R.forma ? ' · ' + (R.forma === 'pix' ? 'Pix' : `cartão de crédito${R.parcelas > 1 ? ' em ' + R.parcelas + 'x' : ''}`) : ''}${R.pagoEm ? ' · pago em ' + fmtData(R.pagoEm) : ''}`, M, W-2*M);
+    if(R.cupom) quebra(`Desconto do cupom ${R.cupom.codigo}: ${BRL(R.cupom.valor)}`, M, W-2*M);
+    titulo('Bagagem');
+    quebra(V.bagagem || 'Mala de mão (até 10 kg)', M, W-2*M);
+    titulo('Check-in e embarque');
+    quebra('A Vai pra onde? faz o seu check-in quando ele abrir e envia o cartão de embarque pelo WhatsApp e pela página Minha viagem. Chegue ao aeroporto com 2 horas de antecedência e leve um documento oficial com foto, com o mesmo nome da passagem.', M, W-2*M);
+    const rg = Array.isArray(R.regras) ? R.regras.filter(x=>x && x.texto) : [];
+    if(rg.length){ titulo('Regras de cancelamento e remarcação'); rg.forEach(x=>{ doc.setFont('helvetica','bold'); quebra(x.prog, M, W-2*M); doc.setFont('helvetica','normal'); quebra(x.texto, M, W-2*M); y += 1; }); if(R.regrasAceitasEm) quebra(`Regras aceitas pelo cliente em ${new Date(R.regrasAceitasEm).toLocaleString('pt-BR')}.`, M, W-2*M); }
+    doc.setFontSize(8); doc.setTextColor(...cinza);
+    const pg = doc.getNumberOfPages(); for(let i=1;i<=pg;i++){ doc.setPage(i); txt(`Vai pra onde? · CNPJ 32.937.916/0001-69 · gerado em ${new Date().toLocaleString('pt-BR')} · página ${i} de ${pg}`, W/2, 290, {align:'center'}); }
+    doc.save(`comprovante-${V.pedidoId}.pdf`);
+    toast('Comprovante baixado');
+  }catch(e){ console.error(e); toast('Não consegui gerar o PDF agora. Tente de novo.'); window.vpoErro && vpoErro('pdf: ' + (e.message||e)); }
+  finally{ bt.disabled = false; bt.textContent = '📄 Baixar comprovante (PDF)'; }
+}
+$('#baixarPdf').addEventListener('click', ()=>VA && gerarPdf(VA));
+lerPublico().then(p=>{ PUB = p || {}; if(VA) extras(VA); });
+
 // altura da cotação embutida e aviso de aprovação
 addEventListener('message', e=>{
   if(e.origin!==location.origin || !e.data) return;
@@ -379,7 +736,7 @@ addEventListener('message', e=>{
   if(e.data.tipo==='vpo-cot-rolar'){ const f = $('#cotFrame'); scrollTo({top: f.getBoundingClientRect().top + scrollY + (e.data.y||0) - 12, behavior:'smooth'}); }
   if(e.data.tipo==='vpo-cot-aprovada'){ $('#agora').textContent = 'Cotação aprovada! Falta só o pagamento: os dados estão aqui embaixo.'; $('#cotacaoEmb').scrollIntoView({behavior:'smooth', block:'start'}); }
 });
-if(!token){ $('#carregando').textContent = 'Este link está incompleto. Abra de novo pelo link que mandamos no WhatsApp.'; }
+if(!token){ $('#carregando').innerHTML = '<p>Este link está incompleto. Abra de novo pelo link que mandamos no WhatsApp.</p><a class="btn zap" href="https://wa.me/5535920001121?text=' + encodeURIComponent('Olá! Quero acompanhar meu pedido, mas o link não abriu.') + '" target="_blank" rel="noopener">💬 Falar no WhatsApp</a>'; }
 else { carregar(true); setInterval(()=>{ if(document.visibilityState==='visible') carregar(false); }, 60000); }
 </script>
 </body>

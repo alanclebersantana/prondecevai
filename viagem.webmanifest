@@ -1,0 +1,16 @@
+{
+  "name": "Minha viagem · Vai pra onde?",
+  "short_name": "Minha viagem",
+  "description": "Acompanhe sua viagem: passagens, check-in, cartão de embarque e comprovante.",
+  "start_url": "./viagem.html?app=1",
+  "scope": "./viagem.html",
+  "display": "standalone",
+  "background_color": "#F6F9FC",
+  "theme_color": "#0E3B7A",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "logo-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "logo-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

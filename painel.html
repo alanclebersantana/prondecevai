@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#0E3B7A">
 <meta name="dcnp-painel" content="1">
 <link rel="manifest" href="painel.webmanifest">
+<meta name="robots" content="noindex, nofollow">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -479,6 +480,57 @@ input.falta,select.falta{border-color:var(--sol);background:#FFF8F1}
 /* =================== VISUAL NOVO (opções 1–7, 15–18) =================== */
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* modo escuro */
+
+/* ===== lançamento ===== */
+.det-extras{padding:8px var(--lado,16px);display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--linha);background:var(--card);max-height:40vh;overflow:auto}
+.det-extras[hidden]{display:none}
+.ex-bloco{border-radius:10px;padding:7px 12px;background:var(--fundo);border-left:4px solid var(--linha);font-size:.9rem}
+.ex-bloco.sol{border-left-color:var(--sol);background:var(--sol-claro)} .ex-bloco.erro{border-left-color:var(--erro);background:#FDE8E7} .ex-bloco.ok{border-left-color:var(--ok);background:var(--ok-claro)} .ex-bloco.azul{border-left-color:var(--ceu-2);background:var(--ceu-claro)}
+[data-tema=escuro] .ex-bloco.erro{background:#3A1A1A}
+.ex-bloco small{color:var(--tinta-2)}
+.ex-bloco .ex-tx{margin:6px 0 0;font-size:.88rem}
+.ex-comp{display:inline-block;vertical-align:top;max-width:110px;max-height:140px;border-radius:8px;margin:6px 10px 0 0;border:1px solid var(--linha);object-fit:contain;background:#fff}
+.ex-pagos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px;margin-top:6px;font-size:.88rem}
+.acoes-extras{border-top:1px dashed var(--linha);padding-top:10px}
+.promo-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.promo-bar select,.promo-bar input{height:36px;border:1px solid var(--linha);border-radius:9px;padding:0 10px;background:var(--card);color:var(--tinta)}
+.promo-bar .nota{flex-basis:100%;margin:0}
+.resumo-sem{margin-bottom:14px}
+.rs-cab{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rs-cab h3{margin:0}
+.rs-nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:10px}
+.rs-nums div{background:var(--fundo);border-radius:12px;padding:10px;text-align:center}
+.rs-nums b{display:block;font-size:1.25rem;color:var(--ceu)}
+.rs-nums span{font-size:.78rem;color:var(--tinta-2)}
+.res-lanc{display:grid;gap:14px;margin-top:14px}
+.tab-rol{overflow-x:auto}
+.tab-res td small{color:var(--tinta-2);margin-left:4px}
+.hr-cfg{display:grid;gap:6px;margin-top:8px}
+.hr-lin{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hr-lin .linha-semdisp{min-width:120px;margin:0}
+.hr-lin input[type=time]{height:36px;border:1px solid var(--linha);border-radius:8px;padding:0 8px;background:var(--card);color:var(--tinta)}
+.eq-lista{display:grid;gap:8px;margin-top:10px}
+.eq-it{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;background:var(--fundo);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.eq-it b{flex-basis:100%}
+.cp-novo{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;align-items:end;margin-top:12px;background:var(--fundo);border-radius:12px;padding:12px}
+tr.off{opacity:.5}
+.ac-lista{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.ac-lista li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;background:var(--fundo);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.ac-lista li span{margin-left:auto}
+.ac-lista li.off{opacity:.55}
+.erros-lista{list-style:none;padding:0;margin:10px 0;display:grid;gap:8px;max-height:55vh;overflow:auto}
+.erros-lista li{background:var(--fundo);border-radius:10px;padding:8px 10px;font-size:.85rem}
+.erros-lista code{display:block;white-space:pre-wrap;word-break:break-word;margin:4px 0;font-size:.8rem}
+.erros-lista small{color:var(--tinta-2)}
+.aval-it.baixa{border-color:var(--erro)!important;background:#FFF5F4}
+[data-tema=escuro] .aval-it.baixa{background:#2A1515}
+.aval-it.do-cliente::before{content:"Vinda do site";display:inline-block;font-size:.7rem;font-weight:800;background:var(--ceu-claro);color:var(--ceu);border-radius:6px;padding:2px 6px;margin-bottom:4px}
+/* ajudante sem acesso a custos e lucro */
+body.modo-equipe .nav [data-tela="config"]{display:none}
+body.sem-valores .nav [data-tela="resultados"], body.sem-valores .kpi.l, body.sem-valores .det-kpis .kp.lu, body.sem-valores .det-kpis .kp:first-child,
+body.sem-valores .calc .box.lucro, body.sem-valores .campo:has([data-bind="valorMP"]), body.sem-valores .campo:has([data-bind="percLucro"]), body.sem-valores #notaMP,
+body.sem-valores .so-valor, body.sem-valores .cc-nums div:nth-child(3), body.sem-valores #avisoLucro{display:none!important}
+body.sem-emitir [data-acao="registrarEmissao"], body.sem-emitir [data-acao="compartilharMP"], body.sem-emitir [data-acao="checkinFeito"], body.sem-emitir [data-acao="anexarCartao"], body.sem-emitir [data-acao="enviarCartoes"]{display:none!important}
 [data-tema=escuro]{--card:#16213A;--fundo:#0B1424;--tinta:#E6ECF5;--tinta-2:#9FB0C8;--linha:#26344F;--ceu-claro:#1A2C4A;--sol-claro:#3A2516;--ok-claro:#123526;--ceu:#78AEF2;--ceu-2:#5B9BEA;--aviso:#FFB36B;color-scheme:dark}
 [data-tema=escuro] body{background:var(--fundo)}
 [data-tema=escuro] .btn.azul{color:#0B1424}
@@ -1004,6 +1056,54 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
           <button type="button" class="btn perigo" id="btnSair">Sair da conta</button>
         </div>
       </section>
+      <section data-aj="horario">
+        <h2>Horário de atendimento e pausa</h2>
+        <p class="nota">O site mostra "Online agora" ou "Respondemos amanhã a partir das 8h". Fora do horário, a tela de pedido enviado e a cotação aprovada avisam quando você volta.</p>
+        <div id="horarioCfg" class="hr-cfg"></div>
+        <h3 class="sub-cfg">Pausa (férias, viagem, imprevisto)</h3>
+        <label class="linha-semdisp"><input type="checkbox" id="pausaOn"> Pausar o atendimento (o formulário continua recebendo pedidos)</label>
+        <div class="campo" style="margin-top:8px"><label for="pausaTxt">Aviso que aparece no site</label><input id="pausaTxt" maxlength="200" placeholder="Estou de férias até 15/01. Pode mandar o pedido: respondo assim que voltar!"></div>
+      </section>
+      <section data-aj="regrasprog">
+        <h2>Regras da passagem (cancelamento e remarcação)</h2>
+        <p class="nota">Aparecem na cotação, antes do botão de aprovar, com a caixa "Li as regras". Vão também no comprovante em PDF. Já vem um rascunho: confira as regras atuais de cada programa e ajuste.</p>
+        <div id="regrasProgCfg"></div>
+      </section>
+      <section data-aj="assentos">
+        <h2>Escolha de assento</h2>
+        <p class="nota">A escolha de assento é paga. A opção só aparece no site quando estiver ligada e com pelo menos um valor preenchido. O site explica que, sem escolher, a companhia marca um assento grátis no check-in.</p>
+        <div id="assentosCfg"></div>
+      </section>
+      <section data-aj="seguro">
+        <h2>Seguro viagem (parceiro)</h2>
+        <p class="nota">Cartão na página "Minha viagem" depois da emissão e lembrete na véspera. Cadastre o seu link de afiliado.</p>
+        <div id="seguroCfg"></div>
+      </section>
+      <section data-aj="dicas">
+        <h2>Dicas antes da viagem</h2>
+        <p class="nota">Aparecem na página "Minha viagem" conforme os dias que faltam, junto com a previsão do tempo no destino.</p>
+        <div id="dicasCfg"></div>
+      </section>
+      <section data-aj="acessos">
+        <h2>Acessos (ajudante)</h2>
+        <p class="nota">Quem você cadastrar aqui entra no painel com o próprio e-mail (Google ou senha criada no Firebase Authentication). Configurações, cupons, backup e acessos ficam só com você. O que o ajudante faz aparece no histórico do pedido com o nome dele.</p>
+        <div class="g2"><div class="campo"><label for="eqEmail">E-mail do ajudante</label><input id="eqEmail" type="email" placeholder="ajudante@gmail.com"></div><div class="campo"><label>&nbsp;</label><button type="button" class="btn pri" onclick="addEquipe()">+ Dar acesso</button></div></div>
+        <div id="equipeCfg" class="eq-lista"></div>
+      </section>
+      <section data-aj="cupons">
+        <h2>Cupons de desconto</h2>
+        <p class="nota">O cliente digita o código no site ou chega pelo link com ?cupom=CODIGO. O painel confere quando o pedido chega e aplica na cotação, que mostra a linha "Cupom: −R$ 30".</p>
+        <div id="cuponsCfg"></div>
+      </section>
+      <section data-aj="achados">
+        <h2>Achados da semana</h2>
+        <p class="nota">Passagens boas publicadas a partir de um pedido. Aparecem no site embaixo do formulário, com "visto há N dias", e saem sozinhas depois do prazo.</p>
+        <div id="achadosCfg"></div>
+      </section>
+      <section data-aj="numeros">
+        <h2>Números no site</h2>
+        <div id="numerosCfg"></div>
+      </section>
       <span class="salvo" id="salvoCfg">Configurações salvas</span>
     </form>
   </section>
@@ -1073,6 +1173,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   </div>
   <div class="det-kpis" id="detKpis"></div>
   <div class="det-aviso" id="detAvisoCot" hidden></div>
+  <div class="det-extras" id="detExtras" hidden></div>
   <div class="det-corpo" id="detCorpo"></div>
 </aside>
 
@@ -1119,6 +1220,7 @@ const ETAPAS = [
   ['nova','Nova solicitação'],
   ['aguardando_mp','Aguardando Milhas Plus'],
   ['cotacao_enviada','Cotação enviada'],
+  ['aguardando_baixa','Aguardando baixa de preço'],
   ['pago','Pago'],
   ['emitido','Emitido'],
   ['checkin_feito','Check-in feito'],
@@ -1164,6 +1266,21 @@ const CFG_PADRAO = {
   mensagens:{},                    // só os textos que você mudou; o resto usa MSG_PADRAO
   bagagem:{GOL:{valor:0, unidade:'R$'}, LATAM:{valor:0, unidade:'R$'}, Azul:{valor:0, unidade:'R$'}},
   ultimoBackupEm:'',
+  // ---- lançamento ----
+  atendimento:{dias:{0:{on:false,ini:'09:00',fim:'18:00'},1:{on:true,ini:'08:00',fim:'20:00'},2:{on:true,ini:'08:00',fim:'20:00'},3:{on:true,ini:'08:00',fim:'20:00'},4:{on:true,ini:'08:00',fim:'20:00'},5:{on:true,ini:'08:00',fim:'20:00'},6:{on:true,ini:'09:00',fim:'14:00'}}, pausa:{on:false, texto:''}},
+  regrasProg:{
+    smiles:'Remarcação e cancelamento seguem as regras da tarifa Smiles na data da emissão. Em geral: remarcar ou cancelar tem taxa cobrada pela Smiles, e no cancelamento as milhas voltam e as taxas de embarque são reembolsadas. Cancelamento em até 24 horas após a compra, com voo a mais de 7 dias, é sem custo (regra da ANAC).',
+    latam:'Remarcação e cancelamento seguem as regras da tarifa LATAM Pass na data da emissão. Em geral: remarcar ou cancelar tem taxa cobrada pela LATAM, e no cancelamento as milhas voltam e as taxas de embarque são reembolsadas. Cancelamento em até 24 horas após a compra, com voo a mais de 7 dias, é sem custo (regra da ANAC).',
+    azul:'Remarcação e cancelamento seguem as regras da tarifa Azul Fidelidade na data da emissão. Em geral: remarcar ou cancelar tem taxa cobrada pela Azul, e no cancelamento os pontos voltam e as taxas de embarque são reembolsadas. Cancelamento em até 24 horas após a compra, com voo a mais de 7 dias, é sem custo (regra da ANAC).'
+  },
+  assentos:{on:false, valores:{gol:0, latam:0, azul:0}},
+  seguro:{on:false, link:'', texto:''},
+  numeros:{on:false},              // faixa de números no site: só liga se você ligar, nunca sozinho
+  dicas:{d7:'', d3:'', d1:'', d0:''},
+  achados:[], achadosDias:7,
+  cupons:[],
+  semPromo:[],                     // números que pediram para sair da lista de promoções
+  lembreteLocalizador:true,
   // busca do preço em dinheiro no site da companhia (para mostrar a economia na cotação)
   urlsDinheiro:{
     GOL:'https://b2c.voegol.com.br/compra/busca-parceiros?pv=br&tipo=DF&de={origem}&para={destino}&ida={data_dmy}&ADT={adultos}&CHD={criancas}&INF={bebes}',
@@ -1183,10 +1300,16 @@ const MSG_PADRAO = {
   emitido:`Prontinho, {nome}! Sua passagem para {destino} está emitida ✈️\nLocalizador: {localizador}\n\nSegue o cartão da viagem. Guarde com você!\nAcompanhe tudo por aqui: {link_viagem}`,
   cartoes:`Olá, {nome}! Check-in feito ✈️ Seguem os cartões de embarque da reserva {localizador}. Boa viagem!`,
   vespera:`Oi, {nome}! Amanhã você voa para {destino} ✈️\nOs cartões de embarque e os horários estão aqui: {link_viagem}\nChegue ao aeroporto com 2 horas de antecedência. Boa viagem!`,
-  posViagem:`Oi, {nome}! Como foi a viagem para {destino}? Conta pra gente! 😊\n\nSe gostou, indica a Vai pra onde? para os amigos: quem pedir cotação por este link chega como sua indicação 👉 {link_indicacao}`
+  posViagem:`Oi, {nome}! Como foi a viagem para {destino}? Conta pra gente! 😊\n\nSe gostou, indica a Vai pra onde? para os amigos: quem pedir cotação por este link chega como sua indicação 👉 {link_indicacao}`,
+  baixou:`Oi, {nome}! Boa notícia: o preço da sua viagem para {destino} baixou 🎉\nAgora fica {valor_pix} no Pix, válida até {validade_hora}.\n\nPara aprovar: {link}`,
+  vooAlterado:`Oi, {nome}! A {cia} alterou seu voo de {data_voo}: era {antigo}, agora é {novo}. Se esse horário não servir, você tem direito a remarcar sem custo ou pedir reembolso — me avisa que eu resolvo.\n\nOs horários novos já estão aqui: {link_viagem}`,
+  avaliacao:`Oi, {nome}! Como foi a viagem para {destino}? 😊\nSe puder, deixa a sua avaliação aqui (leva 30 segundos): {link_viagem}\nAjuda muito quem está pensando em viajar com a gente!`,
+  remarcacao:`Oi, {nome}! Recebi o seu pedido de alteração da viagem para {destino}. Já estou vendo as opções e as regras da sua passagem, e te respondo por aqui com os valores, se houver.`,
+  achado:`Oi, {nome}! Achei uma passagem boa e lembrei de você 👀\n✈️ {rota_achado} · {mes_achado}\na partir de {preco_achado} por pessoa\n\nQuer que eu veja para as suas datas? Peça aqui: {link_site}\n\n(Para não receber mais, responda SAIR.)`,
+  localizador:`Oi, {nome}! Falta uma semana para a sua viagem para {destino} ✈️\nConferi a sua reserva {localizador} no site da {cia} e está tudo certo. Qualquer mudança da companhia, eu te aviso.`
 };
-const MSG_ROTULO = {cotacao:'Cotação', lembrete:'Lembrete antes de vencer', renovacao:'Cotação renovada', linkCartao:'Link do cartão (Mercado Pago)', emitido:'Passagem emitida', cartoes:'Cartões de embarque', vespera:'Véspera do voo', posViagem:'Depois da viagem (indicação)'};
-const MSG_CODIGOS = ['nome','origem','destino','data_ida','data_volta','pedido','valor_pix','economia','validade','validade_hora','localizador','link','link_viagem','link_indicacao','parcelas','valor_parcela','valor_cartao','link_mp'];
+const MSG_ROTULO = {cotacao:'Cotação', lembrete:'Lembrete antes de vencer', renovacao:'Cotação renovada', linkCartao:'Link do cartão (Mercado Pago)', emitido:'Passagem emitida', cartoes:'Cartões de embarque', vespera:'Véspera do voo', posViagem:'Depois da viagem (indicação)', baixou:'Preço baixou', vooAlterado:'Voo alterado pela companhia', avaliacao:'Pedir avaliação', remarcacao:'Pedido de alteração recebido', achado:'Achado para a lista de promoções', localizador:'Uma semana antes (localizador conferido)'};
+const MSG_CODIGOS = ['nome','origem','destino','data_ida','data_volta','pedido','valor_pix','economia','validade','validade_hora','localizador','link','link_viagem','link_indicacao','parcelas','valor_parcela','valor_cartao','link_mp','cia','data_voo','antigo','novo','rota_achado','mes_achado','preco_achado','link_site'];
 function primeiroNome(p){ const pn = String(p.cliente?.nome||'').trim().split(/\s+/)[0] || ''; return pn ? pn.charAt(0).toUpperCase() + pn.slice(1).toLowerCase() : ''; }
 function msgModelo(chave, p, extra={}){
   const t = cfg.mensagens?.[chave] || MSG_PADRAO[chave] || '';
@@ -1198,7 +1321,7 @@ function msgModelo(chave, p, extra={}){
     pedido: p.id, valor_pix: vc?BRL(vc):'', economia: cmp && cmp.economia>0 ? `Você economiza ${BRL(cmp.economia)} (${cmp.pct}%) em relação ao preço da ${cmp.cia}.` : '',
     validade: ate ? `${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}` : '', validade_hora: ate ? fmtHora(ate) : '',
     localizador: loc, link: p.cotacao?.token ? linkCotacao(p) : '', link_viagem: linkViagem(p), link_indicacao: linkIndicacao(p),
-    parcelas: parc||'', valor_parcela: parc?BRL(vCart/parc):'', valor_cartao: vCart?BRL(vCart):'', link_mp: pg.linkMP||'', ...extra
+    parcelas: parc||'', valor_parcela: parc?BRL(vCart/parc):'', valor_cartao: vCart?BRL(vCart):'', link_mp: pg.linkMP||'', cia: ciaTrecho(p,'Ida')||p.emissao?.cia||'', link_site: baseSite(), ...extra
   };
   // linha com um código sem valor (ex.: link que ainda não existe) sai inteira
   return t.split('\n').filter(l=>!(l.match(/\{(\w+)\}/g)||[]).some(c=>{ const k=c.slice(1,-1); return k in val && !String(val[k]).trim(); }))
@@ -1253,13 +1376,18 @@ function mesclarCfg(c){
   if(c.urls){ c = {...c, urls:{...c.urls}}; for(const k in URLS_ANTIGAS) if(!c.urls[k] || c.urls[k]===URLS_ANTIGAS[k]) delete c.urls[k]; }
   return {...CFG_PADRAO, ...c, checkin:{...CFG_PADRAO.checkin,...(c.checkin||{})},
     bebe:Object.fromEntries(Object.entries(CFG_PADRAO.bebe).map(([k,v])=>[k,{...v,...((c.bebe||{})[k]||{})}])), buscaVelha:{...CFG_PADRAO.buscaVelha,...(c.buscaVelha||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, urlsDinheiro:{...CFG_PADRAO.urlsDinheiro,...(c.urlsDinheiro||{})}, mensagens:{...(c.mensagens||{})},
-    bagagem:Object.fromEntries(Object.entries(CFG_PADRAO.bagagem).map(([k,v])=>[k,{...v,...((c.bagagem||{})[k]||{})}])), taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas], tabelaMP:mesclarTabela(c.tabelaMP)};
+    bagagem:Object.fromEntries(Object.entries(CFG_PADRAO.bagagem).map(([k,v])=>[k,{...v,...((c.bagagem||{})[k]||{})}])),
+    atendimento:{dias:Object.fromEntries(Object.entries(CFG_PADRAO.atendimento.dias).map(([k,v])=>[k,{...v,...(((c.atendimento||{}).dias||{})[k]||{})}])), pausa:{...CFG_PADRAO.atendimento.pausa, ...((c.atendimento||{}).pausa||{})}},
+    regrasProg:{...CFG_PADRAO.regrasProg, ...(c.regrasProg||{})}, assentos:{on:false, ...(c.assentos||{}), valores:{...CFG_PADRAO.assentos.valores, ...((c.assentos||{}).valores||{})}},
+    seguro:{...CFG_PADRAO.seguro, ...(c.seguro||{})}, numeros:{on: (c.numeros||{}).on === true}, dicas:{...CFG_PADRAO.dicas, ...(c.dicas||{})},
+    achados:Array.isArray(c.achados)?c.achados:[], cupons:Array.isArray(c.cupons)?c.cupons:[], semPromo:Array.isArray(c.semPromo)?c.semPromo:[], taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas], tabelaMP:mesclarTabela(c.tabelaMP)};
 }
 function lerCfg(){ let c={}; try{ c = JSON.parse(localStorage.getItem(CHAVE_CFG))||{}; }catch(e){} return mesclarCfg(c); }
 let cfg = lerCfg();
 function salvarCfg(){
   localStorage.setItem(CHAVE_CFG, JSON.stringify(cfg));
-  if(FB.ativo && FB.db && FB.user){
+  if(typeof agendarPublico==='function') agendarPublico();
+  if(FB.ativo && FB.db && FB.user && FB.papel!=='equipe'){
     clearTimeout(salvarCfg._fb);
     salvarCfg._fb = setTimeout(()=>FB.fs.setDoc(FB.fs.doc(FB.db,'config','geral'), JSON.parse(JSON.stringify(cfg))).catch(erroFb), 700);
   }
@@ -1287,6 +1415,7 @@ function separar(p){
     for(const T of ['Ida','Volta']){ if(b['print'+T]) imagens[`${k}-${T}`] = b['print'+T]; delete b['print'+T]; }
   }
   if(d.checkin){ (d.checkin.cartoes||[]).forEach((c,i)=>imagens['cartao-'+String(i).padStart(2,'0')] = c); d.checkin.cartoes = []; }
+  if(d.pagamento && d.pagamento.comprovante){ imagens['comprovante'] = d.pagamento.comprovante; d.pagamento.comprovante = ''; d.pagamento.temComprovante = true; }
   return {dados:d, imagens};
 }
 function reporImagens(p, imagens){
@@ -1294,6 +1423,7 @@ function reporImagens(p, imagens){
   const cart = [];
   for(const [ch,val] of Object.entries(imagens||{})){
     if(ch.startsWith('cartao-')) cart.push([ch,val]);
+    else if(ch==='comprovante'){ p.pagamento = p.pagamento||{}; p.pagamento.comprovante = val; }
     else { const [k,T] = ch.split('-'); if(p.busca[k]) p.busca[k]['print'+T] = val; }
   }
   p.checkin.cartoes = cart.sort((a,b)=>a[0]<b[0]?-1:1).map(x=>x[1]);
@@ -1324,9 +1454,10 @@ function mostrarLogin(msg){
 async function entrou(u){
   const adm = String(window.ADMIN_EMAIL||'').trim().toLowerCase();
   if(adm && String(u.email||'').toLowerCase() !== adm){
-    await FB.au.signOut(FB.auth);
-    mostrarLogin('Este e-mail não tem acesso ao painel.'); return;
-  }
+    const eq = await lerEquipeLogin(String(u.email||'').toLowerCase());
+    if(!eq){ await FB.au.signOut(FB.auth); mostrarLogin('Este e-mail não tem acesso ao painel.'); return; }
+    aplicarPapel('equipe', eq, u.email);
+  } else aplicarPapel('dono', null, u.email);
   $('#login').hidden = true;
   $('#contaEmail').textContent = u.email;
   iniciarSync();
@@ -1451,7 +1582,7 @@ function salvar(imediato){
 function pedido(id){ return pedidos.find(p=>p.id===id); }
 function logar(p, txt){
   p.log = Array.isArray(p.log) ? p.log : [];
-  p.log.push({em:new Date().toISOString(), txt:String(txt).slice(0,300)});
+  p.log.push({em:new Date().toISOString(), txt:String(txt).slice(0,300) + (FB.papel==='equipe' ? ' · por ' + String(FB.email||'').split('@')[0] : '')});
   if(p.log.length>150) p.log = p.log.slice(-150);
 }
 function mudarStatus(p, st){
@@ -1510,6 +1641,8 @@ function textoDifMelhor(cmp){
 /* ---------- programa de cada trecho (um só ou combinação ida/volta) ---------- */
 const trechosDe = p => p.tipo==='ida_volta' ? ['Ida','Volta'] : ['Ida'];
 function progTrecho(p, T){ return (p.combo && p.combo[T]) || p.escolhido; }
+function voltaDe(p){ return (p.voltaOrigem && p.voltaOrigem.iata) || p.destino.iata; }
+function voltaPara(p){ return (p.voltaDestino && p.voltaDestino.iata) || p.origem.iata; }
 function bT(p, T){ const k = progTrecho(p,T); return (k && p.busca[k]) || {}; }
 function ciaTrecho(p, T){ return bT(p,T).cia || (progTrecho(p,T) ? PROG[progTrecho(p,T)].cia : ''); }
 function ciasTexto(p){ const cs = [...new Set(trechosDe(p).map(T=>ciaTrecho(p,T)).filter(Boolean))]; return cs.join(' e '); }
@@ -1532,7 +1665,8 @@ function custoBagagem(p){
 function custoBase(p){ return Math.round((n(p.valorMP) + custoBagagem(p).total)*100)/100; }
 function textoMalasCliente(p){ const m=p.malasPorPassageiro||0; return m ? `Inclui ${m} mala${m>1?'s':''} de 23 kg por passageiro, por trecho` : 'Só mala de mão'; }
 function perc(p){ return p.percLucro!=null && p.percLucro!=='' ? n(p.percLucro) : n(cfg.percPadrao); }
-function valorCliente(p){ const v=custoBase(p); return n(p.valorMP) ? Math.round(v*(1+perc(p)/100)*100)/100 : 0; }
+function valorBruto(p){ const v=custoBase(p); return n(p.valorMP) ? Math.round(v*(1+perc(p)/100)*100)/100 : 0; }
+function valorCliente(p){ const v=custoBase(p), b=valorBruto(p); if(!b) return 0; const d = descontoDe(p, b-v); return d ? Math.max(v, Math.round((b-d)*100)/100) : b; }
 function lucro(p){ return Math.round((valorCliente(p)-custoBase(p))*100)/100; }
 
 /* ---------- valor da Milhas Plus pela tabela do milheiro ---------- */
@@ -1632,7 +1766,7 @@ function baseSite(){
   return ((cfg.urlSite && cfg.urlSite!==padrao) ? cfg.urlSite : (daqui || padrao)).replace(/\/$/,'');
 }
 function linkViagem(p){ return p.viagemToken ? `${baseSite()}/viagem.html?v=${p.viagemToken}` : ''; }
-const MOTIVOS_PERDA = ['Achou mais barato','Desistiu da viagem','Não respondeu','Mudou a data','Sem disponibilidade','Outro'];
+const MOTIVOS_PERDA = ['Achou mais barato','Preço alto (não baixou)','Desistiu da viagem','Não respondeu','Mudou a data','Sem disponibilidade','Outro'];
 function pedirMotivo(p, depois){
   abrirModal(`<h2>Por que o pedido ${esc(p.id)} foi perdido?</h2><p class="nota" style="margin:0">Ajuda a entender, no Resultados, onde as vendas escapam.</p>
     <div class="motivos">${MOTIVOS_PERDA.map(m=>`<button type="button" data-motivo="${esc(m)}">${esc(m)}</button>`).join('')}</div>
@@ -1711,13 +1845,14 @@ function renderInicio(){
     if(p.status==='pago') add({p, g:'hoje', cor:'azul', ordem:1, titulo:`Emitir ${rota}`, sub:`${cli} · pago ${p.pagamento?.forma==='cartao'?'no cartão':'no Pix'}`, tempo:'pago '+tempoDesde(p.pagamento?.pagoEm||p.statusDesde), acao:'Emitir'});
     partidasDe(p).forEach(x=>{ const hh = (x.quando-agora)/3600e3; if(hh>0 && hh<=36 && !p.posVenda?.vespera?.[x.T] && STATUS_VENDA.includes(p.status)){
       const amanha = x.quando.toDateString()===new Date(agora.getTime()+864e5).toDateString();
-      add({p, g:hh<=12?'hoje':'depois', cor:'ok', ordem:6, titulo:`Véspera: ${primeiroNome(p)} voa ${amanha?'amanhã':'em '+Math.round(hh)+'h'}`, sub:`${cli} · ${x.T==='Ida'?rota:p.destino.iata+' → '+p.origem.iata}`, tempo:(amanha?'amanhã ':'')+fmtHora(x.quando), acao:'Avisar', acaoJs:`enviarVespera('${p.id}','${x.T}')`, zap:true}); } });
+      add({p, g:hh<=12?'hoje':'depois', cor:'ok', ordem:6, titulo:`Véspera: ${primeiroNome(p)} voa ${amanha?'amanhã':'em '+Math.round(hh)+'h'}`, sub:`${cli} · ${x.T==='Ida'?rota:voltaDe(p)+' → '+voltaPara(p)}`, tempo:(amanha?'amanhã ':'')+fmtHora(x.quando), acao:'Avisar', acaoJs:`enviarVespera('${p.id}','${x.T}')`, zap:true}); } });
     { const ps = partidasDe(p), ult = ps.length ? ps[ps.length-1].quando : null, d = ult ? (agora-ult)/864e5 : -1;
       if(ult && d>=1 && d<=15 && !p.posVenda?.posViagemEm && STATUS_VENDA.includes(p.status)) add({p, g:'depois', cor:'ok', ordem:7, titulo:`Pós-viagem: ${primeiroNome(p)} voltou de ${p.destino.cidade}`, sub:'Perguntar como foi e mandar o link de indicação', tempo:`há ${Math.floor(d)} dia${Math.floor(d)>1?'s':''}`, acao:'Mandar', acaoJs:`enviarPosViagem('${p.id}')`, zap:true}); }
-    aberturas(p).forEach(a=>{ if(!a.feito && a.abre<=agora && a.partida>agora) add({p, g:'agora', cor:'erro', ordem:1, titulo:`Check-in aberto · ${a.trecho==='volta'?p.destino.iata+' → '+p.origem.iata:rota}`, sub:`${a.cia||p.emissao.cia} · ${a.loc||p.emissao.localizador} · ${cli}`, tempo:`voo em ${quandoTxt((a.partida-agora)/60000)}`, acao:'Fazer check-in'}); });
+    aberturas(p).forEach(a=>{ if(!a.feito && a.abre<=agora && a.partida>agora) add({p, g:'agora', cor:'erro', ordem:1, titulo:`Check-in aberto · ${a.trecho==='volta'?voltaDe(p)+' → '+voltaPara(p):rota}`, sub:`${a.cia||p.emissao.cia} · ${a.loc||p.emissao.localizador} · ${cli}`, tempo:`voo em ${quandoTxt((a.partida-agora)/60000)}`, acao:'Fazer check-in'}); });
   });
   { const dias = cfg.ultimoBackupEm ? (agora-new Date(cfg.ultimoBackupEm))/864e5 : Infinity;
     if(pedidos.length && dias>7) add({p:{id:''}, g:'depois', cor:'azul', ordem:9, titulo: cfg.ultimoBackupEm ? `Fazer backup (o último foi há ${Math.floor(dias)} dias)` : 'Fazer o primeiro backup dos pedidos', sub:'Ajustes → Backup e restauração', tempo:'', acao:'Baixar', acaoJs:'baixarBackup()', abrirJs:"abrirAjuste('backup')"}); }
+  if(typeof extrasInicio==='function') extrasInicio(add, agora);
   itens.sort((a,b)=>a.ordem-b.ordem);
   const grupos = [['agora','Agora'],['hoje','Hoje'],['depois','Depois']].map(([g,t])=>({g, t, lista:itens.filter(i=>i.g===g)})).filter(x=>x.lista.length);
 
@@ -1750,6 +1885,7 @@ function renderInicio(){
       <div class="ini-tx"><h2>${saud}${nomeSaud?', '+esc(nomeSaud):''}! ${h>=18||h<5?'🌙':'✈️'}</h2><p>${agora.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})} · lucro do mês ${BRL(lucroMes)}${meta?' de '+BRL(meta):''}</p></div>
       <div class="ini-chips">${chip(cont.cotar,'para cotar','nova',true)}${chip(cont.vencendo,'vencendo','cotacao_enviada')}${chip(cont.emitir,'para emitir','pago')}${chip(cont.checkin,'check-in','emitido')}</div>
     </div>
+    ${typeof htmlExtrasInicio==='function' ? htmlExtrasInicio() : ''}
     <div class="ini-grade">
       <section aria-labelledby="h-fazer">
         <h3 class="sr" id="h-fazer">O que fazer agora</h3>
@@ -1978,7 +2114,7 @@ let filtroCli = 'todos';
 function renderClientes(){
   const todos = [...clientesMapa().values()];
   const esperando = c => c.pedidos.some(p=>p.status==='cotacao_enviada' && p.cotacao && !p.cotacao.resposta && !vencida(p));
-  const FILTROS = [['todos','Todos', ()=>true], ['fieis','Fiéis', c=>c.compras.length>1], ['sem','Sem compra', c=>!c.compras.length], ['indicaram','Indicaram', c=>c.indicados.length>0]];
+  const FILTROS = [['todos','Todos', ()=>true], ['fieis','Fiéis', c=>c.compras.length>1], ['sem','Sem compra', c=>!c.compras.length], ['indicaram','Indicaram', c=>c.indicados.length>0], ['promo','📣 Promoções', c=>aceitaPromo(c)]];
   const q = norm($('#buscaCli').value), f = (FILTROS.find(x=>x[0]===filtroCli)||FILTROS[0])[2];
   const lista = todos.filter(f)
     .filter(c=>!q || norm(`${c.nome} ${c.whatsapp} ${c.pedidos.map(p=>p.destino?.cidade+' '+p.destino?.iata).join(' ')}`).includes(q))
@@ -2191,7 +2327,7 @@ async function cardViagem(p){
 }
 /* ---------- página "Minha viagem" (viagem.html): o painel publica só o necessário ---------- */
 const ETAPAS_CLIENTE = ['Pedido recebido','Cotação pronta','Pagamento confirmado','Passagem emitida','Check-in feito'];
-function etapaCliente(st){ return ({nova:0, aguardando_mp:0, cotacao_enviada:1, pago:2, emitido:3, checkin_feito:4, concluido:4})[st] ?? -1; }
+function etapaCliente(st){ return ({nova:0, aguardando_mp:0, cotacao_enviada:1, aguardando_baixa:1, pago:2, emitido:3, checkin_feito:4, concluido:4})[st] ?? -1; }
 function dadosViagemPublica(p){
   const et = etapaCliente(p.status), escolheu = !!p.escolhido && et>=1;
   const voo = T => { const b = bT(p,T), data = T==='Ida' ? p.dataIda : p.dataVolta; return {data:data||'', voo:escolheu?(b['voo'+T]||''):'', saida:escolheu?(b['saida'+T]||''):'', chegada:escolheu?(b['chegada'+T]||''):'', paradas:escolheu?textoParadas(b,T):'', ...(escolheu ? escalasPublicas(b,T) : {nParadas:null, escalas:[]}), cia:escolheu?ciaTrecho(p,T):''}; };
@@ -2436,6 +2572,7 @@ function cartaoPedido(p){
   { const eb = estadoBusca(p); if(eb) tags.push(`<span class="tag busca-${eb.c}">${eb.c==='b'?'<span class="gira"></span>':''}${esc(eb.t)}</span>`); }
   if(ic.indicadoPor) tags.push(`<span class="tag sol">🤝 ${esc(ic.indicador ? ic.indicador.nome.split(' ')[0] : ic.indicadoPor)}</span>`);
   if(p.origemPedido==='whatsapp') tags.push('<span class="tag">via WhatsApp</span>');
+  if(typeof tagsExtras==='function') tags.push(...tagsExtras(p));
   if(p.cotacao?.resposta && !p.pagamento?.pagoEm) tags.push(`<span class="tag ok">${p.cotacao.resposta.forma==='pix'?'Pix':'Cartão '+p.cotacao.resposta.parcelas+'x'}</span>`);
   const valor = valorCliente(p) && ['cotacao_enviada','pago','emitido','checkin_feito','concluido'].includes(p.status) ? BRL(n(p.pagamento?.valorCobrado)||valorCliente(p)) : '';
   // botões da próxima ação
@@ -2508,7 +2645,7 @@ function renderDetalhe(){
   // etapa atual do fluxo (1..8)
   const passo = p.status==='nova' ? (p.escolhido?2:1)
               : p.status==='aguardando_mp' ? 2
-              : p.status==='cotacao_enviada' ? 3
+              : p.status==='cotacao_enviada' || p.status==='aguardando_baixa' ? 3
               : p.status==='pago' ? (p.emissaoSolicitadaEm?5:4)
               : p.status==='emitido' ? 6
               : p.status==='checkin_feito' ? 7 : 8;
@@ -2930,7 +3067,7 @@ function etapaPassageiros(p, cls, aberto){
 function textoEmissao(p){
   const b = bT(p,'Ida'), bv = bT(p,'Volta');
   const pax = (p.passageirosDados||[]).map((d,i)=>`${i+1}. ${d.nome||'—'} — ${d.doc||'—'} — nasc. ${d.nasc?fmtData(d.nasc):'—'}`).join('\n');
-  return `EMISSÃO ${p.id}\n${p.combo ? `Programas: ida ${PROG[p.combo.Ida].nome} (${b.cia}) + volta ${PROG[p.combo.Volta].nome} (${bv.cia}) — duas emissões` : `Programa: ${PROG[p.escolhido].nome} (${b.cia})`}\nTrecho: ${p.origem.iata} → ${p.destino.iata}\nIda: ${fmtData(p.dataIda)} · ${b.vooIda||''} ${b.saidaIda||''}–${b.chegadaIda||''}${p.combo?' · '+MIL(b.milhasIda)+' milhas':''}`+
+  return `EMISSÃO ${p.id}\n${p.combo ? `Programas: ida ${PROG[p.combo.Ida].nome} (${b.cia}) + volta ${PROG[p.combo.Volta].nome} (${bv.cia}) — duas emissões` : `Programa: ${PROG[p.escolhido].nome} (${b.cia})`}\nTrecho: ${p.origem.iata} → ${p.destino.iata}${p.voltaOrigem||p.voltaDestino ? ' · volta '+voltaDe(p)+' → '+voltaPara(p) : ''}\nIda: ${fmtData(p.dataIda)} · ${b.vooIda||''} ${b.saidaIda||''}–${b.chegadaIda||''}${p.combo?' · '+MIL(b.milhasIda)+' milhas':''}`+
     (p.dataVolta?`\nVolta: ${fmtData(p.dataVolta)} · ${bv.vooVolta||''} ${bv.saidaVolta||''}–${bv.chegadaVolta||''}${p.combo?' · '+MIL(bv.milhasVolta)+' milhas':''}`:'')+
     ((b.datasAlt||datasAltAuto(p))?`\nDatas encontradas: ${b.datasAlt||datasAltAuto(p)}`:'')+
     `\nBagagem: ${textoMalas(p)}\nPet: ${textoPet(p)}\n\nPassageiros:\n${pax}\n\n${perguntaMilheiro(p)}`;
@@ -3274,7 +3411,7 @@ function escolherPrograma(p,k){
    AÇÕES
    ========================================================= */
 function textoTrecho(p){
-  return `${p.origem.iata} → ${p.destino.iata} | Ida ${fmtData(p.dataIda)}${p.dataVolta?' | Volta '+fmtData(p.dataVolta):''} | ${textoPax(p)}${p.datasFlexiveis?' | datas flexíveis ±3 dias':''}${textoHorario(p)?' | horário: '+textoHorario(p):''}`;
+  return `${p.origem.iata} → ${p.destino.iata}${p.voltaOrigem||p.voltaDestino ? ' (volta '+voltaDe(p)+' → '+voltaPara(p)+')' : ''} | Ida ${fmtData(p.dataIda)}${p.dataVolta?' | Volta '+fmtData(p.dataVolta):''} | ${textoPax(p)}${p.datasFlexiveis?' | datas flexíveis ±3 dias':''}${textoHorario(p)?' | horário: '+textoHorario(p):''}`;
 }
 // Azul: tira os grupos de passageiros com zero (crianças 0, bebês 0) e renumera, como o próprio site faz
 function limparPaxAzul(url){
@@ -3290,6 +3427,8 @@ function limparPaxAzul(url){
   return base + '?' + final.join('&');
 }
 function urlBusca(t, o){
+  { let a = +o.adultos||0, c = +o.criancas||0, b = +o.bebes||0;   // grupo: as companhias buscam até 9 por vez
+    if(a+c+b > 9){ a = Math.min(a, 9); c = Math.min(c, 9-a); b = Math.min(b, a, 9-a-c); o = {...o, adultos:a, criancas:c, bebes:b}; } }
   const [y,m,d] = String(o.data||'').split('-');
   const ms = y ? Date.UTC(+y, +m-1, +d, 15, 0, 0) : '';   // meio-dia no horário de Brasília
   const u = t.replaceAll('{origem}',o.origem).replaceAll('{destino}',o.destino)
@@ -3651,7 +3790,7 @@ async function cardCliente(p){
   };
   let y = T0+HD+14;
   trecho(y, 'Ida', p.dataIda, b.vooIda, b.saidaIda, b.chegadaIda, p.origem.cidade, p.destino.cidade, b, 'Ida', ciaI); y += TR;
-  if(volta){ trecho(y, 'Volta', p.dataVolta, bv.vooVolta, bv.saidaVolta, bv.chegadaVolta, p.destino.cidade, p.origem.cidade, bv, 'Volta', ciaV); y += TR; }
+  if(volta){ trecho(y, 'Volta', p.dataVolta, bv.vooVolta, bv.saidaVolta, bv.chegadaVolta, (p.voltaOrigem||p.destino).cidade, (p.voltaDestino||p.origem).cidade, bv, 'Volta', ciaV); y += TR; }
   // picote
   y += 14; ctx.strokeStyle='#DCE4EE'; ctx.lineWidth=4; ctx.setLineDash([12,10]); ctx.beginPath(); ctx.moveTo(X+36,y); ctx.lineTo(X+LW-36,y); ctx.stroke(); ctx.setLineDash([]);
   ctx.fillStyle='#EEF3F9'; ctx.beginPath(); ctx.arc(X,y,20,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(X+LW,y,20,0,Math.PI*2); ctx.fill();
@@ -3774,7 +3913,7 @@ async function checarRespostas(){
   if(FB.ativo && !(FB.db && FB.user)) return;
   checandoRespostas = true;
   try{
-    const abertas = pedidos.filter(p=>p.cotacao?.token && ['cotacao_enviada','aguardando_mp','nova'].includes(p.status) && !p.pagamento?.pagoEm);
+    const abertas = pedidos.filter(p=>p.cotacao?.token && ['cotacao_enviada','aguardando_mp','nova','aguardando_baixa'].includes(p.status) && !p.pagamento?.pagoEm);
     for(const p of abertas){
       let d; try{ d = await lerCotacaoPublica(p.cotacao.token); }catch(e){ continue; }
       if(!d) continue;
@@ -3783,7 +3922,10 @@ async function checarRespostas(){
       if(p.cotacao.resposta && p.cotacao.resposta.aprovadaEm === d.resposta.aprovadaEm) continue;   // nada mudou
       const trocou = !!p.cotacao.resposta;
       logar(p, `Cliente ${trocou?'trocou a forma de pagamento':'aprovou a cotação'} pela página: ${d.resposta.forma==='pix'?'Pix':'cartão '+d.resposta.parcelas+'x'}`);
-      p.cotacao.resposta = {forma:d.resposta.forma, parcelas:d.resposta.parcelas||0, aprovadaEm:d.resposta.aprovadaEm, ...(d.resposta.opcao!=null?{opcao:Number(d.resposta.opcao)||0}:{})};
+      p.cotacao.resposta = {forma:d.resposta.forma, parcelas:d.resposta.parcelas||0, aprovadaEm:d.resposta.aprovadaEm, ...(d.resposta.opcao!=null?{opcao:Number(d.resposta.opcao)||0}:{}), ...(d.resposta.aceites?{aceites:d.resposta.aceites}:{}), ...(d.resposta.malas!=null?{malas:Number(d.resposta.malas)}:{})};
+      if(d.resposta.malas!=null && Number(d.resposta.malas)!==n(p.malasPorPassageiro)){ logar(p, `Cliente mudou as malas na cotação: ${n(p.malasPorPassageiro)} → ${Number(d.resposta.malas)} por passageiro`); p.malasPorPassageiro = Number(d.resposta.malas); }
+      if(d.resposta.promo){ p.promo = true; }
+      if(p.status==='aguardando_baixa') mudarStatus(p, 'cotacao_enviada');
       if(Array.isArray(p.cotacao.opcoes)) aplicarOpcaoCliente(p, Number(d.resposta.opcao)||0);   // escolheu a mais rápida (ou voltou para a mais barata)
       p.pagamento = p.pagamento || {};
       if(!p.pagamento.pagoEm){ p.pagamento.forma = d.resposta.forma; if(d.resposta.forma==='cartao') p.pagamento.parcelas = d.resposta.parcelas; }
@@ -3817,7 +3959,7 @@ function renderCheckins(){
   $('#badgeCk').textContent = (jaAberto.length+abreHoje.length)||'';
   const linha = ({p,a},modo)=>`<div class="ck" onclick="abrirDetalhe('${p.id}')">
     <div class="hora"><b>${fmtHora(modo==='abre'?a.abre:a.partida)}</b><small>${modo==='abre'?'abre':'voo '+a.partida.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</small></div>
-    <div class="info"><b>${esc(p.cliente.nome)} · ${a.trecho==='ida'?p.origem.iata+' → '+p.destino.iata:p.destino.iata+' → '+p.origem.iata}</b>
+    <div class="info"><b>${esc(p.cliente.nome)} · ${a.trecho==='ida'?p.origem.iata+' → '+p.destino.iata:voltaDe(p)+' → '+voltaPara(p)}</b>
       <small>${esc(a.cia||p.emissao.cia)} · localizador ${esc(a.loc||p.emissao.localizador)} · ${a.trecho} · ${textoPax(p)}</small></div>
     <span class="tag ${modo==='feito'?'ok':modo==='aberto'?'sol':''}">${modo==='feito'?'Feito':modo==='aberto'?'Fazer agora':'Hoje'}</span>
   </div>`;
@@ -3963,7 +4105,7 @@ function iniciarBuscaDinheiro(p){
   if(buscaDinheiro){ toast('Já tem uma busca de preço rodando.'); return; }
   const cia = ciaDinheiro(p);
   const x = p.passageiros||{}, trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
-  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', voltaDe(p), voltaPara(p), p.dataVolta]);
   const tarefas = {}, envio = [];
   for(const [trecho,o,d,data] of trechos){
     const ciaT = ciaTrecho(p, trecho==='volta'?'Volta':'Ida'), modelo = cfg.urlsDinheiro[ciaT];
@@ -4148,7 +4290,7 @@ function iniciarAuto(p, forcar, opts){
   if(autoAtual || flexAtual || concAtual){ if(forcar && autoAtual?.pedidoId!==p.id){ toast('Terminando a busca de outro pedido; este entra em seguida.'); p.auto=null; atualizarFila(); } return; }
   const x = p.passageiros||{}, so = opts?.so && opts.so.length ? opts.so : Object.keys(PROG);
   const trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
-  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', voltaDe(p), voltaPara(p), p.dataVolta]);
   const tarefas = {}, envio = [];
   for(const [trecho,o,d,data] of trechos) for(const k of so){
     const url = urlBusca(cfg.urls[k], {origem:o, destino:d, data, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0});
@@ -4306,7 +4448,7 @@ function iniciarConc(p, manual){
   if(autoAtual || flexAtual || concAtual){ if(manual) toast('Termina a busca que está rodando e já compara.'); if(manual) p.concPendente = true; return false; }
   if(!p.dataIda || p.dataIda < hojeISO() || !/^[A-Z]{3}$/.test(p.origem?.iata||'') || !/^[A-Z]{3}$/.test(p.destino?.iata||'')) { if(manual) toast('O pedido precisa de origem, destino e data de ida futura.'); return false; }
   const x = p.passageiros||{}, trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
-  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', voltaDe(p), voltaPara(p), p.dataVolta]);
   const tarefas = {}, envio = [];
   for(const [tr,o,d,data] of trechos) for(const s in CONC){
     const url = CONC[s].url(o, d, data, x);
@@ -4398,7 +4540,7 @@ function somarDias(iso, d){ const [a,m,dd] = iso.split('-').map(Number), x = new
 function iniciarFlex(p){
   const k = comparaProgramas(p).melhor || 'smiles', x = p.passageiros||{};
   const trechos = [['ida', p.origem.iata, p.destino.iata, p.dataIda]];
-  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', p.destino.iata, p.origem.iata, p.dataVolta]);
+  if(p.tipo==='ida_volta' && p.dataVolta) trechos.push(['volta', voltaDe(p), voltaPara(p), p.dataVolta]);
   const tarefas = {}, envio = [];
   for(const [tr,o,d,data] of trechos) for(const dd of [-1,1,-2,2,-3,3]){
     const dia = somarDias(data, dd); if(dia < hojeISO()) continue;
@@ -4487,7 +4629,7 @@ function datasAltAuto(p){
 /* leva para a aba do site que a busca deixou aberta; se ela já foi fechada, abre a busca de novo numa aba */
 const focoPend = {};
 function urlTrecho(p, k, trecho){ const x=p.passageiros||{}, volta = trecho==='volta';
-  return urlBusca(cfg.urls[k], {origem: volta?p.destino.iata:p.origem.iata, destino: volta?p.origem.iata:p.destino.iata, data: volta?p.dataVolta:p.dataIda, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0}); }
+  return urlBusca(cfg.urls[k], {origem: volta?voltaDe(p):p.origem.iata, destino: volta?voltaPara(p):p.destino.iata, data: volta?p.dataVolta:p.dataIda, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0}); }
 function verNoSite(p, programa, trecho){
   const buscaId = (autoAtual && autoAtual.pedidoId===p.id) ? autoAtual.id : p.auto?.buscaId;
   const abrir = () => { const w = window.open(urlTrecho(p, programa, trecho), '_blank'); if(w){ try{ w.opener=null; }catch(e){} } else if(extensaoAtiva) window.postMessage({tipo:'dcnp-abrir-abas', urls:[urlTrecho(p, programa, trecho)]}, '*'); };
@@ -4927,6 +5069,802 @@ function abrirAvaliacao(id, pedidoId){
     }
   });
 })();
+
+
+/* =========================================================
+   LANÇAMENTO: horário, regras, cupons, achados, caixa de entrada,
+   baixa de preço, voo alterado, equipe, funil, exportação…
+   ========================================================= */
+const CIA_DE_PROG = {smiles:'gol', latam:'latam', azul:'azul'};
+const DIA_NOME = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const ehDono = () => FB.papel !== 'equipe';
+const podeValores = () => ehDono() || !!(FB.perms && FB.perms.valores);
+const podeEmitir = () => ehDono() || !!(FB.perms && FB.perms.emitir);
+function diasAteData(iso){ if(!iso) return null; const a = new Date(iso.slice(0,10)+'T12:00:00'), h = new Date(); h.setHours(12,0,0,0); return Math.round((a-h)/864e5); }
+const MESES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+/* ---------- equipe (ajudante com acesso ao painel) ---------- */
+async function lerEquipeLogin(email){
+  try{
+    const s = await FB.fs.getDoc(FB.fs.doc(FB.db,'config','equipe'));
+    const d = s.exists() ? s.data() : {};
+    if(!(d.emails||[]).map(x=>String(x).toLowerCase()).includes(email)) return null;
+    return Object.assign({atender:true, emitir:false, valores:false}, (d.perms||{})[email]||{});
+  }catch(e){ return null; }
+}
+function aplicarPapel(papel, perms, email){
+  FB.papel = papel; FB.perms = perms || null; FB.email = email || '';
+  document.body.classList.toggle('modo-equipe', papel==='equipe');
+  document.body.classList.toggle('sem-valores', !podeValores());
+  document.body.classList.toggle('sem-emitir', !podeEmitir());
+  if(papel==='equipe') toast(`Entrou como ajudante${podeValores()?'':' (sem ver custos e lucro)'}`);
+}
+
+/* ---------- cupom: confere quando o pedido chega e aplica no valor ---------- */
+function cupomCfg(cod){ return (cfg.cupons||[]).find(c=>c.codigo===cod) || null; }
+function validarCupom(p){
+  const cod = String(p.cupom||'').toUpperCase(); if(!cod) return {ok:false};
+  const c = cupomCfg(cod);
+  if(!c) return {ok:false, motivo:'cupom não existe'};
+  if(c.ativo===false) return {ok:false, motivo:'cupom desligado'};
+  const dia = (p.criadoEm||new Date().toISOString()).slice(0,10);
+  if(c.validade && dia > c.validade) return {ok:false, motivo:'cupom vencido'};
+  const usos = pedidos.filter(x=>x.id!==p.id && x.cupomAplicado && x.cupomAplicado.codigo===cod && (STATUS_VENDA.includes(x.status) || x.status==='cotacao_enviada')).length;
+  if(n(c.limite) && usos >= n(c.limite)) return {ok:false, motivo:'limite de usos atingido'};
+  if(c.primeiro){ const ch = chaveCliente(p.cliente?.whatsapp); if(pedidos.some(x=>x.id!==p.id && chaveCliente(x.cliente?.whatsapp)===ch && STATUS_VENDA.includes(x.status))) return {ok:false, motivo:'só vale na primeira compra'}; }
+  return {ok:true, c};
+}
+function descontoDe(p, lucroBruto){
+  if(p.cupom && p.cupomAplicado===undefined){
+    const v = validarCupom(p);
+    p.cupomAplicado = v.ok ? {codigo:v.c.codigo, tipo:v.c.tipo, valor:n(v.c.valor)} : null;
+    p.cupomMotivo = v.ok ? '' : (v.motivo||'');
+    setTimeout(()=>salvar(), 0);
+  }
+  const a = p.cupomAplicado; if(!a || !(lucroBruto > 0)) return 0;
+  const d = a.tipo==='perc' ? lucroBruto*n(a.valor)/100 : n(a.valor);
+  return Math.round(Math.min(d, lucroBruto)*100)/100;
+}
+function descontoValor(p){ const b = valorBruto(p), v = valorCliente(p); return b && v ? Math.round((b-v)*100)/100 : 0; }
+
+/* ---------- malas: o cliente pode trocar na cotação (valor de cada opção) ---------- */
+function malasOpcoesDe(pp){
+  if(pp.cobrarBagagem===false || !n(pp.valorMP)) return null;
+  const r = [];
+  for(const m of [0,1,2]){
+    const q = JSON.parse(JSON.stringify(pp)); q.malasPorPassageiro = m;
+    if(m && custoBagagem(q).zerado) return null;   // custo da mala não cadastrado: não oferece a troca
+    const v = valorCliente(q); if(!v) return null;
+    r.push({n:m, valorPix:v, parcelas:parcelasDe(v)});
+  }
+  return r;
+}
+
+/* ---------- dados públicos da cotação e da "Minha viagem" ---------- */
+function regrasPublicas(p){ return progsDoPedido(p).map(k=>({prog:PROG[k].nome, texto:String((cfg.regrasProg||{})[k]||'').trim()})).filter(x=>x.texto); }
+function voltaRotaPub(p){
+  if(!p.voltaOrigem && !p.voltaDestino) return null;
+  const de = p.voltaOrigem || p.destino, para = p.voltaDestino || p.origem;
+  return {de:{iata:de.iata, cidade:de.cidade}, para:{iata:para.iata, cidade:para.cidade}};
+}
+function clientesComCompra(){ return [...clientesMapa().values()].filter(c=>c.compras.length).length; }
+dadosCotacaoPublica = (orig => p => {
+  const d = orig(p), desc = descontoValor(p), vB = varianteCurta(p);
+  const malas = malasOpcoesDe(p);
+  if(Array.isArray(d.opcoes)){ d.opcoes[0].malasOp = malas; if(vB) d.opcoes[1].malasOp = malasOpcoesDe(vB.q); }
+  return {...d, voltaRota: voltaRotaPub(p), regras: regrasPublicas(p), malasOp: malas, malasAtual: n(p.malasPorPassageiro),
+    ...(desc>0 && p.cupomAplicado ? {desconto:{cupom:p.cupomAplicado.codigo, valor:desc}} : {}),
+    ...(p.grupo ? {grupo:{total:totalPax(p)}} : {}),
+    ...(cfg.numeros && cfg.numeros.on===true ? {clientesTotal: clientesComCompra()} : {}),
+    promo: !!p.promo };
+})(dadosCotacaoPublica);
+dadosViagemPublica = (orig => p => {
+  const d = orig(p), et = d.etapa;
+  const tipos = []; const x = p.passageiros||{}; for(let i=0;i<(x.adultos||0);i++) tipos.push('adulto'); for(let i=0;i<(x.criancas||0);i++) tipos.push('criança'); for(let i=0;i<(x.bebes||0);i++) tipos.push('bebê');
+  const pg = p.pagamento||{}, r = p.cotacao?.resposta||{};
+  const recibo = et>=3 ? {compraEm: pg.pagoEm || r.aprovadaEm || p.criadoEm, pax:(p.passageirosDados||[]).filter(dd=>dd.nome).map((dd,i)=>({nome:dd.nome, tipo:tipos[i]||'', doc:mascararDoc(dd.doc)})),
+    valor: n(pg.valorCobrado) || valorCliente(p), forma: pg.forma||r.forma||'', parcelas: n(pg.parcelas)||0, pagoEm: pg.pagoEm||'',
+    ...(p.cupomAplicado && descontoValor(p)>0 ? {cupom:{codigo:p.cupomAplicado.codigo, valor:descontoValor(p)}} : {}),
+    regras: regrasPublicas(p), regrasAceitasEm: r.aceites?.regras || '', alteracoes: !!(p.alteracoesVoo||[]).length} : null;
+  return {...d, voltaRota: voltaRotaPub(p), recibo, regras: regrasPublicas(p),
+    vooAlterado: (p.alteracoesVoo||[]).map(a=>({trecho:a.trecho, data:a.data, antes:a.antes, depois:a.depois, cancelado:!!a.cancelado, em:a.em})),
+    alteracao: p.alteracao ? {tipo:p.alteracao.tipo, status:p.alteracao.status, em:p.alteracao.em, resposta:p.alteracao.resposta||''} : null,
+    avaliado: !!p.avaliado, indicacao: linkIndicacao(p)};
+})(dadosViagemPublica);
+async function marcarCotacaoPublica(p, campos){
+  const tk = p.cotacao?.token; if(!tk) return;
+  try{
+    if(FB.ativo && FB.db){ await FB.fs.updateDoc(FB.fs.doc(FB.db,'cotacoes',tk), campos); return; }
+    const t = lerJSON(CHAVE_COTACOES, {}); if(t[tk]){ Object.assign(t[tk], campos); localStorage.setItem(CHAVE_COTACOES, JSON.stringify(t)); }
+  }catch(e){ console.warn('cotação pública', e); }
+}
+ACOES.confirmarPagamento = (orig => function(p){ orig.apply(this, arguments); if(p.pagamento?.pagoEm) marcarCotacaoPublica(p, {pagoConfirmado:true}); })(ACOES.confirmarPagamento);
+
+/* ---------- configuração pública do site (publico/site) e cupons ---------- */
+function numerosSite(){
+  const vend = pedidos.filter(p=>STATUS_VENDA.includes(p.status));
+  const emitidas = vend.reduce((s,p)=>s+totalPax(p),0), eco = vend.reduce((s,p)=>{ const c = comparacaoCia(p); return s + (c && c.economia>0 ? c.economia : 0); },0);
+  return {on: cfg.numeros?.on===true, emitidas, economia: Math.round(eco), media: emitidas ? Math.round(eco/emitidas) : 0};
+}
+function achadosAtivos(){ const dias = n(cfg.achadosDias)||7; return (cfg.achados||[]).filter(a=>Date.now()-Date.parse(a.em) < dias*864e5); }
+function dadosPublico(){
+  const as = cfg.assentos||{};
+  return {atendimento:cfg.atendimento, achados: achadosAtivos(), achadosDias: n(cfg.achadosDias)||7,
+    numeros: cfg.numeros?.on===true ? numerosSite() : {on:false},
+    assentos: {on: as.on===true && Object.values(as.valores||{}).some(v=>n(v)>0), valores: Object.fromEntries(Object.entries(as.valores||{}).map(([k,v])=>[k,n(v)]))},
+    seguro: {on: !!(cfg.seguro?.on && cfg.seguro?.link), link: cfg.seguro?.link||'', texto: cfg.seguro?.texto||''},
+    dicas: Object.fromEntries(Object.entries(cfg.dicas||{}).filter(([,v])=>String(v||'').trim())), whatsapp: soDigitos(cfg.meuWhatsapp)};
+}
+let publicoAss = (()=>{ try{ return localStorage.getItem('vpo_publico_ass')||''; }catch(e){ return ''; } })();
+function agendarPublico(){ clearTimeout(agendarPublico._t); agendarPublico._t = setTimeout(()=>publicarPublico().catch(e=>console.warn('publico', e)), 1500); }
+async function publicarPublico(forcar){
+  if(!ehDono()) return;
+  if(FB.ativo && !(FB.db && FB.user)) return;
+  const d = dadosPublico(), ass = estavel(d);
+  if(ass !== publicoAss || forcar){
+    if(FB.ativo) await FB.fs.setDoc(FB.fs.doc(FB.db,'publico','site'), JSON.parse(JSON.stringify(d)));
+    else localStorage.setItem('dcnp_publico_teste', JSON.stringify(d));
+    publicoAss = ass; try{ localStorage.setItem('vpo_publico_ass', ass); }catch(e){}
+  }
+  await publicarCupons();
+}
+let cuponsPub = (()=>{ try{ return JSON.parse(localStorage.getItem('vpo_cupons_pub'))||{}; }catch(e){ return {}; } })();
+async function publicarCupons(){
+  const atual = {};
+  for(const c of (cfg.cupons||[])){
+    const d = {codigo:c.codigo, tipo:c.tipo, valor:n(c.valor), validade:c.validade||'', ativo:c.ativo!==false, primeiro:!!c.primeiro, limite:n(c.limite)};
+    atual[c.codigo] = estavel(d);
+    if(cuponsPub[c.codigo] === atual[c.codigo]) continue;
+    if(FB.ativo) await FB.fs.setDoc(FB.fs.doc(FB.db,'cupons',c.codigo), d);
+  }
+  for(const cod of Object.keys(cuponsPub)) if(!(cod in atual) && FB.ativo) await FB.fs.deleteDoc(FB.fs.doc(FB.db,'cupons',cod)).catch(()=>{});
+  if(!FB.ativo) localStorage.setItem('dcnp_cupons_teste', JSON.stringify((cfg.cupons||[]).map(c=>({codigo:c.codigo, tipo:c.tipo, valor:n(c.valor), validade:c.validade||'', ativo:c.ativo!==false, primeiro:!!c.primeiro, limite:n(c.limite)}))));
+  cuponsPub = atual; try{ localStorage.setItem('vpo_cupons_pub', JSON.stringify(atual)); }catch(e){}
+}
+setInterval(()=>agendarPublico(), 10*60e3);
+
+/* ---------- caixa de entrada: já paguei, me avise se baixar, avaliação, alteração ---------- */
+const inboxFeitas = new Set();
+function pedidoDoToken(tk){ return pedidos.find(p=>p.viagemToken===tk || p.cotacao?.token===tk || (p.tokensAntigos||[]).includes(tk)); }
+async function notificar(titulo, corpo, tag){
+  bip(); toast(`${titulo}: ${corpo}`);
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  try{ const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if(reg){ reg.showNotification(titulo, {body:corpo, icon:'logo-192.png', badge:'favicon.png', tag}); return; } }catch(e){}
+  try{ new Notification(titulo, {body:corpo, icon:'logo-192.png'}); }catch(e){}
+}
+async function processarMensagem(id, m, apagar){
+  if(inboxFeitas.has(id)) return; 
+  const p = pedidoDoToken(m.token);
+  if(!p){ if(FB.ativo && !FB.carregou) return; if(Date.now()-Date.parse(m.em||0) > 7*864e5){ inboxFeitas.add(id); await apagar(); } return; }
+  inboxFeitas.add(id);
+  const d = m.dados||{}, nm = primeiroNome(p)||p.cliente?.nome||'Cliente';
+  if(m.tipo==='pagou'){
+    p.pagamento = p.pagamento||{};
+    p.pagamento.informadoEm = m.em; p.pagamento.formaInformada = d.forma||'';
+    if(d.img){ p.pagamento.comprovante = d.img; p.pagamento.temComprovante = true;
+      if(FB.ativo && FB.db){ try{ await FB.fs.setDoc(FB.fs.doc(FB.db,'pedidos',p.id,'imagens','comprovante'), {dados:d.img}); (imgsSalvas[p.id] = imgsSalvas[p.id] || {})['comprovante'] = assinatura(d.img); }catch(e){ erroFb(e); inboxFeitas.delete(id); return; } } }
+    logar(p, `Cliente informou o pagamento pela página${d.img?' e mandou o comprovante':' (sem comprovante)'}`);
+    marcarCotacaoPublica(p, {pagouInformado:true});
+    notificar('Pagamento informado', `${nm} · ${p.id} · ${d.img?'com comprovante':'sem comprovante'}`, 'pg-'+p.id);
+  } else if(m.tipo==='avise'){
+    p.aviseBaixa = {valor:n(d.valor)||0, atual:n(d.atual)||valorCliente(p), em:m.em};
+    logar(p, `Cliente achou caro e pediu aviso se baixar${n(d.valor)?' (pagaria até '+BRL(d.valor)+')':''}`);
+    marcarCotacaoPublica(p, {avisoPedido:true});
+    if(p.status==='cotacao_enviada' || p.status==='nova') mudarStatus(p, 'aguardando_baixa');
+    notificar('Achou caro', `${nm} pediu aviso se o preço de ${p.origem.iata} → ${p.destino.iata} baixar`, 'av-'+p.id);
+  } else if(m.tipo==='avaliacao'){
+    const est = Math.max(1, Math.min(5, Number(d.estrelas)||5));
+    const a = {id:'AV-'+token(10), doCliente:true, estrelas:est, texto:String(d.texto||'').slice(0,600), cidade:String(d.cidade||'').slice(0,60),
+      nome: nomeExibicao(p.cliente?.nome, true) + (d.cidade ? ' · ' + String(d.cidade).slice(0,40) : ''), rota:`${p.origem.cidade} → ${p.destino.cidade}`,
+      quando: p.dataIda ? new Date(p.dataIda+'T12:00').toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}).replace('. de ','/').replace('.','') : '',
+      autorizou: !!d.publicar, curto:true, publicada:false, pedidoId:p.id, criadoEm:m.em||new Date().toISOString()};
+    try{ await gravarAvaliacao(a); avaliacoes = [a, ...avaliacoes]; }catch(e){ erroFb(e); inboxFeitas.delete(id); return; }
+    p.avaliado = true; logar(p, `Cliente avaliou a viagem: ${est} estrela${est>1?'s':''}`);
+    notificar('Avaliação nova', `${nm} deu ${est} estrela${est>1?'s':''}${est<=3?' ⚠️':''}`, 'aval-'+p.id);
+    if($('#avalLista')) renderAvaliacoes();
+  } else if(m.tipo==='alteracao'){
+    const tipos = {remarcar:'Remarcar', cancelar:'Cancelar', nome:'Corrigir nome', outro:'Outro'};
+    p.alteracao = {tipo:d.tipo||'outro', texto:String(d.texto||''), data:d.data||'', trecho:d.trecho||'', periodo:d.periodo||'', em:m.em||new Date().toISOString(), status:'recebida', historico:[...((p.alteracao||{}).historico||[])]};
+    if((p.alteracao.historico||[]).length > 10) p.alteracao.historico = p.alteracao.historico.slice(-10);
+    logar(p, `Cliente pediu alteração: ${tipos[p.alteracao.tipo]||'outro'}${p.alteracao.data?' para '+fmtData(p.alteracao.data):''}${p.alteracao.texto?' · '+p.alteracao.texto.slice(0,120):''}`);
+    notificar('Alteração solicitada', `${nm} · ${p.id} · ${tipos[p.alteracao.tipo]||'outro'}`, 'alt-'+p.id);
+  } else if(m.tipo==='promo'){
+    p.promo = !!d.sim;
+  }
+  salvar(true); renderQuadro(); if(abertoId===p.id) renderDetalheSeguro();
+  try{ await apagar(); }catch(e){}
+}
+function iniciarInbox(){
+  if(FB.ativo){
+    const {fs, db} = FB;
+    FB.cancelar.push(fs.onSnapshot(fs.collection(db,'mensagens'), snap=>{
+      snap.docChanges().forEach(ch=>{ if(ch.type==='removed') return; processarMensagem(ch.doc.id, ch.doc.data(), ()=>fs.deleteDoc(ch.doc.ref)); });
+    }, e=>console.warn('mensagens', e)));
+  }
+}
+function lerInboxTeste(){
+  if(FB.ativo) return;
+  const l = lerJSON('dcnp_inbox_teste', []); if(!l.length) return;
+  l.forEach(m=>processarMensagem(m.id, m, async ()=>{ localStorage.setItem('dcnp_inbox_teste', JSON.stringify(lerJSON('dcnp_inbox_teste', []).filter(x=>x.id!==m.id))); }));
+}
+setInterval(lerInboxTeste, 5000); setTimeout(lerInboxTeste, 1200);
+// mensagens que chegaram antes dos pedidos carregarem: tenta de novo
+setInterval(()=>{ if(FB.ativo && FB.db && FB.user && FB.carregou) FB.fs.getDocs(FB.fs.collection(FB.db,'mensagens')).then(sn=>sn.forEach(dc=>processarMensagem(dc.id, dc.data(), ()=>FB.fs.deleteDoc(dc.ref)))).catch(()=>{}); }, 120000);
+
+/* ---------- aguardando baixa de preço: busca de novo 1x por dia ---------- */
+function checarBaixas(){
+  const agora = Date.now();
+  for(const p of pedidos.filter(x=>x.status==='aguardando_baixa')){
+    const a = p.aviseBaixa = p.aviseBaixa || {em:p.statusDesde, atual:valorCliente(p)};
+    const d = diasAteData(p.dataIda);
+    if(d!=null && d <= 7 && !a.baixouEm){
+      p.motivoPerda = 'Preço alto (não baixou)'; logar(p, 'Faltam 7 dias e o preço não baixou: pedido encerrado');
+      mudarStatus(p, 'perdido'); continue;
+    }
+    if(a.baixouEm || (p.renovacao && p.renovacao.estado==='buscando')) continue;
+    const ult = Date.parse(a.ultimaBusca || a.em || p.statusDesde || 0);
+    if(agora - ult < 24*3600e3) continue;
+    if(!extensaoAtiva || !versaoOk() || autoAtual || flexAtual || (typeof concAtual!=='undefined' && concAtual) || buscasPausadas() || !p.cotacao) continue;
+    a.ultimaBusca = new Date().toISOString(); a.buscas = (a.buscas||0)+1; a.auto = true;
+    logar(p, 'Busca diária para ver se o preço baixou');
+    ACOES.renovar(p); break;   // uma por vez
+  }
+}
+setInterval(checarBaixas, 15*60e3); setTimeout(checarBaixas, 20000);
+montarRenovacao = (orig => function(p){
+  orig.apply(this, arguments);
+  const r = p.renovacao; if(!r || p.status!=='aguardando_baixa' || !r.depois) return;
+  const a = p.aviseBaixa || {}, depois = n(r.depois.valorPix), antes = n(a.atual) || n(r.antes.valorPix);
+  if(depois && ((n(a.valor) && depois <= n(a.valor)) || depois <= antes*0.9)){
+    a.baixouEm = new Date().toISOString(); a.novo = depois; p.aviseBaixa = a;
+    logar(p, `Preço baixou: ${BRL(antes)} → ${BRL(depois)}`);
+    notificar('Preço baixou', `${p.origem.iata} → ${p.destino.iata}: ${BRL(antes)} → ${BRL(depois)} · ${primeiroNome(p)}`, 'bx-'+p.id);
+  } else if(depois){
+    logar(p, `Preço conferido: ${BRL(depois)} (não baixou o suficiente)`); delete p.renovacao;
+  }
+  salvar(true); renderQuadro(); if(abertoId===p.id) renderDetalheSeguro();
+})(montarRenovacao);
+async function enviarBaixou(id){
+  const p = pedido(id); if(!p || !p.renovacao || !p.renovacao.depois) return;
+  const r = p.renovacao;
+  for(const [T,t] of Object.entries(r.depois.trechos)) aplicarVooAuto(p, t.k, T, t.v, true);
+  p.escolhido = r.depois.escolhido; if(r.depois.combo) p.combo = r.depois.combo; else delete p.combo;
+  p.valorMP = r.depois.valorMP; p.valorMPManual = false;
+  logar(p, `Avisado que o preço baixou: ${BRL(r.antes.valorPix)} → ${BRL(r.depois.valorPix)}`);
+  delete p.renovacao; if(p.aviseBaixa) p.aviseBaixa.avisadoEm = new Date().toISOString();
+  mudarStatus(p, 'cotacao_enviada');
+  await ACOES.enviarCotacao(p, 'baixou', true);
+}
+function buscarBaixaAgora(id){ const p = pedido(id); if(!p) return; p.aviseBaixa = p.aviseBaixa || {}; p.aviseBaixa.ultimaBusca = new Date().toISOString(); ACOES.renovar(p); }
+
+/* ---------- voo alterado pela companhia ---------- */
+function abrirVooAlterado(id){
+  const p = pedido(id); if(!p) return;
+  const tr = trechosDe(p);
+  abrirModal(`<h2>Voo alterado pela companhia</h2><p class="nota" style="margin:0">Atualiza os horários do pedido, da página "Minha viagem", do check-in e do comprovante, e guarda o histórico.</p>
+    <div class="g2" style="margin-top:10px"><div class="campo"><label for="vaT">Trecho</label><select id="vaT">${tr.map(T=>`<option value="${T}">${T}</option>`).join('')}</select></div>
+      <div class="campo"><label for="vaTipo">O que mudou</label><select id="vaTipo"><option value="hora">Novo horário</option><option value="voo">Novo número de voo</option><option value="cancelado">Voo cancelado (nova opção oferecida)</option></select></div></div>
+    <div class="g3"><div class="campo"><label for="vaData">Data</label><input id="vaData" type="date"></div><div class="campo"><label for="vaSai">Saída</label><input id="vaSai" type="time"></div><div class="campo"><label for="vaChe">Chegada</label><input id="vaChe" type="time"></div></div>
+    <div class="campo"><label for="vaVoo">Número do voo</label><input id="vaVoo" placeholder="G3 1234"></div>
+    <p class="nota" id="vaAntes"></p><p class="aviso" id="vaErro"></p>
+    <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="vaSalvar">Salvar e avisar o cliente</button></div>`);
+  const M = $('#modal'), g = s => M.querySelector(s);
+  const preencher = () => { const T = g('#vaT').value, b = bT(p,T); g('#vaData').value = T==='Ida' ? p.dataIda : (p.dataVolta||''); g('#vaSai').value = b['saida'+T]||''; g('#vaChe').value = b['chegada'+T]||''; g('#vaVoo').value = b['voo'+T]||'';
+    g('#vaAntes').textContent = `Hoje no pedido: ${fmtData(g('#vaData').value)} · ${b['saida'+T]||'--:--'} → ${b['chegada'+T]||'--:--'}${b['voo'+T]?' · '+b['voo'+T]:''}`; };
+  g('#vaT').addEventListener('change', preencher); preencher();
+  g('#vaSalvar').addEventListener('click', ()=>{
+    const T = g('#vaT').value, b = bT(p,T), tipo = g('#vaTipo').value;
+    if(!p.escolhido){ g('#vaErro').textContent = 'Escolha o programa do pedido antes.'; g('#vaErro').classList.add('on'); return; }
+    const dataAntes = T==='Ida' ? p.dataIda : p.dataVolta;
+    const txt = (dt, s, c, v) => `${fmtDataCurta(dt)} · ${s||'--:--'} → ${c||'--:--'}${v?' · '+v:''}`;
+    const antes = txt(dataAntes, b['saida'+T], b['chegada'+T], b['voo'+T]);
+    const data = g('#vaData').value || dataAntes, sai = g('#vaSai').value, che = g('#vaChe').value, voo = g('#vaVoo').value.trim();
+    if(!sai){ g('#vaErro').textContent = 'Informe o novo horário de saída.'; g('#vaErro').classList.add('on'); return; }
+    b['saida'+T] = sai; b['chegada'+T] = che; if(voo) b['voo'+T] = voo;
+    if(T==='Ida') p.dataIda = data; else p.dataVolta = data;
+    p.emissao = p.emissao||{}; if(p.emissao.registradaEm) p.emissao['partida'+T] = `${data}T${sai}`;
+    if(p.checkin){ const ch = T==='Ida'?'ida':'volta'; if(p.checkin[ch] && data!==dataAntes) p.checkin[ch] = false; }
+    const depois = txt(data, sai, che, voo || b['voo'+T]);
+    p.alteracoesVoo = [...(p.alteracoesVoo||[]), {trecho:T, data, antes, depois, cancelado: tipo==='cancelado', tipo, em:new Date().toISOString()}];
+    logar(p, `Voo da ${T.toLowerCase()} alterado pela companhia: ${antes} → ${depois}`);
+    salvar(true); fecharModal(); renderDetalhe(); renderCheckins();
+    abrirZap(p, 'vooAlterado', {cia: ciaTrecho(p,T)||'companhia', data_voo: fmtData(dataAntes), antigo: antes, novo: depois});
+    toast('Voo atualizado. Mensagem pronta no WhatsApp.');
+  });
+}
+
+/* ---------- achados da semana ---------- */
+function abrirAchado(id){
+  const p = pedido(id); if(!p || !valorCliente(p)) { toast('Calcule o valor do pedido antes.'); return; }
+  const porPessoa = Math.round(valorCliente(p)/pagantes(p));
+  abrirModal(`<h2>Publicar como achado</h2><p class="nota" style="margin:0">Aparece no site na seção "Achados da semana" e vale por ${n(cfg.achadosDias)||7} dias. Não leva nenhum dado do cliente.</p>
+    <div class="g3" style="margin-top:10px"><div class="campo"><label>Rota</label><b>${esc(p.origem.iata)} → ${esc(p.destino.iata)}</b></div>
+      <div class="campo"><label for="acMes">Mês</label><input id="acMes" type="month" value="${esc((p.dataIda||'').slice(0,7))}"></div>
+      <div class="campo"><label for="acPreco">A partir de (R$ por pessoa)</label><input id="acPreco" type="number" min="1" step="1" value="${porPessoa}"></div></div>
+    <p class="nota">Valor do pedido com o seu lucro: ${BRL(valorCliente(p))} para ${pagantes(p)} pagante${pagantes(p)>1?'s':''}.</p>
+    <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="acSalvar">Publicar no site</button></div>`);
+  $('#acSalvar').addEventListener('click', ()=>{
+    const a = {id:'AC'+token(6).toUpperCase(), origem:{iata:p.origem.iata, cidade:p.origem.cidade}, destino:{iata:p.destino.iata, cidade:p.destino.cidade}, mes:$('#acMes').value, preco:Math.round(n($('#acPreco').value)), em:new Date().toISOString(), pedidoId:p.id};
+    if(!a.preco){ toast('Informe o preço.'); return; }
+    cfg.achados = [a, ...(cfg.achados||[]).filter(x=>!(x.origem.iata===a.origem.iata && x.destino.iata===a.destino.iata && x.mes===a.mes))].slice(0,30);
+    salvarCfg(); publicarPublico(true); fecharModal(); logar(p, `Publicado como achado: ${a.origem.iata} → ${a.destino.iata} a partir de ${BRL(a.preco)}`); salvar(true);
+    toast('Achado publicado no site', {acao:{rotulo:'Gerar imagem', fn:()=>imagemAchado(a.id)}});
+  });
+}
+function mesTxt(m){ return m ? MESES_NOME[Number(m.slice(5,7))-1] + (m.slice(0,4)!==String(new Date().getFullYear()) ? ' de ' + m.slice(0,4) : '') : ''; }
+async function canvasAchado(a){
+  await fontesProntas();
+  const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  const foto = FOTO_IATA[a.destino.iata] ? await carregarImg(FOTO_IATA[a.destino.iata]+'.jpg') : null;
+  if(foto){ const k = Math.max(W/foto.width, H/foto.height), w = foto.width*k, h = foto.height*k; x.drawImage(foto, (W-w)/2, (H-h)/2, w, h); }
+  else { const g = x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0E3B7A'); g.addColorStop(.6,'#2F78C4'); g.addColorStop(1,'#FFD2A8'); x.fillStyle = g; x.fillRect(0,0,W,H);
+    // sem foto: código do destino gigante ao fundo e a rota com o aviãozinho
+    x.save(); x.globalAlpha = .09; x.fillStyle = '#fff'; x.font = F(800,420); x.textAlign = 'center'; x.fillText(a.destino.iata, W/2, 760); x.restore();
+    x.save(); x.strokeStyle = 'rgba(255,255,255,.75)'; x.lineWidth = 6; x.setLineDash([4,22]); x.lineCap = 'round';
+    x.beginPath(); x.moveTo(150, 880); x.quadraticCurveTo(540, 470, 930, 880); x.stroke(); x.setLineDash([]);
+    [[150,'#FF7A2E'],[930,'#fff']].forEach(([cx,cor])=>{ x.beginPath(); x.arc(cx, 880, 18, 0, Math.PI*2); x.fillStyle = cor; x.fill(); });
+    x.font = F(700,40); x.fillStyle = 'rgba(255,255,255,.9)'; x.textAlign = 'center'; x.fillText(a.origem.iata, 150, 950); x.fillText(a.destino.iata, 930, 950);
+    x.translate(540, 675); x.rotate(Math.PI/2); x.scale(5.2,5.2); x.translate(-12,-12); x.fillStyle = '#fff';
+    x.fill(new Path2D('M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z')); x.restore(); }
+  const sh = x.createLinearGradient(0,0,0,H); sh.addColorStop(0,'rgba(9,25,55,.72)'); sh.addColorStop(.32,'rgba(9,25,55,.18)'); sh.addColorStop(.55,'rgba(9,25,55,.35)'); sh.addColorStop(1,'rgba(9,25,55,.94)'); x.fillStyle = sh; x.fillRect(0,0,W,H);
+  const logo = await carregarImg(LOGO_DATA);
+  if(logo){ x.save(); x.beginPath(); x.arc(150, 170, 62, 0, Math.PI*2); x.closePath(); x.fillStyle='#fff'; x.fill(); x.clip(); x.drawImage(logo, 88, 108, 124, 124); x.restore(); }
+  x.fillStyle = '#fff'; x.font = F(800,58); x.textAlign = 'left'; x.fillText('Vai pra onde?', 236, 162); x.font = F(500,34); x.globalAlpha = .9; x.fillText('passagens com milhas', 238, 210); x.globalAlpha = 1;
+  // selo
+  x.font = F(800,44); const selo = 'ACHADO DA SEMANA 🔥', ws = x.measureText(selo).width + 70;
+  x.fillStyle = '#FF7A2E'; rr(x, 80, 1010, ws, 92, 46); x.fill(); x.fillStyle = '#fff'; x.fillText(selo, 115, 1072);
+  x.font = F(800,150); x.fillText(`${a.origem.iata} → ${a.destino.iata}`, 80, 1260);
+  x.font = F(600,50); x.fillText(`${a.origem.cidade} → ${a.destino.cidade}`, 84, 1340);
+  if(a.mes){ x.font = F(500,46); x.globalAlpha = .92; x.fillText(`em ${mesTxt(a.mes)}`, 84, 1405); x.globalAlpha = 1; }
+  x.font = F(600,44); x.fillText('a partir de', 84, 1510);
+  x.font = F(800,130); x.fillStyle = '#FFD2A8'; const pr = 'R$ ' + Math.round(a.preco).toLocaleString('pt-BR'); x.fillText(pr, 80, 1640);
+  x.font = F(600,42); x.fillStyle = '#fff'; x.fillText('por pessoa', 92 + x.measureText(pr).width*0 + 0, 1700);
+  x.fillStyle = 'rgba(255,255,255,.96)'; rr(x, 80, 1745, W-160, 96, 30); x.fill();
+  x.fillStyle = '#0E3B7A'; x.font = F(800,44); x.textAlign = 'center'; x.fillText('Me chama que eu vejo pra você 👀', W/2, 1808);
+  x.fillStyle = 'rgba(255,255,255,.85)'; x.font = F(500,30); x.fillText(baseSite().replace(/^https?:\/\//,'') + ' · valor do dia da busca, sujeito a mudança', W/2, 1890);
+  x.textAlign = 'left';
+  return c;
+}
+async function imagemAchado(id){ const a = (cfg.achados||[]).find(x=>x.id===id); if(!a) return; const c = await canvasAchado(a); await compartilharCanvas(c, `achado-${a.origem.iata}-${a.destino.iata}.png`, `✈️ ${a.origem.cidade} → ${a.destino.cidade} a partir de ${BRL(a.preco)} por pessoa. Me chama que eu vejo pra você 👀 ${baseSite()}`); }
+async function imagensTodosAchados(){ const l = achadosAtivos(); if(!l.length){ toast('Nenhum achado ativo'); return; } for(const a of l){ await baixarCanvas(await canvasAchado(a), `achado-${a.origem.iata}-${a.destino.iata}.png`); await new Promise(r=>setTimeout(r,400)); } toast(`${l.length} imagem${l.length>1?'ns':''} baixada${l.length>1?'s':''}`); }
+function removerAchado(id){ cfg.achados = (cfg.achados||[]).filter(a=>a.id!==id); salvarCfg(); publicarPublico(true); renderCfgLanc(); toast('Achado tirado do site'); }
+
+/* ---------- lista de promoções ---------- */
+const semPromo = w => (cfg.semPromo||[]).includes(chaveCliente(w));
+function aceitaPromo(c){ return !semPromo(c.whatsapp) && c.pedidos.some(p=>p.promo || p.cotacao?.resposta?.promo); }
+function sairPromo(w){ const ch = chaveCliente(w); if(!(cfg.semPromo||[]).includes(ch)) cfg.semPromo = [...(cfg.semPromo||[]), ch]; salvarCfg(); renderClientes(); toast('Removido da lista de promoções'); }
+function enviarAchadoPara(w){
+  const l = achadosAtivos(); if(!l.length){ toast('Publique um achado primeiro (no pedido: "Publicar como achado").'); return; }
+  const c = clientesMapa().get(chaveCliente(w)); if(!c) return;
+  const escolher = a => { const p = c.pedidos[0]; window.open(zapLink(c.whatsapp, msgModelo('achado', p, {rota_achado:`${a.origem.cidade} → ${a.destino.cidade}`, mes_achado: mesTxt(a.mes)||'datas a combinar', preco_achado: BRL(a.preco)})), '_blank', 'noopener'); fecharModal(); };
+  if(l.length===1) return escolher(l[0]);
+  abrirModal(`<h2>Qual achado mandar para ${esc(c.nome.split(' ')[0])}?</h2><div class="motivos">${l.map(a=>`<button type="button" data-ac="${a.id}">${esc(a.origem.iata)} → ${esc(a.destino.iata)} · ${esc(mesTxt(a.mes))}<br><b>${BRL(a.preco)}</b></button>`).join('')}</div><div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button></div>`);
+  $('#modal').querySelectorAll('[data-ac]').forEach(b=>b.addEventListener('click',()=>escolher(l.find(a=>a.id===b.dataset.ac))));
+}
+let filtroPromoCid = '', filtroPromoDest = '';
+const _renderClientesOrig = renderClientes;
+renderClientes = (orig => function(){
+  orig.apply(this, arguments);
+  if(filtroCli !== 'promo') return;
+  const todos = [...clientesMapa().values()].filter(aceitaPromo);
+  const cidades = [...new Set(todos.map(c=>c.pedidos[0]?.origem?.cidade).filter(Boolean))].sort();
+  const passa = c => (!filtroPromoCid || c.pedidos.some(p=>p.origem?.cidade===filtroPromoCid)) && (!filtroPromoDest || c.pedidos.some(p=>norm(p.destino?.cidade+' '+p.destino?.iata).includes(norm(filtroPromoDest))));
+  const lista = todos.filter(passa);
+  const bar = document.createElement('div'); bar.className = 'promo-bar';
+  bar.innerHTML = `<select id="prCid" aria-label="Cidade de origem"><option value="">Todas as cidades</option>${cidades.map(c=>`<option ${c===filtroPromoCid?'selected':''}>${esc(c)}</option>`).join('')}</select>
+    <input id="prDest" placeholder="Já pediu para (destino)" value="${esc(filtroPromoDest)}">
+    <button type="button" class="btn pri peq" id="prCopiar">Copiar ${lista.length} número${lista.length!==1?'s':''}</button>
+    <span class="nota">Para lista de transmissão do WhatsApp. Quem responder SAIR, toque em "SAIR" no cartão.</span>`;
+  $('#listaClientes').before(bar); $$('.promo-bar').slice(0,-1).forEach(x=>x.remove());
+  bar.querySelector('#prCid').onchange = e => { filtroPromoCid = e.target.value; renderClientes(); };
+  bar.querySelector('#prDest').onchange = e => { filtroPromoDest = e.target.value.trim(); renderClientes(); };
+  bar.querySelector('#prCopiar').onclick = () => copiar(lista.map(c=>{ const d = soDigitos(c.whatsapp); return d.startsWith('55') ? d : '55'+d; }).join('\n'), `${lista.length} números copiados`);
+  const ok = new Set(lista.map(c=>chaveCliente(c.whatsapp)));
+  $$('#listaClientes .cc').forEach(card=>{
+    const a = card.querySelector('.cc-bts a.zap'); const w = a ? decodeURIComponent((a.href.match(/wa\.me\/(\d+)/)||[])[1]||'') : '';
+    if(!ok.has(chaveCliente(w))){ card.remove(); return; }
+    const bts = card.querySelector('.cc-bts');
+    bts.insertAdjacentHTML('beforeend', `<button type="button" class="btn peq" onclick="enviarAchadoPara('${esc(w)}')">🔥 Achado</button><button type="button" class="btn peq perigo" onclick="sairPromo('${esc(w)}')">SAIR</button>`);
+  });
+  $('#contagemCli').textContent = `${lista.length} na lista`;
+})(renderClientes);
+$('#buscaCli').removeEventListener('input', _renderClientesOrig); $('#buscaCli').addEventListener('input', ()=>renderClientes());
+
+/* ---------- duplicar pedido ---------- */
+function abrirDuplicar(id){
+  const p = pedido(id); if(!p) return;
+  abrirModal(`<h2>Duplicar o pedido ${esc(p.id)}</h2><p class="nota" style="margin:0">Cria um pedido novo com a mesma rota, passageiros e malas. Mude as datas ou o cliente.</p>
+    <div class="g2" style="margin-top:10px"><div class="campo"><label for="dpIda">Ida</label><input id="dpIda" type="date" value="${esc(p.dataIda||'')}"></div><div class="campo"><label for="dpVolta">Volta</label><input id="dpVolta" type="date" value="${esc(p.dataVolta||'')}" ${p.tipo==='ida_volta'?'':'disabled'}></div></div>
+    <div class="g2"><div class="campo"><label for="dpNome">Cliente</label><input id="dpNome" value="${esc(p.cliente.nome)}"></div><div class="campo"><label for="dpZap">WhatsApp</label><input id="dpZap" value="${esc(fmtTel(p.cliente.whatsapp))}"></div></div>
+    <p class="aviso" id="dpErro"></p>
+    <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="dpSalvar">Criar pedido</button></div>`);
+  $('#dpSalvar').addEventListener('click', ()=>{
+    const ida = $('#dpIda').value, volta = $('#dpVolta').value, zap = soDigitos($('#dpZap').value), nome = $('#dpNome').value.trim();
+    const er = t => { $('#dpErro').textContent = t; $('#dpErro').classList.add('on'); };
+    if(!ida) return er('Informe a ida.'); if(p.tipo==='ida_volta' && (!volta || volta < ida)) return er('Informe a volta (igual ou depois da ida).');
+    if(!nome || zap.length < 10) return er('Informe o nome e o WhatsApp com DDD.');
+    const novo = normalizar({id:novoId(), criadoEm:new Date().toISOString(), status:'nova', tipo:p.tipo, origem:{...p.origem}, destino:{...p.destino},
+      ...(p.voltaOrigem?{voltaOrigem:{...p.voltaOrigem}}:{}), ...(p.voltaDestino?{voltaDestino:{...p.voltaDestino}}:{}),
+      dataIda:ida, dataVolta:p.tipo==='ida_volta'?volta:null, datasFlexiveis:!!p.datasFlexiveis, passageiros:{...p.passageiros}, malasPorPassageiro:n(p.malasPorPassageiro),
+      ...(p.horario?{horario:JSON.parse(JSON.stringify(p.horario))}:{}), pet:p.pet?{...p.pet}:null, ...(p.grupo?{grupo:{...p.grupo}}:{}), ...(p.assento?{assento:{...p.assento}}:{}),
+      cliente:{nome, whatsapp:zap, email: zap===soDigitos(p.cliente.whatsapp) ? (p.cliente.email||null) : null}, origemPedido:'whatsapp', obs:`Duplicado de ${p.id}`, busca:{}});
+    logar(novo, `Pedido criado a partir do ${p.id}`);
+    pedidos.unshift(novo); salvar(true); fecharModal(); renderQuadro(); abrirDetalhe(novo.id); toast(`Pedido ${novo.id} criado`);
+    setTimeout(()=>{ if(typeof agendarAuto==='function') agendarAuto(); }, 800);
+  });
+}
+
+/* ---------- LGPD: apagar os dados dos passageiros ---------- */
+async function apagarDadosPax(id){
+  const p = pedido(id); if(!p) return;
+  if(!confirm(`Apagar nomes, documentos e datas de nascimento dos passageiros do ${p.id}? Não dá para desfazer.`)) return;
+  p.passageirosDados = []; if(p.cotacao) p.cotacao.paxSalvos = []; p.dadosApagadosEm = new Date().toISOString();
+  logar(p, 'Dados dos passageiros apagados (pedido do titular / LGPD)');
+  try{
+    if(p.cotacao?.token){
+      if(FB.ativo && FB.db) await FB.fs.deleteDoc(FB.fs.doc(FB.db,'cotacoes',p.cotacao.token,'privado','passageiros'));
+      else { const px = lerJSON(CHAVE_COTACOES+'_pax', {}); delete px[p.cotacao.token]; localStorage.setItem(CHAVE_COTACOES+'_pax', JSON.stringify(px)); }
+    }
+  }catch(e){ console.warn(e); }
+  salvar(true); renderDetalhe(); toast('Dados dos passageiros apagados');
+}
+
+/* ---------- alteração pedida pelo cliente ---------- */
+const ALT_NOME = {remarcar:'Remarcar', cancelar:'Cancelar', nome:'Corrigir nome', outro:'Outro'};
+function mudarAlteracao(id, st){
+  const p = pedido(id); if(!p || !p.alteracao) return;
+  p.alteracao.status = st; p.alteracao.historico = [...(p.alteracao.historico||[]), {status:st, em:new Date().toISOString()}];
+  const r = $('#altResp'); if(r) p.alteracao.resposta = r.value.trim();
+  logar(p, `Alteração: ${({recebida:'recebida', analise:'em análise', concluida:'concluída'})[st]}`);
+  salvar(true); renderDetalhe();
+}
+function buscarNovaData(id){
+  const p = pedido(id); if(!p || !p.alteracao) return;
+  const a = p.alteracao, volta = a.trecho==='volta';
+  irPara('buscar'); fecharDetalhe();
+  $('#bOrigem').value = volta ? voltaDe(p) : p.origem.iata; $('#bDestino').value = volta ? voltaPara(p) : p.destino.iata;
+  $('#bIda').value = a.data || ''; $('#bVolta').value = a.trecho==='ambos' && p.dataVolta ? '' : '';
+  const x = p.passageiros||{}; $('#bAdt').value = Math.min(9, x.adultos||1); $('#bChd').value = x.criancas||0; $('#bInf').value = x.bebes||0;
+  if(p.alteracao.status==='recebida') mudarAlteracao(id, 'analise');
+  setTimeout(()=>$('#btnBuscar').click(), 200);
+}
+
+/* ---------- grupo: quem já pagou ---------- */
+function marcarPagoGrupo(id, i, sim){ const p = pedido(id); if(!p) return; p.grupoPagos = p.grupoPagos || []; p.grupoPagos[i] = !!sim; salvar(true); renderExtrasDetalhe(p); }
+
+/* ---------- detalhe: avisos e botões extras ---------- */
+function renderExtrasDetalhe(p){
+  const el = $('#detExtras'); if(!el || !p) return;
+  const b = [];
+  const pg = p.pagamento||{};
+  if(pg.informadoEm && !pg.pagoEm) b.push(`<div class="ex-bloco sol"><b>💸 O cliente informou que pagou</b> <small>${fmtDataHora(pg.informadoEm)}${pg.formaInformada?' · '+(pg.formaInformada==='pix'?'Pix':'cartão'):''}</small>
+    ${pg.comprovante ? `<a href="${pg.comprovante}" target="_blank" rel="noopener"><img class="ex-comp" src="${pg.comprovante}" alt="Comprovante"></a>` : pg.temComprovante ? '<small>Comprovante: abrindo…</small>' : '<small>Sem comprovante: confira no banco.</small>'}
+    <div class="acoes" style="margin-top:6px"><button type="button" class="btn pri peq" onclick="confirmarPagoInformado('${p.id}')">Confirmar pagamento</button></div></div>`);
+  if(p.alteracao && p.alteracao.status!=='concluida'){ const a = p.alteracao;
+    b.push(`<div class="ex-bloco erro"><b>🔄 Alteração solicitada: ${esc(ALT_NOME[a.tipo]||'Outro')}</b> <small>${fmtDataHora(a.em)}${a.data?' · nova data '+fmtData(a.data)+(a.trecho?' ('+a.trecho+')':''):''}${a.periodo?' · '+esc(PERIODO[a.periodo]||a.periodo):''}</small>
+      ${a.texto?`<p class="ex-tx">“${esc(a.texto)}”</p>`:''}
+      <div class="campo"><label for="altResp">Resposta que aparece para o cliente (opcional)</label><input id="altResp" value="${esc(a.resposta||'')}" maxlength="300"></div>
+      <div class="acoes" style="margin-top:6px">${a.tipo==='remarcar'&&a.data?`<button type="button" class="btn pri peq" onclick="buscarNovaData('${p.id}')">Buscar a nova data</button>`:''}
+        <button type="button" class="btn zap peq" onclick="abrirZap(pedido('${p.id}'),'remarcacao')">Responder no WhatsApp</button>
+        <button type="button" class="btn peq ${a.status==='analise'?'azul':''}" onclick="mudarAlteracao('${p.id}','analise')">Em análise</button>
+        <button type="button" class="btn peq" onclick="mudarAlteracao('${p.id}','concluida')">Concluída</button></div></div>`); }
+  if(p.status==='aguardando_baixa'){ const a = p.aviseBaixa||{}, r = p.renovacao;
+    b.push(`<div class="ex-bloco azul"><b>⏳ Aguardando o preço baixar</b> <small>pedido ${a.em?tempoDesde(a.em):''} · cotação era ${BRL(a.atual||valorCliente(p))}${a.valor?' · cliente pagaria até '+BRL(a.valor):''} · ${a.buscas||0} busca${(a.buscas||0)===1?'':'s'}${a.ultimaBusca?', última '+tempoDesde(a.ultimaBusca):''}</small>
+      ${a.baixouEm && r?.depois ? `<p class="ex-tx"><b>Baixou para ${BRL(r.depois.valorPix)}</b> — avise o cliente com um toque.</p>` : '<p class="ex-tx">O painel busca de novo uma vez por dia (com a extensão aberta) e avisa se ficar abaixo do valor do cliente ou 10% mais barato. Faltando 7 dias sem baixar, o pedido vai para Perdido.</p>'}
+      <div class="acoes" style="margin-top:6px">${a.baixouEm && r?.depois ? `<button type="button" class="btn pri peq" onclick="enviarBaixou('${p.id}')">Mandar o preço novo</button>` : `<button type="button" class="btn peq" onclick="buscarBaixaAgora('${p.id}')">Buscar agora</button>`}</div></div>`); }
+  if(p.cupom){ const a = p.cupomAplicado, d = descontoValor(p);
+    b.push(`<div class="ex-bloco ${a?'ok':'sol'}"><b>🏷️ Cupom ${esc(p.cupom)}</b> <small>${a ? `aplicado: −${BRL(d)}${a.tipo==='perc'?' ('+n(a.valor)+'% do lucro)':''}` : 'não aplicado: ' + esc(p.cupomMotivo||'')}</small>
+      <div class="acoes" style="margin-top:6px">${a ? `<button type="button" class="btn peq" onclick="tirarCupom('${p.id}')">Tirar o desconto</button>` : (cupomCfg(String(p.cupom).toUpperCase()) ? `<button type="button" class="btn peq" onclick="forcarCupom('${p.id}')">Aplicar mesmo assim</button>` : '')}</div></div>`); }
+  if(p.grupo || totalPax(p) > 9){ const pp = valorCliente(p) ? valorCliente(p)/pagantes(p) : 0, nomes = (p.passageirosDados||[]);
+    const pag = Array.from({length:pagantes(p)}, (_,i)=>i);
+    b.push(`<div class="ex-bloco azul"><b>👥 Grupo de ${totalPax(p)} pessoas${p.grupo?.motivo?' · '+esc(p.grupo.motivo):''}</b> <small>${pp?BRL(pp)+' por pagante no Pix · total '+BRL(valorCliente(p)):''}${p.grupo?.flexivel?' · aceita voos diferentes':''}</small>
+      <p class="ex-tx">A busca automática usa lotes de até 9 passageiros. Confira se há assentos para o grupo todo antes de cotar.</p>
+      ${pp ? `<details><summary class="nota" style="cursor:pointer">Quem já pagou (${(p.grupoPagos||[]).filter(Boolean).length} de ${pag.length})</summary><div class="ex-pagos">${pag.map(i=>`<label><input type="checkbox" ${p.grupoPagos?.[i]?'checked':''} onchange="marcarPagoGrupo('${p.id}',${i},this.checked)"> ${esc(nomes[i]?.nome || 'Pagante '+(i+1))}</label>`).join('')}</div></details>` : ''}</div>`); }
+  if(p.assento) b.push(`<div class="ex-bloco"><b>💺 Quer escolher assento: ${esc(({janela:'janela', corredor:'corredor', juntos:'sentar juntos'})[p.assento.pref]||p.assento.pref)}</b> <small>pago à parte: confirme o valor com o cliente e escolha no check-in</small></div>`);
+  if(p.voltaOrigem || p.voltaDestino) b.push(`<div class="ex-bloco"><b>↩️ Volta de outra cidade:</b> <small>${esc(voltaDe(p))} → ${esc(voltaPara(p))} (ida ${esc(p.origem.iata)} → ${esc(p.destino.iata)})</small></div>`);
+  const r = p.cotacao?.resposta;
+  if(r?.aceites) b.push(`<div class="ex-bloco"><small>🔒 Uso dos dados aceito em ${fmtDataHora(r.aceites.privacidade)}${r.aceites.regras ? ' · 📄 regras de cancelamento e remarcação aceitas em ' + fmtDataHora(r.aceites.regras) : ''}${p.dadosApagadosEm?' · dados dos passageiros apagados em '+fmtDataHora(p.dadosApagadosEm):''}</small></div>`);
+  if((p.alteracoesVoo||[]).length) b.push(`<div class="ex-bloco"><small>✈️ Alterações da companhia: ${p.alteracoesVoo.map(a=>`${esc(a.trecho)} ${esc(a.antes)} → ${esc(a.depois)}`).join(' · ')}</small></div>`);
+  el.innerHTML = b.join(''); el.hidden = !b.length;
+  // botões extras no fim do detalhe
+  const corpo = $('#detCorpo'); corpo.querySelector('.acoes-extras')?.remove();
+  const ac = [];
+  ac.push(`<button type="button" class="btn peq" onclick="abrirDuplicar('${p.id}')">⧉ Duplicar pedido</button>`);
+  if(valorCliente(p) && ehDono()) ac.push(`<button type="button" class="btn peq" onclick="abrirAchado('${p.id}')">🔥 Publicar como achado</button>`);
+  if(p.escolhido && STATUS_VENDA.includes(p.status) && podeEmitir()) ac.push(`<button type="button" class="btn peq" onclick="abrirVooAlterado('${p.id}')">✈️ Voo alterado pela companhia</button>`);
+  if(STATUS_VENDA.includes(p.status)) ac.push(`<button type="button" class="btn peq zap" onclick="pedirAvaliacao('${p.id}')">⭐ Pedir avaliação</button>`);
+  if(STATUS_VENDA.includes(p.status) && p.emissao?.registradaEm) ac.push(`<button type="button" class="btn peq" onclick="window.open(linkViagem(pedido('${p.id}'))+'&pdf=1','_blank','noopener')">📄 Comprovante (PDF)</button>`);
+  if((p.passageirosDados||[]).some(d=>d.nome||d.doc)) ac.push(`<button type="button" class="btn peq perigo" onclick="apagarDadosPax('${p.id}')">Apagar dados dos passageiros</button>`);
+  const div = document.createElement('div'); div.className = 'acoes acoes-extras'; div.innerHTML = ac.join('');
+  corpo.appendChild(div);
+}
+function pedirAvaliacao(id){ const p = pedido(id); if(!p) return; abrirZap(p, 'avaliacao'); marcarPos(p, 'avaliacaoPedidaEm'); logar(p, 'Pedido de avaliação enviado'); renderDetalhe(); }
+function confirmarPagoInformado(id){
+  const p = pedido(id); if(!p) return; const pg = p.pagamento = p.pagamento||{};
+  if(!pg.forma) pg.forma = pg.formaInformada || p.cotacao?.resposta?.forma || 'pix';
+  if(pg.forma==='cartao' && !pg.parcelas) pg.parcelas = p.cotacao?.resposta?.parcelas || 1;
+  ACOES.confirmarPagamento(p);
+}
+function tirarCupom(id){ const p = pedido(id); if(!p) return; p.cupomAplicado = null; p.cupomMotivo = 'tirado à mão'; logar(p, `Desconto do cupom ${p.cupom} tirado`); salvar(true); renderDetalhe(); }
+function forcarCupom(id){ const p = pedido(id), c = p && cupomCfg(String(p.cupom).toUpperCase()); if(!c) return; p.cupomAplicado = {codigo:c.codigo, tipo:c.tipo, valor:n(c.valor)}; p.cupomMotivo = ''; logar(p, `Cupom ${c.codigo} aplicado à mão`); salvar(true); renderDetalhe(); }
+renderDetalhe = (orig => function(){ orig.apply(this, arguments); const p = pedido(abertoId); if(p) renderExtrasDetalhe(p); })(renderDetalhe);
+
+/* ---------- tags no cartão ---------- */
+function tagsExtras(p){
+  const t = [];
+  if(p.alteracao && p.alteracao.status!=='concluida') t.push('<span class="tag erro">🔄 Alteração solicitada</span>');
+  if(p.pagamento?.informadoEm && !p.pagamento?.pagoEm) t.push('<span class="tag sol">💸 Conferir pagamento</span>');
+  if(p.grupo || totalPax(p) > 9) t.push(`<span class="tag">👥 Grupo · ${totalPax(p)}</span>`);
+  if(p.status==='aguardando_baixa') t.push(p.aviseBaixa?.baixouEm ? '<span class="tag ok">📉 Baixou</span>' : '<span class="tag">⏳ Esperando baixar</span>');
+  if(p.cupom) t.push(`<span class="tag ${p.cupomAplicado?'ok':''}">🏷️ ${esc(p.cupom)}</span>`);
+  if(p.achado) t.push('<span class="tag sol">🔥 Achado</span>');
+  if(p.voltaOrigem || p.voltaDestino) t.push('<span class="tag">↩️ Cidades diferentes</span>');
+  if(p.assento) t.push('<span class="tag">💺 Assento</span>');
+  if(p.de) t.push(`<span class="tag">↗ ${esc(p.de)}</span>`);
+  return t;
+}
+
+/* ---------- Início: itens extras e resumo da semana ---------- */
+let errosResumo = {n:0, grupos:[]};
+function extrasInicio(add, agora){
+  pedidos.forEach(p=>{
+    const rota = `${p.origem.iata} → ${p.destino.iata}`, cli = p.cliente?.nome||'';
+    if(p.pagamento?.informadoEm && !p.pagamento?.pagoEm) add({p, g:'agora', cor:'sol', ordem:1, titulo:`Conferir pagamento · ${rota}`, sub:`${cli} informou que pagou${p.pagamento.temComprovante||p.pagamento.comprovante?' (com comprovante)':''}`, tempo:tempoDesde(p.pagamento.informadoEm), acao:'Conferir'});
+    if(p.alteracao && p.alteracao.status==='recebida') add({p, g:'agora', cor:'erro', ordem:2, titulo:`Alteração solicitada · ${rota}`, sub:`${cli} · ${ALT_NOME[p.alteracao.tipo]||'outro'}${p.alteracao.data?' para '+fmtDataCurta(p.alteracao.data):''}`, tempo:tempoDesde(p.alteracao.em), acao:'Ver'});
+    if(p.status==='aguardando_baixa' && p.aviseBaixa?.baixouEm && p.renovacao?.depois) add({p, g:'agora', cor:'ok', ordem:2, titulo:`Preço baixou · ${rota}`, sub:`${cli} · ${BRL(p.aviseBaixa.atual)} → ${BRL(p.renovacao.depois.valorPix)}`, tempo:tempoDesde(p.aviseBaixa.baixouEm), acao:'Avisar', acaoJs:`enviarBaixou('${p.id}')`, zap:true});
+    if(cfg.lembreteLocalizador!==false && STATUS_VENDA.includes(p.status) && p.emissao?.localizador && !p.posVenda?.localizadorEm){ const d = diasAteData(p.dataIda);
+      if(d!=null && d>=1 && d<=7) add({p, g:'depois', cor:'azul', ordem:8, titulo:`Conferir localizador · ${rota}`, sub:`${p.emissao.localizador} no site da ${p.emissao.cia||ciaTrecho(p,'Ida')} · voa em ${d} dia${d>1?'s':''}`, tempo:'', acao:'Avisar', acaoJs:`avisarLocalizador('${p.id}')`, zap:true}); }
+  });
+  if(ehDono() && errosResumo.n) add({p:{id:''}, g:'hoje', cor:'erro', ordem:9, titulo:`${errosResumo.n} erro${errosResumo.n>1?'s':''} no site nas últimas 24h`, sub:errosResumo.grupos.slice(0,2).map(g=>`${g.pg}: ${g.msg.slice(0,60)}`).join(' · '), tempo:'', acao:'Ver', acaoJs:'verErros()', abrirJs:'verErros()'});
+}
+function avisarLocalizador(id){ const p = pedido(id); if(!p) return; abrirZap(p, 'localizador', {cia: p.emissao?.cia||ciaTrecho(p,'Ida')}); marcarPos(p, 'localizadorEm'); logar(p, 'Localizador conferido e cliente avisado (1 semana antes)'); renderInicio(); }
+function htmlExtrasInicio(){
+  const agora = new Date(), semana = (()=>{ const d = new Date(agora); d.setHours(0,0,0,0); d.setDate(d.getDate() - ((d.getDay()+6)%7)); return d; })();
+  const chave = 'vpo_resumo_' + semana.toISOString().slice(0,10);
+  let fechado = false; try{ fechado = localStorage.getItem(chave)==='1'; }catch(e){}
+  if(agora.getDay()!==1 || fechado || !pedidos.length) return '';
+  const ini = new Date(semana); ini.setDate(ini.getDate()-7);
+  const na = d => d && new Date(d) >= ini && new Date(d) < semana;
+  const rec = pedidos.filter(p=>na(p.criadoEm)), cot = pedidos.filter(p=>na(p.primeiraCotacaoEm||p.cotacao?.enviadaEm)), ven = pedidos.filter(p=>na(p.pagamento?.pagoEm));
+  const luc = ven.reduce((s,p)=>s+lucro(p),0), fat = ven.reduce((s,p)=>s+n(p.pagamento.valorCobrado),0);
+  const dest = [...rec.reduce((m,p)=>m.set(p.destino.cidade,(m.get(p.destino.cidade)||0)+1), new Map())].sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c,q])=>`${c} (${q})`).join(', ');
+  return `<section class="bloco resumo-sem"><div class="rs-cab"><h3>📊 Resumo da semana passada <small>${fmtDataCurta(ini.toISOString())} a ${fmtDataCurta(new Date(semana-864e5).toISOString())}</small></h3><button type="button" class="btn peq" onclick="try{localStorage.setItem('${chave}','1')}catch(e){};renderInicio()">Fechar</button></div>
+    <div class="rs-nums"><div><b>${rec.length}</b><span>pedidos</span></div><div><b>${cot.length}</b><span>cotações</span></div><div><b>${ven.length}</b><span>vendas</span></div><div class="so-valor"><b>${BRL(luc).replace(/,00$/,'')}</b><span>de lucro</span></div><div><b>${cot.length?Math.round(ven.length/cot.length*100):0}%</b><span>conversão</span></div></div>
+    ${dest?`<p class="nota" style="margin:8px 0 0">Mais pedidos para: ${esc(dest)}${fat?` · vendas ${BRL(fat)}`:''}</p>`:''}</section>`;
+}
+
+/* ---------- erros das páginas ---------- */
+async function carregarErros(){
+  if(!ehDono()) return;
+  let lista = [];
+  try{
+    if(FB.ativo){ if(!(FB.db && FB.user)) return; const sn = await FB.fs.getDocs(FB.fs.collection(FB.db,'erros'));
+      sn.forEach(d=>{ const x = d.data(); if(Date.now()-Date.parse(x.em||0) > 30*864e5) FB.fs.deleteDoc(d.ref).catch(()=>{}); else lista.push(x); }); }
+    else { lista = lerJSON('dcnp_erros_teste', []).filter(x=>Date.now()-Date.parse(x.em||0) <= 30*864e5); localStorage.setItem('dcnp_erros_teste', JSON.stringify(lista)); }
+  }catch(e){ return; }
+  const dia = lista.filter(x=>Date.now()-Date.parse(x.em) < 864e5);
+  const g = new Map(); lista.forEach(x=>{ const k = x.pg+'|'+x.msg; const o = g.get(k) || {pg:x.pg, msg:x.msg, q:0, ult:x.em, ua:x.ua}; o.q++; if(x.em > o.ult){ o.ult = x.em; o.ua = x.ua; } g.set(k,o); });
+  errosResumo = {n:dia.length, grupos:[...g.values()].sort((a,b)=>b.ult.localeCompare(a.ult)), total:lista.length};
+  renderInicio();
+}
+function verErros(){
+  const g = errosResumo.grupos||[];
+  abrirModal(`<h2>Erros nas páginas do site</h2><p class="nota" style="margin:0">Últimos 30 dias, agrupados. Não têm dados dos clientes. Se um erro se repetir, me mande o texto para eu corrigir.</p>
+    ${g.length ? `<ul class="erros-lista">${g.map(x=>`<li><b>${esc(x.pg)}</b> · ${x.q}x · último ${fmtDataHora(x.ult)}<code>${esc(x.msg)}</code><small>${esc(String(x.ua||'').slice(0,120))}</small></li>`).join('')}</ul>` : '<p>Nenhum erro registrado. 🙌</p>'}
+    <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Fechar</button>${g.length?'<button type="button" class="btn peq" onclick="copiar(errosResumo.grupos.map(x=>x.pg+\' · \'+x.q+\'x · \'+x.msg).join(\'\\n\'),\'Erros copiados\')">Copiar todos</button>':''}</div>`);
+}
+setTimeout(carregarErros, 8000); setInterval(carregarErros, 3600e3);
+
+/* ---------- Resultados: funil por origem, cupons e exportação ---------- */
+async function lerMetricas(){
+  if(FB.ativo){ if(!(FB.db && FB.user)) return []; const sn = await FB.fs.getDocs(FB.fs.collection(FB.db,'metricas')); return sn.docs.map(d=>d.data()); }
+  return Object.values(lerJSON('dcnp_metricas_teste', {}));
+}
+renderResultados = (orig => function(){
+  orig.apply(this, arguments);
+  const ini = resMes, fim = new Date(ini.getFullYear(), ini.getMonth()+1, 1), el = $('#tela-resultados');
+  const box = document.createElement('div'); box.className = 'res-lanc';
+  // cupons
+  const comCupom = pedidos.filter(p=>p.cupomAplicado && noMes(p.pagamento?.pagoEm, ini, fim));
+  const porCupom = [...comCupom.reduce((m,p)=>{ const k = p.cupomAplicado.codigo, o = m.get(k)||{k, q:0, d:0, l:0}; o.q++; o.d += descontoValor(p); o.l += lucro(p); return m.set(k,o); }, new Map()).values()];
+  box.innerHTML = `<section class="bloco"><h3>Funil por origem <small>visitas contadas sem cookies, 1 por aparelho por dia</small></h3><div id="funilOrigem"><p class="nota">Carregando…</p></div></section>
+    <section class="bloco"><h3>Cupons <small>vendas pagas no mês</small></h3>${porCupom.length ? `<table class="tab-res"><thead><tr><th>Cupom</th><th class="num">Vendas</th><th class="num">Desconto dado</th><th class="num so-valor">Lucro</th></tr></thead><tbody>${porCupom.map(x=>`<tr><td>${esc(x.k)}</td><td class="num">${x.q}</td><td class="num">${BRL(x.d)}</td><td class="num so-valor">${BRL(x.l)}</td></tr>`).join('')}</tbody></table>` : '<p class="nota" style="margin:0">Nenhuma venda com cupom neste mês.</p>'}</section>
+    <section class="bloco"><h3>Exportar vendas</h3><p class="nota" style="margin:0 0 8px">Planilha do Excel com um pedido por linha (sem CPF) e uma aba de resumo.</p><button type="button" class="btn pri peq" onclick="abrirExportar()">⬇ Baixar planilha</button></section>`;
+  el.appendChild(box);
+  montarFunilOrigem(ini, fim);
+})(renderResultados);
+async function montarFunilOrigem(ini, fim){
+  let mets = []; try{ mets = await lerMetricas(); }catch(e){ }
+  const dIni = ini.toISOString().slice(0,10), dFim = fim.toISOString().slice(0,10);
+  const doMes = mets.filter(m=>m.dia >= dIni && m.dia < dFim), O = new Map();
+  const o = k => { if(!O.has(k)) O.set(k, {k, v:0, c:0, ped:0, abriu:0, apr:0, pag:0, ach:0}); return O.get(k); };
+  doMes.forEach(m=>{ for(const [k,v] of Object.entries(m.v||{})) o(k).v += n(v); for(const [k,v] of Object.entries(m.c||{})) o(k).c += n(v); });
+  pedidos.filter(p=>noMes(p.criadoEm, ini, fim) && p.origemPedido!=='whatsapp').forEach(p=>{ const x = o(p.de || 'direto'); x.ped++; if(p.cotacao?.vista || p.cotacao?.vistaEm) x.abriu++; if(p.cotacao?.resposta) x.apr++; if(p.pagamento?.pagoEm) x.pag++; if(p.achado) x.ach++; });
+  const l = [...O.values()].sort((a,b)=>b.v-a.v || b.ped-a.ped), box = $('#funilOrigem'); if(!box) return;
+  const pc = (a,b) => b ? `<small>${Math.round(a/b*100)}%</small>` : '';
+  box.innerHTML = l.length ? `<div class="tab-rol"><table class="tab-res"><thead><tr><th>Origem</th><th class="num">Visitas</th><th class="num">Começaram</th><th class="num">Pedidos</th><th class="num">Abriram cotação</th><th class="num">Aprovaram</th><th class="num">Pagaram</th></tr></thead><tbody>${l.map(x=>`<tr><td>${esc(x.k==='direto'?'Direto / sem ?de=':x.k)}${x.ach?` <span class="tag sol">🔥 ${x.ach} de achado</span>`:''}</td><td class="num">${x.v}</td><td class="num">${x.c} ${pc(x.c,x.v)}</td><td class="num">${x.ped} ${pc(x.ped,x.c||x.v)}</td><td class="num">${x.abriu}</td><td class="num">${x.apr}</td><td class="num">${x.pag} ${pc(x.pag,x.ped)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="nota" style="margin:6px 0 0">Para saber de onde vem cada pedido, divulgue o link com <b>?de=</b>: ${esc(baseSite())}/?de=instagram · ?de=status · ?de=indicacao</p>` : '<p class="nota" style="margin:0">Ainda sem visitas contadas neste mês.</p>';
+}
+function abrirExportar(){
+  const a = new Date(), mes = d => d.toISOString().slice(0,7);
+  abrirModal(`<h2>Exportar vendas</h2><div class="campo"><label for="exP">Período</label><select id="exP"><option value="mes">Este mês</option><option value="ant">Mês passado</option><option value="ano">Este ano</option><option value="tudo">Tudo</option><option value="per">Escolher datas</option></select></div>
+    <div class="g2" id="exDatas" hidden><div class="campo"><label for="exIni">De</label><input id="exIni" type="date"></div><div class="campo"><label for="exFim">Até</label><input id="exFim" type="date"></div></div>
+    <label class="linha-semdisp" style="margin-top:8px"><input type="checkbox" id="exPerd" checked> Incluir pedidos perdidos (com o motivo)</label>
+    <div class="rodape"><button type="button" class="btn" onclick="fecharModal()">Cancelar</button><button type="button" class="btn pri" id="exOk">Baixar .xlsx</button></div>`);
+  $('#exP').onchange = () => { $('#exDatas').hidden = $('#exP').value!=='per'; };
+  $('#exOk').onclick = async () => {
+    const v = $('#exP').value; let ini, fim;
+    if(v==='mes'){ ini = new Date(a.getFullYear(), a.getMonth(), 1); fim = new Date(a.getFullYear(), a.getMonth()+1, 1); }
+    else if(v==='ant'){ ini = new Date(a.getFullYear(), a.getMonth()-1, 1); fim = new Date(a.getFullYear(), a.getMonth(), 1); }
+    else if(v==='ano'){ ini = new Date(a.getFullYear(), 0, 1); fim = new Date(a.getFullYear()+1, 0, 1); }
+    else if(v==='tudo'){ ini = new Date(2000,0,1); fim = new Date(2100,0,1); }
+    else { if(!$('#exIni').value || !$('#exFim').value){ toast('Escolha as duas datas'); return; } ini = new Date($('#exIni').value+'T00:00'); fim = new Date($('#exFim').value+'T23:59:59'); }
+    $('#exOk').disabled = true; $('#exOk').textContent = 'Gerando…';
+    try{ await exportarVendas(ini, fim, $('#exPerd').checked); fecharModal(); }catch(e){ console.error(e); toast('Não consegui gerar a planilha. Confira a internet.'); $('#exOk').disabled = false; $('#exOk').textContent = 'Baixar .xlsx'; }
+  };
+}
+async function exportarVendas(ini, fim, comPerdidos){
+  const XLSX = await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+  const dataRef = p => p.pagamento?.pagoEm || (p.status==='perdido' ? p.statusDesde : null);
+  const lista = pedidos.filter(p=>{ const d = dataRef(p); return d && noMes(d, ini, fim) && (STATUS_VENDA.includes(p.status) || (comPerdidos && p.status==='perdido')); })
+    .sort((a,b)=>String(dataRef(a)).localeCompare(String(dataRef(b))));
+  const val = podeValores();
+  const linhas = lista.map(p=>{ const pg = p.pagamento||{}, venda = STATUS_VENDA.includes(p.status);
+    const o = {'Pedido':p.id, 'Recebido em':fmtData(p.criadoEm), 'Pago em':pg.pagoEm?fmtData(pg.pagoEm):'', 'Situação':NOME_ETAPA[p.status], 'Motivo da perda':p.status==='perdido'?(p.motivoPerda||''):'',
+      'Cliente':p.cliente?.nome||'', 'WhatsApp':fmtTel(p.cliente?.whatsapp), 'Origem do pedido':p.origemPedido==='whatsapp'?'WhatsApp':(p.de||'site'), 'Indicado por':p.indicadoPor||'',
+      'Rota':`${p.origem.iata} → ${p.destino.iata}${p.voltaOrigem||p.voltaDestino?' / '+voltaDe(p)+' → '+voltaPara(p):''}`, 'Ida':fmtData(p.dataIda), 'Volta':p.dataVolta?fmtData(p.dataVolta):'', 'Passageiros':totalPax(p),
+      'Programa':nomeProgramas(p), 'Companhia':ciasTexto(p), 'Localizador':[p.emissao?.localizador, p.emissao?.localizadorVolta].filter(Boolean).join(' / '),
+      'Forma de pagamento':venda?(pg.forma==='pix'?'Pix':pg.forma==='cartao'?'Cartão':''):'', 'Parcelas':venda&&pg.forma==='cartao'?n(pg.parcelas):'', 'Valor cobrado (R$)':venda?n(pg.valorCobrado):'',
+      'Cupom':p.cupomAplicado?.codigo||'', 'Desconto (R$)':p.cupomAplicado?descontoValor(p):''};
+    if(val){ o['Custo Milhas Plus + mala (R$)'] = venda?custoBase(p):''; o['Lucro (R$)'] = venda?lucro(p):''; }
+    return o; });
+  const vend = lista.filter(p=>STATUS_VENDA.includes(p.status)), perd = lista.filter(p=>p.status==='perdido');
+  const fat = vend.reduce((s,p)=>s+n(p.pagamento.valorCobrado),0), luc = vend.reduce((s,p)=>s+lucro(p),0);
+  const resumo = [['Período', `${ini.toLocaleDateString('pt-BR')} a ${new Date(fim-1).toLocaleDateString('pt-BR')}`], ['Vendas pagas', vend.length], ['Faturamento (R$)', fat], ...(val?[['Lucro (R$)', luc]]:[]), ['Ticket médio (R$)', vend.length?Math.round(fat/vend.length*100)/100:0], ['Passageiros', vend.reduce((s,p)=>s+totalPax(p),0)], ['Pedidos perdidos', perd.length], [], ['Motivo da perda', 'Quantidade']];
+  [...perd.reduce((m,p)=>m.set(p.motivoPerda||'Sem motivo', (m.get(p.motivoPerda||'Sem motivo')||0)+1), new Map())].forEach(x=>resumo.push(x));
+  resumo.push([], ['Mês', 'Vendas', 'Faturamento (R$)', ...(val?['Lucro (R$)']:[])]);
+  [...vend.reduce((m,p)=>{ const k = p.pagamento.pagoEm.slice(0,7), o = m.get(k)||[k,0,0,0]; o[1]++; o[2]+=n(p.pagamento.valorCobrado); o[3]+=lucro(p); return m.set(k,o); }, new Map()).values()].forEach(x=>resumo.push(val ? x : x.slice(0,3)));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(linhas.length ? linhas : [{'Pedido':'Nenhuma venda no período'}]);
+  ws['!cols'] = Object.keys(linhas[0]||{Pedido:1}).map(k=>({wch: Math.max(10, Math.min(30, k.length+4))}));
+  XLSX.utils.book_append_sheet(wb, ws, 'Pedidos');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumo), 'Resumo');
+  XLSX.writeFile(wb, `vendas-vai-pra-onde-${ini.toISOString().slice(0,10)}.xlsx`);
+  toast(`Planilha baixada: ${lista.length} pedido${lista.length!==1?'s':''}`);
+}
+
+/* ---------- avaliações vindas do site ---------- */
+renderAvaliacoes = (orig => function(){
+  orig.apply(this, arguments);
+  const el = $('#avalLista'); if(!el) return;
+  const novas = avaliacoes.filter(a=>a.doCliente && !a.publicada && !a.vista);
+  if(novas.length) el.insertAdjacentHTML('afterbegin', `<h3 class="sub-cfg">Para aprovar <small>${novas.length} vinda${novas.length>1?'s':''} da página Minha viagem</small></h3>`);
+  [...el.querySelectorAll('.aval-it')].forEach((it,i)=>{ const a = avaliacoes[i]; if(!a) return;
+    if(a.doCliente) it.classList.add('do-cliente');
+    if(n(a.estrelas)<=3){ it.classList.add('baixa'); it.querySelectorAll('button').forEach(b=>{ if(/Publicar no site/.test(b.textContent)) b.remove(); }); it.insertAdjacentHTML('afterbegin', '<p class="aviso on" style="margin:0 0 6px">Nota baixa: fale com o cliente. Esta não pode ser publicada.</p>'); }
+  });
+})(renderAvaliacoes);
+publicarAvaliacao = (orig => async function(id, sim){ const a = avaliacoes.find(x=>x.id===id); if(sim && a && n(a.estrelas)<=3){ toast('Avaliações com 3 estrelas ou menos não vão para o site.', {tipo:'erro'}); return; } return orig.apply(this, arguments); })(publicarAvaliacao);
+
+/* ---------- Configurações novas ---------- */
+let equipe = {emails:[], perms:{}};
+async function carregarEquipe(){
+  try{
+    if(FB.ativo && FB.db && FB.user){ const s = await FB.fs.getDoc(FB.fs.doc(FB.db,'config','equipe')); equipe = s.exists() ? {emails:[], perms:{}, ...s.data()} : {emails:[], perms:{}}; }
+    else equipe = lerJSON('dcnp_equipe_teste', {emails:[], perms:{}});
+  }catch(e){ console.warn(e); }
+  renderEquipeCfg();
+}
+async function salvarEquipe(){
+  try{
+    if(FB.ativo && FB.db) await FB.fs.setDoc(FB.fs.doc(FB.db,'config','equipe'), JSON.parse(JSON.stringify(equipe)));
+    else localStorage.setItem('dcnp_equipe_teste', JSON.stringify(equipe));
+    toast('Acessos salvos');
+  }catch(e){ erroFb(e); }
+  renderEquipeCfg();
+}
+function renderEquipeCfg(){
+  const el = $('#equipeCfg'); if(!el) return;
+  el.innerHTML = (equipe.emails||[]).length ? equipe.emails.map(em=>{ const pm = Object.assign({atender:true, emitir:false, valores:false}, (equipe.perms||{})[em]||{});
+    return `<div class="eq-it"><b>${esc(em)}</b><label><input type="checkbox" checked disabled> Atender pedidos</label><label><input type="checkbox" data-eq="${esc(em)}|emitir" ${pm.emitir?'checked':''}> Emitir e fazer check-in</label><label><input type="checkbox" data-eq="${esc(em)}|valores" ${pm.valores?'checked':''}> Ver custo da Milhas Plus e lucro</label><button type="button" class="btn peq perigo" data-eqdel="${esc(em)}">Tirar acesso</button></div>`; }).join('')
+    : '<p class="nota">Ninguém além de você tem acesso.</p>';
+  el.querySelectorAll('[data-eq]').forEach(c=>c.addEventListener('change',()=>{ const [em,k] = c.dataset.eq.split('|'); equipe.perms = equipe.perms||{}; equipe.perms[em] = Object.assign({atender:true, emitir:false, valores:false}, equipe.perms[em]||{}, {[k]:c.checked}); salvarEquipe(); }));
+  el.querySelectorAll('[data-eqdel]').forEach(b=>b.addEventListener('click',()=>{ const em = b.dataset.eqdel; if(!confirm(`Tirar o acesso de ${em}?`)) return; equipe.emails = equipe.emails.filter(x=>x!==em); if(equipe.perms) delete equipe.perms[em]; salvarEquipe(); }));
+}
+function addEquipe(){
+  const em = String($('#eqEmail').value||'').trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ toast('Digite um e-mail válido'); return; }
+  if(em === String(window.ADMIN_EMAIL||'').toLowerCase()){ toast('Esse é o seu e-mail'); return; }
+  equipe.emails = [...new Set([...(equipe.emails||[]), em])]; equipe.perms = equipe.perms||{}; equipe.perms[em] = equipe.perms[em] || {atender:true, emitir:false, valores:false};
+  $('#eqEmail').value = ''; salvarEquipe();
+}
+function renderCfgLanc(){
+  // horário
+  const h = $('#horarioCfg');
+  if(h){ const at = cfg.atendimento;
+    h.innerHTML = [1,2,3,4,5,6,0].map(i=>{ const d = at.dias[i]; return `<div class="hr-lin"><label class="linha-semdisp"><input type="checkbox" data-hr="${i}|on" ${d.on?'checked':''}> ${DIA_NOME[i]}</label><input type="time" data-hr="${i}|ini" value="${esc(d.ini)}" ${d.on?'':'disabled'} aria-label="${DIA_NOME[i]}: abre"><span>às</span><input type="time" data-hr="${i}|fim" value="${esc(d.fim)}" ${d.on?'':'disabled'} aria-label="${DIA_NOME[i]}: fecha"></div>`; }).join('');
+    h.querySelectorAll('[data-hr]').forEach(el=>el.addEventListener('change',()=>{ const [i,k] = el.dataset.hr.split('|'); cfg.atendimento.dias[i][k] = el.type==='checkbox' ? el.checked : el.value; salvarCfg(); if(k==='on') renderCfgLanc(); }));
+    $('#pausaOn').checked = !!at.pausa.on; $('#pausaTxt').value = at.pausa.texto||''; $('#pausaTxt').disabled = !at.pausa.on;
+  }
+  // regras por programa
+  const rg = $('#regrasProgCfg');
+  if(rg) rg.innerHTML = Object.entries(PROG).map(([k,m])=>`<div class="campo" style="margin-top:8px"><label for="rg-${k}">${m.nome}</label><textarea id="rg-${k}" data-regra="${k}" rows="4">${esc(cfg.regrasProg[k]||'')}</textarea></div>`).join('');
+  rg?.querySelectorAll('[data-regra]').forEach(t=>t.addEventListener('input',()=>{ cfg.regrasProg[t.dataset.regra] = t.value; salvarCfg(); }));
+  // assentos
+  const as = $('#assentosCfg');
+  if(as){ as.innerHTML = `<label class="linha-semdisp"><input type="checkbox" id="asOn" ${cfg.assentos.on?'checked':''}> Mostrar a opção de escolher assento no site</label>
+    <div class="g3" style="margin-top:8px">${[['gol','GOL'],['latam','LATAM'],['azul','Azul']].map(([k,t])=>`<div class="campo"><label for="as-${k}">${t}: a partir de (R$ por assento)</label><input id="as-${k}" type="number" min="0" step="1" data-as="${k}" value="${esc(cfg.assentos.valores[k]||'')}" placeholder="0"></div>`).join('')}</div>
+    <p class="aviso ${cfg.assentos.on && !Object.values(cfg.assentos.valores).some(v=>n(v)>0)?'on':''}">Preencha pelo menos um valor: sem valor, a opção não aparece no site.</p>`;
+    $('#asOn').onchange = e => { cfg.assentos.on = e.target.checked; salvarCfg(); renderCfgLanc(); };
+    as.querySelectorAll('[data-as]').forEach(i=>i.addEventListener('input',()=>{ cfg.assentos.valores[i.dataset.as] = n(i.value); salvarCfg(); })); }
+  // seguro
+  const sg = $('#seguroCfg');
+  if(sg){ sg.innerHTML = `<label class="linha-semdisp"><input type="checkbox" id="sgOn" ${cfg.seguro.on?'checked':''}> Mostrar o seguro viagem na página "Minha viagem"</label>
+    <div class="campo" style="margin-top:8px"><label for="sgLink">Seu link de afiliado</label><input id="sgLink" type="url" value="${esc(cfg.seguro.link||'')}" placeholder="https://..."></div>
+    <div class="campo" style="margin-top:8px"><label for="sgTxt">Texto do cartão (opcional)</label><input id="sgTxt" maxlength="160" value="${esc(cfg.seguro.texto||'')}" placeholder="Despesas médicas, bagagem extraviada e imprevistos cobertos. Cote em 2 minutos."></div>`;
+    $('#sgOn').onchange = e => { cfg.seguro.on = e.target.checked; salvarCfg(); };
+    $('#sgLink').oninput = e => { cfg.seguro.link = e.target.value.trim(); salvarCfg(); };
+    $('#sgTxt').oninput = e => { cfg.seguro.texto = e.target.value; salvarCfg(); }; }
+  // números
+  const nu = $('#numerosCfg');
+  if(nu){ const x = numerosSite();
+    nu.innerHTML = `<label class="linha-semdisp"><input type="checkbox" id="nuOn" ${cfg.numeros.on===true?'checked':''}> Mostrar a faixa de números no site e a frase na cotação</label>
+      <div class="rs-nums" style="margin-top:10px"><div><b>${x.emitidas.toLocaleString('pt-BR')}</b><span>passagens emitidas</span></div><div><b>${BRL(x.economia).replace(/,00$/,'')}</b><span>de economia</span></div><div><b>${BRL(x.media).replace(/,00$/,'')}</b><span>média por passagem</span></div><div><b>${clientesComCompra()}</b><span>clientes</span></div></div>
+      <p class="nota">Calculado dos pedidos pagos (economia = preço da companhia em dinheiro − valor cobrado). Vem desligado e só liga quando você marcar.</p>`;
+    $('#nuOn').onchange = e => { cfg.numeros.on = e.target.checked===true; salvarCfg(); toast(cfg.numeros.on ? 'Números ligados no site' : 'Números desligados'); }; }
+  // dicas
+  const dc = $('#dicasCfg');
+  if(dc){ const ROT = {d7:'Uma semana antes', d3:'2 a 3 dias antes', d1:'Na véspera', d0:'No dia do voo'};
+    dc.innerHTML = Object.entries(ROT).map(([k,t])=>`<div class="campo" style="margin-top:8px"><label for="dc-${k}">${t}</label><textarea id="dc-${k}" data-dica="${k}" rows="2" placeholder="Em branco: usa o texto padrão do site">${esc(cfg.dicas[k]||'')}</textarea></div>`).join('');
+    dc.querySelectorAll('[data-dica]').forEach(t=>t.addEventListener('input',()=>{ cfg.dicas[t.dataset.dica] = t.value; salvarCfg(); })); }
+  // cupons
+  const cp = $('#cuponsCfg');
+  if(cp){ const usos = cod => pedidos.filter(p=>p.cupomAplicado?.codigo===cod && STATUS_VENDA.includes(p.status)).length;
+    cp.innerHTML = ((cfg.cupons||[]).length ? `<table class="tab-res"><thead><tr><th>Código</th><th>Desconto</th><th>Validade</th><th class="num">Usos</th><th></th></tr></thead><tbody>${cfg.cupons.map(c=>`<tr class="${c.ativo===false?'off':''}"><td><b>${esc(c.codigo)}</b>${c.primeiro?' <span class="tag">1ª compra</span>':''}</td><td>${c.tipo==='perc'?n(c.valor)+'% do lucro':BRL(c.valor)}</td><td>${c.validade?fmtData(c.validade):'sem'}</td><td class="num">${usos(c.codigo)}${n(c.limite)?' de '+n(c.limite):''}</td><td style="white-space:nowrap"><button type="button" class="btn peq" onclick="copiar(baseSite()+'/?cupom=${esc(c.codigo)}','Link com o cupom copiado')">Link</button> <button type="button" class="btn peq" onclick="alternarCupom('${esc(c.codigo)}')">${c.ativo===false?'Ligar':'Desligar'}</button> <button type="button" class="btn peq perigo" onclick="apagarCupom('${esc(c.codigo)}')">✕</button></td></tr>`).join('')}</tbody></table>` : '<p class="nota">Nenhum cupom ainda.</p>')
+      + `<div class="cp-novo"><div class="campo"><label for="cpCod">Código</label><input id="cpCod" maxlength="20" placeholder="BEMVINDO" style="text-transform:uppercase"></div>
+        <div class="campo"><label for="cpTipo">Tipo</label><select id="cpTipo"><option value="valor">Valor fixo (R$)</option><option value="perc">% do seu lucro</option></select></div>
+        <div class="campo"><label for="cpVal">Desconto</label><input id="cpVal" type="number" min="0" step="1" placeholder="30"></div>
+        <div class="campo"><label for="cpValid">Validade</label><input id="cpValid" type="date"></div>
+        <div class="campo"><label for="cpLim">Limite de usos</label><input id="cpLim" type="number" min="0" step="1" placeholder="sem limite"></div>
+        <label class="linha-semdisp"><input type="checkbox" id="cpPrim"> Só na 1ª compra</label>
+        <button type="button" class="btn pri peq" onclick="criarCupom()">+ Criar cupom</button></div>
+        <p class="nota">O desconto sai do seu lucro. Se o lucro ficar abaixo do mínimo, o pedido avisa como sempre.</p>`; }
+  // achados
+  const ac = $('#achadosCfg');
+  if(ac){ const ativos = achadosAtivos();
+    ac.innerHTML = `<div class="g2"><div class="campo"><label for="acDias">Cada achado fica no site por (dias)</label><input id="acDias" type="number" min="1" max="30" value="${n(cfg.achadosDias)||7}"></div></div>
+      ${(cfg.achados||[]).length ? `<ul class="ac-lista">${cfg.achados.map(a=>{ const on = ativos.includes(a); return `<li class="${on?'':'off'}"><b>${esc(a.origem.iata)} → ${esc(a.destino.iata)}</b> · ${esc(mesTxt(a.mes))} · ${BRL(a.preco)} por pessoa <small>${on?'no site · publicado '+tempoDesde(a.em):'expirado'}</small><span><button type="button" class="btn peq" onclick="imagemAchado('${a.id}')">Imagem para o status</button> <button type="button" class="btn peq perigo" onclick="removerAchado('${a.id}')">Tirar</button></span></li>`; }).join('')}</ul>` : '<p class="nota">Nenhum achado. No pedido, toque em "Publicar como achado".</p>'}
+      ${ativos.length ? `<div class="acoes"><button type="button" class="btn pri peq" onclick="imagensTodosAchados()">Gerar todas as imagens (${ativos.length})</button></div>` : ''}`;
+    $('#acDias').oninput = e => { cfg.achadosDias = Math.max(1, Math.min(30, n(e.target.value)||7)); salvarCfg(); }; }
+  renderEquipeCfg();
+}
+function criarCupom(){
+  const cod = String($('#cpCod').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,20), val = n($('#cpVal').value);
+  if(!cod){ toast('Digite o código'); return; } if(!val){ toast('Digite o desconto'); return; }
+  if((cfg.cupons||[]).some(c=>c.codigo===cod)){ toast('Já existe um cupom com esse código'); return; }
+  if($('#cpTipo').value==='perc' && val > 100){ toast('A porcentagem vai até 100'); return; }
+  cfg.cupons = [...(cfg.cupons||[]), {codigo:cod, tipo:$('#cpTipo').value, valor:val, validade:$('#cpValid').value||'', limite:n($('#cpLim').value), primeiro:$('#cpPrim').checked, ativo:true, criadoEm:new Date().toISOString()}];
+  salvarCfg(); publicarPublico(true); renderCfgLanc(); toast(`Cupom ${cod} criado`);
+}
+function alternarCupom(cod){ const c = cupomCfg(cod); if(!c) return; c.ativo = c.ativo===false; salvarCfg(); publicarPublico(true); renderCfgLanc(); }
+function apagarCupom(cod){ if(!confirm(`Apagar o cupom ${cod}?`)) return; cfg.cupons = (cfg.cupons||[]).filter(c=>c.codigo!==cod); salvarCfg(); publicarPublico(true); renderCfgLanc(); }
+$('#pausaOn')?.addEventListener('change', e=>{ cfg.atendimento.pausa.on = e.target.checked; salvarCfg(); renderCfgLanc(); toast(e.target.checked ? 'Pausa ligada: o site avisa os clientes' : 'Pausa desligada'); });
+$('#pausaTxt')?.addEventListener('input', e=>{ cfg.atendimento.pausa.texto = e.target.value; salvarCfg(); });
+renderCfg = (orig => function(){ orig.apply(this, arguments); renderCfgLanc(); })(renderCfg);
+abrirAjuste = (orig => function(k){ orig.apply(this, arguments); if(['horario','regrasprog','assentos','seguro','dicas','cupons','achados','numeros'].includes(k)) renderCfgLanc(); if(k==='acessos') carregarEquipe(); if(k==='avaliacoes') setTimeout(()=>{ avaliacoes.forEach(a=>{ if(a.doCliente) a.vista = true; }); }, 3000); })(abrirAjuste);
+{ const g = nome => AJUSTES.find(x=>x[0]===nome)[1];
+  g('Preços').push(['cupons','etiqueta','','Cupons','cupom desconto promocao codigo', ()=>{ const a = (cfg.cupons||[]).filter(c=>c.ativo!==false).length; return a ? `${a} ativo${a>1?'s':''}` : 'nenhum'; }]);
+  g('Pagamento e atendimento').push(['horario','relogio','','Horário e pausa','horario atendimento pausa ferias online', ()=>cfg.atendimento.pausa.on ? '⏸ pausado' : 'seg a sáb', ()=>cfg.atendimento.pausa.on ? 'pausado' : ''],
+    ['regrasprog','pasta','','Regras da passagem','regras cancelamento remarcacao programa smiles latam azul', ()=>'texto de cada programa na cotação'],
+    ['assentos','aviao','','Escolha de assento','assento janela corredor juntos pago', ()=>cfg.assentos.on ? 'ligado no site' : 'desligado'],
+    ['seguro','check','','Seguro viagem (parceiro)','seguro viagem afiliado parceiro', ()=>cfg.seguro.on && cfg.seguro.link ? 'ligado' : 'desligado'],
+    ['dicas','conversa','','Dicas antes da viagem','dicas viagem minha viagem clima', ()=>'7, 3, 1 dia e no dia'],
+    ['acessos','pessoa','','Acessos (ajudante)','equipe ajudante acesso permissao', ()=>'quem mais entra no painel']);
+  g('Site e app').push(['achados','globo','','Achados da semana','achado promocao site status imagem', ()=>{ const a = achadosAtivos().length; return a ? `${a} no site` : 'nenhum no site'; }],
+    ['numeros','lucro','','Números no site','numeros confianca passagens economia', ()=>cfg.numeros.on===true ? 'ligado' : 'desligado']);
+}
+iniciarSync = (orig => function(){ orig.apply(this, arguments); iniciarInbox(); setTimeout(()=>{ publicarPublico(); carregarErros(); }, 5000); })(iniciarSync);
+if(!FB.ativo){ setTimeout(()=>publicarPublico(), 2000); }
 
 renderCfg(); renderQuadro(); renderCheckins(); atualizarAvisoExtensao();
 renderCfgMenu(); abrirAjuste('', true); if(!FB.ativo) renderAvaliacoes();

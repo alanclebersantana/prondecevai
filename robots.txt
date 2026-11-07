@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /painel.html
+Disallow: /cotacao.html
+Disallow: /viagem.html
+
+Sitemap: https://vaipraondeagencia.netlify.app/sitemap.xml
