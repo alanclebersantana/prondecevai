@@ -5003,7 +5003,26 @@ setInterval(agendarAuto, 20000);
 });
 let timerVelha = null;
 const capturasEspera = new Map();   // capturas que chegaram sem pedido aberto
-function aplicarCaptura(c, p){
+let capModalId = null;
+// milhas e taxas da captura: os sites mostram por passageiro; vira o total do grupo (só "total" vem já somado)
+function normCaptura(p, c){
+  if(c._norm) return c;
+  const pag = pagantes(p), total = c.milhasTipo==='total', x = {...c, _norm:true};
+  if(c.milhas) x.milhas = String(Math.round(total ? n(c.milhas) : n(c.milhas)*pag));
+  if(c.taxas!=='' && c.taxas!=null) x.taxas = Math.round((total ? n(c.taxas) : n(c.taxas)*pag)*100)/100;
+  // ida ou volta: confere pelo aeroporto de saída do voo capturado
+  const de = String(c.de||'').toUpperCase();
+  if(de && p.tipo==='ida_volta'){
+    const ida = de===p.origem.iata, volta = de===voltaDe(p);
+    if(ida && !volta && c.trecho==='volta'){ x.trecho = 'ida'; x._trocou = 'ida'; }
+    if(volta && !ida && c.trecho!=='volta'){ x.trecho = 'volta'; x._trocou = 'volta'; }
+  }
+  return x;
+}
+function aplicarCaptura(c0, p){
+  if(capModalId===c0.id && $('#modal .cap-grade')) return;   // a mesma captura já está na pergunta
+  const c = normCaptura(p, c0);
+  if(c._trocou) toast(`A captura veio marcada como ${c._trocou==='ida'?'volta':'ida'}, mas o voo sai de ${String(c.de).toUpperCase()}: usei como ${c._trocou}.`, {tipo:'info'});
   const T = c.trecho==='volta' ? 'Volta' : 'Ida';
   capturasEspera.delete(c.id);
   if(T==='Volta' && p.tipo!=='ida_volta'){ toast(`O ${p.id} é só de ida. A captura da volta foi ignorada.`); capturasAplicadas.add(c.id); window.postMessage({tipo:'dcnp-captura-ok', id:c.id},'*'); mostrarBarraCaptura(); return; }
@@ -5011,13 +5030,14 @@ function aplicarCaptura(c, p){
   // o trecho já tem dados: pergunta antes de trocar pelo que veio com o print
   const difs = (n(b['milhas'+T]) || b['saida'+T]) ? difsCaptura(p, b, T, c) : [];
   if(difs.length){
-    if($('#modalFundo').classList.contains('aberto')){ capturasEspera.set(c.id, c); mostrarBarraCaptura(); return; }
+    if($('#modalFundo').classList.contains('aberto')){ capturasEspera.set(c0.id, c0); mostrarBarraCaptura(); return; }
     perguntarCaptura(c, p, T, difs); return;
   }
   aplicarCamposCaptura(p, b, T, c, null);
   fecharCaptura(c, p, `${PROG[c.programa].nome} · ${T.toLowerCase()} recebida no ${p.id}`);
 }
 function fecharCaptura(c, p, msg){
+  if(capModalId===c.id) capModalId = null;
   capturasAplicadas.add(c.id); capturasEspera.delete(c.id);
   salvar(true);
   if(abertoId===p.id) renderDetalhe();
@@ -5057,7 +5077,7 @@ function aplicarCamposCaptura(p, b, T, c, sel){
   if(!sel || sel.size) b['fonte'+T] = 'print';
 }
 function perguntarCaptura(c, p, T, difs){
-  const b = p.busca[c.programa];
+  const b = p.busca[c.programa]; capModalId = c.id;
   abrirModal(`<h2>Substituir pelos dados do print?</h2>
     <div class="cap-grade">
       <figure class="cap-print">${c.print ? `<img src="${c.print}" alt="Print recebido">` : '<div class="nota">sem imagem</div>'}<figcaption class="nota">${esc(PROG[c.programa].nome)} · ${T.toLowerCase()} · ${difs.length} campo${difs.length>1?'s':''} diferente${difs.length>1?'s':''} do que está no painel</figcaption></figure>
@@ -5084,7 +5104,7 @@ function mostrarBarraCaptura(modo){
   if(!capturasEspera.size){ bar.classList.remove('on'); bar.innerHTML=''; return; }
   const c = [...capturasEspera.values()][0];
   const abertos = pedidos.filter(x=>!['concluido','perdido'].includes(x.status)).sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
-  const det = [c.saida && c.chegada ? `${c.saida}–${c.chegada}` : '', c.milhas ? `${Number(c.milhas).toLocaleString('pt-BR')} milhas` : '', c.taxas ? BRL(n(c.taxas)) : ''].filter(Boolean).join(' · ');
+  const det = [c.saida && c.chegada ? `${c.saida}–${c.chegada}` : '', c.milhas ? `${Number(c.milhas).toLocaleString('pt-BR')} milhas${c.milhasTipo==='total'?' (total)':' por pessoa'}` : '', c.taxas ? BRL(n(c.taxas)) : ''].filter(Boolean).join(' · ');
   bar.innerHTML = `<div class="bc-txt"><b>Captura recebida:</b> ${esc(PROG[c.programa].nome)} · ${c.trecho==='volta'?'volta':'ida'}${det?' · '+esc(det):''}${capturasEspera.size>1?` <small>(+${capturasEspera.size-1} na fila)</small>`:''}</div>
     <div class="bc-acoes">${abertos.length ? `<select id="bcPedido">${abertos.map(x=>`<option value="${esc(x.id)}">${esc(x.id)} · ${esc(x.origem.iata)} → ${esc(x.destino.iata)} · ${esc(x.cliente?.nome||'')}</option>`).join('')}</select>
     <button type="button" class="btn pri peq" id="bcAplicar">Usar neste pedido</button>` : '<span>Nenhum pedido em andamento.</span>'}
