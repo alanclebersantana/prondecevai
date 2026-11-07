@@ -1674,7 +1674,9 @@ function bebeFalta(p, k){ return qBebes(p) && trechosComVoo(p,k).some(T=>bebeTre
 /* programa mais barato: pelo custo na Milhas Plus (milheiro da tabela + taxas). Se algum programa com voo
    não tiver valor na tabela, compara pela milhagem e avisa. */
 function comparaProgramas(p){
-  const cands = Object.keys(PROG).map(k=>({k, milhas: totalMilhas(p,k), custo: custoMP(p,k)})).filter(c=>c.milhas!=null);
+  const todos = Object.keys(PROG).map(k=>({k, milhas: totalMilhas(p,k), custo: custoMP(p,k)})).filter(c=>c.milhas!=null);
+  // programa com só a ida ou só a volta não entra na disputa de "mais barato" (falta um trecho no preço)
+  const completos = todos.filter(c=>progCompleto(p,c.k)), cands = completos.length ? completos : todos;
   if(!cands.length) return {melhor:null, modo:null, lista:[]};
   const semTabela = cands.filter(c=>!c.custo).map(c=>c.k);
   const modo = semTabela.length ? 'milhas' : 'reais';
@@ -1683,6 +1685,7 @@ function comparaProgramas(p){
   const [a, b2] = lista;
   return {melhor:a.k, modo, lista, semTabela, segundo: b2 ? b2.k : null, dif: b2 ? Math.round((val(b2)-val(a))*100)/100 : null};
 }
+function progCompleto(p, k){ return trechosComVoo(p,k).length === trechosDe(p).length; }
 function menorPrograma(p){ return comparaProgramas(p).melhor; }
 function textoSelo(cmp){ return cmp.modo==='milhas' ? 'Menor milhagem' : 'Mais barato'; }
 function textoDifMelhor(cmp){
@@ -1758,8 +1761,11 @@ function custoTrecho(p, k, T){
   const bb = bebeTrecho(p,k,T), mil = mil0 + bb.milhas;
   const m = milheiroDe(p, k, mil0 / pagantes(p)); if(!m) return null;
   const temTaxa = b['taxas'+T]!=null && b['taxas'+T]!=='';
-  const taxas = (temTaxa ? n(b['taxas'+T]) : (p.tipo==='ida_volta' ? n(b.taxas)/2 : n(b.taxas))) + bb.reais;
-  return { k, T, milhas:mil, milheiro:m.milheiro, rotulo:m.rotulo, opcao:m.opcao, taxas, taxaEstimada:!temTaxa && p.tipo==='ida_volta', valor:Math.round((mil/1000*m.milheiro + taxas)*100)/100 };
+  // taxa total digitada (ida + volta): divide ao meio só se o programa tiver os dois trechos; se só um trecho foi achado, a taxa toda é dele
+  const outro = T==='Ida' ? 'Volta' : 'Ida', soUm = p.tipo==='ida_volta' && !n(b['milhas'+outro]);
+  const divide = p.tipo==='ida_volta' && !soUm;
+  const taxas = (temTaxa ? n(b['taxas'+T]) : (divide ? n(b.taxas)/2 : n(b.taxas))) + bb.reais;
+  return { k, T, milhas:mil, milheiro:m.milheiro, rotulo:m.rotulo, opcao:m.opcao, taxas, taxaEstimada:!temTaxa && divide, valor:Math.round((mil/1000*m.milheiro + taxas)*100)/100 };
 }
 // melhor combinação ida/volta em programas diferentes — só para mostrar como opção, nunca escolhe sozinho
 function melhorCombinacao(p){
@@ -6028,7 +6034,7 @@ function progsAbertos(p){
 function selAtual(p){ if(!p.escolhido) return null; const s = {}; trechosDe(p).forEach(T=>s[T] = progTrecho(p,T)); return s; }
 function custoSel(p, s){
   const ks = trechosDe(p).map(T=>s[T]); if(ks.some(k=>!k)) return null;
-  if(new Set(ks).size===1){ const c = custoMP(p, ks[0]); return c ? {valor:c.valor, milhas:c.milhas, taxas:c.taxas, um:true} : null; }
+  if(new Set(ks).size===1){ if(!progCompleto(p, ks[0])) return null; const c = custoMP(p, ks[0]); return c ? {valor:c.valor, milhas:c.milhas, taxas:c.taxas, um:true} : null; }
   const partes = trechosDe(p).map(T=>custoTrecho(p, s[T], T)); if(partes.some(x=>!x)) return null;
   return {valor:Math.round(partes.reduce((a,x)=>a+x.valor,0)*100)/100, milhas:partes.reduce((a,x)=>a+x.milhas,0), taxas:partes.reduce((a,x)=>a+x.taxas,0), um:false};
 }
@@ -6084,7 +6090,7 @@ function htmlEscolhaA(p){
     const sel = mostra[t]===k, d = ct ? duracaoVoo({saida:b['saida'+t], chegada:b['chegada'+t]}) : null;
     if(!ct) return `<div class="esc-op off"><span class="dot-p" style="background:${PROG[k].cor}"></span><b>${esc(PROG[k].nome)}</b><span class="esc-sub" style="margin-left:auto">${b.semDisp ? 'sem disponibilidade' : n(b['milhas'+t]) ? 'sem valor na tabela da Milhas Plus' : 'sem voo lido'}</span></div>`;
     return `<label class="esc-op ${sel?'sel':''}"><input type="radio" name="sel-${t}-${p.id}" data-sel="${t}|${k}" ${sel?'checked':''}><span class="dot-p" style="background:${PROG[k].cor}"></span>
-      <span class="esc-op-nome"><b>${esc(PROG[k].nome)}</b><small>${[b['voo'+t], d!=null?fmtMin(d):'', textoParadas(b,t)].filter(Boolean).map(esc).join(' · ')}</small></span>
+      <span class="esc-op-nome"><b>${esc(PROG[k].nome)}</b><small>${[b['voo'+t], d!=null?fmtMin(d):'', textoParadas(b,t)].filter(Boolean).map(esc).join(' · ')}</small><small title="${esc(n(ct.milhas).toLocaleString('pt-BR'))} milhas × R$ ${String(ct.milheiro).replace('.',',')}/mil + taxas">${n(ct.milhas).toLocaleString('pt-BR')} mi + ${BRL(ct.taxas)} taxas${ct.taxaEstimada?' (metade do total)':''}</small></span>
       <span class="esc-op-hora">${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}</span>
       <span class="esc-op-valor"><b>${BRL(ct.valor)}</b><small>${ct.valor - min < 0.01 ? 'o menor' : '+ ' + BRL(Math.round((ct.valor-min)*100)/100)}</small></span></label>`; }).join('');
   const trechos = `<div class="esc-trocar"><h4>Trocar ${T.length===2?'ida ou volta':'o voo'} <small>o total em cima muda na hora</small></h4>
