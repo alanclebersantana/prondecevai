@@ -238,6 +238,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
 .pax .tit{font-weight:700;margin-bottom:6px}
 .campo{display:flex;flex-direction:column;gap:5px;margin-top:10px}
 .campo label{font-weight:600;font-size:.9rem}
+.campo label .opc{font-weight:500;color:var(--tinta-2)}
 .campo input{border:1.5px solid var(--linha);border-radius:12px;padding:12px 13px;background:#fff;width:100%}
 .campo input:focus{border-color:var(--ceu-2);outline:0}
 .campo.erro input{border-color:var(--erro)}
@@ -387,7 +388,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
       <h2>2. Dados de quem vai viajar</h2>
       <p class="nota">Escreva o nome completo exatamente como está no documento. A emissão usa estes dados.</p>
       <details class="colar" id="colarBox" hidden><summary>📋 Colar a lista de passageiros</summary>
-        <p class="nota">Uma pessoa por linha: <b>nome completo; CPF; nascimento</b>. Ex.: <i>Maria da Silva; 123.456.789-09; 15/03/1990</i></p>
+        <p class="nota">Uma pessoa por linha: <b>nome completo; CPF; nascimento; e-mail</b>. Ex.: <i>Maria da Silva; 123.456.789-09; 15/03/1990; maria@email.com</i></p>
         <textarea id="colarTxt" aria-label="Lista de passageiros"></textarea>
         <button type="button" class="btn sec" id="colarBt">Preencher com a lista</button>
       </details>
@@ -688,6 +689,7 @@ function montarPassageiros(){
     <div class="tit">${i+1}. ${t}${tipos.filter(x=>x===t).length>1?' '+conta[t]:''}</div>
     ${(C.paxSalvos||[]).length ? `<div class="pax-salvos"><span class="nota">Já viajou com a gente? Toque para preencher:</span>${C.paxSalvos.map((x,j)=>`<button type="button" data-salvo="${j}">${esc(x.nome.split(' ')[0])} ${esc(x.nome.split(' ').slice(-1)[0]!==x.nome.split(' ')[0]?x.nome.split(' ').slice(-1)[0]:'')}</button>`).join('')}</div>` : ''}
     <div class="campo"><label for="n${i}">Nome completo</label><input id="n${i}" data-c="nome" autocomplete="${i===0?'name':'off'}" maxlength="120"><div class="msg"></div></div>
+    <div class="campo"><label for="e${i}">E-mail${t==='Adulto'?'':' <span class="opc">(opcional)</span>'}</label><input id="e${i}" data-c="email" type="email" inputmode="email" autocomplete="${i===0?'email':'off'}" maxlength="120" placeholder="nome@email.com" autocapitalize="off" spellcheck="false"><div class="msg"></div></div>
     <div class="g2">
       <div class="campo"><label for="d${i}">CPF ou passaporte</label><input id="d${i}" data-c="doc" inputmode="text" maxlength="20" placeholder="000.000.000-00"><div class="doc-salvo" hidden></div><div class="msg"></div></div>
       <div class="campo"><label for="b${i}">Nascimento</label><input id="b${i}" data-c="nasc" type="date" max="${new Date().toISOString().slice(0,10)}"><div class="msg"></div></div>
@@ -765,13 +767,15 @@ function validar(){
   const lista = [...document.querySelectorAll('.pax')].map(el=>{
     const g = k => el.querySelector(`[data-c="${k}"]`);
     const nome = g('nome').value.trim().replace(/\s+/g,' '), doc = g('doc').value.trim(), nasc = g('nasc').value, salvo = g('doc').dataset.salvo;
+    const email = g('email').value.trim().toLowerCase(), adulto = el.dataset.tipo === 'Adulto';
+    const eEmail = !email ? (adulto ? 'Informe o e-mail: a companhia aérea manda avisos do voo para ele.' : '') : (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? '' : 'Este e-mail não parece certo. Confira.');
     const dig = doc.replace(/\D/g,'');
     const eNome = nome.split(' ').length < 2 ? 'Escreva nome e sobrenome, como no documento.' : '';
     const eDoc = salvo!=null ? '' : !doc ? 'Informe o CPF ou o passaporte.' : (/^\d[\d.\-\s]*$/.test(doc) ? (cpfValido(dig) ? '' : 'Este CPF não parece certo. Confira os números.') : (/^[A-Za-z0-9]{6,12}$/.test(doc) ? '' : 'Confira o número do passaporte.'));
     const eNasc = !nasc ? 'Informe a data de nascimento.' : (nasc > new Date().toISOString().slice(0,10) ? 'A data não pode ser no futuro.' : '');
-    [[g('nome'),eNome],[g('doc'),eDoc],[g('nasc'),eNasc]].forEach(([i,m])=>{ if(!marcar(i,m)){ ok=false; primeiro = primeiro||i; } });
-    if(salvo!=null) return {tipo: el.dataset.tipo, nome, doc:'', salvo:Number(salvo), nasc};
-    return {tipo: el.dataset.tipo, nome, doc: /^\d[\d.\-\s]*$/.test(doc) ? dig.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4') : doc.toUpperCase(), nasc};
+    [[g('nome'),eNome],[g('email'),eEmail],[g('doc'),eDoc],[g('nasc'),eNasc]].forEach(([i,m])=>{ if(!marcar(i,m)){ ok=false; primeiro = primeiro||i; } });
+    if(salvo!=null) return {tipo: el.dataset.tipo, nome, email, doc:'', salvo:Number(salvo), nasc};
+    return {tipo: el.dataset.tipo, nome, email, doc: /^\d[\d.\-\s]*$/.test(doc) ? dig.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4') : doc.toUpperCase(), nasc};
   });
   return {ok, lista, primeiro};
 }
@@ -808,7 +812,7 @@ $('#formAprovar').addEventListener('submit', async e=>{
     $('#erroGeral').hidden = false;
     $('#erroGeral').textContent = /permission/i.test(err.code||err.message||'') ? 'Esta cotação não pode mais ser aprovada (ela pode ter vencido). Fale com a gente pelo WhatsApp.' : 'Não consegui enviar. Tente de novo ou mande a aprovação pelo WhatsApp:';
     const fp = forma==='pix' ? `Pix ${BRL(C.valorPix)}` : `cartão em ${resposta.parcelas}x`;
-    $('#zapFalha').href = zap(C.whatsapp, [`Olá! Quero aprovar a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}), pagando no ${fp}.`, 'Passageiros:', ...lista.map(x=>`• ${x.nome} · ${x.doc || 'documento já cadastrado'} · nasc. ${fmtData(x.nasc)}`)].join('\n'));
+    $('#zapFalha').href = zap(C.whatsapp, [`Olá! Quero aprovar a cotação ${C.pedidoId} (${C.origem.iata} → ${C.destino.iata}), pagando no ${fp}.`, 'Passageiros:', ...lista.map(x=>`• ${x.nome} · ${x.doc || 'documento já cadastrado'} · nasc. ${fmtData(x.nasc)}${x.email ? ' · ' + x.email : ''}`)].join('\n'));
     $('#zapFalha').classList.add('on');
     window.vpoErro && vpoErro('aprovar cotação: ' + (err && (err.code || err.message) || err));
   } finally { btn.disabled = false; btn.textContent = 'Aprovar cotação'; btn.classList.remove('enviando'); }
@@ -873,6 +877,7 @@ $('#colarBt').addEventListener('click', ()=>{
     if(p[0]) g('nome').value = p[0].replace(/\s+/g,' ');
     if(p[1]){ g('doc').readOnly = false; delete g('doc').dataset.salvo; g('doc').value = p[1]; }
     const dt = (p[2]||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+    const em = p.find(x=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x||'')); if(em) g('email').value = em.toLowerCase();
     if(dt){ const a = dt[3].length===2 ? (Number(dt[3]) > 30 ? '19' : '20') + dt[3] : dt[3]; g('nasc').value = `${a}-${dt[2].padStart(2,'0')}-${dt[1].padStart(2,'0')}`; }
     ok++;
   });

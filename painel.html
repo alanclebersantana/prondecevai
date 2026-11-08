@@ -174,7 +174,7 @@ a.btn{text-decoration:none}
 .previa img{width:100%;border-radius:6px;display:block}
 .previa figcaption{font-size:.8rem;color:var(--tinta-2);margin-top:6px}
 
-.pax-dados{display:grid;grid-template-columns:110px 2fr 1.2fr 1fr;gap:8px;align-items:end;margin-bottom:8px}
+.pax-dados{display:grid;grid-template-columns:110px 2fr 1.6fr 1.2fr 1fr;gap:8px;align-items:end;margin-bottom:8px}
 .pax-dados .tipo{font-size:.82rem;font-weight:700;color:var(--ceu);padding-bottom:10px}
 
 .miniaturas{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -2300,7 +2300,7 @@ function passageirosSalvos(p){   // de outros pedidos do mesmo WhatsApp, os mais
   const ch = chaveCliente(p.cliente?.whatsapp); if(!ch) return [];
   const vistos = new Set(), r = [];
   pedidos.filter(x=>x.id!==p.id && chaveCliente(x.cliente?.whatsapp)===ch).sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''))
-    .forEach(x=>(x.passageirosDados||[]).forEach(d=>{ const k = soDigitos(d.doc)||String(d.doc||'').toUpperCase(); if(d.nome && d.doc && !vistos.has(k)){ vistos.add(k); r.push({nome:d.nome, doc:d.doc, nasc:d.nasc||''}); } }));
+    .forEach(x=>(x.passageirosDados||[]).forEach(d=>{ const k = soDigitos(d.doc)||String(d.doc||'').toUpperCase(); if(d.nome && d.doc && !vistos.has(k)){ vistos.add(k); r.push({nome:d.nome, doc:d.doc, nasc:d.nasc||'', email:d.email||''}); } }));
   return r.slice(0,9);
 }
 function chaveCliente(w){ const d = soDigitos(w); return d.length>11 && d.startsWith('55') ? d.slice(2) : d; }
@@ -3578,6 +3578,7 @@ function etapaPassageiros(p, cls, aberto){
   const linhas = lista.map((t,i)=>{ const d=p.passageirosDados[i]; return `<div class="pax-dados">
     <div class="tipo">${t} ${i+1}</div>
     <div class="campo nome"><label>Nome completo (igual ao documento)</label><input data-bind="passageirosDados.${i}.nome" value="${esc(d.nome||'')}"></div>
+    <div class="campo"><label>E-mail</label><input type="email" data-bind="passageirosDados.${i}.email" value="${esc(d.email||'')}" placeholder="nome@email.com"></div>
     <div class="campo"><label>CPF ou passaporte</label><input data-bind="passageirosDados.${i}.doc" value="${esc(d.doc||'')}"></div>
     <div class="campo"><label>Nascimento</label><input type="date" data-bind="passageirosDados.${i}.nasc" value="${esc(d.nasc||'')}"></div>
   </div>`; }).join('');
@@ -3607,7 +3608,7 @@ function etapaPassageiros(p, cls, aberto){
 /* ---------- milheiro: a pergunta de confirmação vai junto com os dados e o print para a Milhas Plus ---------- */
 function textoEmissao(p){
   const b = bT(p,'Ida'), bv = bT(p,'Volta');
-  const pax = (p.passageirosDados||[]).map((d,i)=>`${i+1}. ${d.nome||'—'} — ${d.doc||'—'} — nasc. ${d.nasc?fmtData(d.nasc):'—'}`).join('\n');
+  const pax = (p.passageirosDados||[]).map((d,i)=>`${i+1}. ${d.nome||'—'} — ${d.doc||'—'} — nasc. ${d.nasc?fmtData(d.nasc):'—'}${d.email?' — '+d.email:''}`).join('\n');
   return `EMISSÃO ${p.id}\n${p.combo ? `Programas: ida ${PROG[p.combo.Ida].nome} (${b.cia}) + volta ${PROG[p.combo.Volta].nome} (${bv.cia}) — duas emissões` : `Programa: ${PROG[p.escolhido].nome} (${b.cia})`}\nTrecho: ${p.origem.iata} → ${p.destino.iata}${p.voltaOrigem||p.voltaDestino ? ' · volta '+voltaDe(p)+' → '+voltaPara(p) : ''}\nIda: ${fmtData(p.dataIda)} · ${b.vooIda||''} ${b.saidaIda||''}–${b.chegadaIda||''}${p.combo?' · '+MIL(b.milhasIda)+' milhas':''}`+
     (p.dataVolta?`\nVolta: ${fmtData(p.dataVolta)} · ${bv.vooVolta||''} ${bv.saidaVolta||''}–${bv.chegadaVolta||''}${p.combo?' · '+MIL(bv.milhasVolta)+' milhas':''}`:'')+
     ((b.datasAlt||datasAltAuto(p))?`\nDatas encontradas: ${b.datasAlt||datasAltAuto(p)}`:'')+
@@ -4551,7 +4552,7 @@ async function checarRespostas(){
       if(!p.pagamento.pagoEm){ p.pagamento.forma = d.resposta.forma; if(d.resposta.forma==='cartao') p.pagamento.parcelas = d.resposta.parcelas; }
       if(Array.isArray(d.passageirosEnviados) && d.passageirosEnviados.length){
         p.passageirosDados = d.passageirosEnviados.map(x=>{ const sv = x.salvo!=null ? (p.cotacao.paxSalvos||[])[x.salvo] : null;   // passageiro que já viajou: o documento completo fica só aqui no painel
-          return {nome:String(x.nome||''), doc:String(sv ? sv.doc : (x.doc||'')), nasc:String(x.nasc||sv?.nasc||'')}; });
+          return {nome:String(x.nome||''), email:String(x.email||sv?.email||''), doc:String(sv ? sv.doc : (x.doc||'')), nasc:String(x.nasc||sv?.nasc||'')}; });
       }
       salvar(true); renderQuadro(); if(abertoId===p.id) renderDetalhe();
       const forma = d.resposta.forma==='pix' ? 'Pix' : `cartão em ${d.resposta.parcelas}x`;
