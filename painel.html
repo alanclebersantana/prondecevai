@@ -1111,6 +1111,251 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 @media (max-width:1200px){ .det-ped{grid-template-columns:repeat(3,minmax(0,1fr))} .dp-fim{align-items:flex-start} }
 @media (max-width:760px){ .det-ped{grid-template-columns:repeat(2,minmax(0,1fr))} .abas-cia button{padding:8px 10px;font-size:.92rem} }
 
+/* ===== celular: tudo legível sem rolar para o lado ===== */
+@media (max-width:760px){
+  /* barra de cima: pedido numa faixa que corre para o lado */
+  .det-ped{display:flex;overflow-x:auto;gap:8px;padding:0 var(--lado,16px) 10px;scroll-snap-type:x proximity;scrollbar-width:none}
+  .det-ped::-webkit-scrollbar{display:none}
+  .dp-b{flex:0 0 auto;min-width:150px;max-width:230px;scroll-snap-align:start}
+  .dp-b b{font-size:.92rem}
+  .dp-fim{flex:0 0 auto;justify-content:center}
+  .det-cab .det-topo h2{font-size:1.6rem}
+  .det-chips{padding-bottom:10px}
+  /* números do pedido em 4 colunas compactas */
+  .det-kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px 10px}
+  .det-kpis .kp{flex-direction:column;align-items:flex-start;gap:2px;padding:7px 8px}
+  .det-kpis .kp .ic{display:none}
+  .det-kpis .kp small{font-size:.64rem}
+  .det-kpis .kp b{font-size:.88rem}
+  /* abas numa linha só, correndo para o lado */
+  .abas-cia{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:4px;margin-left:-4px;margin-right:-4px;padding:0 4px}
+  .abas-cia::-webkit-scrollbar{display:none}
+  .abas-cia button{flex:0 0 auto;padding:8px 12px;font-size:.92rem}
+  .abas-cia button small{font-size:.7rem}
+  /* passageiros: três contadores lado a lado */
+  .pax-cot{padding:10px 12px;gap:10px}
+  .pax-cs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+  .pax-c .e1-l{font-size:.64rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pax-step button{width:34px;min-height:40px}
+  .pax-step b{min-width:0;flex:1}
+  .pax-tot{display:flex;align-items:baseline;gap:8px;width:100%;text-align:left}
+  .pax-tot b{font-size:1.3rem}
+  /* comparativo: um cartão por cia, ida e volta empilhadas */
+  .cmp-rol{overflow:visible}
+  .cmp-tab{min-width:0;display:block}
+  .cmp-tab thead{display:none}
+  .cmp-tab tbody{display:block}
+  .cmp-tab tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 10px;border:1.5px solid var(--linha);border-radius:14px;padding:10px;margin-bottom:10px;background:var(--card)}
+  .cmp-tab td{display:block;border:0;padding:0}
+  .cmp-tab td.cmp-cia{grid-column:1;width:auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+  .cmp-tab td.cmp-mesma{grid-column:2;grid-row:1;width:auto;align-self:center}
+  .cmp-tab td[data-rot]{grid-column:1 / -1}
+  .cmp-tab td[data-rot]::before{content:attr(data-rot);display:block;font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2);margin:0 0 4px 2px}
+  .cmp-op{padding:10px}
+  .cmp-h b{font-size:1.15rem}
+  .cmp-vazio{flex-wrap:wrap}
+  .cmp-cias h4 small{display:block;margin:2px 0 0}
+  /* aba de cada cia */
+  .e1-cab{gap:6px;padding:10px 12px}
+  .e1-cab h4{order:-3;flex:0 1 auto;min-width:0;font-size:1.15rem}
+  .e1-custo{order:-2;margin:0 0 4px auto;width:auto;text-align:right;min-width:0}
+  .e1-custo small{font-size:.6rem;white-space:nowrap}
+  .e1-custo b{font-size:1.25rem}
+  .e1-cab .e1-pill:first-of-type{margin-left:0}
+  .e1-pill{padding:5px 10px;font-size:.82rem}
+  .e1-cab::before{content:"";order:-1;flex-basis:100%;height:0}
+  .e1-corpo{padding:12px 12px 0}
+  .e1-linha{gap:8px 10px}
+  .e1-linha > .e1-c:nth-child(2){grid-column:1 / -1}
+  .e1-c input{font-size:1.05rem;min-height:46px}
+  .e1-seg{min-height:46px}
+  .e1-seg button{font-size:.95rem}
+  .aba-cia .e1-prints{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .aba-cia .e1-print{min-height:96px;font-size:.78rem}
+  .aba-cia .e1-print img{max-height:160px}
+  .e1-rodape{margin:12px -12px 0;padding:10px 12px;font-size:.95rem}
+  .e1-tab{margin-left:0;width:100%;justify-content:space-between}
+  .aba-nav{position:sticky;bottom:0;z-index:5;background:var(--card);margin:12px -12px 0;padding:10px 12px;border-top:1.5px solid var(--linha);box-shadow:0 -10px 20px -16px rgba(14,59,122,.5)}
+  .aba-nav .ab-st{order:-1;width:100%;text-align:center}
+  .aba-nav .btn{flex:1}
+  /* cartão de cima */
+  .esc-acoes .btn{flex:1}
+  /* etapa Valor: campos em uma coluna */
+  .conteudo .g3 > .campo select,.conteudo .g3 > .campo input{width:100%}
+  .conteudo .g3{grid-template-columns:1fr 1fr}
+  .conteudo .g3 > .campo:has(select){grid-column:1 / -1}
+  /* pergunta do print */
+  .cap-tab th:nth-child(2),.cap-tab td:nth-child(2){font-size:.85rem}
+}
+
+/* ícones de traço */
+.icl{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+.btn .icl{margin-right:2px}
+.abas-cia .ab-rot{display:inline-flex;align-items:center;gap:7px}
+.abas-cia .ab-rot .icl{color:var(--ceu)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* faixa da cia: sólida escura, corte diagonal na cor viva, custo em branco */
+.e1-cab{background:linear-gradient(110deg,color-mix(in srgb,var(--c) 70%,#0B1830) 0 64%,var(--c) 64% 100%);overflow:hidden;color:#fff}
+.e1-corte{position:absolute;top:0;bottom:0;left:calc(64% - 16px);width:11px;background:rgba(255,255,255,.2);transform:skewX(-20deg);pointer-events:none}
+.e1-cab > :not(.e1-corte){position:relative;z-index:1}
+.e1-cab h4{letter-spacing:-.01em}
+.e1-pill{background:transparent;border:1.5px solid rgba(255,255,255,.42);gap:6px}
+.e1-pill .icl{width:15px;height:15px}
+.e1-link:hover{background:rgba(255,255,255,.14)}
+.e1-custo small{opacity:.85}
+/* aeroportos editáveis */
+.e1-rota{display:flex;align-items:center;gap:3px;margin-top:5px}
+.e1-nome .e1-ae{width:56px;box-sizing:border-box;font:inherit;font-weight:900;font-size:.86rem;letter-spacing:.02em;text-transform:uppercase;text-align:center;color:var(--ceu);background:var(--fundo);border:1.5px solid var(--linha);border-radius:8px;padding:4px 0;min-height:30px;line-height:1.2}
+.e1-nome .e1-ae:focus{width:150px;text-align:left;padding:4px 8px;outline:2px solid rgba(31,95,168,.25);border-color:var(--ceu-2,#1F5FA8);background:var(--card)}
+.e1-nome .e1-ae.mud{border-color:var(--sol);background:var(--sol-claro);color:var(--sol-esc)}
+.e1-seta{color:var(--tinta-2);font-weight:900;font-size:.85rem}
+.e1-inv{border:0;background:transparent;color:var(--tinta-2);cursor:pointer;padding:3px;border-radius:7px;display:grid;place-items:center}
+.e1-inv:hover{background:var(--fundo);color:var(--ceu)}
+.e1-inv .icl{width:15px;height:15px}
+.e1-ped{display:block;font-size:.72rem;color:var(--sol-esc);font-weight:800;margin-top:3px;line-height:1.2}
+@media (min-width:901px){ .e1-cabcol,.e1-linha{grid-template-columns:150px minmax(128px,1.1fr) minmax(96px,.85fr) minmax(104px,.9fr) minmax(176px,1.5fr) minmax(104px,1fr) minmax(104px,1fr)} }
+/* barra de cima: cartão de embarque */
+.det-cab.bp{background:var(--fundo);color:var(--tinta);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0;padding:10px var(--lado,16px) 8px;filter:drop-shadow(0 8px 14px rgba(14,59,122,.16))}
+.det-cab.bp::before{content:none}
+.bp-bilhete{background:var(--card);border-radius:16px 0 0 16px;padding:8px 16px;min-width:0;display:flex;flex-direction:column;justify-content:center;background-image:linear-gradient(90deg,var(--sol),var(--sol));background-size:100% 3px;background-repeat:no-repeat}
+.bp-topo{display:flex;align-items:center;gap:14px;min-width:0}
+.det-cab.bp .fechar{background:var(--fundo);border:1.5px solid var(--linha);color:var(--ceu);width:34px;height:34px;border-radius:10px;flex:none}
+.bp-rota{display:flex;align-items:center;gap:8px;margin:0;font-size:1.6rem;font-weight:900;letter-spacing:-.02em;color:var(--ceu);line-height:1;white-space:nowrap}
+.bp-c small{display:none;font-size:.62rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--tinta-2);margin-bottom:2px}
+.bp-av{width:20px;height:20px;color:var(--sol);stroke-width:2}
+.bp-resumo{flex:1;min-width:0;font-size:.9rem;font-weight:700;color:var(--tinta-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-resumo b{color:var(--sol-esc)}
+.bp-mud{margin-left:8px;font-size:.78rem;font-weight:800;color:var(--sol-esc);background:var(--sol-claro);border-radius:999px;padding:2px 9px}
+.bp-mais{display:inline-flex;align-items:center;gap:4px;font:inherit;font-weight:800;font-size:.84rem;color:var(--ceu);background:var(--fundo);border:1.5px solid var(--linha);border-radius:10px;padding:5px 10px;cursor:pointer;white-space:nowrap;flex:none}
+.bp-mais .icl{width:15px;height:15px;transition:transform .2s}
+.det-cab.aberta .bp-mais .icl{transform:rotate(180deg)}
+.bp-aberto{display:none}
+.det-cab.aberta .bp-aberto{display:block}
+.det-cab.aberta .bp-resumo{visibility:hidden}
+.det-cab.aberta .bp-rota{font-size:2.2rem}
+.det-cab.aberta .bp-c small{display:block}
+.det-cab.aberta .bp-bilhete{padding:10px 18px 12px}
+.det-cab.bp .det-ped{display:flex;flex-wrap:wrap;gap:6px 22px;padding:10px 0 4px;grid-template-columns:none}
+.bpf{line-height:1.2;flex:0 0 auto;max-width:340px}
+.bpf em{white-space:nowrap}
+.bpf em{display:block;font-style:normal;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta-2);font-weight:900}
+.bpf b{display:block;font-size:.98rem;color:var(--tinta)}
+.bpf small{display:block;font-size:.76rem;color:var(--tinta-2)}
+.bpf.bpf-av em,.bpf.bpf-av b{color:var(--sol-esc)}
+.bpf-ver{margin-left:auto;align-self:center;max-width:none}
+.bpf-ver .dp-ver{background:var(--ceu);color:#fff}
+.bp-pe{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1.5px dashed var(--linha);padding-top:6px;margin-top:4px}
+.bp-pe .det-cod{font-size:.75rem;font-weight:900;letter-spacing:.06em;color:var(--ceu);opacity:1;display:inline}
+.bp-pe small{font-size:.75rem;color:var(--tinta-2)}
+.det-cab.bp .det-chips{padding:0;margin-left:auto}
+.det-cab.bp .chip{background:var(--fundo);color:var(--tinta);border:1px solid var(--linha)}
+.det-cab.bp .chip.ok{background:var(--ok-claro);color:var(--ok);border-color:transparent}
+.bp-canhoto{background:#0E3B7A;color:#fff;border-radius:0 16px 16px 0;padding:8px 14px;display:flex;align-items:center;gap:12px;position:relative;border-left:2px dashed rgba(255,255,255,.6)}
+.bp-canhoto::before,.bp-canhoto::after{content:"";position:absolute;left:-9px;width:16px;height:16px;border-radius:50%;background:var(--fundo)}
+.bp-canhoto::before{top:-8px}.bp-canhoto::after{bottom:-8px}
+.det-cab.bp .det-kpis{display:flex;gap:16px;padding:0;background:none;border:0;grid-template-columns:none}
+.det-cab.bp .kp{background:none;box-shadow:none;padding:0;gap:0;display:block}
+.det-cab.bp .kp .ic{display:none}
+.det-cab.bp .kp small{color:rgba(255,255,255,.72);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;font-weight:800}
+.det-cab.bp .kp b{color:#fff;font-size:1rem}
+.det-cab.bp .kp.lu b{color:#FFC59E}
+.det-cab.bp .kp.lu.baixo b{color:#FFB4A8}
+.det-cab.bp .kp.ve.erro b{color:#FFB4A8}.det-cab.bp .kp.ve.sol b{color:#FFC59E}
+.det-cab.bp #detStatus{background:var(--sol);color:#fff;border:0;font-weight:800;border-radius:10px;padding:7px 10px;margin:0;font:inherit;font-size:.86rem;font-weight:800}
+.det-cab.bp #detStatus option{color:#13233F;background:#fff}
+.det-cab.aberta .bp-canhoto{flex-direction:column;align-items:stretch;justify-content:center;padding:10px 16px}
+.det-cab.aberta .det-kpis{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+.det-cab.aberta .kp b{font-size:1.1rem}
+[data-tema=escuro] .bp-canhoto{background:#152A4D}
+@media (max-width:1100px){ .bp-resumo{display:none} .bp-topo{justify-content:space-between} }
+@media (max-width:760px){
+  .det-cab.bp{grid-template-columns:1fr;padding:8px 10px 6px}
+  .bp-bilhete{border-radius:14px 14px 0 0}
+  .bp-canhoto{border-radius:0 0 14px 14px;border-left:0;border-top:2px dashed rgba(255,255,255,.6);flex-wrap:wrap;gap:8px}
+  .bp-canhoto::before,.bp-canhoto::after{top:-9px;left:auto}
+  .bp-canhoto::before{left:-8px}.bp-canhoto::after{right:-8px;bottom:auto}
+  .det-cab.bp .det-kpis{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .det-cab.bp .kp b{font-size:.84rem}
+  .det-cab.bp #detStatus{width:100%}
+  .det-cab.aberta .det-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .det-cab.bp .det-ped{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .bp-rota{font-size:1.35rem}
+  .det-cab.aberta .bp-rota{font-size:1.7rem}
+  .e1-corte{left:calc(64% - 10px)}
+}
+
+/* ===== etapa Valor e cotação: formulário + prévia do cliente ===== */
+.v2-rota{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:none;padding:0;margin-bottom:12px}
+.v2-rota .btn{margin-left:0}
+.v2-chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:.84rem;font-weight:800;background:var(--ceu-claro);color:var(--ceu)}
+.v2-chip.sol{background:var(--sol-claro);color:var(--sol-esc)}
+.v2-grade{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:16px;align-items:start}
+.v2-esq{display:flex;flex-direction:column;gap:12px;min-width:0}
+.v2-box{background:var(--card);border:1.5px solid var(--linha);border-radius:16px;padding:14px 16px}
+.v2-form{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px}
+.v2-full{grid-column:1 / -1}
+.v2-form .campo{margin:0}
+.v2-form .campo label,.v2-l{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--tinta-2);font-weight:900}
+.v2-form input[type=number]{font-size:1.15rem;font-weight:800;min-height:46px}
+.v2-luc{display:flex;align-items:center;border:1.5px solid var(--linha);border-radius:10px;background:var(--card);padding-right:10px;min-height:46px}
+.v2-luc input{border:0!important;width:70px;min-height:42px!important;background:transparent;box-shadow:none!important}
+.v2-pct{color:var(--tinta-2);font-weight:700}
+.v2-lr{margin-left:auto;color:var(--tinta-2);font-weight:800;font-size:.9rem}
+.v2-seg{display:flex;border:1.5px solid var(--linha);border-radius:10px;overflow:hidden;min-height:46px;background:var(--card)}
+.v2-seg button{flex:1;font:inherit;font-weight:800;font-size:.95rem;border:0;border-left:1px solid var(--linha);background:transparent;color:var(--tinta-2);cursor:pointer;padding:6px 4px}
+.v2-seg button:first-child{border-left:0}
+.v2-seg button.on{background:var(--ceu);color:var(--card)}
+.v2-re.falta{border-color:var(--sol);box-shadow:0 0 0 3px var(--sol-claro)}
+.v2-re button.on.r-nao{background:#A8261C;color:#fff}.v2-re button.on.r-multa{background:#C1561A;color:#fff}.v2-re button.on.r-sim{background:#1E7B4F;color:#fff}
+.v2-sky{--c:#0E3B7A;position:relative;overflow:hidden;border-radius:16px;padding:14px 16px;color:#fff;background:linear-gradient(110deg,color-mix(in srgb,var(--c) 70%,#0B1830) 0 64%,var(--c) 64% 100%)}
+.v2-sky > :not(.e1-corte){position:relative;z-index:1}
+.v2-sky-cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.v2-sky-cab b{display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
+.v2-sky-cab span{opacity:.8;font-size:.86rem}
+.v2-sky-lin{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px}
+.v2-sky-bt{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:.95rem;color:#fff;text-decoration:none;border:1.5px solid rgba(255,255,255,.42);border-radius:12px;padding:10px 14px;min-height:46px;box-sizing:border-box}
+.v2-sky-bt:hover{background:rgba(255,255,255,.14);color:#fff}
+.v2-sky-in{flex:1;min-width:200px;margin:0}
+.v2-sky-in label{color:rgba(255,255,255,.82)!important;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:900}
+.v2-sky-in input{font-size:1.15rem;font-weight:800;min-height:46px;background:#fff;color:#13233F;border:0}
+.v2-sky-lk{margin-top:8px;font:inherit;font-size:.84rem;font-weight:700;color:rgba(255,255,255,.9);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.v2-res{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start}
+.v2-res .box{background:none;padding:0;border:0;box-shadow:none}
+.v2-num b{display:block;font-size:1.55rem;letter-spacing:-.02em;line-height:1.15;margin-top:2px}
+.v2-num small{display:block;color:var(--tinta-2);font-size:.8rem}
+.v2-pix{color:var(--ceu);font-size:1.9rem!important}
+.v2-ok{color:var(--ok)}.v2-mal{color:var(--erro)!important}
+#avisoLucro.v2-chip{display:none;margin-top:4px}#avisoLucro.v2-chip.on{display:inline-flex}
+#boxLucro.baixo b{color:var(--sol-esc)}
+.v2-parc{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.v2-parc > div{border:1.5px solid var(--linha);border-radius:10px;padding:6px 9px;line-height:1.25;min-width:0}
+.v2-parc b{font-size:.78rem;color:var(--tinta-2)}
+.v2-parc span{display:block;font-weight:900;font-size:.98rem;color:var(--tinta);white-space:nowrap}
+.v2-parc small{display:block;color:var(--tinta-2);font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2-link{word-break:break-all}
+.v2-dir{position:sticky;top:8px;display:flex;flex-direction:column;gap:10px}
+.v2-dir-t{color:var(--ceu)}
+.v2-prev{border-radius:16px;overflow:hidden;border:1.5px solid var(--linha);background:var(--card);box-shadow:0 14px 28px -22px rgba(14,59,122,.55)}
+.pv-topo{background:linear-gradient(160deg,#1F5FA8,#0B2E63);color:#fff;padding:16px 16px 26px;display:flex;flex-direction:column;gap:2px}
+.pv-topo b{font-size:1.75rem;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.pv-topo small{font-weight:700;opacity:.88}
+.pv-corpo{padding:12px 16px 16px;display:flex;flex-direction:column;gap:6px;font-size:.92rem;color:var(--tinta)}
+.pv-val{font-size:1.9rem;font-weight:900;color:var(--ceu);letter-spacing:-.02em;line-height:1.1}
+.pv-chip{align-self:flex-start;border-radius:999px;padding:4px 11px;font-weight:800;font-size:.84rem}
+.pv-chip.bom{background:var(--ok-claro);color:var(--ok)}.pv-chip.ruim{background:#FDECEA;color:#A8261C}.pv-chip.meio{background:var(--sol-claro);color:var(--sol-esc)}.pv-chip.falta{background:var(--fundo);color:var(--tinta-2);border:1.5px dashed var(--linha)}
+.pv-val-h{color:var(--tinta-2);font-size:.84rem}
+.v2-acoes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.v2-acoes .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px}
+@media (max-width:1100px){ .v2-grade{grid-template-columns:1fr} .v2-dir{position:static} }
+@media (max-width:760px){
+  .v2-form{grid-template-columns:1fr}
+  .v2-lr{white-space:nowrap}
+  .v2-res{grid-template-columns:1fr 1fr} .v2-res .v2-num:first-child{grid-column:1 / -1}
+  .v2-parc{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v2-sky-bt{flex:1 1 100%;justify-content:center}
+  .v2-re button{font-size:.82rem}
+}
+
 </style>
 </head>
 <body>
@@ -1414,16 +1659,24 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 
 <div class="det-fundo" id="detFundo"></div>
 <aside class="detalhe" id="detalhe" aria-modal="true" role="dialog" aria-labelledby="detTitulo">
-  <div class="det-cab" id="detCab">
-    <div class="det-topo">
-      <button type="button" class="fechar" id="detFechar" aria-label="Fechar">✕</button>
-      <div class="det-tit"><span class="det-cod" id="detCod"></span><h2 id="detTitulo">—</h2><small id="detSub"></small></div>
+  <div class="det-cab bp" id="detCab">
+    <div class="bp-bilhete">
+      <div class="bp-topo">
+        <button type="button" class="fechar" id="detFechar" aria-label="Fechar">✕</button>
+        <h2 id="detTitulo" class="bp-rota">—</h2>
+        <div class="bp-resumo" id="detResumo"></div>
+        <button type="button" class="bp-mais" id="detMais" aria-expanded="false"><span>detalhes</span></button>
+      </div>
+      <div class="bp-aberto">
+        <div class="det-ped" id="detPed"></div>
+        <div class="bp-pe"><span class="det-cod" id="detCod"></span><small id="detSub"></small><div class="det-chips" id="detChips"></div></div>
+      </div>
+    </div>
+    <div class="bp-canhoto">
+      <div class="det-kpis" id="detKpis"></div>
       <select id="detStatus" aria-label="Mover para a etapa"></select>
     </div>
-    <div class="det-ped" id="detPed"></div>
-    <div class="det-chips" id="detChips"></div>
   </div>
-  <div class="det-kpis" id="detKpis"></div>
   <div class="det-aviso" id="detAvisoCot" hidden></div>
   <div class="det-extras" id="detExtras" hidden></div>
   <div class="det-corpo" id="detCorpo"></div>
@@ -2888,9 +3141,12 @@ function idx(st){ return ORDEM.indexOf(st); }
 
 function renderDetalhe(){
   const p = pedido(abertoId); if(!p) return;
-  $('#detCod').textContent = `${p.id} · recebido ${fmtDataHora(p.criadoEm)}`;
-  $('#detTitulo').textContent = `${p.origem.iata} → ${p.destino.iata}`;
-  $('#detSub').textContent = [p.cliente.nome, fmtTel(p.cliente.whatsapp)].filter(Boolean).join(' · ');
+  $('#detCod').textContent = p.id;
+  $('#detTitulo').innerHTML = `<span class="bp-c"><small>${esc(p.origem.cidade||'')}</small>${esc(p.origem.iata)}</span><svg class="icl bp-av" viewBox="0 0 24 24" aria-hidden="true">${ICL.aviao}</svg><span class="bp-c"><small>${esc(p.destino.cidade||'')}</small>${esc(p.destino.iata)}</span><span class="sr">${esc(p.origem.iata)} para ${esc(p.destino.iata)}</span>`;
+  $('#detResumo').innerHTML = htmlResumoCab(p);
+  { const m = $('#detMais'), ab = cabAberta(); $('#detCab').classList.toggle('aberta', ab); m.setAttribute('aria-expanded', ab); m.innerHTML = `${icl('mais')}<span>${ab ? 'fechar' : 'detalhes'}</span>`;
+    m.onclick = () => { const v = !$('#detCab').classList.contains('aberta'); try{ localStorage.setItem('vpo_cab_aberta', v ? '1' : ''); }catch(e){} $('#detCab').classList.toggle('aberta', v); m.setAttribute('aria-expanded', v); m.innerHTML = `${icl('mais')}<span>${v ? 'fechar' : 'detalhes'}</span>`; }; }
+  $('#detSub').textContent = `recebido ${fmtDataHora(p.criadoEm)}`;
   { const cab = $('#detCab'); cab.style.backgroundImage = ''; cab.classList.remove('com-foto');
     $('#detPed').innerHTML = htmlPedidoCab(p);
     const vp = $('#detPed [data-verpedido]'); if(vp) vp.onclick = ()=>{ const b0 = $('#detCorpo .passos-det [data-passo="0"]'); if(b0) b0.click(); }; }
@@ -3063,7 +3319,7 @@ function etapaBusca(p, cls, aberto){
           : `<button type="button" class="btn pri" data-acao="buscaAuto">${p.auto ? 'Buscar de novo' : 'Buscar agora'}</button>`}
         <button type="button" class="btn" data-acao="pesquisar">Pesquisar nos 3</button>
         <button type="button" class="btn peq" data-acao="copiarTrecho">Copiar dados do trecho</button>
-        <button type="button" class="btn peq perigo" data-limpar="*" style="margin-left:auto">🧹 Limpar todos os programas</button>
+        <button type="button" class="btn peq perigo" data-limpar="*" style="margin-left:auto">${icl('limpar')} Limpar todos os programas</button>
       </div>
       ${rodandoAqui ? htmlBuscaRodando() : ''}
       ${htmlPaxCot(p)}
@@ -3071,7 +3327,6 @@ function etapaBusca(p, cls, aberto){
       <p class="nota" style="margin:12px 0 0" id="avisoExtensao">${extensaoAtiva ? '✓ Extensão de captura ligada: nos sites, clique no ícone dela (ou Alt+Shift+C) e depois no voo. O print e os dados entram sozinhos na aba da cia.' : 'Instale a extensão de captura para trazer o print e os dados do voo sem digitar à mão.'}</p>
       </div>
       ${quadros}
-      <div class="aba-p" data-aba="sky" id="skyBox" ${abaAtual(p)==='sky'?'':'hidden'}>${htmlSky(p)}</div>
     </div>
   </details>`;
 }
@@ -3192,46 +3447,77 @@ function etapaImagemMP(p, cls, aberto){
 
 /* ---------- etapa 3: valor + lucro + cotação ---------- */
 function etapaValor(p, cls, aberto){
+  const val = n(p.validadeHoras ?? cfg.validadeHoras), VALS = [1,2,4,24];
+  const segVal = VALS.map(h=>`<button type="button" class="${val===h?'on':''}" data-vseg="${h}">${h}h</button>`).join('') + (VALS.includes(val) ? '' : `<button type="button" class="on" data-vseg="${val}">${String(val).replace('.',',')}h</button>`);
+  const segRe = [['nao','Não reembolsável'],['multa','Com multa'],['sim','Reembolsável']].map(([k,t])=>`<button type="button" class="r-${k} ${p.reembolso===k?'on':''}" data-rseg="${k}">${t}</button>`).join('');
+  const us = urlsSky(p);
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">2</span><h3>Valor e cotação para o cliente</h3><span class="res">${p.cotacao?'Enviada · até '+fmtHora(p.cotacao.validaAte):''}</span></summary>
     <div class="conteudo">
-      <div class="cot-rota"><span><small>Cotando</small><b>${esc(rotaCotada(p))}</b>${p.pedidoOriginal?' <span class="tag sol">diferente do pedido</span>':''}</span><button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">📅 Mudar datas ou aeroportos</button></div>
-      <div class="g3">
-        <div class="campo"><label>Valor da Milhas Plus (R$, com taxas)</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="valorMP" value="${esc(p.valorMP??'')}" placeholder="0,00"></div>
-        <div class="campo"><label>Seu lucro (%)</label><input type="number" min="0" step="0.5" data-bind="percLucro" value="${esc(p.percLucro ?? cfg.percPadrao)}"></div>
-        <div class="campo"><label>Validade (horas)</label><input type="number" min="0.5" step="0.5" data-bind="validadeHoras" value="${esc(p.validadeHoras ?? cfg.validadeHoras)}"></div>
+      <div class="cot-rota v2-rota"><span class="v2-chip">Cotando ${esc(rotaCotada(p))}</span>${p.pedidoOriginal?' <span class="v2-chip sol">diferente do pedido</span>':''}<button type="button" class="btn peq" onclick="abrirEditarDatas('${p.id}')">${icl('cal')} Mudar datas ou aeroportos</button></div>
+      <div class="v2-grade">
+        <div class="v2-esq">
+          <section class="v2-box v2-form">
+            <div class="campo"><label>Custo Milhas Plus (R$, com taxas)</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="valorMP" value="${esc(p.valorMP??'')}" placeholder="0,00"></div>
+            <div class="campo"><label>Lucro</label><div class="v2-luc"><input type="number" min="0" step="0.5" data-bind="percLucro" value="${esc(p.percLucro ?? cfg.percPadrao)}" aria-label="Lucro em %"><span class="v2-pct">%</span><span class="v2-lr" id="vLucroMini">—</span></div></div>
+            <div class="campo"><label>Validade</label><div class="v2-seg">${segVal}</div><input type="number" hidden data-bind="validadeHoras" value="${esc(val)}"></div>
+            <div class="campo v2-full"><label>Se o cliente cancelar</label><div class="v2-seg v2-re ${p.reembolso?'':'falta'}">${segRe}</div>
+              <select data-bind="reembolso" hidden><option value="" ${p.reembolso?'':'selected'}></option>${Object.entries(REEMBOLSO).map(([k,t])=>`<option value="${k}" ${p.reembolso===k?'selected':''}>${t}</option>`).join('')}</select></div>
+            <p class="nota nota-mp v2-full" id="notaMP"></p>
+            ${n(p.malasPorPassageiro) ? `<label class="linha-semdisp bag-linha v2-full"><input type="checkbox" data-cobrarbag ${p.cobrarBagagem!==false?'checked':''}> <span>Cobrar bagagem <span class="nota" id="notaBag"></span></span></label>
+            <div class="aviso v2-full" id="avisoBag"></div>` : ''}
+          </section>
+          <section class="v2-sky">
+            <i class="e1-corte" aria-hidden="true"></i>
+            <div class="v2-sky-cab"><b>${icl('sky')} Comparar com o preço em dinheiro</b><span>mesmo trecho, mesmas datas, ${esc(textoPax(p))}</span></div>
+            <div class="v2-sky-lin">
+              ${us.map(u=>`<a class="v2-sky-bt" href="${esc(u.url)}" target="_blank" rel="noopener">${icl('site')} ${esc(u.rot)}</a>`).join('')}
+              <div class="campo v2-sky-in"><label>Menor preço que você achou (R$, total)</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="precoCia" value="${esc(p.precoCia??'')}" placeholder="0,00"></div>
+            </div>
+            ${p.escolhido && extensaoAtiva ? `<button type="button" class="v2-sky-lk" data-acao="buscarCia">${buscaDinheiro && buscaDinheiro.pedidoId===p.id ? '<span class="gira"></span> Buscando…' : 'ou buscar direto na ' + esc(ciaDinheiro(p)||'companhia')}</button>` : ''}
+          </section>
+          <p class="nota nota-mp" id="notaCia"></p>
+          <div class="aviso" id="avisoCia"></div>
+          <section class="v2-box v2-res">
+            <div class="v2-num"><span class="v2-l">Pix</span><b class="v2-pix" id="vCliente">—</b></div>
+            <div class="v2-num box lucro" id="boxLucro"><span class="v2-l">Seu lucro</span><b class="v2-ok" id="vLucro">—</b><span class="v2-chip sol" id="avisoLucro">abaixo de ${BRL(cfg.lucroMinimo)}</span></div>
+            <div class="v2-num"><span class="v2-l">Economia do cliente</span><b class="v2-ok" id="vEconomia">—</b><small id="vEconomiaSub"></small></div>
+            <div class="v2-full"><div class="parc-lista v2-parc" id="vParcelas">—</div></div>
+          </section>
+          <p class="nota opcao2" id="notaOpcao2"></p>
+          <div class="aviso" id="avisoParadas"></div>
+          ${htmlRenovacao(p)}
+          ${p.cotacao?`<p class="nota v2-link">${icl('link')} ${esc(linkCotacao(p))}<br>Enviada ${fmtDataHora(p.cotacao.enviadaEm)} · válida até ${fmtDataHora(p.cotacao.validaAte)}${vencida(p)?' · <b style="color:var(--erro)">vencida</b>':''} · <b>Cliente ${textoVista(p)}</b>${p.cotacao.lembradoEm?' · lembrado às '+fmtHora(p.cotacao.lembradoEm):''}</p>
+          ${!p.cotacao.resposta && !vencida(p) && p.status==='cotacao_enviada' ? `<div class="acoes" style="margin-top:6px"><button type="button" class="btn peq" data-acao="lembrar">Lembrar cliente no WhatsApp</button></div>`:''}`:''}
+        </div>
+        <aside class="v2-dir">
+          <span class="v2-l v2-dir-t">Assim o cliente vê · atualiza enquanto você mexe</span>
+          <div class="v2-prev" id="previaHtml">${htmlPreviaCliente(p)}</div>
+          <div class="v2-acoes">
+            <button type="button" class="btn pri" data-acao="enviarCotacao" ${p.escolhido?'':'disabled'}>${icl('zap')} ${p.cotacao?'Reenviar':'Enviar'}</button>
+            <button type="button" class="btn" data-acao="baixarCliente" ${p.escolhido?'':'disabled'}>${icl('img')} Imagem</button>
+            <button type="button" class="btn" data-acao="copiarLink" ${p.cotacao?'':'disabled'} title="${p.cotacao?'Copiar o link da cotação':'O link aparece depois de enviar'}">${icl('link')} Link</button>
+          </div>
+        </aside>
       </div>
-      <div class="g3" style="margin-top:10px"><div class="campo"><label>Se o cliente cancelar</label><select data-bind="reembolso" class="${p.reembolso?'':'falta'}" onchange="this.classList.toggle('falta', !this.value)">
-        <option value="" ${p.reembolso?'':'selected'}>— escolher —</option>${Object.entries(REEMBOLSO).map(([k,t])=>`<option value="${k}" ${p.reembolso===k?'selected':''}>${t}</option>`).join('')}</select></div></div>
-      <p class="nota nota-mp" id="notaMP"></p>
-      ${n(p.malasPorPassageiro) ? `<label class="linha-semdisp bag-linha"><input type="checkbox" data-cobrarbag ${p.cobrarBagagem!==false?'checked':''}> <span>Cobrar bagagem <span class="nota" id="notaBag"></span></span></label>
-      <div class="aviso" id="avisoBag"></div>` : ''}
-      <div class="g2 cia-linha">
-        <div class="campo"><label>Preço na ${esc(ciaDinheiro(p)||'companhia')}, em dinheiro (R$, total)</label><input type="number" min="0" step="0.01" inputmode="decimal" data-bind="precoCia" value="${esc(p.precoCia??'')}" placeholder="0,00"></div>
-        <div class="campo"><label>&nbsp;</label><button type="button" class="btn" data-acao="buscarCia" ${p.escolhido?'':'disabled'}>${buscaDinheiro && buscaDinheiro.pedidoId===p.id ? '<span class="gira"></span> Buscando…' : 'Buscar na '+esc(ciaDinheiro(p)||'companhia')}</button></div>
-      </div>
-      <p class="nota nota-mp" id="notaCia"></p>
-      <div class="aviso" id="avisoCia"></div>
-      <div class="conc" id="concBox"></div>
-      <div class="aviso" id="avisoParadas"></div>
-      <div class="calc">
-        <div class="box"><small>Valor para o cliente no Pix</small><b id="vCliente">—</b></div>
-        <div class="box lucro" id="boxLucro"><small>Seu lucro</small><b id="vLucro">—</b></div>
-      </div>
-      <div class="box parc-box"><small>No cartão (até ${MAX_PARCELAS}x)</small><div class="parc-lista" id="vParcelas">—</div></div>
-      <p class="nota opcao2" id="notaOpcao2"></p>
-      <div class="aviso" id="avisoLucro">O lucro está abaixo do mínimo de ${BRL(cfg.lucroMinimo)}.</div>
-      <div class="acoes">
-        <button type="button" class="btn pri" data-acao="enviarCotacao" ${p.escolhido?'':'disabled'}>${p.cotacao?'Reenviar cotação':'Enviar cotação'}</button>
-        <button type="button" class="btn" data-acao="baixarCliente" ${p.escolhido?'':'disabled'}>Baixar imagem do cliente</button>
-        ${p.cotacao?`<button type="button" class="btn peq" data-acao="copiarLink">Copiar link</button>`:''}
-      </div>
-      ${p.cotacao?`<p class="nota">Link: ${esc(linkCotacao(p))}<br>Enviada ${fmtDataHora(p.cotacao.enviadaEm)} · válida até ${fmtDataHora(p.cotacao.validaAte)}${vencida(p)?' · <b style="color:var(--erro)">vencida</b>':''} · <b>👁 Cliente ${textoVista(p)}</b>${p.cotacao.lembradoEm?' · lembrado às '+fmtHora(p.cotacao.lembradoEm):''}</p>
-      ${!p.cotacao.resposta && !vencida(p) && p.status==='cotacao_enviada' ? `<div class="acoes" style="margin-top:6px"><button type="button" class="btn peq" data-acao="lembrar">Lembrar cliente no WhatsApp</button></div>`:''}`:''}
-      ${htmlRenovacao(p)}
-      <div class="previa"><figure><img id="previaCliente" alt="Prévia da imagem do cliente"><figcaption>Imagem que vai para o cliente</figcaption></figure></div>
+      <div class="conc" id="concBox" hidden></div>
     </div>
   </details>`;
+}
+
+// prévia em HTML do que o cliente vê (cotação/imagem)
+function htmlPreviaCliente(p){
+  const vc = valorCliente(p), nome = String(p.cliente?.nome||'').split(' ')[0];
+  const c = comparacaoCia(p), max = listaParcelas().slice(-1)[0];
+  const rota = `${p.origem.iata} → ${p.destino.iata} · ${fmtDataCurta(p.dataIda)}${p.tipo==='ida_volta' && p.dataVolta ? ` · volta ${voltaDe(p)} → ${voltaPara(p)} · ${fmtDataCurta(p.dataVolta)}` : ''}`;
+  const re = p.reembolso ? {nao:['ruim','Se cancelar: não reembolsável'], multa:['meio','Se cancelar: reembolsável com multa'], sim:['bom','Se cancelar: reembolsável']}[p.reembolso] : null;
+  const val = n(p.validadeHoras ?? cfg.validadeHoras);
+  return `<div class="pv-topo"><small>Olá${nome?', '+esc(nome):''}! Sua viagem para</small><b>${esc(p.destino.cidade||p.destino.iata)}</b><small>${esc(rota)}</small></div>
+    <div class="pv-corpo"><span class="v2-l">Valor da sua passagem</span><b class="pv-val">${vc ? BRL(vc) : '—'}</b>
+      <span>${vc ? `no Pix · ou até ${max}x de ${BRL(valorCartao(vc,max)/max)}` : 'preencha o custo para ver o valor'}</span>
+      ${c && c.economia > 0 ? `<span class="pv-chip bom">Você economiza ${BRL(c.economia)}</span>` : ''}
+      ${re ? `<span class="pv-chip ${re[0]}">${re[1]}</span>` : '<span class="pv-chip falta">Falta escolher a regra de cancelamento</span>'}
+      <span class="pv-val-h">válida por ${String(val).replace('.',',')}h</span></div>`;
 }
 
 /* ---------- etapa 4: pagamento ---------- */
@@ -3486,6 +3772,10 @@ function ligarDetalhe(p){
   corpo.querySelectorAll('[data-altoff]').forEach(ch=>ch.addEventListener('change',()=>{ p.busca[ch.dataset.altoff].altOff = !ch.checked; salvar(true); renderDetalhe(); }));
 
   ligarE1(p, corpo);
+  corpo.querySelectorAll('[data-vseg]').forEach(bt=>bt.addEventListener('click',()=>{ const inp = corpo.querySelector('[data-bind="validadeHoras"]'); if(!inp) return; inp.value = bt.dataset.vseg; inp.dispatchEvent(new Event('input',{bubbles:true}));
+    bt.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===bt)); atualizarCalculos(p); }));
+  corpo.querySelectorAll('[data-rseg]').forEach(bt=>bt.addEventListener('click',()=>{ const sel = corpo.querySelector('[data-bind="reembolso"]'); if(!sel) return; const v = sel.value===bt.dataset.rseg ? '' : bt.dataset.rseg; sel.value = v; sel.dispatchEvent(new Event('change',{bubbles:true}));
+    bt.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===bt && !!v)); bt.parentElement.classList.toggle('falta', !v); atualizarCalculos(p); }));
   corpo.querySelectorAll('[data-flex]').forEach(bt=>bt.addEventListener('click',()=>usarDataFlex(p, bt.dataset.flex)));
   corpo.querySelectorAll('[data-printauto]').forEach(bt=>bt.addEventListener('click',async e=>{ e.stopPropagation(); const [k,T] = bt.dataset.printauto.split('|'); bt.disabled = true; bt.textContent = 'Tirando o print…'; await capturarPrint(p,k,T); bt.disabled = false; }));
   corpo.querySelectorAll('.auto-chip [data-diag]').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); const d = diagAuto[p.id]?.[b.dataset.diag]; if(!d) return; const [k,tr]=b.dataset.diag.split('|');
@@ -3552,7 +3842,12 @@ function atualizarCalculos(p){
   if($('#vCliente')){
     $('#vCliente').textContent = vc?BRL(vc):'—';
     $('#vLucro').textContent = vc?BRL(lc):'—';
-    $('#vParcelas').innerHTML = vc ? listaParcelas().map(i=>{ const tot=valorCartao(vc,i); return `<div><b>${i}x</b> ${i===1?BRL(tot):'de '+BRL(tot/i)}<small>${i===1?'no cartão':'total '+BRL(tot)}</small></div>`; }).join('') : '—';
+    { const m = $('#vLucroMini'); if(m) m.textContent = vc ? BRL(lc) : '—'; }
+    { const e = $('#vEconomia'), s = $('#vEconomiaSub'), c = comparacaoCia(p);
+      if(e){ e.textContent = c ? (c.economia > 0 ? BRL(c.economia) : '−' + BRL(-c.economia)) : '—'; e.classList.toggle('v2-mal', !!(c && c.economia <= 0)); }
+      if(s) s.textContent = c ? (c.economia > 0 ? `${c.pct}% a menos que em dinheiro` : 'acima do preço em dinheiro') : 'digite o menor preço achado'; }
+    { const pv = $('#previaHtml'); if(pv) pv.innerHTML = htmlPreviaCliente(p); }
+    $('#vParcelas').innerHTML = vc ? listaParcelas().map(i=>{ const tot=valorCartao(vc,i); return `<div><b>${i}x</b><span>${BRL(i===1?tot:tot/i)}</span><small>${i===1?'no cartão':'total '+BRL(tot)}</small></div>`; }).join('') : '—';
     const baixo = vc && lc < n(cfg.lucroMinimo);
     $('#boxLucro').classList.toggle('baixo', !!baixo);
     $('#avisoLucro').classList.toggle('on', !!baixo);
@@ -3635,7 +3930,7 @@ function notaCia(p){
 }
 function notaValorMP(p){
   const el = $('#notaMP'); if(!el) return;
-  if(!p.escolhido){ el.textContent = 'Escolha um programa na etapa 1 para o valor da Milhas Plus ser calculado.'; return; }
+  if(!p.escolhido){ el.textContent = n(p.valorMP) ? 'Valor digitado à mão (nenhum programa escolhido na etapa 1).' : 'Escolha um programa na etapa 1 para o valor da Milhas Plus ser calculado.'; return; }
   const c = custoPedido(p);
   const parte = x => `${MIL(x.milhas)} milhas × ${BRL(x.milheiro)}/mil (${x.opcao ? esc(x.rotulo) : (x.porCpf!=null ? MIL(Math.round(x.porCpf))+' milhas por CPF, faixa ' : 'faixa ')+x.rotulo})`;
   const conta = !c ? '' : c.combo
@@ -4822,7 +5117,7 @@ function htmlSky(p){
   const us = urlsSky(p);
   return `<div class="sky-simples">
     <div><div class="e1-l">Mesmo trecho da cotação</div><b class="sky-rota">${esc(rota)}</b></div>
-    <div class="sky-acoes">${us.map(u=>`<a class="btn pri" href="${esc(u.url)}" target="_blank" rel="noopener">🔎 ${esc(u.rot)}</a>`).join('')}</div>
+    <div class="sky-acoes">${us.map(u=>`<a class="btn pri" href="${esc(u.url)}" target="_blank" rel="noopener">${icl('sky')} ${esc(u.rot)}</a>`).join('')}</div>
     <p class="nota" style="margin:0">Abre o Skyscanner numa aba nova, já com a busca deste pedido: mesmas datas, aeroportos e passageiros.${us.length>1 ? ' A volta sai de outro aeroporto, então são duas buscas, uma para cada trecho.' : ''}</p>
   </div>`;
 }
@@ -6447,7 +6742,7 @@ function fixarTaxaUmTrecho(p, k){
   if(com.length===1){ b['taxas'+com[0]] = n(b.taxas); b['taxas'+(com[0]==='Ida'?'Volta':'Ida')] = ''; }
 }
 function htmlProgE1(p, k, meta, x){
-  fixarTaxaUmTrecho(p, k);
+  fixarTaxaUmTrecho(p, k); garantirDlAero();
   const b = p.busca[k], T2 = trechosDe(p), cmp = x.cmp, ct = custoTxtE1(p,k);
   const rotaT = T => T==='Ida' ? `${p.origem.iata} → ${p.destino.iata}` : `${voltaDe(p)} → ${voltaPara(p)}`;
   const linha = T => {
@@ -6458,7 +6753,7 @@ function htmlProgE1(p, k, meta, x){
     const escal = q ? `<div class="e1-esc">${Array.from({length:q},(_,i)=>{ const e = es[i]||{}; return `<div class="e1-esc-l"><input data-esc="${k}|${T}|${i}|local" value="${esc(e.local||'')}" placeholder="onde (GRU)" aria-label="Parada ${i+1}: aeroporto" class="${e.local?'':'falta'}"><input data-esc="${k}|${T}|${i}|min" value="${esc(e.esperaTxt ?? (e.min!=null?fmtMin(e.min):''))}" placeholder="espera (1h30)" aria-label="Parada ${i+1}: espera" class="${e.min!=null?'':'falta'}"></div>`; }).join('')}</div>` : '';
     const extra = x.opcoes(T);
     return `<div class="e1-linha" data-e1tr="${k}|${T}">
-      <div class="e1-nome"><b>${T}</b><small>${rotaT(T)}</small>${f ? `<span class="e1-fonte ${f.c}">${f.t}</span>` : ''}${stc && (!f || p.auto?.st?.[k+'|'+tr]?.status!=='ok') ? `<span class="e1-st">${stc}</span>` : ''}</div>
+      <div class="e1-nome"><b>${T}</b>${htmlRotaE1(p, T)}${f ? `<span class="e1-fonte ${f.c}">${f.t}</span>` : ''}${stc && (!f || p.auto?.st?.[k+'|'+tr]?.status!=='ok') ? `<span class="e1-st">${stc}</span>` : ''}</div>
       <label class="e1-c"><span class="e1-l">Data</span><input type="date" data-e1data="${k}|${T}" value="${esc(dataProg(p,k,T))}" class="${b['data'+T] && b['data'+T]!==(T==='Ida'?p.dataIda:p.dataVolta) ? 'difer' : ''}"></label>
       <label class="e1-c"><span class="e1-l">Sai</span><input type="time" data-bind="busca.${k}.saida${T}" value="${esc(b['saida'+T]||'')}" class="${b['saida'+T]?'':'vazio'}"></label>
       <label class="e1-c"><span class="e1-l">Chega</span><input type="time" data-bind="busca.${k}.chegada${T}" value="${esc(b['chegada'+T]||'')}" class="${b['chegada'+T]?'':'vazio'}"><span class="e1-dur" data-e1dur="${k}|${T}">${durE1(b,T)}</span></label>
@@ -6478,13 +6773,13 @@ function htmlProgE1(p, k, meta, x){
     qBebes(p) && trechosComVoo(p,k).length ? `<p class="nota bebe-nota">${bebeFalta(p,k) ? `⚠ Bebê de colo: cadastre quanto a ${PROG[k].nome} cobra em Configurações → Regras da busca.` : `Bebê de colo: ${[bebeMilhas(p,k)?MIL(bebeMilhas(p,k))+' milhas':'', bebeReais(p,k)?BRL(bebeReais(p,k)):''].filter(Boolean).join(' + ')||'sem custo'} já somado ao total.`}</p>` : ''].filter(Boolean).join('');
   const tab = cfg.tabelaMP[k]?.tipo==='opcoes' && opcoesMP(k).length ? `<label class="e1-tab">Tabela da Milhas Plus <select data-bind="busca.${k}.tabela">${opcoesMP(k).map((o,i)=>`<option ${(b.tabela ? o.nome===b.tabela : i===0)?'selected':''}>${esc(o.nome)}</option>`).join('')}</select></label>` : '';
   return `<section class="e1-prog ${b.semDisp?'semdisp':''} ${x.buscandoProg?'buscando':''} ${x.menor===k?'melhor':''}" data-prog="${k}">
-    <div class="e1-cab" style="background:${meta.cor}">
+    <div class="e1-cab" style="--c:${meta.cor}"><i class="e1-corte" aria-hidden="true"></i>
       <h4>${meta.nome}</h4>
-      <label class="e1-pill">opera <select data-bind="busca.${k}.cia" aria-label="Cia que opera">${['GOL','LATAM','Azul','Outra'].map(c=>`<option ${b.cia===c?'selected':''}>${c}</option>`).join('')}</select></label>
+      <label class="e1-pill">${icl('aviao')}opera <select data-bind="busca.${k}.cia" aria-label="Cia que opera">${['GOL','LATAM','Azul','Outra'].map(c=>`<option ${b.cia===c?'selected':''}>${c}</option>`).join('')}</select></label>
       <span class="e1-selo" data-selo="${k}" ${x.menor===k?'':'hidden'}>${textoSelo(cmp)}</span>
-      <label class="e1-pill"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}> Sem disponibilidade</label>
-      <a class="e1-pill e1-link" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener">Abrir no site</a>
-      <button type="button" class="e1-pill e1-link" data-limpar="${k}" title="Apagar voos, milhas, taxas e prints da ${esc(meta.nome)}">🧹 Limpar</button>
+      <label class="e1-pill"><input type="checkbox" data-bind="busca.${k}.semDisp" data-tipo="bool" ${b.semDisp?'checked':''}>${icl('sem')}Sem disponibilidade</label>
+      <a class="e1-pill e1-link" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener">${icl('site')}Abrir no site</a>
+      <button type="button" class="e1-pill e1-link" data-limpar="${k}" title="Apagar voos, milhas, taxas e prints da ${esc(meta.nome)}">${icl('limpar')}Limpar</button>
       <div class="e1-custo"><small data-e1custol="${k}">${esc(ct.l)}</small><b data-e1custo="${k}">${ct.v}</b></div>
     </div>
     <div class="e1-corpo">
@@ -6538,7 +6833,7 @@ function datasAltDe(p, k){
 function ligarE1(p, corpo){
   // tudo que você mexe numa linha marca o trecho como "à mão"
   corpo.querySelectorAll('[data-e1tr]').forEach(l=>{ const [k,T] = l.dataset.e1tr.split('|');
-    const marca = e => { if(e.target.closest('.e1-extra')) return; if(p.busca[k]['fonte'+T]!=='mao'){ p.busca[k]['fonte'+T] = 'mao'; const f = l.querySelector('.e1-fonte'); if(f){ f.className = 'e1-fonte mao'; f.textContent = 'à mão'; } } };
+    const marca = e => { if(e.target.closest('.e1-extra') || e.target.closest('.e1-rota')) return; if(p.busca[k]['fonte'+T]!=='mao'){ p.busca[k]['fonte'+T] = 'mao'; const f = l.querySelector('.e1-fonte'); if(f){ f.className = 'e1-fonte mao'; f.textContent = 'à mão'; } } };
     l.addEventListener('input', marca); l.addEventListener('change', marca); });
   corpo.querySelectorAll('[data-e1data]').forEach(inp=>inp.addEventListener('change',()=>{
     const [k,T] = inp.dataset.e1data.split('|'), b = p.busca[k], ped = T==='Ida' ? p.dataIda : p.dataVolta;
@@ -6566,6 +6861,8 @@ function ligarE1(p, corpo){
     salvar(); atualizarCalculos(p);
   }));
   corpo.querySelectorAll('[data-pax]').forEach(bt=>bt.addEventListener('click',()=>mudarPax(p, bt.dataset.pax)));
+  corpo.querySelectorAll('[data-e1ae]').forEach(inp=>{ inp.addEventListener('focus',()=>inp.select()); inp.addEventListener('change',()=>{ const [T,l] = inp.dataset.e1ae.split('|'); mudarAeroE1(p, T, l, inp.value, inp); }); inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); inp.blur(); } }); });
+  corpo.querySelectorAll('[data-e1inv]').forEach(bt=>bt.addEventListener('click',()=>inverterTrechoE1(p, bt.dataset.e1inv)));
   corpo.querySelectorAll('[data-limpar]').forEach(bt=>bt.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); perguntarLimpar(p, bt.dataset.limpar); }));
   corpo.querySelectorAll('[data-verpedido]').forEach(bt=>bt.addEventListener('click',()=>{ const b0 = $('#detCorpo .passos-det [data-passo="0"]'); if(b0) b0.click(); else $('#detCorpo details.etapa')?.scrollIntoView({block:'start'}); }));
 }
@@ -6630,9 +6927,67 @@ function mudarPax(p, cod){
   if(pag1!==pag0) toast(`Milhas e taxas recalculadas para ${pag1} pagante${pag1>1?'s':''}`);
 }
 
+/* ---------- ícones de traço fino (no lugar dos emojis) ---------- */
+const ICL = {
+  cmp:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  sky:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/><path d="M8 11.5l5-2.5-1 3.5"/>',
+  limpar:'<path d="M4 20h16"/><path d="M14.5 4.5l5 5-8.5 8.5H6v-5z"/><path d="M11 8l5 5"/>',
+  site:'<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  sem:'<circle cx="12" cy="12" r="8.5"/><path d="M6 18 18 6"/>',
+  aviao:'<path d="M10.5 13.5 3 11l1.5-1.5 7 1 4-4.5a2 2 0 0 1 3 3l-4.5 4 1 7L13 21.5l-2.5-7.5z"/>',
+  troca:'<path d="M7 7h12l-3-3"/><path d="M17 17H5l3 3"/>',
+  mais:'<path d="M6 9l6 6 6-6"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  zap:'<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/>',
+  img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'
+};
+const icl = (k, cls='') => `<svg class="icl ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICL[k]}</svg>`;
+
+/* ---------- aeroportos da cotação, editáveis na aba da cia ---------- */
+function aerosTrecho(p, T){ return T==='Ida' ? [p.origem, p.destino] : [p.voltaOrigem || p.destino, p.voltaDestino || p.origem]; }
+function aerosPedido(p, T){ const o = p.pedidoOriginal; if(!o) return null; return T==='Ida' ? [o.origem, o.destino] : [o.voltaOrigem || o.destino, o.voltaDestino || o.origem]; }
+function garantirDlAero(){ if($('#dlAeroE1')) return; const d = document.createElement('datalist'); d.id = 'dlAeroE1'; d.innerHTML = AEROPORTOS.map(a=>`<option value="${a.iata} · ${esc(a.cidade)} (${esc(a.aeroporto)})">`).join(''); document.body.appendChild(d); }
+function htmlRotaE1(p, T){
+  const [a, b] = aerosTrecho(p, T), ped = aerosPedido(p, T);
+  const mud = i => ped && ped[i] && ped[i].iata !== [a,b][i].iata;
+  const inp = (x, i, l) => `<input class="e1-ae ${mud(i)?'mud':''}" list="dlAeroE1" data-e1ae="${T}|${l}" value="${esc(x.iata)}" title="${esc(x.cidade)} · ${esc(x.aeroporto||'')}" aria-label="${T==='Ida'?'Ida':'Volta'}: ${l==='o'?'sai de':'chega em'}" autocomplete="off" spellcheck="false">`;
+  const aviso = ped && (mud(0) || mud(1)) ? `<small class="e1-ped">pedido: ${esc(ped[0].iata)} → ${esc(ped[1].iata)} · muda na cotação</small>` : '';
+  return `<div class="e1-rota">${inp(a,0,'o')}<span class="e1-seta">→</span>${inp(b,1,'d')}<button type="button" class="e1-inv" data-e1inv="${T}" title="Inverter ${T==='Ida'?'a ida':'a volta'}" aria-label="Inverter ${T==='Ida'?'a ida':'a volta'}">${icl('troca')}</button></div>${aviso}`;
+}
+function lerAeroTxt(v){ v = String(v||'').trim(); if(!v) return null; const c = v.slice(0,3).toUpperCase(); return aeroporto(c) || AEROPORTOS.find(a=>norm(a.cidade)===norm(v)) || AEROPORTOS.find(a=>norm(a.cidade).startsWith(norm(v))) || null; }
+function aplicarRotaE1(p, ida, volta, txt){
+  const lim = a => ({iata:a.iata, cidade:a.cidade, aeroporto:a.aeroporto, pais:a.pais});
+  if(ida[0].iata===ida[1].iata || (p.tipo==='ida_volta' && volta[0].iata===volta[1].iata)){ toast('O trecho precisa sair e chegar em aeroportos diferentes.'); return false; }
+  if(!p.pedidoOriginal){ const cp = x => x ? JSON.parse(JSON.stringify(x)) : x; p.pedidoOriginal = {tipo:p.tipo, origem:cp(p.origem), destino:cp(p.destino), dataIda:p.dataIda, dataVolta:p.dataVolta, ...(p.voltaOrigem?{voltaOrigem:cp(p.voltaOrigem)}:{}), ...(p.voltaDestino?{voltaDestino:cp(p.voltaDestino)}:{})}; }
+  const antes = `${p.origem.iata} → ${p.destino.iata}${p.tipo==='ida_volta' ? ' / ' + voltaDe(p) + ' → ' + voltaPara(p) : ''}`;
+  p.origem = lim(ida[0]); p.destino = lim(ida[1]);
+  if(p.tipo==='ida_volta' && !(volta[0].iata===ida[1].iata && volta[1].iata===ida[0].iata)){ p.voltaOrigem = lim(volta[0]); p.voltaDestino = lim(volta[1]); } else { delete p.voltaOrigem; delete p.voltaDestino; }
+  const depois = `${p.origem.iata} → ${p.destino.iata}${p.tipo==='ida_volta' ? ' / ' + voltaDe(p) + ' → ' + voltaPara(p) : ''}`;
+  if(depois !== antes) logar(p, `Aeroportos da cotação mudados: ${antes} → ${depois}`);
+  { const o = p.pedidoOriginal, ef = x => [(x.voltaOrigem||x.destino).iata, (x.voltaDestino||x.origem).iata].join('>');
+    if(o && o.tipo===p.tipo && o.dataIda===p.dataIda && (o.dataVolta||null)===(p.dataVolta||null) && o.origem.iata===p.origem.iata && o.destino.iata===p.destino.iata && (p.tipo!=='ida_volta' || ef(o)===ef(p))) delete p.pedidoOriginal; }
+  salvar(true); renderQuadro(); renderDetalhe();
+  if(depois !== antes) toast(`${txt}. Se os voos já foram buscados, busque de novo para esse trecho.`, {tipo:'info'});
+  return true;
+}
+function mudarAeroE1(p, T, lado, valor, inp){
+  const a = lerAeroTxt(valor), [x, y] = aerosTrecho(p, T);
+  if(!a){ toast('Aeroporto não encontrado: digite o código (ex.: CGH) ou a cidade e escolha na lista.'); if(inp) inp.value = (lado==='o'?x:y).iata; return; }
+  if((lado==='o'?x:y).iata===a.iata){ if(inp) inp.value = a.iata; return; }
+  const ida = aerosTrecho(p,'Ida'), volta = aerosTrecho(p,'Volta');
+  const alvo = T==='Ida' ? ida : volta; alvo[lado==='o'?0:1] = a;
+  if(!aplicarRotaE1(p, ida, volta, `${T} agora ${alvo[0].iata} → ${alvo[1].iata}`) && inp) inp.value = (lado==='o'?x:y).iata;
+}
+function inverterTrechoE1(p, T){
+  const ida = aerosTrecho(p,'Ida'), volta = aerosTrecho(p,'Volta'), alvo = T==='Ida' ? ida : volta;
+  alvo.reverse();
+  aplicarRotaE1(p, ida, volta, `${T} invertida: ${alvo[0].iata} → ${alvo[1].iata}`);
+}
+
 /* ---------- abas da busca: comparativo + uma por cia ---------- */
 document.addEventListener('click', e=>cliqueAba(e));
-function abaAtual(p){ const a = abaBusca[p.id]; return a==='prog' || !a ? 'cmp' : a; }
+function abaAtual(p){ const a = abaBusca[p.id]; return a==='prog' || a==='sky' || !a ? 'cmp' : a; }
 function statusCia(p, k){
   const b = p.busca[k]||{}, T = trechosDe(p);
   if(b.semDisp) return {c:'x', t:'sem disponibilidade'};
@@ -6644,8 +6999,8 @@ function statusCia(p, k){
 function rotuloCmp(p){ const m = melhorSel(p); return m ? `melhor: ${BRL(m.c.valor)}` : 'ainda sem valores'; }
 function htmlAbasCia(p){
   const a = abaAtual(p);
-  const bt = (k, rot, sub, cls, cor) => `<button type="button" role="tab" data-abab="${k}" class="${a===k?'on':''}" aria-selected="${a===k}">${cor ? `<i class="ab-dot" style="background:${cor}"></i>` : ''}<span>${rot}<small class="${cls||''}" data-abast="${k}">${sub}</small></span></button>`;
-  return `<nav class="abas-cia" role="tablist" aria-label="Comparativo e cias">${bt('cmp','⭐ Comparativo', rotuloCmp(p), 'ok')}${Object.entries(PROG).map(([k,m])=>{ const s = statusCia(p,k); return bt(k, m.nome, s.t, s.c, m.cor); }).join('')}${bt('sky','🔎 Skyscanner','abre o site','vz')}</nav>`;
+  const bt = (k, rot, sub, cls, cor) => `<button type="button" role="tab" data-abab="${k}" class="${a===k?'on':''}" aria-selected="${a===k}">${cor ? `<i class="ab-dot" style="background:${cor}"></i>` : ''}<span class="ab-txt"><span class="ab-rot">${rot}</span><small class="${cls||''}" data-abast="${k}">${sub}</small></span></button>`;
+  return `<nav class="abas-cia" role="tablist" aria-label="Comparativo e cias">${bt('cmp',icl('cmp')+'Comparativo', rotuloCmp(p), 'ok')}${Object.entries(PROG).map(([k,m])=>{ const s = statusCia(p,k); return bt(k, m.nome, s.t, s.c, m.cor); }).join('')}</nav>`;
 }
 function proximaCia(p, k){ const ks = Object.keys(PROG), i = ks.indexOf(k); for(let j=1;j<ks.length;j++){ const x = ks[(i+j)%ks.length]; const s = statusCia(p,x); if(s.c==='vz' || s.c==='meia') return x; } return null; }
 function htmlNavCia(p, k){
@@ -6688,7 +7043,7 @@ function htmlCmpCias(p, mostra){
     const b = p.busca[k]||{}, s = statusCia(p,k), nada = !T.some(t=>n(b['milhas'+t])) && !b.semDisp;
     const mesma = T.length===2 ? (progCompleto(p,k) && custoMP(p,k) ? (()=>{ const v = custoMP(p,k).valor; return `<b>${BRL(v)}</b><small>${best && v - best.c.valor > 0.01 ? '+ ' + BRL(Math.round((v-best.c.valor)*100)/100) + ' que a melhor' : 'a melhor'}</small>`; })() : `<small>${b.semDisp ? '—' : 'precisa dos dois trechos'}</small>`) : '';
     return `<tr><td class="cmp-cia"><span><i class="ab-dot" style="background:${m.cor}"></i><b>${esc(m.nome)}</b></span><span class="ab-st ${s.c}">${esc(s.t)}</span></td>
-      ${nada && T.length===2 ? `<td colspan="2"><div class="cmp-vazio"><span>Nenhum trecho ainda</span><button type="button" class="btn peq" data-irprog="${k}">Preencher na aba ${esc(m.nome.split(' ')[0])} →</button></div></td>` : T.map(t=>`<td>${celula(k,t)}</td>`).join('')}
+      ${nada && T.length===2 ? `<td colspan="2" data-rot="Ida e volta"><div class="cmp-vazio"><span>Nenhum trecho ainda</span><button type="button" class="btn peq" data-irprog="${k}">Preencher na aba ${esc(m.nome.split(' ')[0])} →</button></div></td>` : T.map(t=>`<td data-rot="${t} · ${fmtDataCurta(dataT(t))}">${celula(k,t)}</td>`).join('')}
       ${T.length===2 ? `<td class="cmp-mesma">${mesma}</td>` : ''}</tr>`;
   }).join('');
   return `<div class="cmp-cias"><h4>${T.length===2 ? 'Ida e volta de cada cia' : 'Cada cia'} <small>clique para trocar · o total de cima muda na hora · os dados vêm das abas de cada cia</small></h4>
@@ -6696,20 +7051,31 @@ function htmlCmpCias(p, mostra){
 }
 
 /* ---------- pedido do cliente na barra de cima ---------- */
+function cabAberta(){ try{ return localStorage.getItem('vpo_cab_aberta')==='1'; }catch(e){ return false; } }
+function diaCurto(d){ return d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace('.','') : ''; }
+// barra fechada: o pedido numa linha
+function htmlResumoCab(p){
+  const o = p.pedidoOriginal || p, x = p.paxPedido ? {passageiros:p.paxPedido} : p, iv = o.tipo==='ida_volta' && o.dataVolta;
+  const vO = o.voltaOrigem || o.destino, vD = o.voltaDestino || o.origem, outro = iv && (vO.iata!==o.destino.iata || vD.iata!==o.origem.iata);
+  const partes = [diaCurto(o.dataIda), iv ? `volta ${diaCurto(o.dataVolta)}${outro ? ` <b>${esc(vO.iata)} → ${esc(vD.iata)}</b>` : ''}` : 'só ida', esc(textoPax(x)), esc(textoMalas(p)), p.datasFlexiveis ? 'datas ±3' : '', esc(p.cliente?.nome||'')].filter(Boolean);
+  const mud = p.pedidoOriginal || p.paxPedido ? `<span class="bp-mud">cotando ${esc([p.pedidoOriginal ? rotaCotada(p) : '', p.paxPedido ? textoPax(p) : ''].filter(Boolean).join(' · '))}</span>` : '';
+  return partes.join(' · ') + mud;
+}
+// barra aberta: campos do cartão de embarque
 function htmlPedidoCab(p){
   const o = p.pedidoOriginal || p, x = p.paxPedido ? {passageiros:p.paxPedido} : p, iv = o.tipo==='ida_volta' && o.dataVolta;
-  const dia = d => d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace('.','') : '';
-  const cid = a => a ? `${esc(a.cidade||a.iata)} (${esc(a.iata)})` : '';
   const vO = o.voltaOrigem || o.destino, vD = o.voltaDestino || o.origem;
   const outroAero = iv && (vO.iata!==o.destino.iata || vD.iata!==o.origem.iata);
   const pref = [p.datasFlexiveis ? 'Datas flexíveis (±3 dias)' : '', textoHorario(p)].filter(Boolean).join(' · ');
-  const mud = [p.pedidoOriginal ? `cotando ${rotaCotada(p)}` : '', p.paxPedido ? `cotando ${textoPax(p)}` : ''].filter(Boolean).join(' · ');
-  return `<div class="dp-b"><span class="dp-l">Ida · ${dia(o.dataIda)}</span><b>${cid(o.origem)} → ${cid(o.destino)}</b></div>
-    ${iv ? `<div class="dp-b"><span class="dp-l">Volta · ${dia(o.dataVolta)}</span><b>${cid(vO)} → ${cid(vD)}</b>${outroAero ? '<small class="dp-av">volta de outro aeroporto</small>' : ''}</div>` : `<div class="dp-b"><span class="dp-l">Volta</span><b>Somente ida</b></div>`}
-    <div class="dp-b"><span class="dp-l">Passageiros</span><b>${esc(textoPax(x))}</b>${p.paxPedido ? `<small class="dp-av">cotando ${esc(textoPax(p))}</small>` : ''}</div>
-    <div class="dp-b"><span class="dp-l">Bagagem${p.pet?' e pet':''}</span><b>${esc(textoMalas(p))}</b>${p.pet ? `<small>${esc(textoPet(p))}</small>` : ''}</div>
-    <div class="dp-b dp-pref"><span class="dp-l">Preferências do cliente</span><b>${esc(pref || 'Nenhuma')}</b>${p.obs ? `<small>"${esc(p.obs)}"</small>` : ''}</div>
-    <div class="dp-fim">${p.pedidoOriginal ? `<small class="dp-mud">${esc('cotando ' + rotaCotada(p))}</small>` : ''}<button type="button" class="dp-ver" data-verpedido>Ver pedido completo</button></div>`;
+  const f = (rot, val, sub, cls='') => `<div class="bpf ${cls}"><em>${rot}</em><b>${val}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+  return f(`Ida · ${diaCurto(o.dataIda)}`, `${esc(o.origem.iata)} → ${esc(o.destino.iata)}`, `${esc(o.origem.cidade||'')} → ${esc(o.destino.cidade||'')}`)
+    + (iv ? f(`Volta · ${diaCurto(o.dataVolta)}${outroAero ? ' · outro aeroporto' : ''}`, `${esc(vO.iata)} → ${esc(vD.iata)}`, `${esc(vO.cidade||'')} → ${esc(vD.cidade||'')}`, outroAero ? 'bpf-av' : '') : f('Volta', 'Somente ida', ''))
+    + f('Passageiros', esc(textoPax(x)), p.paxPedido ? `cotando ${esc(textoPax(p))}` : '', p.paxPedido ? 'bpf-av' : '')
+    + f(`Bagagem${p.pet?' e pet':''}`, esc(textoMalas(p)), p.pet ? esc(textoPet(p)) : '')
+    + f('Preferências do cliente', esc(pref || 'Nenhuma'), p.obs ? `"${esc(p.obs)}"` : '', 'pref')
+    + f('Cliente', esc(p.cliente?.nome || '—'), esc(fmtTel(p.cliente?.whatsapp)||''))
+    + (p.pedidoOriginal ? f('Na cotação', esc(rotaCotada(p)), 'diferente do pedido', 'bpf-av') : '')
+    + `<div class="bpf bpf-ver"><button type="button" class="dp-ver" data-verpedido>Ver pedido completo</button></div>`;
 }
 
 /* ---------- pedido do cliente sempre à vista ---------- */
