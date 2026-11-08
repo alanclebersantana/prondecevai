@@ -1251,8 +1251,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .det-cab.bp .chip{background:var(--fundo);color:var(--tinta);border:1px solid var(--linha)}
 .det-cab.bp .chip.ok{background:var(--ok-claro);color:var(--ok);border-color:transparent}
 .bp-canhoto{background:#0E3B7A;color:#fff;border-radius:0 16px 16px 0;padding:8px 14px;display:flex;align-items:center;gap:12px;position:relative;border-left:2px dashed rgba(255,255,255,.6)}
-.bp-canhoto::before,.bp-canhoto::after{content:"";position:absolute;left:-9px;width:16px;height:16px;border-radius:50%;background:var(--fundo)}
-.bp-canhoto::before{top:-8px}.bp-canhoto::after{bottom:-8px}
+.bp-canhoto::before,.bp-canhoto::after{content:none}
 .det-cab.bp .det-kpis{display:flex;gap:16px;padding:0;background:none;border:0;grid-template-columns:none}
 .det-cab.bp .kp{background:none;box-shadow:none;padding:0;gap:0;display:block}
 .det-cab.bp .kp .ic{display:none}
@@ -1272,8 +1271,6 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   .det-cab.bp{grid-template-columns:1fr;padding:8px 10px 6px}
   .bp-bilhete{border-radius:14px 14px 0 0}
   .bp-canhoto{border-radius:0 0 14px 14px;border-left:0;border-top:2px dashed rgba(255,255,255,.6);flex-wrap:wrap;gap:8px}
-  .bp-canhoto::before,.bp-canhoto::after{top:-9px;left:auto}
-  .bp-canhoto::before{left:-8px}.bp-canhoto::after{right:-8px;bottom:auto}
   .det-cab.bp .det-kpis{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .det-cab.bp .kp b{font-size:.84rem}
   .det-cab.bp #detStatus{width:100%}
@@ -1355,6 +1352,8 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   .v2-sky-bt{flex:1 1 100%;justify-content:center}
   .v2-re button{font-size:.82rem}
 }
+
+.esc-alerta{background:#FDECEA;border:1.5px solid #F5B5AE;color:#8A1F15;border-radius:12px;padding:10px 14px;font-weight:700;margin-bottom:10px}
 
 </style>
 </head>
@@ -1564,6 +1563,9 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
         <h2>Regras da passagem (cancelamento e remarcação)</h2>
         <p class="nota">Aparecem na cotação, antes do botão de aprovar, com a caixa "Li as regras". Vão também no comprovante em PDF. Já vem um rascunho: confira as regras atuais de cada programa e ajuste.</p>
         <div id="regrasProgCfg"></div>
+        <h3 style="margin:18px 0 0;font-size:1rem">Link das regras de cancelamento de cada companhia</h3>
+        <p class="nota">Vai na mensagem da cotação e na página do cliente, conforme a companhia de cada trecho. Deixe em branco para não mandar.</p>
+        <div id="regrasLinkCfg"></div>
       </section>
       <section data-aj="assentos">
         <h2>Escolha de assento</h2>
@@ -1779,6 +1781,7 @@ const CFG_PADRAO = {
     azul:'Remarcação e cancelamento seguem as regras da tarifa Azul Fidelidade na data da emissão. Em geral: remarcar ou cancelar tem taxa cobrada pela Azul, e no cancelamento os pontos voltam e as taxas de embarque são reembolsadas. Cancelamento em até 24 horas após a compra, com voo a mais de 7 dias, é sem custo (regra da ANAC).'
   },
   assentos:{on:false, valores:{gol:0, latam:0, azul:0}},
+  regrasLink:{GOL:'https://www.voegol.com.br/informacoes/cancelamento-e-reembolso', LATAM:'https://latampass.latam.com/pt_br/viagem/usar-pontos-para-voar/regras-de-resgate/latam', Azul:'https://www.voeazul.com.br/br/pt/sua-viagem/alteracao-e-cancelamento'},
   seguro:{on:false, link:'', texto:''},
   numeros:{on:false},              // faixa de números no site: só liga se você ligar, nunca sozinho
   dicas:{d7:'', d3:'', d1:'', d0:''},
@@ -1798,7 +1801,7 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 /* ---------- modelos de mensagem do WhatsApp (editáveis nas Configurações) ---------- */
 const MSG_PADRAO = {
-  cotacao:`Olá, {nome}, seja bem-vindo(a)!\nVai para {destino}? ✈️\nEssa é a sua cotação. Bora voar?\n\n{origem} → {destino} · cotação {pedido}\n{economia}\n\nPara aprovar e pagar, acesse: {link}\n\nVálida até {validade}, porque as cias aéreas reprecificam as tarifas.\n\nAcompanhe o seu pedido: {link_viagem}`,
+  cotacao:`Olá, {nome}, seja bem-vindo(a)!\nVai para {destino}? ✈️\nEssa é a sua cotação. Bora voar?\n\n{origem} → {destino} · cotação {pedido}\n{economia}\n\nPara aprovar e pagar, acesse: {link}\n\nVálida até {validade}, porque as cias aéreas reprecificam as tarifas.\n\n{regras_link}\n\nAcompanhe o seu pedido: {link_viagem}`,
   lembrete:`Oi, {nome}! Sua cotação para {destino} vence às {validade_hora}. Quer que eu garanta esse valor? Depois disso a companhia pode mudar o preço.\n\n{link}`,
   renovacao:`Oi, {nome}! Sua cotação para {destino} venceu, mas consegui de novo: agora fica {valor_pix} no Pix, válida até {validade_hora}. Bora garantir? ✈️\n\n{link}`,
   linkCartao:`Pronto, {nome}! Este é o link para pagar sua passagem {pedido} no cartão em {parcelas}x de {valor_parcela} (total {valor_cartao}):\n{link_mp}`,
@@ -1814,7 +1817,7 @@ const MSG_PADRAO = {
   localizador:`Oi, {nome}! Falta uma semana para a sua viagem para {destino} ✈️\nConferi a sua reserva {localizador} no site da {cia} e está tudo certo. Qualquer mudança da companhia, eu te aviso.`
 };
 const MSG_ROTULO = {cotacao:'Cotação', lembrete:'Lembrete antes de vencer', renovacao:'Cotação renovada', linkCartao:'Link do cartão (Mercado Pago)', emitido:'Passagem emitida', cartoes:'Cartões de embarque', vespera:'Véspera do voo', posViagem:'Depois da viagem (indicação)', baixou:'Preço baixou', vooAlterado:'Voo alterado pela companhia', avaliacao:'Pedir avaliação', remarcacao:'Pedido de alteração recebido', achado:'Achado para a lista de promoções', localizador:'Uma semana antes (localizador conferido)'};
-const MSG_CODIGOS = ['nome','origem','destino','data_ida','data_volta','pedido','valor_pix','economia','validade','validade_hora','localizador','link','link_viagem','link_indicacao','parcelas','valor_parcela','valor_cartao','link_mp','cia','data_voo','antigo','novo','rota_achado','mes_achado','preco_achado','link_site'];
+const MSG_CODIGOS = ['nome','origem','destino','data_ida','data_volta','pedido','valor_pix','economia','validade','validade_hora','localizador','link','link_viagem','link_indicacao','parcelas','valor_parcela','valor_cartao','link_mp','cia','data_voo','antigo','novo','rota_achado','mes_achado','preco_achado','link_site','regras_link'];
 function primeiroNome(p){ const pn = String(p.cliente?.nome||'').trim().split(/\s+/)[0] || ''; return pn ? pn.charAt(0).toUpperCase() + pn.slice(1).toLowerCase() : ''; }
 function msgModelo(chave, p, extra={}){
   const t = cfg.mensagens?.[chave] || MSG_PADRAO[chave] || '';
@@ -1826,10 +1829,13 @@ function msgModelo(chave, p, extra={}){
     pedido: p.id, valor_pix: vc?BRL(vc):'', economia: cmp && cmp.economia>0 ? `Você economiza ${BRL(cmp.economia)} (${cmp.pct}%) em relação ao preço da ${cmp.cia}.` : '',
     validade: ate ? `${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR')}` : '', validade_hora: ate ? fmtHora(ate) : '',
     localizador: loc, link: p.cotacao?.token ? linkCotacao(p) : '', link_viagem: linkViagem(p), link_indicacao: linkIndicacao(p),
-    parcelas: parc||'', valor_parcela: parc?BRL(vCart/parc):'', valor_cartao: vCart?BRL(vCart):'', link_mp: pg.linkMP||'', cia: ciaTrecho(p,'Ida')||p.emissao?.cia||'', link_site: baseSite(), ...extra
+    parcelas: parc||'', valor_parcela: parc?BRL(vCart/parc):'', valor_cartao: vCart?BRL(vCart):'', link_mp: pg.linkMP||'', cia: ciaTrecho(p,'Ida')||p.emissao?.cia||'', link_site: baseSite(), regras_link: textoRegrasLinks(p), ...extra
   };
+  // cotação com texto antigo (sem {regras_link}): os links das regras entram no fim
+  let tx = t;
+  if(['cotacao','renovacao'].includes(chave) && !/\{regras_link\}/.test(tx) && val.regras_link) tx = tx.replace(/\s*$/, '') + '\n\n{regras_link}';
   // linha com um código sem valor (ex.: link que ainda não existe) sai inteira
-  return t.split('\n').filter(l=>!(l.match(/\{(\w+)\}/g)||[]).some(c=>{ const k=c.slice(1,-1); return k in val && !String(val[k]).trim(); }))
+  return tx.split('\n').filter(l=>!(l.match(/\{(\w+)\}/g)||[]).some(c=>{ const k=c.slice(1,-1); return k in val && !String(val[k]).trim(); }))
     .join('\n').replace(/\{(\w+)\}/g, (m,k)=> k in val ? String(val[k]) : m).replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
 }
 function abrirZap(p, chave, extra){ window.open(zapLink(p.cliente.whatsapp, msgModelo(chave, p, extra)), '_blank', 'noopener'); }
@@ -1883,7 +1889,7 @@ function mesclarCfg(c){
     bebe:Object.fromEntries(Object.entries(CFG_PADRAO.bebe).map(([k,v])=>[k,{...v,...((c.bebe||{})[k]||{})}])), buscaVelha:{...CFG_PADRAO.buscaVelha,...(c.buscaVelha||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, urlsDinheiro:{...CFG_PADRAO.urlsDinheiro,...(c.urlsDinheiro||{})}, mensagens:{...(c.mensagens||{})},
     bagagem:Object.fromEntries(Object.entries(CFG_PADRAO.bagagem).map(([k,v])=>[k,{...v,...((c.bagagem||{})[k]||{})}])),
     atendimento:{dias:Object.fromEntries(Object.entries(CFG_PADRAO.atendimento.dias).map(([k,v])=>[k,{...v,...(((c.atendimento||{}).dias||{})[k]||{})}])), pausa:{...CFG_PADRAO.atendimento.pausa, ...((c.atendimento||{}).pausa||{})}},
-    regrasProg:{...CFG_PADRAO.regrasProg, ...(c.regrasProg||{})}, assentos:{on:false, ...(c.assentos||{}), valores:{...CFG_PADRAO.assentos.valores, ...((c.assentos||{}).valores||{})}},
+    regrasProg:{...CFG_PADRAO.regrasProg, ...(c.regrasProg||{})}, regrasLink:{...CFG_PADRAO.regrasLink, ...(c.regrasLink||{})}, assentos:{on:false, ...(c.assentos||{}), valores:{...CFG_PADRAO.assentos.valores, ...((c.assentos||{}).valores||{})}},
     seguro:{...CFG_PADRAO.seguro, ...(c.seguro||{})}, numeros:{on: (c.numeros||{}).on === true}, dicas:{...CFG_PADRAO.dicas, ...(c.dicas||{})},
     achados:Array.isArray(c.achados)?c.achados:[], cupons:Array.isArray(c.cupons)?c.cupons:[], semPromo:Array.isArray(c.semPromo)?c.semPromo:[], taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas], tabelaMP:mesclarTabela(c.tabelaMP)};
 }
@@ -3141,6 +3147,7 @@ function idx(st){ return ORDEM.indexOf(st); }
 
 function renderDetalhe(){
   const p = pedido(abertoId); if(!p) return;
+  if(autoEscolher(p)) salvar(true);
   $('#detCod').textContent = p.id;
   $('#detTitulo').innerHTML = `<span class="bp-c"><small>${esc(p.origem.cidade||'')}</small>${esc(p.origem.iata)}</span><svg class="icl bp-av" viewBox="0 0 24 24" aria-hidden="true">${ICL.aviao}</svg><span class="bp-c"><small>${esc(p.destino.cidade||'')}</small>${esc(p.destino.iata)}</span><span class="sr">${esc(p.origem.iata)} para ${esc(p.destino.iata)}</span>`;
   $('#detResumo').innerHTML = htmlResumoCab(p);
@@ -3163,7 +3170,7 @@ function renderDetalhe(){
   $('#detStatus').value = p.status;
   const i = idx(p.status);
   // etapa atual do fluxo (1..8)
-  const passo = p.status==='nova' ? (p.escolhido?2:1)
+  const passo = p.status==='nova' ? (p.escolhido && !p.escolhaAuto ? 2 : 1)
               : p.status==='aguardando_mp' ? 2
               : p.status==='cotacao_enviada' || p.status==='aguardando_baixa' ? 3
               : p.status==='pago' ? (p.emissaoSolicitadaEm?5:4)
@@ -3395,12 +3402,20 @@ function aplicarOpcaoCliente(p, i){
   return true;
 }
 /* antes de enviar a cotação: busca velha, taxa vazia, bebê sem valor */
+// o que impede a cotação de sair: nenhum voo escolhido, ou horário em branco no voo escolhido
+function faltaVooCotacao(p){
+  if(!p.escolhido) return 'Ainda não há milhas e horários preenchidos em nenhuma cia. Preencha na etapa 1, na aba de cada cia.';
+  const sem = trechosDe(p).filter(T=>{ const b = bT(p,T); return !b['saida'+T] || !b['chegada'+T]; });
+  if(sem.length) return `O horário da ${sem.map(T=>T.toLowerCase()).join(' e da ')} está em branco na ${[...new Set(sem.map(T=>PROG[progTrecho(p,T)]?.nome).filter(Boolean))].join(' e ')}. Preencha na aba da cia.`;
+  return '';
+}
 function avisosAntesDeEnviar(p){
   if(!p.escolhido || p.renovacao) return [];
   const progs = [...new Set(trechosDe(p).map(T=>progTrecho(p,T)).filter(Boolean))], av = [];
   const velhos = progs.filter(k=>{ const h = idadeBuscaH(p,k); return h!=null && h >= n(cfg.buscaVelha.vermelho) ; });
   if(velhos.length) av.push({tipo:'velha', so:velhos, txt:`A busca da ${velhos.map(k=>PROG[k].nome).join(' e ')} é de ${tempoDesde(p.auto.emProg?.[velhos[0]] || p.auto.em).replace(/^há /,'')} atrás. Os preços podem ter mudado.`});
   for(const k of progs){ const b = p.busca[k]; if(trechosComVoo(p,k).length && (b.taxas===''||b.taxas==null||!n(b.taxas)) && !b.taxasMan) av.push({tipo:'taxa', txt:`As taxas da ${PROG[k].nome} estão vazias: o valor sai sem a taxa de embarque.`}); }
+  if(p.tipo==='ida_volta'){ const bi = bT(p,'Ida'), bv = bT(p,'Volta'); if(bi.saidaIda && bi.saidaIda===bv.saidaVolta && bi.chegadaIda===bv.chegadaVolta) av.push({tipo:'iguais', txt:`A ida e a volta estão com o mesmo horário (${bi.saidaIda} → ${bi.chegadaIda}). Confira se a volta não foi preenchida com o voo da ida.`}); }
   for(const k of progs) if(bebeFalta(p,k)) av.push({tipo:'bebe', txt:`O pedido tem bebê de colo e a ${PROG[k].nome} está sem valor cadastrado (Configurações → Regras da busca).`});
   return av;
 }
@@ -3964,7 +3979,7 @@ function escolherPrograma(p,k){
   if(b.semDisp){ toast('Esse programa está marcado sem disponibilidade'); return; }
   if(totalMilhas(p,k)==null){ toast('Preencha as milhas desse programa antes de escolher'); return; }
   const trocou = p.escolhido!==k;
-  p.escolhido = k; logar(p, `Programa escolhido: ${PROG[k].nome}`);
+  p.escolhido = k; p.escolhaManual = true; p.escolhaAuto = false; logar(p, `Programa escolhido: ${PROG[k].nome}`);
   if(trocou && !valorTravado(p)) p.valorMPManual = false;   // o valor digitado era do outro programa: recalcula pela tabela
   sincronizarValorMP(p);
   salvar(true); renderDetalhe(); toast(`${PROG[k].nome} escolhido${p.valorMP?' · Milhas Plus '+BRL(n(p.valorMP)):''}`);
@@ -4041,6 +4056,8 @@ const ACOES = {
   async baixarMP(p){ await baixarCanvas(await cardMP(p), `${p.id}-${p.escolhido}.png`); marcarEnviadoMP(p); },
   async enviarCotacao(p, modelo, pular){
     if(!valorCliente(p)){ toast('Preencha o valor da Milhas Plus'); return; }
+    autoEscolher(p);
+    { const falta = faltaVooCotacao(p); if(falta){ abrirModal(`<h2>Falta preencher o voo</h2><p>${falta}</p><p class="nota">Sem isso o cliente vê os horários em branco (--:--) na página da cotação.</p><div class="rodape"><button type="button" class="btn pri" id="fvIr">Ir para a busca</button><button type="button" class="btn" onclick="fecharModal()">Fechar</button></div>`); $('#fvIr').onclick = ()=>{ fecharModal(); abaBusca[p.id] = 'cmp'; const b1 = $('#detCorpo .passos-det [data-passo="1"]'); if(b1) b1.click(); }; return; } }
     if(pular!==true){ const av = avisosAntesDeEnviar(p); if(av.length){ perguntarAntesDeEnviar(p, av, typeof modelo==='string' ? modelo : 'cotacao'); return; } }
     const agora = new Date(), vB = varianteCurta(p);
     p.cotacao = { token: p.cotacao?.token || token(), enviadaEm: agora.toISOString(), validaAte: new Date(agora.getTime()+validadeHoras(p)*3600e3).toISOString(),
@@ -4302,94 +4319,128 @@ async function cardMP(p){
 const REEMBOLSO = {sim:'Reembolsável', multa:'Reembolsável com multa', nao:'Não reembolsável'};
 async function cardCliente(p){
   // formato retrato 4:5 (1080 × 1350): o WhatsApp mostra a imagem inteira na conversa
+  // layout "cartão de embarque" (C1): bilhete branco com canhoto azul do preço, sem recortes redondos
   await fontesProntas();
-  const W=1080, H=1350, P=36, c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
+  const W=1080, H=1350, c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
+  const AZUL='#0E3B7A', SOL='#FF7A2E', SOLE='#C1561A', TINTA='#13233F', CINZA='#7A889C', CINZA2='#4A5B76';
+  const espaco = px => { try{ ctx.letterSpacing = px+'px'; }catch(e){} };
+  const corta = (t, max) => { t = String(t||''); if(ctx.measureText(t).width <= max) return t; while(t.length>1 && ctx.measureText(t+'…').width > max) t = t.slice(0,-1); return t+'…'; };
   ctx.fillStyle='#EEF3F9'; ctx.fillRect(0,0,W,H);
   // topo: foto do destino (ou a do avião do site)
-  const TOPO = 375, nomeF = FOTO_IATA[String(p.destino.iata).toUpperCase()], fd = nomeF ? await carregarImg(nomeF+'.jpg') : null, url = !!fd;
-  const g = ctx.createLinearGradient(0,0,0,TOPO); g.addColorStop(0,'#0E3B7A'); g.addColorStop(1,'#2F78C4'); ctx.fillStyle=g; ctx.fillRect(0,0,W,TOPO);
+  const TOPO = 470, nomeF = FOTO_IATA[String(p.destino.iata).toUpperCase()], fd = nomeF ? await carregarImg(nomeF+'.jpg') : null, url = !!fd;
+  const g = ctx.createLinearGradient(0,0,0,TOPO); g.addColorStop(0,'#2B4F8A'); g.addColorStop(.55,'#5B6E9E'); g.addColorStop(1,'#C98A72'); ctx.fillStyle=g; ctx.fillRect(0,0,W,TOPO);
   const foto = fd || await carregarImg('ceu-asa.jpg');
   if(foto){
     const e = Math.max(W/foto.width, TOPO/foto.height), fw = foto.width*e, fh = foto.height*e;
     ctx.save(); ctx.beginPath(); ctx.rect(0,0,W,TOPO); ctx.clip(); ctx.drawImage(foto, (W-fw)*(url?0.5:1), (TOPO-fh)*0.55, fw, fh); ctx.restore();
   }
-  const gx = ctx.createLinearGradient(0,0,W,0); gx.addColorStop(0,'rgba(9,32,70,.55)'); gx.addColorStop(.6,'rgba(9,32,70,.15)'); gx.addColorStop(1,'rgba(9,32,70,0)'); ctx.fillStyle=gx; ctx.fillRect(0,0,W,TOPO);
-  const gy = ctx.createLinearGradient(0,0,0,TOPO); gy.addColorStop(0,'rgba(9,32,70,.35)'); gy.addColorStop(.45,'rgba(9,32,70,.25)'); gy.addColorStop(1,'rgba(9,32,70,.78)'); ctx.fillStyle=gy; ctx.fillRect(0,0,W,TOPO);
-  const logo = await carregarImg(LOGO_DATA); if(logo) ctx.drawImage(logo, 46, 34, 64, 64);
+  const gx = ctx.createLinearGradient(0,0,W,0); gx.addColorStop(0,'rgba(9,32,70,.6)'); gx.addColorStop(.6,'rgba(9,32,70,.18)'); gx.addColorStop(1,'rgba(9,32,70,0)'); ctx.fillStyle=gx; ctx.fillRect(0,0,W,TOPO);
+  const gy = ctx.createLinearGradient(0,0,0,TOPO); gy.addColorStop(0,'rgba(9,32,70,.35)'); gy.addColorStop(.5,'rgba(9,32,70,.2)'); gy.addColorStop(1,'rgba(9,32,70,.55)'); ctx.fillStyle=gy; ctx.fillRect(0,0,W,TOPO);
+  const logo = await carregarImg(LOGO_DATA); if(logo) ctx.drawImage(logo, 46, 36, 60, 60);
   ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=12;
-  ctx.font=F(800,36); ctx.fillText('Vai pra onde?', 126, 78);
-  ctx.font=F(700,28); ctx.textAlign='right'; ctx.fillText(`Cotação ${p.id}`, W-46, 76); ctx.textAlign='left';
-  if(REEMBOLSO[p.reembolso]){ ctx.save(); ctx.shadowBlur=0; ctx.shadowColor='transparent';
-    const tx = (p.reembolso==='nao' ? '✕ ' : '✓ ') + REEMBOLSO[p.reembolso] + ' se cancelar'; ctx.font=F(800,27); const tw = ctx.measureText(tx).width + 40;
-    ctx.fillStyle = p.reembolso==='sim' ? '#1E8E5A' : p.reembolso==='multa' ? '#E0611C' : '#C8382F'; rr(ctx, W-46-tw, 104, tw, 52, 26); ctx.fill();
-    ctx.fillStyle='#fff'; ctx.fillText(tx, W-46-tw+20, 140); ctx.restore(); }
+  ctx.font=F(800,34); ctx.fillText('Vai pra onde?', 122, 78);
   const pn = primeiroNome(p);
-  ctx.font=F(500,32); ctx.globalAlpha=.94; ctx.fillText(`Olá${pn?', '+pn:''}! Sua viagem para`, 46, 190); ctx.globalAlpha=1;
-  ctx.font=F(800,68); quebrar(ctx, p.destino.cidade, W-92).slice(0,1).forEach(l=>ctx.fillText(l, 46, 262));
+  ctx.font=F(500,31); ctx.globalAlpha=.94; ctx.fillText(`Olá${pn?', '+pn:''}! Sua viagem para`, 46, 178); ctx.globalAlpha=1;
+  let fs = 80; ctx.font=F(800,fs); while(fs>48 && ctx.measureText(p.destino.cidade).width > W-92){ fs-=4; ctx.font=F(800,fs); }
+  espaco(-1); ctx.fillText(p.destino.cidade, 46, 262); espaco(0);
   ctx.shadowBlur=0; ctx.shadowColor='transparent';
 
-  // bilhete
+  // ---------- bilhete ----------
   const b=bT(p,'Ida'), bv=bT(p,'Volta'), volta = p.tipo==='ida_volta';
   const ciaI = ciaTrecho(p,'Ida'), ciaV = volta ? ciaTrecho(p,'Volta') : '', dif = volta && ciaI && ciaV && ciaI!==ciaV;
-  const X = P, LW = W-P*2, T0 = 305, HD = 60, TR = 150;
-  const altB = HD + 14 + TR*(volta?2:1) + 40 + 96;
-  ctx.save(); ctx.shadowColor='rgba(19,35,63,.18)'; ctx.shadowBlur=40; ctx.shadowOffsetY=14; ctx.fillStyle='#fff'; rr(ctx,X,T0,LW,altB,40); ctx.fill(); ctx.restore();
-  ctx.save(); rr(ctx,X,T0,LW,altB,40); ctx.clip(); ctx.fillStyle='#0E3B7A'; ctx.fillRect(X,T0,LW,HD); ctx.restore();
-  ctx.fillStyle='#fff'; ctx.font=F(800,25); ctx.fillText((volta && (p.voltaOrigem||p.voltaDestino) ? `${p.origem.iata} ✈ ${p.destino.iata} · VOLTA ${voltaDe(p)} ✈ ${voltaPara(p)}` : `${p.origem.iata} ✈ ${p.destino.iata} · ${volta?'IDA E VOLTA':'SÓ IDA'}`).toUpperCase(), X+36, T0+40);
-  if(!dif && ciaI){ ctx.font=F(800,26); const tw = ctx.measureText(ciaI).width+30; ctx.fillStyle='#F26B1D'; rr(ctx, X+LW-36-tw, T0+12, tw, 38, 10); ctx.fill(); ctx.fillStyle='#fff'; ctx.fillText(ciaI, X+LW-36-tw+15, T0+41); }
+  const X = 36, LW = W-72, SW = 300, BW = LW-SW, PX = 32, T0 = 330, TR = 134;
   const DIAS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
   const dataB = iso => { if(!iso) return ''; const [a,m,d] = iso.split('-').map(Number); return `${DIAS[new Date(a,m-1,d).getDay()]} ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`; };
-  const trecho = (y, rot, data, voo, s1, c1, de, para, bx, T, cia) => {
-    ctx.fillStyle='#E0611C'; ctx.font=F(800,24); ctx.fillText([rot, dataB(data), voo].filter(Boolean).join(' · ').toUpperCase() + (dif&&cia?`  ·  ${cia}`:''), X+36, y+30);
-    ctx.fillStyle='#13233F'; ctx.font=F(800,48); ctx.fillText(s1||'--:--', X+36, y+92); ctx.textAlign='right'; ctx.fillText(c1||'--:--', X+LW-36, y+92); ctx.textAlign='left';
-    ctx.fillStyle='#55657F'; ctx.font=F(600,24); ctx.fillText(de, X+36, y+124); ctx.textAlign='right'; ctx.fillText(para, X+LW-36, y+124); ctx.textAlign='left';
-    // caminho com as paradas
-    const x1 = X+190, x2 = X+LW-190, ly = y+78, q = (bx['paradas'+T]===''||bx['paradas'+T]==null) ? null : n(bx['paradas'+T]);
-    ctx.strokeStyle='#B9C6D8'; ctx.lineWidth=4; ctx.setLineDash([12,12]); ctx.beginPath(); ctx.moveTo(x1,ly); ctx.lineTo(x2,ly); ctx.stroke(); ctx.setLineDash([]);
+  const vDe = volta ? (p.voltaOrigem||p.destino) : null, vPara = volta ? (p.voltaDestino||p.origem) : null;
+  const datas = b.datasAlt || datasAltAuto(p);
+  const camp = [['Passageiros', textoPax(p)], ['Bagagem', n(p.malasPorPassageiro) ? `${p.malasPorPassageiro} mala${p.malasPorPassageiro>1?'s':''} de 23 kg` : 'Mala de mão'], datas ? ['Datas', datas] : p.pet ? ['Pet', textoPet(p)] : ['Cotação', p.id]];
+  const altB = 8 + 150 + TR*(volta?2:1) + 10 + 98;
+  // fundo do bilhete (sombra) e canhoto azul
+  ctx.save(); ctx.shadowColor='rgba(14,59,122,.28)'; ctx.shadowBlur=40; ctx.shadowOffsetY=18; ctx.fillStyle='#fff'; rr(ctx,X,T0,LW,altB,32); ctx.fill(); ctx.restore();
+  ctx.save(); rr(ctx,X,T0,LW,altB,32); ctx.clip();
+  ctx.fillStyle=SOL; ctx.fillRect(X,T0,BW,8);
+  ctx.fillStyle=AZUL; ctx.fillRect(X+BW,T0,SW,altB);
+  ctx.restore();
+  // picote entre o bilhete e o canhoto (só a linha tracejada)
+  ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=3; ctx.setLineDash([10,9]); ctx.beginPath(); ctx.moveTo(X+BW+1.5, T0+16); ctx.lineTo(X+BW+1.5, T0+altB-16); ctx.stroke(); ctx.setLineDash([]);
+  // códigos dos aeroportos
+  let y = T0+8;
+  ctx.fillStyle=CINZA; ctx.font=F(800,20); espaco(1.5);
+  ctx.fillText(corta(p.origem.cidade.toUpperCase(), BW/2-PX-40), X+PX, y+46);
+  ctx.textAlign='right'; ctx.fillText(corta(p.destino.cidade.toUpperCase(), BW/2-PX-40), X+BW-PX, y+46); ctx.textAlign='left'; espaco(0);
+  ctx.fillStyle=AZUL; ctx.font=F(800,74); espaco(-1); ctx.fillText(p.origem.iata, X+PX, y+118); ctx.textAlign='right'; ctx.fillText(p.destino.iata, X+BW-PX, y+118); ctx.textAlign='left'; espaco(0);
+  ctx.fillStyle=SOL; ctx.font=F(800,40); ctx.textAlign='center'; ctx.fillText('✈', X+BW/2, y+108); ctx.textAlign='left';
+  y += 150;
+  // trechos
+  const trecho = (y, rot, data, voo, s1, c1, bx, T, cia, extra) => {
+    ctx.fillStyle=SOLE; ctx.font=F(800,21); espaco(1.2);
+    ctx.fillText(corta([rot, dataB(data), voo, cia, extra].filter(Boolean).join(' · ').toUpperCase(), BW-PX*2), X+PX, y+28); espaco(0);
+    ctx.fillStyle=TINTA; ctx.font=F(800,44);
+    const t1 = s1||'--:--', t2 = c1||'--:--', w1 = ctx.measureText(t1).width, w2 = ctx.measureText(t2).width;
+    ctx.fillText(t1, X+PX, y+84); ctx.textAlign='right'; ctx.fillText(t2, X+BW-PX, y+84); ctx.textAlign='left';
+    const x1 = X+PX+w1+22, x2 = X+BW-PX-w2-22, ly = y+70, q = (bx['paradas'+T]===''||bx['paradas'+T]==null) ? null : n(bx['paradas'+T]);
+    ctx.strokeStyle='#C9D6E6'; ctx.lineWidth=3; ctx.setLineDash([10,9]); ctx.beginPath(); ctx.moveTo(x1,ly); ctx.lineTo(x2,ly); ctx.stroke(); ctx.setLineDash([]);
     ctx.textAlign='center';
-    if(q===0){ ctx.fillStyle='#1E8E5A'; ctx.font=F(800,24); ctx.fillText('voo direto', (x1+x2)/2, ly-18); }
+    if(q===0){ ctx.fillStyle='#1E7B4F'; ctx.font=F(800,20); ctx.fillText('direto', (x1+x2)/2, ly-14); }
     else if(q){
-      for(let i=1;i<=q;i++){ const cx = x1+(x2-x1)*i/(q+1); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(cx,ly,14,0,Math.PI*2); ctx.fill(); ctx.lineWidth=8; ctx.strokeStyle='#FF7A2E'; ctx.beginPath(); ctx.arc(cx,ly,11,0,Math.PI*2); ctx.stroke(); }
-      ctx.fillStyle='#E0611C'; ctx.font=F(800,24); ctx.fillText(`${q} parada${q>1?'s':''}`, (x1+x2)/2, ly-24);
+      for(let i=1;i<=q;i++){ const cx = x1+(x2-x1)*i/(q+1); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(cx,ly,11,0,Math.PI*2); ctx.fill(); ctx.lineWidth=6; ctx.strokeStyle=SOL; ctx.beginPath(); ctx.arc(cx,ly,8,0,Math.PI*2); ctx.stroke(); }
+      ctx.fillStyle=SOLE; ctx.font=F(800,20); ctx.fillText(`${q} parada${q>1?'s':''}`, (x1+x2)/2, ly-18);
       const es = (bx['escalas'+T]||[]).slice(0,q).map(e=>[localParada(e.local), fmtMin(e.min)].filter(Boolean).join(' · ')).filter(Boolean).join(' + ');
-      if(es){ ctx.fillStyle='#55657F'; ctx.font=F(500,23); ctx.fillText(es.length>34?es.slice(0,33)+'…':es, (x1+x2)/2, ly+46); }
+      if(es){ ctx.fillStyle=CINZA2; ctx.font=F(600,19); ctx.fillText(corta(es, x2-x1), (x1+x2)/2, ly+34); }
     }
     ctx.textAlign='left';
   };
-  let y = T0+HD+14;
-  const cAe = a => `${a.cidade} · ${a.iata}`;
-  trecho(y, 'Ida', p.dataIda, b.vooIda, b.saidaIda, b.chegadaIda, cAe(p.origem), cAe(p.destino), b, 'Ida', ciaI); y += TR;
-  if(volta){ trecho(y, 'Volta', p.dataVolta, bv.vooVolta, bv.saidaVolta, bv.chegadaVolta, cAe(p.voltaOrigem||p.destino), cAe(p.voltaDestino||p.origem), bv, 'Volta', ciaV); y += TR; }
-  // picote
-  y += 14; ctx.strokeStyle='#DCE4EE'; ctx.lineWidth=4; ctx.setLineDash([12,10]); ctx.beginPath(); ctx.moveTo(X+36,y); ctx.lineTo(X+LW-36,y); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle='#EEF3F9'; ctx.beginPath(); ctx.arc(X,y,20,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(X+LW,y,20,0,Math.PI*2); ctx.fill();
-  y += 26;
-  const pe = [['Passageiros', textoPax(p)], ['Bagagem', n(p.malasPorPassageiro) ? `${p.malasPorPassageiro} mala${p.malasPorPassageiro>1?'s':''} de 23 kg` : 'Mala de mão'], [(b.datasAlt||datasAltAuto(p))?'Datas':p.pet?'Pet':'Paradas', (b.datasAlt||datasAltAuto(p)) ? (b.datasAlt||datasAltAuto(p)) : p.pet ? textoPet(p) : (()=>{ const a = textoParadas(b,'Ida'), v = volta ? textoParadas(bv,'Volta') : ''; const q = x => /direto/i.test(x)?0:(n(String(x).split(' ')[0])||0); return !a ? '—' : (!volta ? (q(a)?q(a)+' parada'+(q(a)>1?'s':''):'voo direto') : (q(a)===q(v) ? (q(a)?q(a)+' em cada trecho':'voos diretos') : `${q(a)} na ida · ${q(v)} na volta`)); })()]];
-  pe.forEach(([rot,val],i)=>{ const cx = X+36 + i*((LW-72)/3); ctx.fillStyle='#55657F'; ctx.font=F(500,24); ctx.fillText(rot, cx, y+24); ctx.fillStyle='#13233F'; ctx.font=F(700,29); ctx.fillText(quebrar(ctx, String(val), (LW-72)/3-14)[0]||'', cx, y+62); });
-
-  // preços
-  const vc = valorCliente(p), cmp = comparacaoCia(p), comEco = cmp && cmp.economia>0;
-  y = T0 + altB + 28;
-  const pw = Math.round(LW*0.54);
-  ctx.fillStyle='#FFF1E7'; rr(ctx,X,y,pw,170,32); ctx.fill(); ctx.strokeStyle='#FF7A2E'; ctx.lineWidth=5; rr(ctx,X+2.5,y+2.5,pw-5,165,30); ctx.stroke();
-  ctx.fillStyle='#E0611C'; ctx.font=F(800,25); ctx.fillText('À VISTA NO PIX', X+32, y+52);
-  ctx.font=F(800, vc && BRL(vc).length>12 ? 56 : 64); ctx.fillText(vc?BRL(vc):'R$ —', X+32, y+128);
-  ctx.fillStyle='#fff'; rr(ctx,X+pw+20,y,LW-pw-20,170,32); ctx.fill();
-  if(vc){ const tot = valorCartao(vc, MAX_PARCELAS); ctx.fillStyle='#55657F'; ctx.font=F(500,25); ctx.fillText('ou no cartão', X+pw+50, y+50);
-    ctx.fillStyle='#13233F'; ctx.font=F(800,38); ctx.fillText(`${MAX_PARCELAS}x ${BRL(tot/MAX_PARCELAS)}`, X+pw+50, y+100);
-    ctx.fillStyle='#55657F'; ctx.font=F(500,24); ctx.fillText(`total ${BRL(tot)}`, X+pw+50, y+138); }
-  y += 170 + 52;
-  ctx.textAlign='center';
-  if(comEco){ ctx.fillStyle='#1E8E5A'; ctx.font=F(800,30); ctx.fillText(`Você economiza ${BRL(cmp.economia)} (${cmp.pct}%) em relação à ${cmp.cia}`, W/2, y); y += 46; }
-  { const vB = varianteCurta(p); if(vB){ ctx.fillStyle='#0E3B7A'; ctx.font=F(800,29); const t = `Também tem a opção mais rápida: ${resumoOpcao(vB.q)} · ${BRL(vB.valorPix)} no Pix`; ctx.fillText(quebrar(ctx, t, W-80)[0], W/2, y); y += 40; ctx.fillStyle='#55657F'; ctx.font=F(600,25); ctx.fillText('Escolha a que preferir no link', W/2, y); y += 46; } }
+  const extraV = volta ? [vDe.iata!==p.destino.iata ? 'de '+vDe.iata : '', vPara.iata!==p.origem.iata ? 'para '+vPara.iata : ''].filter(Boolean).join(' ') : '';
+  trecho(y, 'Ida', b.dataIda || p.dataIda, b.vooIda, b.saidaIda, b.chegadaIda, b, 'Ida', ciaI, ''); y += TR;
+  if(volta){ trecho(y, 'Volta', bv.dataVolta || p.dataVolta, bv.vooVolta, bv.saidaVolta, bv.chegadaVolta, bv, 'Volta', dif ? ciaV : '', extraV); y += TR; }
+  // rodapé do bilhete
+  y += 10; ctx.strokeStyle='#E3E9F1'; ctx.lineWidth=3; ctx.setLineDash([10,8]); ctx.beginPath(); ctx.moveTo(X+PX,y); ctx.lineTo(X+BW-PX,y); ctx.stroke(); ctx.setLineDash([]);
+  const cw = (BW-PX*2)/3;
+  camp.forEach(([rot,val],i)=>{ const cx = X+PX + i*cw; ctx.fillStyle=CINZA; ctx.font=F(800,18); espaco(1.2); ctx.fillText(rot.toUpperCase(), cx, y+40); espaco(0); ctx.fillStyle=TINTA; ctx.font=F(800,25); ctx.fillText(corta(val, cw-14), cx, y+76); });
+  // canhoto: preço e validade
+  const vc = valorCliente(p), tot = vc ? valorCartao(vc, MAX_PARCELAS) : 0, varios = totalPax(p) > 1;
   const ate = p.cotacao?.validaAte ? new Date(p.cotacao.validaAte) : new Date(Date.now()+validadeHoras(p)*3600e3);
-  ctx.fillStyle='#55657F'; ctx.font=F(500,27); ctx.fillText(`⏱ Válida até ${fmtHora(ate)} de ${ate.toLocaleDateString('pt-BR').slice(0,5)}. Depois a companhia pode mudar o valor.`, W/2, y);
+  const precoTxt = vc ? BRL(vc) : 'R$ —';
+  let ps = 56; ctx.font=F(800,ps); while(ps>30 && ctx.measureText(precoTxt).width > SW-44){ ps-=2; ctx.font=F(800,ps); }
+  const blocoH = 20 + 12 + ps + 14 + 22 + (varios?30:0) + 36 + 20 + 12 + 24;
+  let sy = T0 + (altB - blocoH)/2, sx = X+BW+24;
+  ctx.fillStyle='rgba(255,255,255,.78)'; ctx.font=F(800,19); espaco(1.5); ctx.fillText(varios ? 'NO PIX · TODOS' : 'NO PIX', sx, sy+18); espaco(0);
+  sy += 20+12+ps; ctx.fillStyle='#FFC59E'; ctx.font=F(800,ps); ctx.fillText(precoTxt, sx, sy);
+  sy += 14+22; ctx.fillStyle='rgba(255,255,255,.88)'; ctx.font=F(500,22); ctx.fillText(vc ? `ou ${MAX_PARCELAS}x ${BRL(tot/MAX_PARCELAS)}` : '', sx, sy);
+  if(varios){ sy += 30; ctx.fillText(textoPax(p), sx, sy); }
+  sy += 36+20; ctx.fillStyle='rgba(255,255,255,.78)'; ctx.font=F(800,19); espaco(1.5); ctx.fillText('VÁLIDA ATÉ', sx, sy-2); espaco(0);
+  sy += 12+24; ctx.fillStyle='#fff'; ctx.font=F(800,24); ctx.fillText(`${fmtHora(ate)} · ${ate.toLocaleDateString('pt-BR').slice(0,5)}`, sx, sy);
+
+  // ---------- selos ----------
+  y = T0 + altB + 40;
+  const cmp = comparacaoCia(p), selos = [];
+  if(cmp && cmp.economia>0) selos.push([`Você economiza ${BRL(cmp.economia)} (${cmp.pct}%)`, '#E3F4EA', '#1E6B45']);
+  if(REEMBOLSO[p.reembolso]) selos.push(p.reembolso==='nao' ? ['✕ Não reembolsável', '#FDECEA', '#A8261C'] : p.reembolso==='multa' ? ['Reembolsável com multa', '#FFF1E7', '#B4500F'] : ['✓ Reembolsável', '#E3F4EA', '#1E6B45']);
+  if(selos.length){
+    let sx2 = X; ctx.font=F(800,25);
+    selos.forEach(([t,bg,cor])=>{ const w = ctx.measureText(t).width + 48; if(sx2+w > X+LW){ sx2 = X; y += 64; } ctx.fillStyle=bg; rr(ctx,sx2,y,w,54,27); ctx.fill(); ctx.fillStyle=cor; ctx.fillText(t, sx2+24, y+36); sx2 += w+14; });
+    y += 54 + 32;
+  }
+  // como aprovar, em 3 passos
+  const PASSOS = ['Toque no link da mensagem', 'Escolha Pix ou cartão', 'Mande os dados e pronto'], pw = (LW-32)/3, ph = 100;
+  PASSOS.forEach((t,i)=>{
+    const bx = X + i*(pw+16);
+    ctx.fillStyle='#fff'; rr(ctx,bx,y,pw,ph,26); ctx.fill();
+    ctx.fillStyle=SOL; ctx.beginPath(); ctx.arc(bx+40, y+ph/2, 22, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font=F(800,24); ctx.textAlign='center'; ctx.fillText(String(i+1), bx+40, y+ph/2+8); ctx.textAlign='left';
+    ctx.fillStyle=TINTA; ctx.font=F(800,23); const ls = quebrar(ctx, t, pw-90).slice(0,2);
+    ls.forEach((l,j)=>ctx.fillText(l, bx+74, y+ph/2 + (ls.length>1 ? (j? 24 : -6) : 9)));
+  });
+  y += ph + 46;
+  ctx.textAlign='center';
+  { const vB = varianteCurta(p); if(vB){ ctx.fillStyle=AZUL; ctx.font=F(800,28); ctx.fillText(quebrar(ctx, `Também tem a opção mais rápida: ${resumoOpcao(vB.q)} · ${BRL(vB.valorPix)} no Pix`, W-80)[0], W/2, y); y += 38; ctx.fillStyle=CINZA2; ctx.font=F(600,24); ctx.fillText('Escolha a que preferir no link', W/2, y); y += 44; } }
+  if(y < H-150){ ctx.fillStyle=CINZA2; ctx.font=F(500,24); ctx.fillText('⏱ Depois do prazo, a companhia aérea pode mudar o valor.', W/2, y); }
   ctx.textAlign='left';
   // rodapé
-  ctx.fillStyle='#0E3B7A'; ctx.fillRect(0,H-112,W,112);
-  ctx.fillStyle='#fff'; ctx.font=F(800,34); ctx.fillText('Para aprovar e pagar, toque no link', 46, H-44);
+  ctx.fillStyle=AZUL; ctx.fillRect(0,H-112,W,112);
+  ctx.fillStyle='#fff'; ctx.font=F(800,32); ctx.fillText('Para aprovar e pagar, toque no link', 46, H-45);
   ctx.font=F(800,28); const tl = '👇 na mensagem', tw2 = ctx.measureText(tl).width + 44;
-  ctx.fillStyle='#FF7A2E'; rr(ctx, W-46-tw2, H-86, tw2, 58, 29); ctx.fill(); ctx.fillStyle='#fff'; ctx.fillText(tl, W-46-tw2+22, H-46);
+  ctx.fillStyle=SOL; rr(ctx, W-46-tw2, H-86, tw2, 58, 29); ctx.fill(); ctx.fillStyle='#fff'; ctx.fillText(tl, W-46-tw2+22, H-46);
   return c;
 }
 
@@ -4422,9 +4473,9 @@ function dadosCotacaoPublica(p){
     nome: pn ? pn.charAt(0).toUpperCase()+pn.slice(1).toLowerCase() : '',
     origem:{iata:p.origem.iata, cidade:p.origem.cidade}, destino:{iata:p.destino.iata, cidade:p.destino.cidade},
     tipo:p.tipo, cia:ciasTexto(p),
-    ida:{data:p.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||'', paradas:textoParadas(b,'Ida'), ...escalasPublicas(b,'Ida'), cia:ciaTrecho(p,'Ida')||''},
-    volta: p.tipo==='ida_volta' ? {data:p.dataVolta||'', voo:bv.vooVolta||'', saida:bv.saidaVolta||'', chegada:bv.chegadaVolta||'', paradas:textoParadas(bv,'Volta'), ...escalasPublicas(bv,'Volta'), cia:ciaTrecho(p,'Volta')||''} : null,
-    datasAlt: b.datasAlt || datasAltAuto(p) || '',
+    ida:{data:b.dataIda||p.dataIda||'', voo:b.vooIda||'', saida:b.saidaIda||'', chegada:b.chegadaIda||'', paradas:textoParadas(b,'Ida'), ...escalasPublicas(b,'Ida'), cia:ciaTrecho(p,'Ida')||''},
+    volta: p.tipo==='ida_volta' ? {data:bv.dataVolta||p.dataVolta||'', voo:bv.vooVolta||'', saida:bv.saidaVolta||'', chegada:bv.chegadaVolta||'', paradas:textoParadas(bv,'Volta'), ...escalasPublicas(bv,'Volta'), cia:ciaTrecho(p,'Volta')||''} : null,
+    datasAlt: (b.dataIda || bv.dataVolta) ? '' : (b.datasAlt || datasAltAuto(p) || ''),
     opcoes: opcoesPublicas(p),
     pax: textoPax(p), paxQtd:{adultos:x.adultos||0, criancas:x.criancas||0, bebes:x.bebes||0},
     bagagem: textoMalasCliente(p), pet: p.pet ? textoPet(p) : '',
@@ -5832,6 +5883,18 @@ function malasOpcoesDe(pp){
 }
 
 /* ---------- dados públicos da cotação e da "Minha viagem" ---------- */
+// link oficial das regras de cancelamento de cada companhia do pedido (ida e volta podem ser de cias diferentes)
+function chaveCiaRegra(cia){ const t = String(cia||'').toLowerCase(); return /gol|smiles/.test(t) ? 'GOL' : /latam/.test(t) ? 'LATAM' : /azul/.test(t) ? 'Azul' : ''; }
+function regrasLinksPub(p){
+  const vistos = new Set(), r = [];
+  for(const T of trechosDe(p)){
+    const cia = ciaTrecho(p,T) || (progTrecho(p,T) ? PROG[progTrecho(p,T)].cia : ''), k = chaveCiaRegra(cia), url = String((cfg.regrasLink||{})[k]||'').trim();
+    if(!k || !/^https?:\/\//.test(url) || vistos.has(k)) continue;
+    vistos.add(k); r.push({cia:k, url});
+  }
+  return r;
+}
+function textoRegrasLinks(p){ return regrasLinksPub(p).map(x=>`Regras de cancelamento da ${x.cia}: ${x.url}`).join('\n'); }
 function regrasPublicas(p){ return progsDoPedido(p).map(k=>({prog:PROG[k].nome, texto:String((cfg.regrasProg||{})[k]||'').trim()})).filter(x=>x.texto); }
 function voltaRotaPub(p){
   if(!p.voltaOrigem && !p.voltaDestino) return null;
@@ -5843,7 +5906,7 @@ dadosCotacaoPublica = (orig => p => {
   const d = orig(p), desc = descontoValor(p), vB = varianteCurta(p);
   const malas = malasOpcoesDe(p);
   if(Array.isArray(d.opcoes)){ d.opcoes[0].malasOp = malas; if(vB) d.opcoes[1].malasOp = malasOpcoesDe(vB.q); }
-  return {...d, voltaRota: voltaRotaPub(p), regras: regrasPublicas(p), reembolso: REEMBOLSO[p.reembolso] || '', malasOp: malas, malasAtual: n(p.malasPorPassageiro),
+  return {...d, voltaRota: voltaRotaPub(p), regras: regrasPublicas(p), regrasLinks: regrasLinksPub(p), reembolso: REEMBOLSO[p.reembolso] || '', malasOp: malas, malasAtual: n(p.malasPorPassageiro),
     ...(desc>0 && p.cupomAplicado ? {desconto:{cupom:p.cupomAplicado.codigo, valor:desc}} : {}),
     ...(p.grupo ? {grupo:{total:totalPax(p)}} : {}),
     ...(cfg.numeros && cfg.numeros.on===true ? {clientesTotal: clientesComCompra()} : {}),
@@ -5857,7 +5920,7 @@ dadosViagemPublica = (orig => p => {
     valor: n(pg.valorCobrado) || valorCliente(p), forma: pg.forma||r.forma||'', parcelas: n(pg.parcelas)||0, pagoEm: pg.pagoEm||'',
     ...(p.cupomAplicado && descontoValor(p)>0 ? {cupom:{codigo:p.cupomAplicado.codigo, valor:descontoValor(p)}} : {}),
     regras: regrasPublicas(p), regrasAceitasEm: r.aceites?.regras || '', reembolso: REEMBOLSO[p.reembolso] || '', alteracoes: !!(p.alteracoesVoo||[]).length} : null;
-  return {...d, voltaRota: voltaRotaPub(p), recibo, regras: regrasPublicas(p),
+  return {...d, voltaRota: voltaRotaPub(p), recibo, regras: regrasPublicas(p), regrasLinks: regrasLinksPub(p),
     vooAlterado: (p.alteracoesVoo||[]).map(a=>({trecho:a.trecho, data:a.data, antes:a.antes, depois:a.depois, cancelado:!!a.cancelado, em:a.em})),
     alteracao: p.alteracao ? {tipo:p.alteracao.tipo, status:p.alteracao.status, em:p.alteracao.em, resposta:p.alteracao.resposta||''} : null,
     avaliado: !!p.avaliado, indicacao: linkIndicacao(p)};
@@ -6480,6 +6543,9 @@ function renderCfgLanc(){
   const rg = $('#regrasProgCfg');
   if(rg) rg.innerHTML = Object.entries(PROG).map(([k,m])=>`<div class="campo" style="margin-top:8px"><label for="rg-${k}">${m.nome}</label><textarea id="rg-${k}" data-regra="${k}" rows="4">${esc(cfg.regrasProg[k]||'')}</textarea></div>`).join('');
   rg?.querySelectorAll('[data-regra]').forEach(t=>t.addEventListener('input',()=>{ cfg.regrasProg[t.dataset.regra] = t.value; salvarCfg(); }));
+  const rl = $('#regrasLinkCfg');
+  if(rl) rl.innerHTML = Object.keys(CFG_PADRAO.regrasLink).map(k=>`<div class="campo" style="margin-top:8px"><label for="rl-${k}">${k}</label><input id="rl-${k}" data-regralink="${k}" type="url" inputmode="url" value="${esc(cfg.regrasLink[k]||'')}" placeholder="https://"></div>`).join('');
+  rl?.querySelectorAll('[data-regralink]').forEach(t=>t.addEventListener('input',()=>{ cfg.regrasLink[t.dataset.regralink] = t.value.trim(); salvarCfg(); }));
   // assentos
   const as = $('#assentosCfg');
   if(as){ as.innerHTML = `<label class="linha-semdisp"><input type="checkbox" id="asOn" ${cfg.assentos.on?'checked':''}> Mostrar a opção de escolher assento no site</label>
@@ -6638,6 +6704,21 @@ function melhorSel(p){
   for(const s of combos){ const c = custoSel(p, s); if(c && (!melhor || c.valor < melhor.c.valor - 0.009 || (Math.abs(c.valor-melhor.c.valor)<0.01 && c.um && !melhor.c.um))) melhor = {sel:s, c}; }
   return melhor;
 }
+// sem escolha sua, a cotação usa sozinha a opção mais barata (e acompanha o que você edita)
+function autoEscolher(p){
+  if(!p || valorTravado(p)) return false;
+  const atual = selAtual(p), valido = atual && custoSel(p, atual);
+  if(valido && p.escolhaAuto===undefined && !p.escolhaManual){ p.escolhaManual = true; return false; }   // escolha feita antes desta versão: respeita
+  if(p.escolhaManual && valido) return false;
+  const m = melhorSel(p); if(!m) return false;
+  if(valido && JSON.stringify(atual)===JSON.stringify(m.sel) && p.escolhaAuto) return false;
+  const T = trechosDe(p), ks = T.map(t=>m.sel[t]);
+  if(new Set(ks).size===1){ delete p.combo; p.escolhido = ks[0]; } else { p.combo = Object.fromEntries(T.map(t=>[t, m.sel[t]])); p.escolhido = m.sel.Ida; }
+  p.escolhaAuto = true; p.escolhaManual = false;
+  if(!valorTravado(p)) p.valorMPManual = false;
+  sincronizarValorMP(p);
+  return true;
+}
 function aplicarSel(p, s){
   const T = trechosDe(p), ks = T.map(t=>s[t]);
   for(const t of T){ const k = s[t]; if(!k || !custoTrecho(p,k,t)){ toast(`${k ? PROG[k].nome : 'Programa'} sem voo ou sem valor na ${t.toLowerCase()}`); return; } }
@@ -6648,8 +6729,9 @@ function aplicarSel(p, s){
     logar(p, p.combo ? `Escolhido: ida ${PROG[p.combo.Ida].nome} + volta ${PROG[p.combo.Volta].nome}` : `Programa escolhido: ${PROG[p.escolhido].nome}`);
     if(!valorTravado(p)) p.valorMPManual = false;
   }
+  { const m = melhorSel(p); p.escolhaManual = !(m && JSON.stringify(m.sel)===JSON.stringify(selAtual(p))); p.escolhaAuto = !p.escolhaManual; }
   sincronizarValorMP(p); salvar(true); renderDetalhe();
-  toast(`${nomeProgramas(p)} escolhido${p.valorMP ? ' · Milhas Plus ' + BRL(n(p.valorMP)) : ''}`);
+  toast(p.escolhaManual ? `${nomeProgramas(p)} na cotação (escolha sua)${p.valorMP ? ' · Milhas Plus ' + BRL(n(p.valorMP)) : ''}` : `Cotação com a opção mais barata: ${nomeProgramas(p)}`);
 }
 function verPrintsSel(p){
   const s = selAtual(p) || melhorSel(p)?.sel || {};
@@ -6664,14 +6746,15 @@ function htmlEscolhaA(p){
   const um = ks => PROG[ks].nome;
   const titulo = T.length===1 ? um(mostra.Ida) : misto ? `Ida ${um(mostra.Ida)} + volta ${um(mostra.Volta)}` : um(mostra.Ida);
   const sozinho = (()=>{ let b = null; for(const k in PROG){ const x = custoMP(p,k); if(x && (!b || x.valor < b.valor)) b = {k, valor:x.valor}; } return b; })();
-  const tag = !atual ? (misto ? 'MELHOR COMBINAÇÃO' : 'MAIS BARATO') : ehMelhor ? 'ESCOLHIDO · O MAIS BARATO' : 'ESCOLHIDO';
+  const tag = !atual ? (misto ? 'MELHOR COMBINAÇÃO' : 'MAIS BARATO') : p.escolhaAuto && ehMelhor ? 'NA COTAÇÃO · O MAIS BARATO' : ehMelhor ? 'NA COTAÇÃO · O MAIS BARATO' : 'NA COTAÇÃO · ESCOLHA SUA';
   const dataT = t => t==='Ida' ? p.dataIda : p.dataVolta;
   const blocoT = t => { const k = mostra[t], b = p.busca[k]||{}, ct = custoTrecho(p,k,t), d = durTotal({...p, combo:mostra, escolhido:mostra.Ida}, t);
     return `<div><div class="esc-lbl">${t} · ${fmtDataCurta(b['data'+t] || dataT(t))} · ${esc(PROG[k].nome)}</div><div class="esc-big">${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}</div>
       <div class="esc-sub">${[b['voo'+t], d!=null?fmtMin(d):'', textoParadas(b,t), misto && ct ? BRL(ct.valor) : ''].filter(Boolean).map(esc).join(' · ')}</div></div>`; };
   const avisoMelhor = atual && !ehMelhor ? `<div class="esc-aviso"><span>A mais barata seria <b>${esc(T.length===2 && m.sel.Ida!==m.sel.Volta ? `ida ${um(m.sel.Ida)} + volta ${um(m.sel.Volta)}` : um(m.sel.Ida))}</b>, ${BRL(Math.round((c.valor - m.c.valor)*100)/100)} a menos.</span> <button type="button" class="btn peq pri" data-usarsel="${m.sel.Ida}|${m.sel.Volta||''}">Usar a mais barata</button></div>` : '';
   const ecoMisto = misto && sozinho && sozinho.valor > c.valor ? `<span class="esc-chip ok">${BRL(Math.round((sozinho.valor - c.valor)*100)/100)} mais barato que só ${esc(PROG[sozinho.k].nome)}</span>` : '';
-  const topo = `<section class="esc-topo ${ehMelhor?'melhor':''}">
+  const semEscolha = '';
+  const topo = semEscolha + `<section class="esc-topo ${ehMelhor?'melhor':''}">
     <div class="esc-cab"><span class="esc-tag ${ehMelhor?'':'neutra'}">${tag}</span><b class="esc-tit">${esc(titulo)}</b>${ecoMisto}</div>
     <div class="esc-grade t${T.length}">${T.map(blocoT).join('')}
       <div class="esc-custo"><div class="esc-lbl">Custo Milhas Plus</div><div class="esc-big verde">${BRL(c.valor)}</div><div class="esc-sub">${MIL(c.milhas)} milhas + ${BRL(c.taxas)} de taxas${misto?' · duas emissões':''}</div></div></div>
@@ -6811,7 +6894,7 @@ function atualizarE1(p){
     const nv = corpo.querySelector(`.aba-cia[data-aba="${k}"] .aba-nav`); if(nv && !nv.contains(document.activeElement)){ const t = document.createElement('div'); t.innerHTML = htmlNavCia(p,k); nv.replaceWith(t.firstElementChild); } }
   { const el = corpo.querySelector('[data-abast="cmp"]'); if(el) el.textContent = rotuloCmp(p); }
   clearTimeout(atualizarE1._t);
-  atualizarE1._t = setTimeout(()=>atualizarEscolhaA(p), 250);
+  atualizarE1._t = setTimeout(()=>{ if(autoEscolher(p)){ salvar(); atualizarKpis(p); } else if(sincronizarValorMP(p)){ salvar(); atualizarKpis(p); } atualizarEscolhaA(p); }, 250);
 }
 function atualizarEscolhaA(p){
   const w = $('#detCorpo')?.querySelector('[data-escolha]'); if(!w || abertoId!==p.id) return;

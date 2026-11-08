@@ -113,19 +113,37 @@ button,input,select{font:inherit;color:inherit}
 .ola-topo{max-width:640px;margin:26px auto 0;font-size:1rem;font-weight:500;opacity:.92;text-shadow:0 1px 8px rgba(0,0,0,.35)}
 
 /* bilhete (cotação em estilo cartão de embarque) */
-.bilhete{background:#fff;border-radius:22px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);overflow:hidden;margin-bottom:12px}
-.bl-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ceu);color:#fff;padding:10px 18px;font-size:.78rem;font-weight:800;letter-spacing:.07em}
-.bl-hd .cia{background:#F26B1D;border-radius:7px;padding:3px 9px;letter-spacing:0;font-size:.8rem}
-.bl-rt{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 18px 2px}
-.bl-rt b{display:block;font-size:2.3rem;letter-spacing:-.02em;line-height:1}
-.bl-rt small{display:block;font-size:.85rem;color:var(--tinta-2);font-weight:600;margin-top:2px}
+.bilhete{display:grid;grid-template-columns:1fr;border-radius:20px;box-shadow:0 24px 60px -24px rgba(14,59,122,.45),0 4px 14px -6px rgba(14,59,122,.18);overflow:hidden;margin-bottom:12px}
+.bl-main{background:#fff;border-top:5px solid var(--sol);min-width:0}
+.bl-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px 0;font-size:.72rem;font-weight:800;letter-spacing:.07em;color:#7A889C}
+.bl-hd .cia{background:#F26B1D;color:#fff;border-radius:7px;padding:3px 9px;letter-spacing:0;font-size:.8rem}
+.bl-rt{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;padding:6px 18px 2px}
+.bl-rt b{display:block;font-size:2.6rem;letter-spacing:-.02em;line-height:1;color:var(--ceu);font-weight:800}
+.bl-rt small{display:block;font-size:.72rem;color:#7A889C;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .bl-rt .r{text-align:right}
-.bl-rt .av{color:var(--ceu-2);font-size:1.3rem;padding:0 8px}
+.bl-rt .av{color:var(--sol);font-size:1.5rem;padding:0 8px 4px}
+/* canhoto azul com o preço: sem recortes redondos, só o picote tracejado */
+.bl-stub{background:var(--ceu);color:#fff;padding:18px 18px 16px;display:flex;flex-direction:column;justify-content:center;gap:3px;border-top:2px dashed rgba(255,255,255,.6)}
+.bl-stub small{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;opacity:.78;font-weight:800}
+.bl-stub .vt-v{font-size:2.3rem;line-height:1.05;font-weight:800;color:#FFC59E;letter-spacing:-.02em;margin:2px 0 0}
+.bl-stub .vt-p{font-size:.92rem;opacity:.9}
+.bl-stub .vt-bt{margin-top:12px}
+.bl-stub .vt-val{margin-top:10px;font-size:.82rem;opacity:.85}
+.bl-stub .vt-val b{opacity:1}
+@media (min-width:600px){ .bilhete{grid-template-columns:1fr 230px} .bl-stub{border-top:0;border-left:2px dashed rgba(255,255,255,.6)} .bl-stub .vt-v{font-size:2rem} .bl-stub .vt-bt{font-size:.95rem;padding:13px 12px} }
+.bl-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.bl-chips .chip{border-radius:999px;padding:7px 13px;font-size:.88rem;font-weight:800;display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px;line-height:1.3}
+.bl-chips .chip small{font-weight:600;opacity:.85}
+.chip.ok{background:var(--ok-claro);color:#1E6B45}.chip.nao{background:#FDECEA;color:#A8261C}.chip.multa{background:var(--sol-claro);color:#B4500F}.chip.inf{background:#fff;color:var(--ceu)}.chip.cup{background:#F3F0FF;color:#4B2BB3}
+.chip a{color:inherit;text-decoration:underline;font-weight:700}
+.regras-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.regras-links a{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--linha);color:var(--ceu);border-radius:999px;padding:5px 12px;font-weight:700;font-size:.86rem;text-decoration:none}
+.regras-links a:hover{border-color:var(--ceu-2)}
 .trecho{padding:12px 18px 4px}
 .trecho .lb{font-size:.74rem;font-weight:800;letter-spacing:.08em;color:var(--sol-esc);margin-bottom:2px;text-transform:uppercase}
 .trecho .lb .tc{background:var(--nevoa);color:var(--ceu);border-radius:6px;padding:1px 6px;margin-left:4px;letter-spacing:0}
 .lin{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
-.lin .h{font-size:1.55rem;font-weight:800;line-height:1.05}
+.lin .h{font-size:1.55rem;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}
 .lin .h small{display:block;font-size:.78rem;color:var(--tinta-2);font-weight:600}
 .lin .h.r{text-align:right}
 .via{position:relative;height:40px}
@@ -134,12 +152,9 @@ button,input,select{font:inherit;color:inherit}
 .via .em{position:absolute;top:-1px;left:0;right:0;text-align:center;font-size:.72rem;font-weight:800;color:var(--sol-esc)}
 .via .em.direto{color:var(--ok)}
 .via .u{position:absolute;bottom:-4px;left:0;right:0;text-align:center;font-size:.74rem;color:var(--tinta-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.corte{position:relative;height:18px;margin-top:12px}
-.corte::before{content:"";position:absolute;left:18px;right:18px;top:8px;border-top:2px dashed #DCE4EE}
-.corte::after,.corte i{content:"";position:absolute;top:0;width:18px;height:18px;border-radius:50%;background:var(--nevoa)}
-.corte::after{right:-9px}.corte i{left:-9px}
-.bl-ft{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 18px 16px;font-size:.78rem;color:var(--tinta-2)}
-.bl-ft b{display:block;font-size:.95rem;color:var(--tinta);font-weight:700}
+.corte{height:0;margin:14px 18px 10px;border-top:2px dashed #E3E9F1}
+.bl-ft{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 18px 16px;font-size:.7rem;color:#7A889C;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.bl-ft b{display:block;font-size:.95rem;color:var(--tinta);font-weight:800;letter-spacing:0;text-transform:none}
 .bl-ex{padding:0 18px 14px;font-size:.88rem;color:var(--tinta-2)}
 .bl-ex div{padding:3px 0}.bl-ex b{color:var(--tinta)}
 .validade{justify-content:space-between;background:var(--sol-claro);color:var(--sol-esc);font-weight:800;margin-top:0;margin-bottom:16px}
@@ -333,16 +348,19 @@ h2{font-size:1.2rem;margin:0 0 4px}
 
   <!-- cotação -->
   <section id="cotacao" hidden>
-    <div class="valor-top" id="valorTop"></div>
-    <div class="reemb" id="reembTopo" hidden></div>
     <div class="bilhete">
-      <div class="bl-hd"><span id="blCod">COTAÇÃO</span><span class="cia" id="blCia" hidden></span></div>
-      <div class="bl-rt"><div><b id="blO"></b><small id="blOc"></small></div><div class="av" aria-hidden="true">✈</div><div class="r"><b id="blD"></b><small id="blDc"></small></div></div>
-      <div id="blTrechos"></div>
-      <div class="corte" aria-hidden="true"><i></i></div>
-      <div class="bl-ft" id="blFt"></div>
-      <div class="bl-ex" id="blEx"></div>
+      <div class="bl-main">
+        <div class="bl-hd"><span id="blCod">COTAÇÃO</span><span class="cia" id="blCia" hidden></span></div>
+        <div class="bl-rt"><div><small id="blOc"></small><b id="blO"></b></div><div class="av" aria-hidden="true">✈</div><div class="r"><small id="blDc"></small><b id="blD"></b></div></div>
+        <div id="blTrechos"></div>
+        <div class="corte" aria-hidden="true"></div>
+        <div class="bl-ft" id="blFt"></div>
+        <div class="bl-ex" id="blEx"></div>
+      </div>
+      <div class="bl-stub" id="valorTop"></div>
     </div>
+    <div class="bl-chips" id="blChips"></div>
+    <div class="reemb" id="reembTopo" hidden></div>
     <div class="escolha-voo" id="escolhaVoo" hidden></div>
     <div class="validade" id="validade"></div>
     <div class="caro" id="caro">
@@ -377,6 +395,7 @@ h2{font-size:1.2rem;margin:0 0 4px}
 
       <div class="reemb" id="reembAprovar" hidden></div>
       <details class="regras" id="regrasBox" hidden><summary>📄 Regras de cancelamento e remarcação</summary><div class="rg" id="regrasTxt"></div></details>
+      <div class="regras-links" id="regrasLinks" hidden></div>
       <label class="aceite" id="aceiteRegrasLbl" hidden><input type="checkbox" id="aceiteRegras"> <span>Li as regras de cancelamento e remarcação.</span></label>
       <label class="aceite"><input type="checkbox" id="aceite"> <span>Confirmo que os dados estão corretos e entendo que, depois de emitida, a passagem segue as regras da companhia aérea.</span></label>
       <label class="aceite"><input type="checkbox" id="aceitePriv"> <span>Concordo com o uso dos dados dos passageiros só para emitir as passagens e fazer o check-in, conforme a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>
@@ -533,13 +552,23 @@ function montarValorTop(){
   const el = $('#valorTop'); if(!el || !C) return;
   const par = (C.parcelas||[]), maior = par[par.length-1];
   const cmp = C.comparacao, eco = cmp && cmp.preco ? Math.round((cmp.preco - C.valorPix)*100)/100 : 0, pct = eco>0 ? Math.round(eco/cmp.preco*100) : 0;
-  el.innerHTML = `<div class="vt-l"><small>Valor da sua passagem${(C.paxQtd && ((C.paxQtd.adultos||0)+(C.paxQtd.criancas||0)+(C.paxQtd.bebes||0))>1) ? ' · todos os passageiros' : ''}</small>
-      <b class="vt-v">${BRL(C.valorPix)}</b><span>no Pix${maior ? ` · ou até ${maior.n}x de ${BRL(maior.parcela)} no cartão` : ''}</span></div>
+  const varios = C.paxQtd && ((C.paxQtd.adultos||0)+(C.paxQtd.criancas||0)+(C.paxQtd.bebes||0))>1;
+  const ate = new Date(C.validaAte), ateTxt = isFinite(ate) ? `${fmtHora(ate)} · ${ate.toLocaleDateString('pt-BR').slice(0,5)}` : '';
+  el.innerHTML = `<small>No Pix${varios ? ' · todos os passageiros' : ''}</small>
+    <b class="vt-v">${BRL(C.valorPix)}</b><span class="vt-p">${maior ? `ou até ${maior.n}x de ${BRL(maior.parcela)} no cartão` : 'à vista'}</span>
     <button type="button" class="btn pri vt-bt" id="vtAprovar">Escolher pagamento e aprovar</button>
-    ${porPessoa() ? `<div class="vt-pp">${C.grupo ? '👥 Grupo de ' + C.grupo.total + ' · ' : ''}<b>${BRL(porPessoa())}</b> por pessoa (pagantes)</div>` : ''}
-    ${C.desconto ? `<div class="vt-cup">🏷️ Cupom ${esc(C.desconto.cupom)}: −${BRL(C.desconto.valor)} já descontado</div>` : ''}
-    ${eco>0 ? `<div class="vt-eco"><b>Você economiza ${BRL(eco)} (${pct}%)</b><small>Na ${esc(cmp.cia)}, comprando em dinheiro: ${BRL(cmp.preco)}</small></div>` : ''}
-    ${Number(C.clientesTotal) > 0 ? `<div class="vt-cli">✈️ Você está entre os ${Number(C.clientesTotal).toLocaleString('pt-BR')} clientes que já voaram com a gente.</div>` : ''}`;
+    ${ateTxt ? `<span class="vt-val">Válida até <b>${ateTxt}</b></span>` : ''}`;
+  const r = C.reembolso || '', k = /^Não/.test(r) ? 'nao' : /multa/i.test(r) ? 'multa' : r ? 'ok' : '';
+  const lk = (C.regrasLinks||[]).filter(x=>x && /^https?:\/\//.test(x.url||''));
+  const regrasA = lk.length ? ` · <a href="${esc(lk[0].url)}" target="_blank" rel="noopener">ver regras${lk.length>1?'':' da '+esc(lk[0].cia)}</a>` : '';
+  $('#blChips').innerHTML = [
+    eco>0 ? `<span class="chip ok">Você economiza ${BRL(eco)} (${pct}%) <small>vs. ${esc(cmp.cia)} em dinheiro</small></span>` : '',
+    r ? `<span class="chip ${k}">${k==='nao'?'✕ Não reembolsável':k==='multa'?'Reembolsável com multa':'✓ Reembolsável'}${regrasA}</span>` : '',
+    porPessoa() ? `<span class="chip inf">${C.grupo ? '👥 Grupo de ' + C.grupo.total + ' · ' : ''}${BRL(porPessoa())} por pessoa</span>` : '',
+    C.desconto ? `<span class="chip cup">🏷️ Cupom ${esc(C.desconto.cupom)}: −${BRL(C.desconto.valor)}</span>` : '',
+    Number(C.clientesTotal) > 0 ? `<span class="chip inf">✈️ ${Number(C.clientesTotal).toLocaleString('pt-BR')} clientes já voaram com a gente</span>` : ''
+  ].join('');
+  $('#blChips').hidden = !$('#blChips').innerHTML;
   $('#vtAprovar').onclick = () => {
     const alvo = $('#formAprovar');
     if(typeof EMBUTIDA!=='undefined' && EMBUTIDA) window.parent.postMessage({tipo:'vpo-cot-rolar', y: alvo.getBoundingClientRect().top + scrollY}, location.origin);
@@ -618,8 +647,8 @@ function montarBilhete(){
   const vr = C.voltaRota;
   $('#blTrechos').innerHTML = trechoHTML('Ida', C.ida, C.origem.iata, C.destino.iata, dif) + trechoHTML('Volta', C.volta, vr ? vr.de.iata : C.destino.iata, vr ? vr.para.iata : C.origem.iata, dif);
   $('#blFt').innerHTML = `<div>Passageiros<b>${esc(C.pax||'—')}</b></div><div>Bagagem<b>${esc(C.bagagem||'Mala de mão')}</b></div><div>Viagem<b>${vr ? 'Cidades diferentes' : C.volta?'Ida e volta':'Só ida'}</b></div>`;
-  $('#blEx').innerHTML = [vr?`<div>↩️ <b>Volta:</b> ${esc(vr.de.cidade)} (${esc(vr.de.iata)}) → ${esc(vr.para.cidade)} (${esc(vr.para.iata)})</div>`:'', C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:'', C.desconto?`<div>🏷️ <b>Cupom ${esc(C.desconto.cupom)}:</b> −${BRL(C.desconto.valor)} (já descontado)</div>`:'', C.reembolso?`<div>${/^Não/.test(C.reembolso)?'⚠️':'✅'} <b>Se cancelar:</b> ${esc(C.reembolso)}</div>`:''].join('');
-  $('#blEx').hidden = !vr && !C.datasAlt && !C.pet && !C.desconto && !C.reembolso;
+  $('#blEx').innerHTML = [vr?`<div>↩️ <b>Volta:</b> ${esc(vr.de.cidade)} (${esc(vr.de.iata)}) → ${esc(vr.para.cidade)} (${esc(vr.para.iata)})</div>`:'', C.datasAlt?`<div>📅 <b>Datas:</b> ${esc(C.datasAlt)}</div>`:'', C.pet?`<div>🐾 <b>Pet:</b> ${esc(C.pet)}</div>`:'', C.desconto?`<div>🏷️ <b>Cupom ${esc(C.desconto.cupom)}:</b> −${BRL(C.desconto.valor)} (já descontado)</div>`:''].join('');
+  $('#blEx').hidden = !vr && !C.datasAlt && !C.pet && !C.desconto;
 }
 function linha(rot, val){ return val ? `<div class="linha"><span>${esc(rot)}</span><b>${esc(val)}</b></div>` : ''; }
 function vencida(){ return Date.now() >= (C.validaAteMs || Date.parse(C.validaAte)); }
@@ -805,12 +834,16 @@ let avisosVistos = false, PUB = {};
 function montarReembolso(){
   const r = C.reembolso || '', k = /^Não/.test(r) ? 'nao' : /multa/i.test(r) ? 'multa' : r ? 'sim' : '';
   const html = r ? `<span aria-hidden="true">${k==='nao'?'⚠️':k==='multa'?'💸':'✅'}</span><span>${k==='nao' ? 'Passagem não reembolsável em caso de cancelamento' : k==='multa' ? 'Reembolsável com multa em caso de cancelamento' : 'Passagem reembolsável em caso de cancelamento'}<small>Veja as regras completas antes de aprovar.</small></span>` : '';
-  ['#reembTopo','#reembAprovar'].forEach(s=>{ const el = $(s); el.className = 'reemb ' + k; el.innerHTML = html; el.hidden = !r; });
+  ['#reembAprovar'].forEach(s=>{ const el = $(s); el.className = 'reemb ' + k; el.innerHTML = html; el.hidden = !r; });
+  $('#reembTopo').hidden = true;
 }
 function montarRegras(){
   const r = C.regras;
   const txt = Array.isArray(r) ? r.filter(x=>x && x.texto).map(x=>`<b>${esc(x.prog)}</b>\n${esc(x.texto)}`).join('\n\n') : (r ? esc(r) : '');
-  $('#regrasBox').hidden = !txt; $('#aceiteRegrasLbl').hidden = !txt; $('#regrasTxt').innerHTML = txt;
+  const lk = (C.regrasLinks||[]).filter(x=>x && /^https?:\/\//.test(x.url||''));
+  const links = lk.length ? `<div class="regras-links">${lk.map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">Regras de cancelamento da ${esc(x.cia)} ↗</a>`).join('')}</div>` : '';
+  $('#regrasBox').hidden = !txt; $('#aceiteRegrasLbl').hidden = !txt && !links; $('#regrasTxt').innerHTML = txt;
+  $('#regrasLinks').innerHTML = lk.map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">Regras de cancelamento da ${esc(x.cia)} ↗</a>`).join(''); $('#regrasLinks').hidden = !lk.length;
   $('#promoLbl').hidden = !!C.promo;
 }
 $('#avisoCorrigir').addEventListener('click', ()=>{ $('#avisosPax').hidden = true; const p = document.querySelector('.pax input'); if(p) p.scrollIntoView({behavior:'smooth', block:'center'}); });
