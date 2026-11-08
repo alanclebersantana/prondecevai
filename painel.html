@@ -691,8 +691,8 @@ body.sem-emitir [data-acao="registrarEmissao"], body.sem-emitir [data-acao="comp
 .fab span{font-size:1.35rem;line-height:.8}
 
 /* Detalhe: cabeçalho com foto, resumo fixo e etapas ao lado */
-.det-cab{position:relative;color:#fff;background:url("ceu-asa.jpg") center 40%/cover no-repeat,var(--ceu)}
-.det-cab::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,25,55,.5),rgba(9,25,55,.86))}
+.det-cab{position:relative;color:#fff;background:linear-gradient(135deg,#0E3B7A,#0A2B5C)}
+.det-cab::before{content:none}
 .det-cab > *{position:relative}
 .det-cab .det-topo{background:transparent;border:0;padding:14px 16px 8px;align-items:flex-start}
 .det-cab .fechar{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff}
@@ -1064,6 +1064,53 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .sky-simples{display:flex;flex-direction:column;gap:12px;background:var(--fundo);border-radius:14px;padding:16px}
 .sky-simples .sky-acoes{margin-left:0}
 
+/* barra de cima: pedido do cliente */
+.det-ped{display:grid;grid-template-columns:1.2fr 1.3fr .85fr .9fr 1.4fr auto;gap:8px;padding:0 var(--lado,16px) 12px;align-items:stretch}
+.det-ped:empty{display:none}
+.dp-b{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:7px 11px;min-width:0}
+.dp-l{display:block;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.78}
+.dp-b b{display:block;font-size:.98rem;line-height:1.25}
+.dp-b small{display:block;font-size:.8rem;opacity:.88}
+.dp-b .dp-av{color:#FFC59E;font-weight:700;opacity:1}
+.dp-fim{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:4px}
+.dp-ver{font:inherit;font-weight:800;font-size:.9rem;background:#fff;color:#0E3B7A;border:0;border-radius:10px;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.dp-mud{font-size:.76rem;color:#FFC59E;font-weight:700;text-align:right;max-width:220px}
+.det-chips{padding-top:0}
+/* abas da busca */
+.abas-cia{display:flex;gap:6px;flex-wrap:wrap;border-bottom:3px solid var(--linha);margin:0 0 14px}
+.abas-cia button{font:inherit;display:flex;align-items:center;gap:9px;padding:9px 16px;border:3px solid transparent;border-bottom:0;border-radius:14px 14px 0 0;background:var(--fundo);color:var(--tinta-2);font-weight:800;font-size:1.02rem;cursor:pointer;margin-bottom:-3px;text-align:left}
+.abas-cia button small{display:block;font-size:.76rem;font-weight:700}
+.abas-cia button.on{background:var(--card);color:var(--tinta);border-color:var(--linha)}
+.abas-cia small.ok{color:var(--ok)}.abas-cia small.meia{color:var(--sol-esc)}.abas-cia small.vz,.abas-cia small.x{color:var(--tinta-2)}
+.ab-dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none}
+.ab-st{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700;background:var(--fundo);color:var(--tinta-2)}
+.ab-st.ok{background:var(--ok-claro);color:var(--ok)}.ab-st.meia{background:var(--sol-claro);color:var(--sol-esc)}
+.aba-p[hidden]{display:none}
+.aba-cia .e1-prog{border-radius:16px}
+.aba-cia .e1-grade{grid-template-columns:1fr}
+.aba-cia .e1-prints{flex-direction:row;flex-wrap:wrap}
+.aba-cia .e1-print{flex:1 1 280px;min-height:170px}
+.aba-cia .e1-print img{max-height:320px}
+.aba-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+/* comparativo por cia */
+.cmp-cias{margin-top:18px}
+.cmp-cias h4{margin:0 0 8px;font-size:1.1rem}.cmp-cias h4 small{font-weight:600;color:var(--tinta-2);font-size:.85rem;margin-left:6px}
+.cmp-rol{overflow-x:auto}
+.cmp-tab{width:100%;border-collapse:collapse;min-width:760px}
+.cmp-tab th{text-align:left;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2);padding:6px 8px;font-weight:700}
+.cmp-tab td{padding:8px;border-top:1.5px solid var(--linha);vertical-align:middle}
+.cmp-cia{width:170px}.cmp-cia span:first-child{display:flex;align-items:center;gap:8px;font-size:1.05rem}.cmp-cia .ab-st{margin-top:5px}
+.cmp-op{display:flex;align-items:center;gap:10px;border:1.5px solid var(--linha);border-radius:12px;padding:9px 12px;background:var(--card);cursor:pointer}
+.cmp-op input{width:18px;height:18px;accent-color:var(--sol);flex:none}
+.cmp-op.sel{border-color:var(--sol);background:var(--sol-claro)}
+.cmp-op.menor{box-shadow:inset 0 0 0 1.5px #1E7B4F}
+.cmp-h b{display:block;font-size:1.12rem}.cmp-h small,.cmp-v small{display:block;font-size:.8rem;color:var(--tinta-2)}
+.cmp-v{margin-left:auto;text-align:right}.cmp-v b{font-size:1.05rem}
+.cmp-vazio{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px dashed var(--linha);border-radius:12px;padding:9px 12px;color:var(--tinta-2);font-weight:600;min-height:44px}
+.cmp-mesma{text-align:right;width:170px}.cmp-mesma b{display:block;font-size:1.08rem}.cmp-mesma small{display:block;color:var(--tinta-2);font-size:.8rem}
+@media (max-width:1200px){ .det-ped{grid-template-columns:repeat(3,minmax(0,1fr))} .dp-fim{align-items:flex-start} }
+@media (max-width:760px){ .det-ped{grid-template-columns:repeat(2,minmax(0,1fr))} .abas-cia button{padding:8px 10px;font-size:.92rem} }
+
 </style>
 </head>
 <body>
@@ -1373,6 +1420,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
       <div class="det-tit"><span class="det-cod" id="detCod"></span><h2 id="detTitulo">—</h2><small id="detSub"></small></div>
       <select id="detStatus" aria-label="Mover para a etapa"></select>
     </div>
+    <div class="det-ped" id="detPed"></div>
     <div class="det-chips" id="detChips"></div>
   </div>
   <div class="det-kpis" id="detKpis"></div>
@@ -2842,8 +2890,10 @@ function renderDetalhe(){
   const p = pedido(abertoId); if(!p) return;
   $('#detCod').textContent = `${p.id} · recebido ${fmtDataHora(p.criadoEm)}`;
   $('#detTitulo').textContent = `${p.origem.iata} → ${p.destino.iata}`;
-  $('#detSub').textContent = [p.cliente.nome, fmtTel(p.cliente.whatsapp), fmtDataCurta(p.dataIda)+(p.dataVolta?' – '+fmtDataCurta(p.dataVolta):''), textoPax(p), p.tipo==='ida_volta'?'ida e volta':'só ida'].filter(Boolean).join(' · ');
-  { const foto = fotoDestino(p.destino.iata), cab = $('#detCab'); cab.dataset.foto = p.destino.iata; cab.style.backgroundImage = foto ? `url("${foto}")` : ''; cab.classList.toggle('com-foto', !!foto); }
+  $('#detSub').textContent = [p.cliente.nome, fmtTel(p.cliente.whatsapp)].filter(Boolean).join(' · ');
+  { const cab = $('#detCab'); cab.style.backgroundImage = ''; cab.classList.remove('com-foto');
+    $('#detPed').innerHTML = htmlPedidoCab(p);
+    const vp = $('#detPed [data-verpedido]'); if(vp) vp.onclick = ()=>{ const b0 = $('#detCorpo .passos-det [data-passo="0"]'); if(b0) b0.click(); }; }
   { const ic = infoCliente(p), ch = [];
     if(ic.anteriores.length) ch.push(`<span class="chip">⭐ ${ic.anteriores.length+1}ª compra</span>`);
     if(ic.indicadoPor) ch.push(`<span class="chip">🤝 indicado por ${esc(ic.indicador ? ic.indicador.nome.split(' ')[0] : ic.indicadoPor)}</span>`);
@@ -2879,7 +2929,6 @@ function renderDetalhe(){
       <div class="conteudo"><ul class="hist-lista">${[...p.log].reverse().map(l=>`<li><time>${fmtDataHora(l.em)}</time><span>${esc(l.txt)}</span></li>`).join('')}</ul></div></details>` : ''}
     ${p.status==='perdido' ? `<div class="acoes"><button type="button" class="btn peq" data-acao="restaurar">↺ Restaurar para ${esc(NOME_ETAPA[etapaAnterior(p)])}</button><button type="button" class="btn perigo peq" data-acao="excluir">Excluir pedido</button></div>`:''}
   `;
-  [...$('#detCorpo').children].filter(e=>e.matches('details.etapa')).slice(1).forEach(d=>{ if(d.querySelector('summary h3')?.textContent.startsWith('Histórico')) return; const c = d.querySelector(':scope > .conteudo'); if(c) c.insertAdjacentHTML('afterbegin', htmlPedidoFixo(p)); });
   montarPassos(p, passo);
   ligarDetalhe(p);
   atualizarCalculos(p);
@@ -3001,14 +3050,13 @@ function etapaBusca(p, cls, aberto){
       const pp = n(b['pp'+T]) || (n(b[campo]) ? Math.round(n(b[campo])/pag) : '');
       return `<div class="g2 mil-pp"><div class="campo"><label>Milhas · por pessoa</label><input type="number" min="0" step="100" inputmode="numeric" data-pp="${k}|${T}" value="${esc(pp)}" placeholder="1 pessoa"></div>
         <div class="campo"><label title="${pag} pagantes${qBebes(p)?', sem o bebê':''}">Total (× ${pag})</label>${tot}</div></div>`; };
-    return htmlProgE1(p, k, meta, {chip, opcoes, buscandoProg, menor, cmp});
+    return `<div class="aba-p aba-cia" data-aba="${k}" ${abaAtual(p)===k?'':'hidden'}>${htmlProgE1(p, k, meta, {chip, opcoes, buscandoProg, menor, cmp})}${htmlNavCia(p,k)}</div>`;
   }).join('');
   return `<details class="etapa ${cls}" ${aberto}>
     <summary><span class="n">1</span><h3>Pesquisar nos programas</h3><span class="res">${p.escolhido?'Escolhido: '+nomeProgramas(p):''}</span></summary>
     <div class="conteudo">
-      <div class="abas-busca" role="tablist"><button type="button" role="tab" data-abab="prog" class="${abaBusca[p.id]==='sky'?'':'on'}" aria-selected="${abaBusca[p.id]!=='sky'}">✈️ Programas</button><button type="button" role="tab" data-abab="sky" class="${abaBusca[p.id]==='sky'?'on':''}" aria-selected="${abaBusca[p.id]==='sky'}">🔎 Skyscanner <small>preço em dinheiro</small></button></div>
-      <div class="aba-sky" id="skyBox" ${abaBusca[p.id]==='sky'?'':'hidden'}>${htmlSky(p)}</div>
-      <div class="aba-prog" ${abaBusca[p.id]==='sky'?'hidden':''}>
+      ${htmlAbasCia(p)}
+      <div class="aba-p" data-aba="cmp" ${abaAtual(p)==='cmp'?'':'hidden'}>
       <div class="acoes" style="margin-top:0">
         ${rodandoAqui ? `<button type="button" class="btn pri rodando" data-acao="buscaAuto" aria-busy="true" aria-disabled="true"><span class="gira"></span>Buscando… <span data-cron>${cronBusca()}</span></button>`
           : naFila ? `<button type="button" class="btn na-fila" data-acao="buscaAuto" aria-disabled="true">Na fila · começa após a busca atual</button>`
@@ -3017,15 +3065,13 @@ function etapaBusca(p, cls, aberto){
         <button type="button" class="btn peq" data-acao="copiarTrecho">Copiar dados do trecho</button>
         <button type="button" class="btn peq perigo" data-limpar="*" style="margin-left:auto">🧹 Limpar todos os programas</button>
       </div>
-      <div class="links-busca" id="linksBusca">${Object.entries(PROG).map(([k,m])=>`<a class="btn peq" href="${esc(montarUrl(cfg.urls[k],p))}" target="_blank" rel="noopener" style="border-color:${m.cor};color:${m.cor}">Abrir ${m.nome}</a>`).join('')}</div>
-      <p class="nota" style="margin:8px 0 0">${extensaoAtiva ? 'A busca roda sozinha quando o pedido chega e preenche cada programa com o voo de menos milhas. Para trocar, use "Voos encontrados". O que você digitar à mão não é sobrescrito. Os sites ficam abertos depois da busca: use "ver no site" para conferir.' : 'Abra o painel no Chrome com a extensão para a busca rodar sozinha.'} "Pesquisar nos 3" abre Smiles, LATAM Pass e Azul, cada um numa aba, e copia o trecho para você colar. Sem a extensão, o navegador pode bloquear abas: use os botões de cada site.</p>
-      <p class="nota" style="margin:6px 0 0" id="avisoExtensao">${extensaoAtiva ? '✓ Extensão de captura ligada: nos sites, clique no ícone dela (ou Alt+Shift+C) e depois no voo. O print e os dados chegam aqui sozinhos, com este pedido aberto.' : 'Instale a extensão de captura para trazer o print e os dados do voo sem printar à mão.'}</p>
       ${rodandoAqui ? htmlBuscaRodando() : ''}
       ${htmlPaxCot(p)}
       <div class="esc-wrap" data-escolha>${htmlEscolhaA(p)}</div>
-      <details class="det-progs" data-detprogs ${progsAbertos(p) ? 'open' : ''}><summary>Editar voos, milhas, taxas e prints de cada programa</summary>
-      <div class="e1-lista">${quadros}</div></details>
+      <p class="nota" style="margin:12px 0 0" id="avisoExtensao">${extensaoAtiva ? '✓ Extensão de captura ligada: nos sites, clique no ícone dela (ou Alt+Shift+C) e depois no voo. O print e os dados entram sozinhos na aba da cia.' : 'Instale a extensão de captura para trazer o print e os dados do voo sem digitar à mão.'}</p>
       </div>
+      ${quadros}
+      <div class="aba-p" data-aba="sky" id="skyBox" ${abaAtual(p)==='sky'?'':'hidden'}>${htmlSky(p)}</div>
     </div>
   </details>`;
 }
@@ -3438,9 +3484,7 @@ function ligarDetalhe(p){
     logar(p, `${PROG[k].nome} · ${tr}: milhas lidas tratadas como ${p.auto.totalMan[c]?'total do grupo':'por pessoa'}`);
     salvar(true); renderDetalhe(); }));
   corpo.querySelectorAll('[data-altoff]').forEach(ch=>ch.addEventListener('change',()=>{ p.busca[ch.dataset.altoff].altOff = !ch.checked; salvar(true); renderDetalhe(); }));
-  corpo.querySelectorAll('[data-abab]').forEach(bt=>bt.addEventListener('click',()=>{ const a = bt.dataset.abab, et = bt.closest('.conteudo'); abaBusca[p.id] = a;
-    et.querySelectorAll('[data-abab]').forEach(x=>{ x.classList.toggle('on', x===bt); x.setAttribute('aria-selected', x===bt); });
-    et.querySelector('.aba-sky').hidden = a!=='sky'; et.querySelector('.aba-prog').hidden = a==='sky'; }));
+
   ligarE1(p, corpo);
   corpo.querySelectorAll('[data-flex]').forEach(bt=>bt.addEventListener('click',()=>usarDataFlex(p, bt.dataset.flex)));
   corpo.querySelectorAll('[data-printauto]').forEach(bt=>bt.addEventListener('click',async e=>{ e.stopPropagation(); const [k,T] = bt.dataset.printauto.split('|'); bt.disabled = true; bt.textContent = 'Tirando o print…'; await capturarPrint(p,k,T); bt.disabled = false; }));
@@ -5032,6 +5076,7 @@ function aplicarCaptura(c0, p){
 }
 function fecharCaptura(c, p, msg){
   if(capModalId===c.id) capModalId = null;
+  if(c.programa && PROG[c.programa] && abaBusca[p.id]!=='cmp') abaBusca[p.id] = c.programa;
   capturasAplicadas.add(c.id); capturasEspera.delete(c.id);
   salvar(true);
   if(abertoId===p.id) renderDetalhe();
@@ -5912,7 +5957,6 @@ function renderExtrasDetalhe(p){
       <p class="ex-tx">A busca automática usa lotes de até 9 passageiros. Confira se há assentos para o grupo todo antes de cotar.</p>
       ${pp ? `<details><summary class="nota" style="cursor:pointer">Quem já pagou (${(p.grupoPagos||[]).filter(Boolean).length} de ${pag.length})</summary><div class="ex-pagos">${pag.map(i=>`<label><input type="checkbox" ${p.grupoPagos?.[i]?'checked':''} onchange="marcarPagoGrupo('${p.id}',${i},this.checked)"> ${esc(nomes[i]?.nome || 'Pagante '+(i+1))}</label>`).join('')}</div></details>` : ''}</div>`); }
   if(p.assento) b.push(`<div class="ex-bloco"><b>💺 Quer escolher assento: ${esc(({janela:'janela', corredor:'corredor', juntos:'sentar juntos'})[p.assento.pref]||p.assento.pref)}</b> <small>pago à parte: confirme o valor com o cliente e escolha no check-in</small></div>`);
-  if(p.voltaOrigem || p.voltaDestino) b.push(`<div class="ex-bloco"><b>↩️ Volta de outra cidade:</b> <small>${esc(voltaDe(p))} → ${esc(voltaPara(p))} (ida ${esc(p.origem.iata)} → ${esc(p.destino.iata)})</small></div>`);
   const r = p.cotacao?.resposta;
   if(r?.aceites) b.push(`<div class="ex-bloco"><small>🔒 Uso dos dados aceito em ${fmtDataHora(r.aceites.privacidade)}${r.aceites.regras ? ' · 📄 regras de cancelamento e remarcação aceitas em ' + fmtDataHora(r.aceites.regras) : ''}${p.dadosApagadosEm?' · dados dos passageiros apagados em '+fmtDataHora(p.dadosApagadosEm):''}</small></div>`);
   if((p.alteracoesVoo||[]).length) b.push(`<div class="ex-bloco"><small>✈️ Alterações da companhia: ${p.alteracoesVoo.map(a=>`${esc(a.trecho)} ${esc(a.antes)} → ${esc(a.depois)}`).join(' · ')}</small></div>`);
@@ -6319,7 +6363,7 @@ function verPrintsSel(p){
 }
 function htmlEscolhaA(p){
   const T = trechosDe(p), m = melhorSel(p);
-  if(!m) return `<div class="esc-vazio">Assim que a busca trouxer os voos (ou você digitar as milhas embaixo), a melhor combinação aparece aqui, grande.</div>`;
+  if(!m) return `<div class="esc-vazio">Assim que a busca trouxer os voos (ou você preencher as abas de cada cia), a melhor combinação aparece aqui, grande.</div>` + htmlCmpCias(p, {});
   const atual = selAtual(p), mostra = atual && custoSel(p, atual) ? atual : m.sel, c = custoSel(p, mostra), ehMelhor = JSON.stringify(mostra)===JSON.stringify(m.sel);
   const misto = T.length===2 && mostra.Ida!==mostra.Volta;
   const um = ks => PROG[ks].nome;
@@ -6350,7 +6394,7 @@ function htmlEscolhaA(p){
       <span class="esc-op-valor"><b>${BRL(ct.valor)}</b><small>${ct.valor - min < 0.01 ? 'o menor' : '+ ' + BRL(Math.round((ct.valor-min)*100)/100)}</small></span></label>`; }).join('');
   const trechos = `<div class="esc-trocar"><h4>Trocar ${T.length===2?'ida ou volta':'o voo'} <small>o total em cima muda na hora</small></h4>
     <div class="esc-cols t${T.length}">${T.map(t=>`<div class="esc-col"><div class="esc-col-cab"><b>${t}</b> <span>${fmtDataCurta(dataT(t))} · ${t==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</span></div>${linhas(t)}</div>`).join('')}</div></div>`;
-  return topo + trechos;
+  return topo + htmlCmpCias(p, mostra);
 }
 
 /* =========================================================
@@ -6419,7 +6463,7 @@ function htmlProgE1(p, k, meta, x){
       <label class="e1-c"><span class="e1-l">Sai</span><input type="time" data-bind="busca.${k}.saida${T}" value="${esc(b['saida'+T]||'')}" class="${b['saida'+T]?'':'vazio'}"></label>
       <label class="e1-c"><span class="e1-l">Chega</span><input type="time" data-bind="busca.${k}.chegada${T}" value="${esc(b['chegada'+T]||'')}" class="${b['chegada'+T]?'':'vazio'}"><span class="e1-dur" data-e1dur="${k}|${T}">${durE1(b,T)}</span></label>
       <div class="e1-c"><span class="e1-l">Paradas</span><div class="e1-seg" role="group" aria-label="Paradas da ${tr}">${ROT_PAR.map((r,i)=>`<button type="button" class="${q===i?'on':''}" data-e1par="${k}|${T}|${i}" aria-pressed="${q===i}">${r}</button>`).join('')}</div>${escal}</div>
-      <label class="e1-c"><span class="e1-l">Milhas / pessoa</span><input type="number" min="0" step="100" inputmode="numeric" data-pp="${k}|${T}" value="${esc(pp)}" placeholder="0" class="${pp?'':'vazio'}"></label>
+      <label class="e1-c"><span class="e1-l">Milhas / pessoa</span><input type="number" min="0" step="100" inputmode="numeric" data-pp="${k}|${T}" value="${esc(pp)}" placeholder="milhas" class="${pp?'':'vazio'}"></label>
       <label class="e1-c"><span class="e1-l">Taxa (total)</span><input type="number" min="0" step="0.01" inputmode="decimal" data-e1tx="${k}|${T}" value="${tx.v==='' ? '' : n(tx.v).toFixed(2)}" placeholder="0,00" class="${tx.est?'est':''} ${tx.v===''&&n(b['milhas'+T])?'vazio':''}" title="${tx.est?'Metade da taxa total digitada: confira e corrija se precisar':''}">${tx.est?'<span class="e1-dur">metade do total</span>':''}</label>
       ${extra ? `<div class="e1-extra">${extra}</div>` : ''}
     </div>`;
@@ -6468,6 +6512,9 @@ function atualizarE1(p){
     const cl = corpo.querySelector(`[data-e1custol="${k}"]`); if(cl) cl.textContent = ct.l;
     for(const T of trechosDe(p)){ const d = corpo.querySelector(`[data-e1dur="${k}|${T}"]`); if(d) d.innerHTML = durE1(b,T); }
   }
+  for(const k in PROG){ const s = statusCia(p,k), el = corpo.querySelector(`[data-abast="${k}"]`); if(el){ el.textContent = s.t; el.className = s.c; }
+    const nv = corpo.querySelector(`.aba-cia[data-aba="${k}"] .aba-nav`); if(nv && !nv.contains(document.activeElement)){ const t = document.createElement('div'); t.innerHTML = htmlNavCia(p,k); nv.replaceWith(t.firstElementChild); } }
+  { const el = corpo.querySelector('[data-abast="cmp"]'); if(el) el.textContent = rotuloCmp(p); }
   clearTimeout(atualizarE1._t);
   atualizarE1._t = setTimeout(()=>atualizarEscolhaA(p), 250);
 }
@@ -6581,6 +6628,88 @@ function mudarPax(p, cod){
   logar(p, `Passageiros na cotação: ${textoPax(p)}`);
   salvar(true); renderDetalhe();
   if(pag1!==pag0) toast(`Milhas e taxas recalculadas para ${pag1} pagante${pag1>1?'s':''}`);
+}
+
+/* ---------- abas da busca: comparativo + uma por cia ---------- */
+document.addEventListener('click', e=>cliqueAba(e));
+function abaAtual(p){ const a = abaBusca[p.id]; return a==='prog' || !a ? 'cmp' : a; }
+function statusCia(p, k){
+  const b = p.busca[k]||{}, T = trechosDe(p);
+  if(b.semDisp) return {c:'x', t:'sem disponibilidade'};
+  const com = T.filter(t=>n(b['milhas'+t]));
+  if(com.length===T.length) return {c:'ok', t: T.length===2 ? '✓ ida e volta' : '✓ preenchida'};
+  if(com.length) return {c:'meia', t: `✓ ${com[0].toLowerCase()} · falta ${T.find(t=>!com.includes(t)).toLowerCase()}`};
+  return {c:'vz', t:'não preenchida'};
+}
+function rotuloCmp(p){ const m = melhorSel(p); return m ? `melhor: ${BRL(m.c.valor)}` : 'ainda sem valores'; }
+function htmlAbasCia(p){
+  const a = abaAtual(p);
+  const bt = (k, rot, sub, cls, cor) => `<button type="button" role="tab" data-abab="${k}" class="${a===k?'on':''}" aria-selected="${a===k}">${cor ? `<i class="ab-dot" style="background:${cor}"></i>` : ''}<span>${rot}<small class="${cls||''}" data-abast="${k}">${sub}</small></span></button>`;
+  return `<nav class="abas-cia" role="tablist" aria-label="Comparativo e cias">${bt('cmp','⭐ Comparativo', rotuloCmp(p), 'ok')}${Object.entries(PROG).map(([k,m])=>{ const s = statusCia(p,k); return bt(k, m.nome, s.t, s.c, m.cor); }).join('')}${bt('sky','🔎 Skyscanner','abre o site','vz')}</nav>`;
+}
+function proximaCia(p, k){ const ks = Object.keys(PROG), i = ks.indexOf(k); for(let j=1;j<ks.length;j++){ const x = ks[(i+j)%ks.length]; const s = statusCia(p,x); if(s.c==='vz' || s.c==='meia') return x; } return null; }
+function htmlNavCia(p, k){
+  const s = statusCia(p,k), nx = proximaCia(p,k);
+  return `<div class="aba-nav"><button type="button" class="btn" data-abab="cmp">← Comparativo</button><span class="ab-st ${s.c}" data-abast2="${k}">${s.c==='ok' ? `${esc(PROG[k].nome)} completa: já está no comparativo` : s.c==='meia' ? `${esc(s.t)}: o que já tem entra no comparativo` : s.c==='x' ? 'Sem disponibilidade: fica fora da comparação' : 'Preencha a ida e a volta (ou capture com a extensão)'}</span>
+    ${nx ? `<button type="button" class="btn pri" data-abab="${nx}" style="margin-left:auto">Próxima: ${esc(PROG[nx].nome)} →</button>` : `<button type="button" class="btn pri" data-abab="cmp" style="margin-left:auto">Ver o comparativo →</button>`}</div>`;
+}
+function irAba(p, key){
+  const corpo = $('#detCorpo'); if(!corpo) return;
+  abaBusca[p.id] = key;
+  corpo.querySelectorAll('.abas-cia [data-abab]').forEach(x=>{ const on = x.dataset.abab===key; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); });
+  corpo.querySelectorAll('.aba-p').forEach(x=>{ x.hidden = x.dataset.aba!==key; });
+  if(key==='cmp') atualizarEscolhaA(p);
+  const nav = corpo.querySelector('.abas-cia'); if(nav && nav.getBoundingClientRect().top < corpo.getBoundingClientRect().top + 4) nav.scrollIntoView({block:'start'});
+}
+function cliqueAba(e){
+  const bt = e.target.closest('[data-abab],[data-irprog]'); if(!bt || !abertoId) return;
+  const p = pedido(abertoId); if(!p) return;
+  const key = bt.dataset.abab || bt.dataset.irprog;
+  if(key==='sky' || key==='cmp' || PROG[key]){ e.preventDefault(); const b1 = $('#detCorpo .passos-det [data-passo="1"]'); const et = bt.closest('details.etapa'); if(!et && b1) b1.click(); irAba(p, key); }
+}
+// tabela do comparativo: uma linha por cia, ida e volta lado a lado
+function htmlCmpCias(p, mostra){
+  const T = trechosDe(p), dataT = t => t==='Ida' ? p.dataIda : p.dataVolta;
+  const minT = t => Math.min(...Object.keys(PROG).map(x=>custoTrecho(p,x,t)?.valor ?? Infinity));
+  const melhorUm = (()=>{ let b = null; for(const k in PROG){ if(!progCompleto(p,k)) continue; const x = custoMP(p,k); if(x && (!b || x.valor < b)) b = x.valor; } return b; })();
+  const best = melhorSel(p);
+  const celula = (k, t) => {
+    const b = p.busca[k]||{}, ct = custoTrecho(p,k,t), mn = minT(t), sel = mostra && mostra[t]===k;
+    if(!ct){
+      const msg = b.semDisp ? 'Sem disponibilidade' : n(b['milhas'+t]) ? 'Sem valor na tabela da Milhas Plus' : `${t} ainda não preenchida`;
+      return `<div class="cmp-vazio"><span>${msg}</span>${b.semDisp ? '' : `<button type="button" class="btn peq" data-irprog="${k}">Preencher na aba ${esc(PROG[k].nome.split(' ')[0])} →</button>`}</div>`;
+    }
+    const d = duracaoVoo({saida:b['saida'+t], chegada:b['chegada'+t]}), pp = n(b['pp'+t]) || Math.round(n(b['milhas'+t])/pagantes(p));
+    return `<label class="cmp-op ${sel?'sel':''} ${ct.valor - mn < 0.01 ? 'menor' : ''}"><input type="radio" name="sel-${t}-${p.id}" data-sel="${t}|${k}" ${sel?'checked':''}>
+      <span class="cmp-h"><b>${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}${b['chegada'+t] && b['saida'+t] && b['chegada'+t] < b['saida'+t] ? ' <span class="mais1">+1</span>' : ''}</b><small>${[textoParadas(b,t).replace(/ de espera/g,'') || '', d!=null?fmtMin(d):'', MIL(pp)+' mi/pessoa'].filter(Boolean).map(esc).join(' · ')}</small></span>
+      <span class="cmp-v"><b>${BRL(ct.valor)}</b><small>${ct.valor - mn < 0.01 ? 'o menor' : '+ ' + BRL(Math.round((ct.valor-mn)*100)/100)}</small></span></label>`;
+  };
+  const linhas = Object.entries(PROG).map(([k,m])=>{
+    const b = p.busca[k]||{}, s = statusCia(p,k), nada = !T.some(t=>n(b['milhas'+t])) && !b.semDisp;
+    const mesma = T.length===2 ? (progCompleto(p,k) && custoMP(p,k) ? (()=>{ const v = custoMP(p,k).valor; return `<b>${BRL(v)}</b><small>${best && v - best.c.valor > 0.01 ? '+ ' + BRL(Math.round((v-best.c.valor)*100)/100) + ' que a melhor' : 'a melhor'}</small>`; })() : `<small>${b.semDisp ? '—' : 'precisa dos dois trechos'}</small>`) : '';
+    return `<tr><td class="cmp-cia"><span><i class="ab-dot" style="background:${m.cor}"></i><b>${esc(m.nome)}</b></span><span class="ab-st ${s.c}">${esc(s.t)}</span></td>
+      ${nada && T.length===2 ? `<td colspan="2"><div class="cmp-vazio"><span>Nenhum trecho ainda</span><button type="button" class="btn peq" data-irprog="${k}">Preencher na aba ${esc(m.nome.split(' ')[0])} →</button></div></td>` : T.map(t=>`<td>${celula(k,t)}</td>`).join('')}
+      ${T.length===2 ? `<td class="cmp-mesma">${mesma}</td>` : ''}</tr>`;
+  }).join('');
+  return `<div class="cmp-cias"><h4>${T.length===2 ? 'Ida e volta de cada cia' : 'Cada cia'} <small>clique para trocar · o total de cima muda na hora · os dados vêm das abas de cada cia</small></h4>
+    <div class="cmp-rol"><table class="cmp-tab"><thead><tr><th>Cia</th>${T.map(t=>`<th>${t} · ${fmtDataCurta(dataT(t))} · ${t==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</th>`).join('')}${T.length===2 ? '<th class="cmp-mesma">Ida + volta na mesma cia</th>' : ''}</tr></thead><tbody>${linhas}</tbody></table></div></div>`;
+}
+
+/* ---------- pedido do cliente na barra de cima ---------- */
+function htmlPedidoCab(p){
+  const o = p.pedidoOriginal || p, x = p.paxPedido ? {passageiros:p.paxPedido} : p, iv = o.tipo==='ida_volta' && o.dataVolta;
+  const dia = d => d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace('.','') : '';
+  const cid = a => a ? `${esc(a.cidade||a.iata)} (${esc(a.iata)})` : '';
+  const vO = o.voltaOrigem || o.destino, vD = o.voltaDestino || o.origem;
+  const outroAero = iv && (vO.iata!==o.destino.iata || vD.iata!==o.origem.iata);
+  const pref = [p.datasFlexiveis ? 'Datas flexíveis (±3 dias)' : '', textoHorario(p)].filter(Boolean).join(' · ');
+  const mud = [p.pedidoOriginal ? `cotando ${rotaCotada(p)}` : '', p.paxPedido ? `cotando ${textoPax(p)}` : ''].filter(Boolean).join(' · ');
+  return `<div class="dp-b"><span class="dp-l">Ida · ${dia(o.dataIda)}</span><b>${cid(o.origem)} → ${cid(o.destino)}</b></div>
+    ${iv ? `<div class="dp-b"><span class="dp-l">Volta · ${dia(o.dataVolta)}</span><b>${cid(vO)} → ${cid(vD)}</b>${outroAero ? '<small class="dp-av">volta de outro aeroporto</small>' : ''}</div>` : `<div class="dp-b"><span class="dp-l">Volta</span><b>Somente ida</b></div>`}
+    <div class="dp-b"><span class="dp-l">Passageiros</span><b>${esc(textoPax(x))}</b>${p.paxPedido ? `<small class="dp-av">cotando ${esc(textoPax(p))}</small>` : ''}</div>
+    <div class="dp-b"><span class="dp-l">Bagagem${p.pet?' e pet':''}</span><b>${esc(textoMalas(p))}</b>${p.pet ? `<small>${esc(textoPet(p))}</small>` : ''}</div>
+    <div class="dp-b dp-pref"><span class="dp-l">Preferências do cliente</span><b>${esc(pref || 'Nenhuma')}</b>${p.obs ? `<small>"${esc(p.obs)}"</small>` : ''}</div>
+    <div class="dp-fim">${p.pedidoOriginal ? `<small class="dp-mud">${esc('cotando ' + rotaCotada(p))}</small>` : ''}<button type="button" class="dp-ver" data-verpedido>Ver pedido completo</button></div>`;
 }
 
 /* ---------- pedido do cliente sempre à vista ---------- */
