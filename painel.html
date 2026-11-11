@@ -1295,7 +1295,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 .v2-form .campo label,.v2-l{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--tinta-2);font-weight:900}
 .v2-form input[type=number]{font-size:1.15rem;font-weight:800;min-height:46px}
 .v2-luc{display:flex;align-items:center;border:1.5px solid var(--linha);border-radius:10px;background:var(--card);padding-right:10px;min-height:46px}
-.v2-luc input{border:0!important;width:70px;min-height:42px!important;background:transparent;box-shadow:none!important}
+.v2-luc input{border:0!important;width:88px;min-height:42px!important;background:transparent;box-shadow:none!important}
 .v2-pct{color:var(--tinta-2);font-weight:700}
 .v2-lr{margin-left:auto;color:var(--tinta-2);font-weight:800;font-size:.9rem}
 .v2-seg{display:flex;border:1.5px solid var(--linha);border-radius:10px;overflow:hidden;min-height:46px;background:var(--card)}
@@ -1355,6 +1355,121 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
 
 .esc-alerta{background:#FDECEA;border:1.5px solid #F5B5AE;color:#8A1F15;border-radius:12px;padding:10px 14px;font-weight:700;margin-bottom:10px}
 
+/* ===== chat com o Claude (P1 Pesquisar · P2 coluna no pedido · P3 celular) ===== */
+.ch{display:flex;flex-direction:column;background:#fff;height:100%;min-height:0;font-family:inherit}
+.ch-cab{padding:12px 16px;border-bottom:1px solid #EEF2F7;display:flex;align-items:center;gap:10px}
+.ch-cab .av{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,#FF7A2E,#C1561A);color:#fff;display:grid;place-items:center;font-weight:900;font-size:15px;flex:none}
+.ch-cab b{font-size:15px;display:block}.ch-cab small{display:block;color:#7A889C;font-weight:700;font-size:11.5px}
+.ch-pc{margin-left:auto;font-size:11px;font-weight:800;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.ch-pc.on{color:#1E7B4F;background:#E3F4EA}.ch-pc.off{color:#7A889C;background:#EEF2F7}
+.ch-x{border:0;background:#EEF2F7;border-radius:9px;width:30px;height:30px;cursor:pointer;color:#4A5B76;font-weight:900;flex:none}
+.ch-msgs{padding:14px 16px;display:flex;flex-direction:column;gap:10px;flex:1;overflow-y:auto;min-height:0}
+.ch .eu{align-self:flex-end;background:#0E3B7A;color:#fff;border-radius:16px 16px 4px 16px;padding:9px 13px;font-size:13.5px;max-width:82%;font-weight:600;white-space:normal;overflow-wrap:anywhere}
+.ch .cl{align-self:flex-start;background:#F3F6FA;border-radius:16px 16px 16px 4px;padding:10px 13px;font-size:13.5px;max-width:92%;color:#13233F;line-height:1.4;overflow-wrap:anywhere}
+.ch .cl b{color:#0E3B7A}.ch .cl.err{background:#FDECEA;color:#7A1F17}
+.ch .cl.pensando{display:flex;gap:4px;padding:12px 14px}.ch .cl.pensando i{width:7px;height:7px;border-radius:50%;background:#9FB0C8;animation:chPisca 1s infinite}
+.ch .cl.pensando i:nth-child(2){animation-delay:.15s}.ch .cl.pensando i:nth-child(3){animation-delay:.3s}
+@keyframes chPisca{0%,100%{opacity:.3}50%{opacity:1}}
+.fontes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.fonte{background:#fff;border:1px solid #E3E9F1;border-radius:10px;padding:6px 9px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:6px;min-width:0}
+.fonte i{width:8px;height:8px;border-radius:50%;flex:none}
+.fonte small{margin-left:auto;font-weight:700;color:#7A889C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.fonte.ld small{color:#C1561A}.fonte.ok small{color:#1E7B4F}.fonte.er small{color:#A8261C}
+.fonte small a{color:#0E3B7A}
+.barrinha{height:4px;border-radius:4px;background:#E3E9F1;overflow:hidden;margin-top:6px}.barrinha span{display:block;height:100%;background:#FF7A2E;transition:width .4s}
+.ch-sug{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.ch-sug button{border:1.5px solid #DCE4EE;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700;color:#0E3B7A;background:#fff;cursor:pointer;font-family:inherit}
+.ch-sug button:hover{border-color:#0E3B7A}
+.ch-entrada{margin:0 12px 12px;border:1.5px solid #C9D6E6;border-radius:14px;padding:6px 6px 6px 12px;display:flex;align-items:flex-end;gap:10px;background:#fff}
+.ch-entrada:focus-within{border-color:#0E3B7A}
+.ch-entrada textarea{flex:1;border:0;outline:0;resize:none;font:inherit;font-size:14px;padding:6px 0;max-height:140px;background:transparent;color:#13233F}
+.ch-entrada button{width:34px;height:34px;border-radius:10px;background:#FF7A2E;color:#fff;border:0;font-size:16px;font-weight:900;cursor:pointer;flex:none}
+.ch-aviso{margin:0 14px 10px;background:#FFF1E7;color:#7A3A10;border-radius:12px;padding:8px 11px;font-size:12px;font-weight:700}
+.ch-mini{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:#fff;border:1px solid #E3E9F1;border-radius:10px;padding:7px 9px 7px 12px;margin-top:6px;position:relative;overflow:hidden}
+.ch-mini::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.ch-mini b{font-size:15px;display:block}.ch-mini small{color:#7A889C;font-weight:700;font-size:11px}
+.ch-mini .u{background:#0E3B7A;color:#fff;border:0;border-radius:8px;padding:5px 11px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
+.ch-mini .u.ok{background:#1E7B4F}
+.ch-bts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.ch-bt{border:1.5px solid #C9D6E6;background:#fff;color:#0E3B7A;border-radius:10px;padding:7px 13px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+.ch-bt.pri{background:#1E7B4F;border-color:#1E7B4F;color:#fff}
+.flex-prog{margin-top:6px;font-size:12.5px}
+.flex-tab{border-collapse:collapse;margin-top:8px;font-size:12px;width:100%}
+.flex-tab caption{text-align:left;font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#C1561A;padding-bottom:3px}
+.flex-tab th{font-size:11px;text-align:left;padding:3px 4px;color:#4A5B76;white-space:nowrap}
+.flex-tab td{padding:2px}.flex-tab td button{width:100%;border:1px solid #E3E9F1;background:#fff;border-radius:8px;padding:4px 6px;font-weight:800;font-size:12px;cursor:pointer;text-align:left;font-family:inherit;color:#13233F}
+.flex-tab td button small{display:block;font-weight:700;color:#7A889C;font-size:10.5px}
+.flex-tab td button.min{border-color:#1E7B4F;background:#F4FBF7}
+.ch-resumo{background:#0E3B7A;color:#fff;border-radius:16px;padding:12px 16px;display:grid;grid-template-columns:repeat(4,auto) 1fr;gap:22px;align-items:center}
+.ch-resumo em{display:block;font-style:normal;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;opacity:.75;font-weight:800}
+.ch-resumo b{font-size:19px;font-weight:800}.ch-resumo .lu b{color:#8FE3B5}.ch-resumo .cli b{color:#FFC59E}
+.ch-resumo .bt{justify-self:end;background:#FF7A2E;border:0;color:#fff;border-radius:12px;padding:10px 16px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}
+.ch-rbar .ch-resumo{margin:0 10px 10px;grid-template-columns:1fr 1fr;gap:6px 12px;padding:10px 12px}
+.ch-rbar{display:none}
+.ch-mres{display:none;flex-direction:column;gap:7px}
+.ch-rot{font-size:12.5px !important}
+.ch-todos{align-self:flex-start;border:0;background:none;color:#0E3B7A;font-weight:800;font-size:12.5px;cursor:pointer;padding:2px 4px;font-family:inherit}
+/* cartões de voo */
+.voo{background:#fff;border-radius:12px;padding:9px 12px 9px 16px;margin-bottom:7px;position:relative;display:grid;grid-template-columns:1fr auto;gap:2px 10px;border:2px solid transparent;overflow:hidden;width:100%;text-align:left;cursor:pointer;font-family:inherit;color:#13233F}
+.voo:hover{border-color:#C9D6E6}
+.voo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.voo .h{font-size:19px;font-weight:800;color:#13233F}.voo .h em{font-style:normal;font-size:12px;color:#7A889C;font-weight:700;margin-left:6px}
+.voo .ci{font-size:11px;font-weight:900;color:var(--c);letter-spacing:.04em;text-transform:uppercase}
+.voo .m{text-align:right;font-weight:800;font-size:15px}.voo .m small{display:block;font-size:11px;color:#7A889C;font-weight:700}
+.voo .r{display:block;text-align:right;font-weight:900;font-size:16px;color:#0E3B7A;margin-top:2px}
+.voo .tg{display:inline-block;vertical-align:1px;margin-left:6px;font-size:9px;font-weight:900;letter-spacing:.05em;border-radius:6px;padding:2px 6px}
+.tg.tbar{background:#1E7B4F;color:#fff}.tg.trap{background:#0E3B7A;color:#fff}.tg.ok2{background:#E3F4EA;color:#1E6B45}
+.voo.sel{border-color:#1E7B4F;background:#F4FBF7}
+/* P1 · tela Pesquisar */
+#tela-pesquisar.ativa{display:block}
+.pq{display:grid;grid-template-columns:440px minmax(0,1fr);background:#EEF3F9;border-radius:18px;overflow:hidden;border:1px solid #DCE4EE;height:calc(100vh - 150px);min-height:560px}
+.pq-chat{border-right:1px solid #E3E9F1;min-height:0}
+.pq-res{padding:16px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;min-height:0}
+.pq-vazio{margin:auto;max-width:440px;text-align:center;color:#4A5B76;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.pq-vazio b{font-size:18px;color:#0E3B7A}
+.pq-res .ped{background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:14px;border-top:4px solid #FF7A2E;flex-wrap:wrap}
+.pq-res .ped b{font-size:22px;color:#0E3B7A;font-weight:800;letter-spacing:-.01em}
+.pq-res .ped span{color:#4A5B76;font-size:13px;font-weight:700}
+.pq-res .ped .cod{margin-left:auto;font-size:11px;font-weight:900;letter-spacing:.06em;color:#7A889C}
+.pq-novo{border:1.5px solid #DCE4EE;background:#fff;border-radius:9px;padding:5px 10px;font-weight:800;font-size:12px;color:#0E3B7A;cursor:pointer;font-family:inherit}
+.pq-res .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pq-res .cols.um{grid-template-columns:minmax(0,560px)}
+.pq-res .col{min-width:0}
+.pq-res .col h4{margin:0 0 6px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:#C1561A;display:flex;justify-content:space-between}
+.pq-res .col h4 small{color:#7A889C;font-weight:700;letter-spacing:0;text-transform:none}
+.filtro{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.filtro button{font-size:11.5px;font-weight:800;border-radius:8px;padding:4px 9px;background:#fff;color:#4A5B76;border:1px solid #E3E9F1;cursor:pointer;font-family:inherit}
+.filtro button.on{background:#0E3B7A;color:#fff;border-color:#0E3B7A}
+.pq-nada{background:#fff;border-radius:12px;padding:14px;color:#7A889C;font-weight:700;font-size:13px}
+.pq-res .din{background:#fff;border-radius:12px;padding:8px 12px;font-size:12.5px;color:#4A5B76;font-weight:700;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pq-res .din b{color:#13233F}.pq-res .din a{color:#0E3B7A}
+/* P2 · coluna no pedido */
+.det-meio{flex:1;display:flex;min-height:0}
+.det-meio > .det-corpo{flex:1;min-width:0}
+.det-meio > .det-corpo{container-type:inline-size}
+@container (max-width:1120px){ .v2-form{grid-template-columns:1fr 1fr} .v2-form > .campo:nth-child(3){grid-column:1 / -1} }
+@container (max-width:760px){ .v2-grade{grid-template-columns:1fr} }
+.det-chat{width:380px;flex:none;border-left:1px solid #E3E9F1;background:#fff;min-height:0;display:flex;flex-direction:column}
+.det-chat[hidden]{display:none}
+.bp-chat{border:1.5px solid #DCE4EE;background:#fff;color:#0E3B7A;border-radius:10px;padding:5px 11px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.bp-chat[aria-pressed="true"]{background:#0E3B7A;border-color:#0E3B7A;color:#fff}
+.ch-fab{display:none}
+.cmp-op.flash{background:#FFF6D9 !important;box-shadow:inset 0 0 0 2px #F2C94C;transition:background .6s}
+/* P3 · celular */
+@media (max-width:900px){
+  .pq{grid-template-columns:1fr;height:calc(100dvh - var(--nav) - 120px);min-height:460px;border-radius:14px}
+  .pq-res{display:none}
+  .pq-chat{border-right:0}
+  .ch-mres{display:flex}
+  .ch-rbar{display:block}
+  .ch .voo .h{font-size:17px}
+  .ch-cab small{display:none}
+  .pq{height:calc(100dvh - var(--nav) - 100px)}
+  .det-chat{position:fixed;inset:0;width:auto;z-index:60;border:0}
+  .ch-fab{display:grid;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#FF7A2E,#C1561A);color:#fff;font-size:22px;font-weight:900;place-items:center;border:0;box-shadow:0 10px 24px -8px rgba(193,86,26,.7);z-index:45;cursor:pointer}
+  .detalhe.com-chat .ch-fab{display:none}
+  .bp-chat{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -1385,6 +1500,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   </section>
 
   <!-- CHECK-INS -->
+  <section class="tela" id="tela-pesquisar"></section>
   <section class="tela" id="tela-buscar">
     <div class="bloco">
       <h3>Buscar voos com milhas</h3>
@@ -1567,6 +1683,13 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
         <p class="nota">Vai na mensagem da cotação e na página do cliente, conforme a companhia de cada trecho. Deixe em branco para não mandar.</p>
         <div id="regrasLinkCfg"></div>
       </section>
+      <section data-aj="claude">
+        <h2>Claude (chat de pesquisa)</h2>
+        <p class="nota">O chat da tela <b>Pesquisar</b> e dos pedidos fala com o Claude por uma ponte no Apps Script, onde fica a sua chave da API (os créditos mensais do seu plano Ultra). Cole aqui o endereço da implantação (termina em <code>/exec</code>) e o mesmo segredo que você colocou no Apps Script.</p>
+        <div class="campo"><label for="c-clurl">Endereço do Apps Script</label><input id="c-clurl" data-cfg="claude.url" type="url" placeholder="https://script.google.com/macros/s/…/exec"></div>
+        <div class="campo" style="margin-top:10px"><label for="c-clseg">Segredo</label><input id="c-clseg" data-cfg="claude.segredo" type="password" autocomplete="off"></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap"><button type="button" class="btn" id="clTestar">Testar a ligação</button><span class="nota" id="clTesteRes" style="margin:0"></span></div>
+      </section>
       <section data-aj="assentos">
         <h2>Escolha de assento</h2>
         <p class="nota">A escolha de assento é paga. A opção só aparece no site quando estiver ligada e com pelo menos um valor preenchido. O site explica que, sem escolher, a companhia marca um assento grátis no check-in.</p>
@@ -1615,6 +1738,10 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   <button type="button" data-tela="pedidos">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/></svg>
     Pedidos<span class="badge" id="badgeNovos"></span>
+  </button>
+  <button type="button" data-tela="pesquisar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>
+    <span class="l-longo">Pesquisar</span><span class="l-curto">Claude</span>
   </button>
   <button type="button" data-tela="buscar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -1667,6 +1794,7 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
         <button type="button" class="fechar" id="detFechar" aria-label="Fechar">✕</button>
         <h2 id="detTitulo" class="bp-rota">—</h2>
         <div class="bp-resumo" id="detResumo"></div>
+        <button type="button" class="bp-chat" id="detChatBt" aria-pressed="false" title="Chat com o Claude">✦ Claude</button>
         <button type="button" class="bp-mais" id="detMais" aria-expanded="false"><span>detalhes</span></button>
       </div>
       <div class="bp-aberto">
@@ -1681,7 +1809,8 @@ rect.g-sel{stroke:var(--tinta);stroke-width:2.5}
   </div>
   <div class="det-aviso" id="detAvisoCot" hidden></div>
   <div class="det-extras" id="detExtras" hidden></div>
-  <div class="det-corpo" id="detCorpo"></div>
+  <div class="det-meio"><div class="det-corpo" id="detCorpo"></div><div class="det-chat" id="detChat" hidden></div></div>
+  <button type="button" class="ch-fab" id="detChatFab" aria-label="Abrir o chat com o Claude">✦</button>
 </aside>
 
 <div class="modal-fundo" id="modalFundo"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
@@ -1781,6 +1910,7 @@ const CFG_PADRAO = {
     azul:'Remarcação e cancelamento seguem as regras da tarifa Azul Fidelidade na data da emissão. Em geral: remarcar ou cancelar tem taxa cobrada pela Azul, e no cancelamento os pontos voltam e as taxas de embarque são reembolsadas. Cancelamento em até 24 horas após a compra, com voo a mais de 7 dias, é sem custo (regra da ANAC).'
   },
   assentos:{on:false, valores:{gol:0, latam:0, azul:0}},
+  claude:{url:'', segredo:''},
   regrasLink:{GOL:'https://www.voegol.com.br/informacoes/cancelamento-e-reembolso', LATAM:'https://latampass.latam.com/pt_br/viagem/usar-pontos-para-voar/regras-de-resgate/latam', Azul:'https://www.voeazul.com.br/br/pt/sua-viagem/alteracao-e-cancelamento'},
   seguro:{on:false, link:'', texto:''},
   numeros:{on:false},              // faixa de números no site: só liga se você ligar, nunca sozinho
@@ -1889,7 +2019,7 @@ function mesclarCfg(c){
     bebe:Object.fromEntries(Object.entries(CFG_PADRAO.bebe).map(([k,v])=>[k,{...v,...((c.bebe||{})[k]||{})}])), buscaVelha:{...CFG_PADRAO.buscaVelha,...(c.buscaVelha||{})}, urls:{...CFG_PADRAO.urls,...(c.urls||{})}, urlsDinheiro:{...CFG_PADRAO.urlsDinheiro,...(c.urlsDinheiro||{})}, mensagens:{...(c.mensagens||{})},
     bagagem:Object.fromEntries(Object.entries(CFG_PADRAO.bagagem).map(([k,v])=>[k,{...v,...((c.bagagem||{})[k]||{})}])),
     atendimento:{dias:Object.fromEntries(Object.entries(CFG_PADRAO.atendimento.dias).map(([k,v])=>[k,{...v,...(((c.atendimento||{}).dias||{})[k]||{})}])), pausa:{...CFG_PADRAO.atendimento.pausa, ...((c.atendimento||{}).pausa||{})}},
-    regrasProg:{...CFG_PADRAO.regrasProg, ...(c.regrasProg||{})}, regrasLink:{...CFG_PADRAO.regrasLink, ...(c.regrasLink||{})}, assentos:{on:false, ...(c.assentos||{}), valores:{...CFG_PADRAO.assentos.valores, ...((c.assentos||{}).valores||{})}},
+    regrasProg:{...CFG_PADRAO.regrasProg, ...(c.regrasProg||{})}, regrasLink:{...CFG_PADRAO.regrasLink, ...(c.regrasLink||{})}, claude:{...CFG_PADRAO.claude, ...(c.claude||{})}, assentos:{on:false, ...(c.assentos||{}), valores:{...CFG_PADRAO.assentos.valores, ...((c.assentos||{}).valores||{})}},
     seguro:{...CFG_PADRAO.seguro, ...(c.seguro||{})}, numeros:{on: (c.numeros||{}).on === true}, dicas:{...CFG_PADRAO.dicas, ...(c.dicas||{})},
     achados:Array.isArray(c.achados)?c.achados:[], cupons:Array.isArray(c.cupons)?c.cupons:[], semPromo:Array.isArray(c.semPromo)?c.semPromo:[], taxas:(c.taxas&&c.taxas.length===12)?c.taxas:[...CFG_PADRAO.taxas], tabelaMP:mesclarTabela(c.tabelaMP)};
 }
@@ -2317,7 +2447,7 @@ function linkCotacao(p){ return `${baseSite()}/cotacao.html?c=${p.cotacao?.token
 /* =========================================================
    INÍCIO (dashboard)
    ========================================================= */
-function irPara(tela){ $$('.nav button').forEach(x=>x.classList.toggle('ativa',x.dataset.tela===tela)); $$('.tela').forEach(t=>t.classList.toggle('ativa', t.id==='tela-'+tela)); if(tela==='checkins') renderCheckins(); if(tela==='clientes') renderClientes(); if(tela==='resultados' && typeof renderResultados==='function') renderResultados(); if(tela==='config' && typeof abrirAjuste==='function' && !matchMedia('(min-width:900px)').matches && document.activeElement?.closest?.('.nav')) abrirAjuste('', true); window.scrollTo(0,0); }
+function irPara(tela){ if(tela==='pesquisar'){ setTimeout(()=>{ montarTelaPesquisar(); chatRender(true); }, 0); } $$('.nav button').forEach(x=>x.classList.toggle('ativa',x.dataset.tela===tela)); $$('.tela').forEach(t=>t.classList.toggle('ativa', t.id==='tela-'+tela)); if(tela==='checkins') renderCheckins(); if(tela==='clientes') renderClientes(); if(tela==='resultados' && typeof renderResultados==='function') renderResultados(); if(tela==='config' && typeof abrirAjuste==='function' && !matchMedia('(min-width:900px)').matches && document.activeElement?.closest?.('.nav')) abrirAjuste('', true); window.scrollTo(0,0); }
 /* ---------- fotos dos destinos (as mesmas do site: salvador.jpg, maceio.jpg…) ---------- */
 const FOTO_IATA = {MCZ:'maceio', IGU:'foz-do-iguacu', FEN:'fernando-de-noronha', SSA:'salvador', JJD:'jericoacoara', FLN:'florianopolis', NVT:'balneario-camboriu', CWB:'curitiba', CXJ:'bento-goncalves', POA:'gramado', GIG:'rio-de-janeiro', SDU:'rio-de-janeiro', GRU:'sao-paulo', CGH:'sao-paulo', CFB:'buzios', CNF:'ouro-preto', VIX:'vitoria', BYO:'bonito', BSB:'brasilia', CGB:'pantanal', CLV:'caldas-novas', REC:'porto-de-galinhas', SLZ:'lencois-maranhenses', MAO:'manaus', STM:'alter-do-chao', BEL:'belem', PMW:'jalapao', BVB:'monte-roraima'};
 const fotosOk = new Map();   // iata -> url (carregou) | false (não existe) | 'testando'
@@ -3136,6 +3266,7 @@ function abrirDetalhe(id){
   setTimeout(agendarAuto, 300);
   $('#detalhe').classList.add('aberto'); $('#detFundo').classList.add('aberto');
   $('#detCorpo').scrollTop = 0;
+  setChatAberto(chatAberto());
 }
 function fecharDetalhe(){ abertoId=null; $('#detalhe').classList.remove('aberto'); $('#detFundo').classList.remove('aberto'); renderQuadro(); }
 $('#detFechar').addEventListener('click',fecharDetalhe);
@@ -4768,6 +4899,7 @@ function receberResultado(m){
   if(buscaDinheiro && m.buscaId===buscaDinheiro.id){ receberDinheiro(m); return; }
   if(autoAtual && m.buscaId===autoAtual.id){ receberAuto(m); return; }
   if(flexAtual && m.buscaId===flexAtual.id){ receberFlex(m); return; }
+  if(flexChat && m.buscaId===flexChat.id){ receberFlexChat(m); return; }
   if(concAtual && m.buscaId===concAtual.id){ receberConc(m); return; }
   if(String(m.buscaId||'').startsWith('print-')){ printDepoisDaBusca(m); return; }
   if(String(m.programa||'').startsWith('conc-')){ receberConcTardio(m); return; }
@@ -4894,7 +5026,7 @@ function atualizarFila(){ document.querySelectorAll('.fila-busca').forEach(el=>{
 function pausarBuscas(sim){ try{ localStorage.setItem('vpo_buscas_pausadas', sim?'1':'0'); }catch(e){} toast(sim ? 'Buscas pausadas. A busca que está rodando termina normalmente.' : 'Buscas retomadas'); atualizarFila(); renderQuadro(); if(!sim) setTimeout(agendarAuto, 300); }
 function agendarAuto(){
   atualizarFila();
-  if(autoAtual || flexAtual || concAtual || !extensaoAtiva || !versaoOk() || buscasPausadas()) return;
+  if(autoAtual || flexAtual || concAtual || flexChat || !extensaoAtiva || !versaoOk() || buscasPausadas()) return;
   const pend = pedidos.find(x=>x.concPendente); if(pend && iniciarConc(pend)) return;
   const f = filaAuto(); if(f.length) iniciarAuto(f[0]);
 }
@@ -4920,6 +5052,7 @@ function iniciarAuto(p, forcar, opts){
     envio.push({programa:k, trecho, url});
   }
   autoAtual = {id: token(10), pedidoId:p.id, tarefas, inicio:Date.now(), renovar: !!opts?.renovar, so: opts?.so || null, retentou:{}};
+  if(p.chatPedeBusca && !p.chatPedeBusca.feita && p.chatPedeBusca.tipo!=='flex'){ p.chatPedeBusca.feita = new Date().toISOString(); p.chatEsperaBusca = true; }   // pedido do chat (até do celular) que a fila começou
   // a versão antiga marcava "Sem disponibilidade" por engano: desfaz o que foi marcado automaticamente
   for(const k in PROG){ const b=p.busca[k]; if(b.semDisp && (b.autoIda||b.autoVolta) && !b.milhasIda) b.semDisp=false; }
   const velho = p.auto || {};
@@ -5029,6 +5162,7 @@ function receberAuto(m){
   if(ts.every(x=>x.status!=='buscando')){
     autoAtual = null;
     if(p) revisarTotais(p);
+    if(p) chatBuscaPronta(p);
     if(abertoId) renderDetalheSeguro();   // tira o "Buscando…" e a faixa de progresso
     if(p) salvar(true);
     if(p && a.renovar){ montarRenovacao(p); atualizarFila(); setTimeout(agendarAuto, 1500); return; }
@@ -5643,6 +5777,7 @@ const AJUSTES = [
     ['avaliacoes','estrela','','Avaliações','avaliacao depoimento cliente site', ()=>{ const pub = avaliacoes.filter(a=>a.publicada).length, r = avaliacoes.length-pub; return avaliacoes.length ? `${pub} publicada${pub!==1?'s':''}${r?' · '+r+' rascunho'+(r>1?'s':''):''}` : 'nenhuma ainda'; }]
   ]],
   ['Busca e companhias', [
+    ['claude','busca','','Claude (chat de pesquisa)','claude chat ia pesquisa apps script chave api', ()=>chatCfgOk() ? 'ligado' : 'desligado', ()=>!chatCfgOk() ? 'ligar' : ''],
     ['urls','busca','','Endereços de busca','busca smiles latam azul url endereco', ()=>'Smiles, LATAM Pass e Azul'],
     ['dinheiro','dinheiro','','Preço em dinheiro','dinheiro companhia gol latam azul preco', ()=>'GOL, LATAM e Azul'],
     ['checkin','aviao','','Abertura do check-in','check-in checkin horas', ()=>Object.entries(cfg.checkin).map(([k,v])=>`${k} ${v}h`).join(' · ')],
@@ -7119,7 +7254,8 @@ function htmlCmpCias(p, mostra){
       return `<div class="cmp-vazio"><span>${msg}</span>${b.semDisp ? '' : `<button type="button" class="btn peq" data-irprog="${k}">Preencher na aba ${esc(PROG[k].nome.split(' ')[0])} →</button>`}</div>`;
     }
     const d = duracaoVoo({saida:b['saida'+t], chegada:b['chegada'+t]}), pp = n(b['pp'+t]) || Math.round(n(b['milhas'+t])/pagantes(p));
-    return `<label class="cmp-op ${sel?'sel':''} ${ct.valor - mn < 0.01 ? 'menor' : ''}"><input type="radio" name="sel-${t}-${p.id}" data-sel="${t}|${k}" ${sel?'checked':''}>
+    const fl = chatFlash && chatFlash.pid===p.id && chatFlash.k===k && chatFlash.T===t && Date.now() < chatFlash.ate;
+    return `<label class="cmp-op ${sel?'sel':''} ${ct.valor - mn < 0.01 ? 'menor' : ''} ${fl?'flash':''}"><input type="radio" name="sel-${t}-${p.id}" data-sel="${t}|${k}" ${sel?'checked':''}>
       <span class="cmp-h"><b>${esc(b['saida'+t]||'--:--')} → ${esc(b['chegada'+t]||'--:--')}${b['chegada'+t] && b['saida'+t] && b['chegada'+t] < b['saida'+t] ? ' <span class="mais1">+1</span>' : ''}</b><small>${[textoParadas(b,t).replace(/ de espera/g,'') || '', d!=null?fmtMin(d):'', MIL(pp)+' mi/pessoa'].filter(Boolean).map(esc).join(' · ')}</small></span>
       <span class="cmp-v"><b>${BRL(ct.valor)}</b><small>${ct.valor - mn < 0.01 ? 'o menor' : '+ ' + BRL(Math.round((ct.valor-mn)*100)/100)}</small></span></label>`;
   };
@@ -7134,6 +7270,614 @@ function htmlCmpCias(p, mostra){
     <div class="cmp-rol"><table class="cmp-tab"><thead><tr><th>Cia</th>${T.map(t=>`<th>${t} · ${fmtDataCurta(dataT(t))} · ${t==='Ida' ? p.origem.iata+' → '+p.destino.iata : voltaDe(p)+' → '+voltaPara(p)}</th>`).join('')}${T.length===2 ? '<th class="cmp-mesma">Ida + volta na mesma cia</th>' : ''}</tr></thead><tbody>${linhas}</tbody></table></div></div>`;
 }
 
+/* =========================================================
+   CHAT COM O CLAUDE: pesquisar nas cias e montar a cotação
+   P1 = tela "Pesquisar" · P2 = coluna no pedido · P3 = celular
+   A chave do Claude fica num Apps Script (Ajustes → Claude); a pesquisa nos sites é a busca automática da extensão.
+   ========================================================= */
+const CHAT_MAX = 60;
+const chatOcupado = {};
+let chatFlash = null, flexChat = null, pcVisto = {online:false, em:0}, chatAssin = '';
+const chatFiltro = {Ida:{ord:'barato', dir:false, prog:''}, Volta:{ord:'barato', dir:false, prog:''}};
+const chatVerTodos = {};
+
+function chatCfgOk(){ return !!(cfg.claude && /^https:\/\//.test(cfg.claude.url||'') && cfg.claude.segredo); }
+function chatPedPesq(){ try{ return localStorage.getItem('vpo_pesq_ped')||''; }catch(e){ return ''; } }
+function setChatPedPesq(id){ try{ id ? localStorage.setItem('vpo_pesq_ped', id) : localStorage.removeItem('vpo_pesq_ped'); }catch(e){} }
+let chatSolto = (()=>{ try{ return JSON.parse(localStorage.getItem('vpo_chat_solto')||'[]'); }catch(e){ return []; } })();
+function salvarSolto(){ try{ localStorage.setItem('vpo_chat_solto', JSON.stringify(chatSolto.slice(-CHAT_MAX))); }catch(e){} }
+function chatPid(ctx){ if(ctx==='ped') return abertoId || ''; const id = chatPedPesq(); return pedido(id) ? id : ''; }
+function chatMsgs(ctx){ const p = pedido(chatPid(ctx)); return p ? (p.chat = p.chat || []) : chatSolto; }
+function chatAdd(ctx, m, pid){
+  const p = pedido(pid != null ? pid : chatPid(ctx)); m.em = m.em || new Date().toISOString();
+  if(p){ (p.chat = p.chat || []).push(m); if(p.chat.length > CHAT_MAX) p.chat = p.chat.slice(-CHAT_MAX); salvar(true); }
+  else { chatSolto.push(m); salvarSolto(); }
+  chatRender(true);
+  return m;
+}
+
+/* ---------- PC com a extensão: online? (o celular pede, o PC pesquisa) ---------- */
+function pcLocal(){ return !!(extensaoAtiva && versaoOk()); }
+function pcOnline(){ return pcLocal() || pcVisto.online; }
+async function pcAtualizar(){
+  try{
+    if(pcLocal()){
+      const em = new Date().toISOString();
+      if(FB.ativo && FB.db) await FB.fs.setDoc(FB.fs.doc(FB.db,'config','pc'), {em, versao:extensaoVersao||''});
+      else localStorage.setItem('vpo_pc', em);
+      return;
+    }
+    let em = null;
+    if(FB.ativo && FB.db){ const d = await FB.fs.getDoc(FB.fs.doc(FB.db,'config','pc')); em = d.exists() ? d.data().em : null; }
+    else em = localStorage.getItem('vpo_pc');
+    pcVisto = {online: !!em && Date.now() - Date.parse(em) < 150000, em:Date.now()};
+  }catch(e){}
+}
+setInterval(pcAtualizar, 45000); setTimeout(pcAtualizar, 3000);
+// o PC atende as pesquisas pedidas pelo chat (inclusive as que vieram do celular)
+function pcAtenderPedidos(){
+  if(!pcLocal() || autoAtual || flexAtual || concAtual || flexChat) return;
+  const p = pedidos.find(x=>x.chatPedeBusca && !x.chatPedeBusca.feita); if(!p) return;
+  const r = p.chatPedeBusca; r.feita = new Date().toISOString();
+  if(r.tipo==='flex') iniciarFlexChat(p, r.quais||'ida', r.dias||2);
+  else { p.chatEsperaBusca = true; iniciarAuto(p, true, r.so && r.so.length ? {so:r.so} : undefined); }
+  salvar(true); chatRender(true);
+}
+setInterval(pcAtenderPedidos, 3000);
+
+/* ---------- voos lidos (busca automática) ---------- */
+function custoVoo(p, k, T, v){
+  const pag = pagantes(p), m = milheiroDe(p, k, n(v.milhas)); if(!m) return null;
+  const tx = v.taxas!=null && v.taxas!=='' ? Math.round(n(v.taxas)*pag*100)/100 : (v.taxasTotal!=null ? n(v.taxasTotal) : null);
+  return {valor: Math.round((n(v.milhas)*pag/1000*m.milheiro + (tx||0))*100)/100, taxas:tx, semTaxa: tx==null};
+}
+function voosDoTrecho(p, T){
+  const tr = T.toLowerCase(), r = [];
+  for(const k of Object.keys(PROG)) opcoesTrecho(p, k, tr).forEach((v,i)=>{ r.push({id:`${k}|${tr}|${i}`, k, T, v, custo:custoVoo(p,k,T,v), dur:duracaoVoo(v), par:paradasVoo(v)}); });
+  return r;
+}
+function vooPorId(p, id){
+  const s = String(id||'').split('|');
+  if(s[0]==='f'){ const [, k, T, data, i] = s; const d = (p.flexChat?.dias||[]).find(x=>x.k===k && x.T===T && x.data===data); const v = d && d.voos[n(i)]; return v ? {id, k, T, v, data, custo:custoVoo(p,k,T,v), dur:duracaoVoo(v), par:paradasVoo(v)} : null; }
+  const [k, tr, i] = s; if(!PROG[k]) return null; const T = tr==='volta' ? 'Volta' : 'Ida';
+  const v = opcoesTrecho(p, k, tr)[n(i)]; return v ? {id, k, T, v, custo:custoVoo(p,k,T,v), dur:duracaoVoo(v), par:paradasVoo(v)} : null;
+}
+function vooNaCotacao(p, x){
+  const s = selAtual(p); if(!s || s[x.T]!==x.k) return false;
+  const b = p.busca[x.k]||{};
+  if(x.data ? b['data'+x.T]!==x.data : (b['data'+x.T] && b['data'+x.T]!==(x.T==='Ida' ? p.dataIda : p.dataVolta))) return false;
+  return b['saida'+x.T]===(x.v.saida||'') && b['chegada'+x.T]===(x.v.chegada||'');
+}
+function ordenarVoos(lista, ord){
+  const c = x => x.custo ? x.custo.valor : Infinity;
+  return lista.slice().sort(ord==='rapido' ? (a,b)=>(a.dur??9e9)-(b.dur??9e9) || c(a)-c(b) : (a,b)=>c(a)-c(b) || (a.dur??9e9)-(b.dur??9e9));
+}
+function marcasVoos(lista){
+  const c = x => x.custo ? x.custo.valor : Infinity;
+  const barato = lista.slice().sort((a,b)=>c(a)-c(b))[0], rapido = lista.filter(x=>x.dur!=null).sort((a,b)=>a.dur-b.dur || c(a)-c(b))[0];
+  return {barato: barato && barato.id, rapido: rapido && barato && rapido.id!==barato.id && rapido.dur < (barato.dur ?? 9e9) ? rapido.id : null};
+}
+function usarVooChat(pid, id){
+  const p = pedido(pid); if(!p) return {erro:'Pedido não encontrado'};
+  const x = vooPorId(p, id); if(!x) return {erro:'Voo não encontrado. Use listar_voos para ver os ids.'};
+  const {k, T, v} = x, b = p.busca[k];
+  aplicarVooAuto(p, k, T, v, true);
+  if(x.data) b['data'+T] = x.data; else delete b['data'+T];
+  if(!b.semDisp) b.semDisp = false;
+  // seleção: troca só este trecho; o outro continua como estava (ou o mais barato)
+  const T2 = trechosDe(p), s = selAtual(p) || (melhorSel(p)||{}).sel || {}; s[T] = k;
+  for(const t of T2) if(!s[t] || !custoTrecho(p, s[t], t)){ let mel = null; for(const kk in PROG){ const c = custoTrecho(p,kk,t); if(c && (!mel || c.valor < mel.v)) mel = {kk, v:c.valor}; } if(mel) s[t] = mel.kk; }
+  if(T2.every(t=>s[t] && custoTrecho(p,s[t],t))){
+    const ks = T2.map(t=>s[t]);
+    if(new Set(ks).size===1){ delete p.combo; p.escolhido = ks[0]; } else { p.combo = Object.fromEntries(T2.map(t=>[t, s[t]])); p.escolhido = s.Ida; }
+    const m = melhorSel(p); p.escolhaManual = !(m && JSON.stringify(m.sel)===JSON.stringify(selAtual(p))); p.escolhaAuto = !p.escolhaManual;
+    if(!valorTravado(p)) p.valorMPManual = false;
+    sincronizarValorMP(p);
+  }
+  logar(p, `Chat: ${T.toLowerCase()} trocada para ${PROG[k].nome} ${v.saida||''}${x.data ? ' em ' + fmtDataCurta(x.data) : ''}`);
+  chatFlash = {pid, k, T, ate: Date.now() + 4000};
+  salvar(true);
+  if(abertoId===pid){ renderDetalheSeguro(); setTimeout(()=>{ if(abertoId===pid) renderDetalheSeguro(); }, 4300); }
+  chatRender(true);
+  return {ok:true, trecho:T, programa:PROG[k].nome, horario:`${v.saida||''} → ${v.chegada||''}`, ...resumoValores(p)};
+}
+function resumoValores(p){
+  const s = selAtual(p), c = s && custoSel(p, s);
+  return {custo_milhas: c ? BRL(c.valor) : null, valor_cliente_pix: valorCliente(p) ? BRL(valorCliente(p)) : null, lucro: valorCliente(p) ? BRL(lucro(p)) : null, lucro_percentual: perc(p), na_cotacao: s ? trechosDe(p).map(t=>`${t}: ${PROG[s[t]].nome} ${bT(p,t)['saida'+t]||''}`).join(' · ') : 'nada ainda'};
+}
+
+/* ---------- datas flexíveis pelo chat (as três cias, em lotes) ---------- */
+function iniciarFlexChat(p, quais, dias){
+  dias = Math.max(1, Math.min(3, n(dias)||2));
+  const Ts = quais==='ambos' ? trechosDe(p) : [quais==='volta' ? 'Volta' : 'Ida'].filter(t=>trechosDe(p).includes(t));
+  const x = p.passageiros||{}, fila = [], diasJa = [];
+  for(const T of Ts){
+    const base = T==='Ida' ? p.dataIda : p.dataVolta, o = T==='Ida' ? p.origem.iata : voltaDe(p), d = T==='Ida' ? p.destino.iata : voltaPara(p);
+    for(let dd=-dias; dd<=dias; dd++){
+      const dia = somarDias(base, dd);
+      if(dia < hojeISO() || (T==='Ida' && p.dataVolta && dia > p.dataVolta) || (T==='Volta' && dia < p.dataIda)) continue;
+      for(const k of Object.keys(PROG)){
+        const ja = dd===0 ? opcoesTrecho(p, k, T.toLowerCase()) : [];
+        if(ja.length){ diasJa.push({data:dia, k, T, voos:ja.slice(0,5)}); continue; }
+        fila.push({programa:k, trecho:`${T}@${dia}`, url:urlBusca(cfg.urls[k], {origem:o, destino:d, data:dia, adultos:x.adultos||1, criancas:x.criancas||0, bebes:x.bebes||0}), fechar:true});
+      }
+    }
+  }
+  p.flexChat = {Ts, dias:diasJa, em:new Date().toISOString(), total:fila.length + diasJa.length, feitos:diasJa.length, rodando:true};
+  flexChat = {id:token(10), pid:p.id, fila, ativos:{}};
+  salvar(true); proximoLoteFlex();
+  return fila.length + diasJa.length;
+}
+function proximoLoteFlex(){
+  const f = flexChat; if(!f) return;
+  const lote = f.fila.splice(0, 6);
+  if(!lote.length){ terminarFlexChat(); return; }
+  lote.forEach(t=>{ f.ativos[t.programa+'|'+t.trecho] = t; });
+  window.postMessage({tipo:'dcnp-buscar', buscaId:f.id, pedidoId:f.pid+'#flexchat', tarefas:lote}, '*');
+  clearTimeout(f.prazo);
+  f.prazo = setTimeout(()=>{ if(flexChat!==f) return; Object.values(f.ativos).forEach(t=>receberFlexChat({buscaId:f.id, programa:t.programa, trecho:t.trecho, status:'erro', voos:[]})); }, 100000 + lote.length*5000);
+}
+function receberFlexChat(m){
+  const f = flexChat; if(!f || m.buscaId!==f.id) return;
+  const ch = m.programa+'|'+m.trecho, t = f.ativos[ch]; if(!t) return;
+  delete f.ativos[ch];
+  const p = pedido(f.pid);
+  if(p && p.flexChat){
+    const [T, dia] = String(m.trecho).split('@'), k = m.programa, pag = pagantes(p);
+    const voos = (m.voos||[]).filter(v=>v && n(v.milhas)>0).sort((a,b)=>n(a.milhas)-n(b.milhas));
+    if(m.status==='ok' && voos.length){
+      const ref = (opcoesTrecho(p, k, T.toLowerCase())[0]||{}).milhas, div = ehTotal(p, k, T.toLowerCase()) && pag>1 ? pag : 1;
+      p.flexChat.dias.push({data:dia, k, T, voos: voos.slice(0,5).map(v=>({voo:v.voo||'', saida:v.saida||'', chegada:v.chegada||'', paradas:paradasVoo(v), escalas:escalasVoo(v), milhas:Math.round(n(v.milhas)/div), taxas:v.taxas??null, taxasTotal:v.taxasTotal??null, assentos:v.assentos??null, dur:duracaoVoo(v)}))});
+      void ref;
+    }
+    p.flexChat.feitos = (p.flexChat.feitos||0) + 1;
+    salvar(true); chatRender(true);
+  }
+  if(!Object.keys(f.ativos).length){ clearTimeout(f.prazo); setTimeout(proximoLoteFlex, 1500); }
+}
+function terminarFlexChat(){
+  const f = flexChat; flexChat = null; if(!f) return;
+  const p = pedido(f.pid); if(!p || !p.flexChat) return;
+  p.flexChat.rodando = false;
+  const partes = [];
+  for(const T of p.flexChat.Ts){
+    const base = T==='Ida' ? p.dataIda : p.dataVolta;
+    const melhores = p.flexChat.dias.filter(d=>d.T===T && d.voos.length).map(d=>({d, v:d.voos[0], c:custoVoo(p, d.k, T, d.voos[0])})).filter(x=>x.c).sort((a,b)=>a.c.valor-b.c.valor);
+    if(!melhores.length){ partes.push(`Não consegui ler as datas da ${T.toLowerCase()}.`); continue; }
+    const m = melhores[0], noDia = melhores.find(x=>x.d.data===base);
+    partes.push(`A ${T.toLowerCase()} mais barata é em **${fmtDataCurta(m.d.data)}** na ${PROG[m.d.k].nome.split(' ')[0]} (${MIL(m.v.milhas)} milhas, ${BRL(m.c.valor)})${noDia && noDia.d.data!==m.d.data ? `, ${BRL(Math.round((noDia.c.valor-m.c.valor)*100)/100)} a menos que em ${fmtDataCurta(base)}` : ''}.`);
+  }
+  chatAdd('', {q:'cl', t: partes.join(' ') + ' Toque numa data da tabela para usar.'}, p.id);
+  salvar(true); atualizarFila(); setTimeout(agendarAuto, 1500);
+}
+
+/* ---------- fim da busca automática: o chat avisa ---------- */
+function chatBuscaPronta(p){
+  if(!p || !p.chatEsperaBusca) return;
+  delete p.chatEsperaBusca;
+  autoEscolher(p);
+  const m = (p.chat||[]).slice().reverse().find(x=>x.vivo==='busca');
+  const txt = textoBuscaChat(p, true);
+  if(m){ m.t = txt; delete m.vivo; m.fontesFix = fontesChat(p); }
+  else chatAdd('', {q:'cl', t:txt}, p.id);
+  (p.chat||[]).forEach(x=>{ if(x.fontes && !x.fontesFix) x.fontesFix = fontesChat(p); });
+  salvar(true); chatRender(true);
+}
+function fontesChat(p){
+  const st = p.auto?.st || {}, r = {};
+  for(const k of Object.keys(PROG)){
+    const cs = trechosDe(p).map(T=>k+'|'+T.toLowerCase()), sts = cs.map(c=>st[c]).filter(Boolean);
+    if(!sts.length){ r[k] = {c:'', t: autoAtual && autoAtual.pedidoId===p.id ? 'na fila' : '—'}; continue; }
+    if(sts.some(s=>s.status==='buscando')){ r[k] = {c:'ld', t:'lendo…'}; continue; }
+    const q = cs.reduce((a,c)=>a + (p.auto.opcoes?.[c]||[]).length, 0);
+    r[k] = q ? {c:'ok', t:`✓ ${q} voo${q>1?'s':''}`} : {c:'er', t: (sts.find(s=>s.status!=='ok')||{}).msg || 'sem voos'};
+  }
+  r.dinheiro = p.precoCia ? {c:'ok', t:'✓ ' + BRL(n(p.precoCia))} : {c:'', t:'abrir site'};
+  return r;
+}
+function progressoBusca(p){ const st = Object.values(p.auto?.st||{}); if(!st.length) return 0; return st.filter(s=>s.status!=='buscando').length / st.length; }
+function textoBuscaChat(p, fim){
+  const m = melhorSel(p), pag = pagantes(p);
+  const faltam = Object.keys(PROG).filter(k=>trechosDe(p).some(T=>(p.auto?.st?.[k+'|'+T.toLowerCase()]||{}).status==='buscando')).map(k=>PROG[k].nome.split(' ')[0]);
+  const falhas = Object.keys(PROG).filter(k=>{ const f = fontesChat(p)[k]; return f.c==='er'; }).map(k=>`${PROG[k].nome.split(' ')[0]} (${fontesChat(p)[k].t})`);
+  if(!m) return fim ? `Terminei, mas não achei voos com valor na tabela da Milhas Plus.${falhas.length ? ' Sem resposta: ' + falhas.join(', ') + '.' : ''} Dá para buscar no site e capturar.` : 'Pesquisando nos sites…';
+  const partes = trechosDe(p).map(T=>{ const k = m.sel[T], b = p.busca[k]; return `**${T.toLowerCase()} ${PROG[k].nome.split(' ')[0]} ${b['saida'+T]||''}** (${MIL(n(b['pp'+T]) || Math.round(n(b['milhas'+T])/pag))} milhas)`; });
+  const ini = fim ? 'Pronto. O mais barato é ' : 'Até agora o mais barato é ';
+  return `${ini}${partes.join(' + ')}: custo de **${BRL(m.c.valor)}**${totalPax(p)>1 ? ` para ${totalPax(p)===2 ? 'os dois' : 'os ' + totalPax(p)}` : ''}. Já coloquei na cotação.${!fim && faltam.length ? ` ${faltam.join(' e ')} ${faltam.length>1 ? 'ainda estão' : 'ainda está'} carregando.` : ''}${fim && falhas.length ? ` Sem resposta: ${falhas.join(', ')}.` : ''}`;
+}
+
+/* ---------- conversa com o Claude ---------- */
+const CHAT_FERRAMENTAS = [
+  {name:'criar_pedido', description:'Cria um pedido novo com a rota pedida. Use códigos IATA (ex.: NAT, GRU). Datas em AAAA-MM-DD. Depois de criar, chame pesquisar.',
+   input_schema:{type:'object', properties:{origem:{type:'string'}, destino:{type:'string'}, data_ida:{type:'string'}, data_volta:{type:'string', description:'vazio se só ida'}, adultos:{type:'integer'}, criancas:{type:'integer'}, bebes:{type:'integer'}, malas:{type:'integer', description:'malas de 23 kg por passageiro (0 = só mala de mão)'}, cliente_nome:{type:'string'}, cliente_whatsapp:{type:'string'}, volta_origem:{type:'string', description:'IATA, se a volta sair de outro aeroporto'}, volta_destino:{type:'string'}}, required:['origem','destino','data_ida']}},
+  {name:'alterar_pedido', description:'Muda dados do pedido aberto (rota, datas, passageiros, malas, cliente). Mudando rota, datas ou passageiros, os voos lidos são apagados: pesquise de novo.',
+   input_schema:{type:'object', properties:{origem:{type:'string'}, destino:{type:'string'}, data_ida:{type:'string'}, data_volta:{type:'string'}, adultos:{type:'integer'}, criancas:{type:'integer'}, bebes:{type:'integer'}, malas:{type:'integer'}, cliente_nome:{type:'string'}, cliente_whatsapp:{type:'string'}, volta_origem:{type:'string'}, volta_destino:{type:'string'}}}},
+  {name:'pesquisar', description:'Pesquisa os voos nos sites (Smiles, LATAM Pass, Azul) pela extensão do Chrome do PC. O resultado chega sozinho no chat em 1 a 3 minutos.',
+   input_schema:{type:'object', properties:{programas:{type:'array', items:{type:'string', enum:['smiles','latam','azul']}, description:'vazio = os três'}}}},
+  {name:'listar_voos', description:'Lista os voos já lidos, com id, horários, paradas, milhas por pessoa, taxa e custo total. Use antes de falar de qualquer voo.',
+   input_schema:{type:'object', properties:{trecho:{type:'string', enum:['ida','volta']}, programa:{type:'string', enum:['smiles','latam','azul']}, somente_diretos:{type:'boolean'}, saida_apos:{type:'string', description:'HH:MM'}, saida_antes:{type:'string'}, chegada_antes:{type:'string'}, max:{type:'integer'}}}},
+  {name:'mostrar_voos', description:'Mostra cartões de voos no chat com o botão Usar, para ele escolher.',
+   input_schema:{type:'object', properties:{ids:{type:'array', items:{type:'string'}}}, required:['ids']}},
+  {name:'usar_voo', description:'Coloca um voo na cotação (troca só aquele trecho).',
+   input_schema:{type:'object', properties:{id:{type:'string'}}, required:['id']}},
+  {name:'datas_flexiveis', description:'Pesquisa os dias ao redor da data, nas três cias, e mostra uma tabela de datas. Só quando ele pedir "flexível".',
+   input_schema:{type:'object', properties:{trecho:{type:'string', enum:['ida','volta','ambos']}, dias:{type:'integer', description:'1 a 3 (padrão 2)'}}}},
+  {name:'definir_valor', description:'Ajusta o valor do cliente: pelo lucro em reais, lucro em %, ou valor final no Pix. Também guarda o menor preço em dinheiro que ele achou.',
+   input_schema:{type:'object', properties:{lucro_reais:{type:'number'}, lucro_percentual:{type:'number'}, valor_cliente_pix:{type:'number'}, preco_em_dinheiro:{type:'number'}}}},
+  {name:'oferecer_envio', description:'Mostra os botões para abrir o WhatsApp do cliente com a cotação e ver a prévia. Nunca diga que enviou: ele confirma no botão.',
+   input_schema:{type:'object', properties:{}}}
+];
+function acharAero(txt){
+  const t = String(txt||'').trim(); if(!t) return null;
+  const a = aeroporto(t); if(a && /^[A-Za-z]{3}$/.test(t)) return a;
+  const sem = s => String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  return AEROPORTOS.find(x=>sem(x.cidade)===sem(t)) || AEROPORTOS.find(x=>sem(x.cidade).startsWith(sem(t))) || null;
+}
+const aeroLimpo = a => ({iata:a.iata, cidade:a.cidade, aeroporto:a.aeroporto, pais:a.pais});
+function estadoChat(ctx){
+  const p = pedido(chatPid(ctx));
+  const base = {hoje: hojeISO(), pc_com_extensao_ligado: pcOnline(), tela: ctx==='ped' ? 'dentro do pedido' : 'Pesquisar'};
+  if(!p) return {...base, pedido:null};
+  const voos = {}; for(const T of trechosDe(p)) voos[T.toLowerCase()] = voosDoTrecho(p,T).length;
+  return {...base, pedido:{id:p.id, status:p.status, origem:p.origem.iata+' ('+p.origem.cidade+')', destino:p.destino.iata+' ('+p.destino.cidade+')', ida:p.dataIda, volta:p.dataVolta||null,
+    volta_de:voltaDe(p), volta_para:voltaPara(p), passageiros:p.passageiros, malas:p.malasPorPassageiro||0, cliente:p.cliente?.nome||'', cliente_tem_whatsapp: soDigitos(p.cliente?.whatsapp).length>=10,
+    pesquisa: autoAtual && autoAtual.pedidoId===p.id ? 'rodando' : (p.chatPedeBusca && !p.chatPedeBusca.feita ? 'esperando o PC' : (p.auto ? 'feita' : 'não feita')),
+    fontes: fontesChat(p), voos_lidos:voos, preco_em_dinheiro: p.precoCia ? n(p.precoCia) : null, ...resumoValores(p)}};
+}
+function sistemaChat(ctx){
+  return `Você é o assistente de pesquisa de passagens do painel "Vai pra onde?", uma agência que vende passagens emitidas com milhas (pela Milhas Plus) nos programas Smiles (GOL), LATAM Pass (LATAM) e Azul Fidelidade (Azul). Você conversa com o dono da agência, em português do Brasil, de forma curta e direta (1 a 3 frases, sem listas longas).
+Regras:
+- Para criar um pedido, use criar_pedido com códigos IATA; se ele disser só a cidade, use o aeroporto principal (São Paulo = GRU, Rio de Janeiro = GIG, Belo Horizonte = CNF). Datas em AAAA-MM-DD; sem ano, use a próxima vez que a data acontece a partir de hoje. Sem passageiros informados, 1 adulto; sem malas, só mala de mão. Logo depois de criar, chame pesquisar.
+- Nunca invente voos, horários, milhas ou preços. Use listar_voos e fale só do que ela devolver. Para ele escolher, use mostrar_voos (aparece o botão Usar). Para trocar direto, use usar_voo.
+- Ida e volta podem ser de cias diferentes. "Mais barato" é pelo custo total (milhas × milheiro da Milhas Plus + taxas).
+- Datas flexíveis só quando ele pedir: datas_flexiveis.
+- Valor e lucro: definir_valor. Para mandar a cotação: oferecer_envio (ele confirma no botão; nunca diga que enviou). Se faltar o WhatsApp do cliente, pergunte e use alterar_pedido.
+- A pesquisa nos sites roda no Chrome do PC com a extensão. Se o PC estiver desligado, diga que a pesquisa fica esperando o PC ligar.
+- Valores em reais com vírgula (R$ 812,40); milhas com ponto (19.800). Use **negrito** só para horários e valores importantes.
+Estado agora (JSON): ${JSON.stringify(estadoChat(ctx))}`;
+}
+function historicoApi(ctx){
+  const r = [];
+  for(const m of chatMsgs(ctx).slice(-16)){
+    const role = m.q==='eu' ? 'user' : 'assistant';
+    let txt = String(m.t||'').trim();
+    if(m.voos && m.voos.length) txt += (txt ? '\n' : '') + `[mostrei os voos ${m.voos.join(', ')}]`;
+    if(m.fontes) txt += (txt ? '\n' : '') + '[pesquisa iniciada]';
+    if(m.flex) txt += (txt ? '\n' : '') + '[tabela de datas flexíveis]';
+    if(m.botoes) txt += (txt ? '\n' : '') + '[botões: Abrir WhatsApp e Ver prévia]';
+    if(!txt) continue;
+    if(r.length && r[r.length-1].role===role) r[r.length-1].content += '\n' + txt; else r.push({role, content:txt});
+  }
+  while(r.length && r[0].role!=='user') r.shift();
+  return r;
+}
+async function chamarClaude(corpo){
+  const r = await fetch(cfg.claude.url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({segredo:cfg.claude.segredo, ...corpo})});
+  const j = await r.json();
+  if(j.erro) throw new Error(j.erro);
+  if(j.type==='error') throw new Error((j.error && j.error.message) || 'erro na API do Claude');
+  return j;
+}
+const chatAnexos = {};
+function chatAnexar(ctx, a){ const ch = ctx + ':' + chatPid(ctx); (chatAnexos[ch] = chatAnexos[ch] || []).push(a); }
+function chatSoltarAnexos(ctx, desde){
+  const ch = ctx + ':' + chatPid(ctx), lista = chatAnexos[ch]; delete chatAnexos[ch];
+  if(!lista || !lista.length) return;
+  const msgs = chatMsgs(ctx), alvo = msgs.slice(desde).reverse().find(m=>m.q==='cl' && m.t && !m.vivo && !m.fontes && !m.flex);
+  const junto = {}; for(const a of lista){ if(a.voos) junto.voos = [...(junto.voos||[]), ...a.voos]; if(a.botoes) junto.botoes = a.botoes; }
+  if(alvo){ Object.assign(alvo, junto); const p = pedido(chatPid(ctx)); if(p) salvar(true); else salvarSolto(); chatRender(true); }
+  else chatAdd(ctx, {q:'cl', t:'', ...junto});
+}
+async function chatEnviar(ctx, texto){
+  texto = String(texto||'').trim(); if(!texto) return;
+  const chave = ctx + ':' + chatPid(ctx);
+  if(chatOcupado[chave]) return;
+  chatAdd(ctx, {q:'eu', t:texto});
+  if(!chatCfgOk()){ chatAdd(ctx, {q:'cl', t:'Para eu conversar, falta ligar a ponte do Claude: em **Ajustes → Claude**, cole o endereço do Apps Script e o segredo.', botoes:[{rot:'Abrir Ajustes', acao:'ajustes'}]}); return; }
+  chatOcupado[chave] = true; chatRender(true);
+  const desde = chatMsgs(ctx).length;
+  try{
+    const api = historicoApi(ctx);
+    const ferr = ctx==='ped' ? CHAT_FERRAMENTAS.filter(f=>f.name!=='criar_pedido') : CHAT_FERRAMENTAS;
+    for(let volta=0; volta<6; volta++){
+      const r = await chamarClaude({system:sistemaChat(ctx), messages:api, tools:ferr, max_tokens:1200});
+      const txt = (r.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n').trim();
+      const usos = (r.content||[]).filter(c=>c.type==='tool_use');
+      if(txt) chatAdd(ctx, {q:'cl', t:txt});
+      if(r.stop_reason!=='tool_use' || !usos.length) break;
+      api.push({role:'assistant', content:r.content});
+      const res = [];
+      for(const u of usos){
+        let out; try{ out = await chatFerramenta(ctx, u.name, u.input||{}); }catch(e){ out = {erro:String(e && e.message || e)}; }
+        res.push({type:'tool_result', tool_use_id:u.id, content:JSON.stringify(out).slice(0, 9000)});
+      }
+      api.push({role:'user', content:res});
+    }
+  }catch(e){
+    chatAdd(ctx, {q:'cl', t:`Não consegui falar com o Claude agora (${String(e && e.message || e).slice(0,140)}). Confira a internet e a ponte em Ajustes → Claude.`, erro:true});
+  }finally{ const ped0 = chatPid(ctx); delete chatOcupado[chave]; chatSoltarAnexos(ctx, ped0 && chatPid(ctx)===ped0 ? desde : 0); chatRender(true); }
+}
+async function chatFerramenta(ctx, nome, inp){
+  if(nome==='criar_pedido'){
+    const o = acharAero(inp.origem), d = acharAero(inp.destino);
+    if(!o || !d) return {erro:`Aeroporto não encontrado: ${!o ? inp.origem : inp.destino}. Use o código IATA.`};
+    if(o.iata===d.iata) return {erro:'Origem e destino iguais.'};
+    const ida = String(inp.data_ida||'').slice(0,10), volta = String(inp.data_volta||'').slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(ida) || ida < hojeISO()) return {erro:'Data de ida inválida ou no passado.'};
+    if(volta && (!/^\d{4}-\d{2}-\d{2}$/.test(volta) || volta < ida)) return {erro:'Data de volta inválida.'};
+    const vo = inp.volta_origem ? acharAero(inp.volta_origem) : null, vd = inp.volta_destino ? acharAero(inp.volta_destino) : null;
+    const p = normalizar({id:novoId(), criadoEm:new Date().toISOString(), status:'nova', tipo: volta ? 'ida_volta' : 'so_ida', origem:aeroLimpo(o), destino:aeroLimpo(d), dataIda:ida, dataVolta: volta || null,
+      ...(volta && vo && vo.iata!==d.iata ? {voltaOrigem:aeroLimpo(vo)} : {}), ...(volta && vd && vd.iata!==o.iata ? {voltaDestino:aeroLimpo(vd)} : {}),
+      datasFlexiveis:false, passageiros:{adultos:Math.max(1, n(inp.adultos)||1), criancas:n(inp.criancas), bebes:n(inp.bebes)}, malasPorPassageiro:n(inp.malas), pet:null,
+      cliente:{nome:String(inp.cliente_nome||'').trim() || 'Cliente', whatsapp:soDigitos(inp.cliente_whatsapp), email:null}, origemPedido:'chat', obs:'', busca:{}});
+    logar(p, 'Pedido criado pelo chat com o Claude');
+    p.chat = chatSolto.slice(-CHAT_MAX); chatSolto = []; salvarSolto();
+    pedidos.unshift(p); setChatPedPesq(p.id); salvar(true); if(typeof renderQuadro==='function') renderQuadro();
+    chatRender(true);
+    return {ok:true, id:p.id, rota:`${p.origem.iata} → ${p.destino.iata}`, ida:p.dataIda, volta:p.dataVolta, passageiros:textoPax(p)};
+  }
+  const p = pedido(chatPid(ctx)); if(!p) return {erro:'Nenhum pedido aberto. Crie com criar_pedido.'};
+  if(nome==='alterar_pedido'){
+    const antes = JSON.stringify([p.origem.iata, p.destino.iata, p.dataIda, p.dataVolta, p.passageiros, voltaDe(p), voltaPara(p)]);
+    if(inp.origem){ const a = acharAero(inp.origem); if(!a) return {erro:'Origem não encontrada'}; p.origem = aeroLimpo(a); }
+    if(inp.destino){ const a = acharAero(inp.destino); if(!a) return {erro:'Destino não encontrado'}; p.destino = aeroLimpo(a); }
+    if(inp.data_ida) p.dataIda = String(inp.data_ida).slice(0,10);
+    if(inp.data_volta!==undefined){ const v = String(inp.data_volta||'').slice(0,10); p.dataVolta = v || null; p.tipo = v ? 'ida_volta' : 'so_ida'; }
+    if(inp.volta_origem!==undefined){ const a = inp.volta_origem ? acharAero(inp.volta_origem) : null; if(a && a.iata!==p.destino.iata) p.voltaOrigem = aeroLimpo(a); else delete p.voltaOrigem; }
+    if(inp.volta_destino!==undefined){ const a = inp.volta_destino ? acharAero(inp.volta_destino) : null; if(a && a.iata!==p.origem.iata) p.voltaDestino = aeroLimpo(a); else delete p.voltaDestino; }
+    for(const [c,k] of [['adultos','adultos'],['criancas','criancas'],['bebes','bebes']]) if(inp[c]!=null) p.passageiros[k] = c==='adultos' ? Math.max(1, n(inp[c])) : n(inp[c]);
+    if(inp.malas!=null) p.malasPorPassageiro = n(inp.malas);
+    if(inp.cliente_nome) p.cliente.nome = String(inp.cliente_nome).trim();
+    if(inp.cliente_whatsapp) p.cliente.whatsapp = soDigitos(inp.cliente_whatsapp);
+    const mudou = antes !== JSON.stringify([p.origem.iata, p.destino.iata, p.dataIda, p.dataVolta, p.passageiros, voltaDe(p), voltaPara(p)]);
+    if(mudou){ p.busca = {}; delete p.escolhido; delete p.combo; delete p.escolhaAuto; delete p.escolhaManual; p.auto = null; delete p.flexChat; normalizar(p); p.valorMP = ''; }
+    logar(p, 'Pedido alterado pelo chat'); salvar(true); if(abertoId===p.id) renderDetalheSeguro(); chatRender(true);
+    return {ok:true, mudou_voos: mudou, aviso: mudou ? 'Os voos lidos foram apagados: chame pesquisar.' : ''};
+  }
+  if(nome==='pesquisar'){
+    const so = (inp.programas||[]).filter(k=>PROG[k]);
+    p.chatPedeBusca = {tipo:'auto', so: so.length && so.length<3 ? so : null, em:new Date().toISOString(), por: pcLocal() ? 'pc' : 'celular'};
+    chatAdd(ctx, {q:'cl', t:'', fontes:true}, p.id);
+    chatAdd(ctx, {q:'cl', t:'', vivo:'busca'}, p.id);
+    salvar(true);
+    if(pcLocal()) pcAtenderPedidos();
+    const ocupado = autoAtual && autoAtual.pedidoId!==p.id;
+    return {ok:true, situacao: !pcOnline() ? 'O PC está desligado: a pesquisa fica esperando o PC ligar com o painel aberto no Chrome.' : ocupado ? 'Terminando a busca de outro pedido; este entra em seguida.' : 'Pesquisa começou. O resultado aparece sozinho no chat; não precisa responder com voos agora.'};
+  }
+  if(nome==='listar_voos'){
+    const Ts = inp.trecho ? [inp.trecho==='volta' ? 'Volta' : 'Ida'] : trechosDe(p);
+    let l = Ts.flatMap(T=>voosDoTrecho(p,T));
+    if(inp.programa) l = l.filter(x=>x.k===inp.programa);
+    if(inp.somente_diretos) l = l.filter(x=>!x.par);
+    const mh = h => minHora(h);
+    if(inp.saida_apos) l = l.filter(x=>mh(x.v.saida)!=null && mh(x.v.saida) >= mh(inp.saida_apos));
+    if(inp.saida_antes) l = l.filter(x=>mh(x.v.saida)!=null && mh(x.v.saida) <= mh(inp.saida_antes));
+    if(inp.chegada_antes) l = l.filter(x=>mh(x.v.chegada)!=null && mh(x.v.chegada) <= mh(inp.chegada_antes));
+    (p.flexChat?.dias||[]).length && void 0;
+    l = ordenarVoos(l, 'barato').slice(0, Math.min(30, n(inp.max)||15));
+    return {voos: l.map(x=>({id:x.id, trecho:x.T.toLowerCase(), programa:PROG[x.k].nome, cia:PROG[x.k].cia, voo:x.v.voo||'', saida:x.v.saida, chegada:x.v.chegada, duracao:fmtMin(x.dur), paradas:x.par||0, escalas:(x.v.escalas||[]).map(e=>localParada(e.local)+(e.min!=null?' '+fmtMin(e.min):'')).join(', '), milhas_por_pessoa:n(x.v.milhas), taxa_por_pessoa:x.v.taxas!=null ? n(x.v.taxas) : null, custo_total: x.custo ? BRL(x.custo.valor) : 'sem tabela', na_cotacao: vooNaCotacao(p,x)})),
+      nenhum: !l.length ? (p.auto ? 'Nenhum voo com esses filtros.' : 'Ainda não pesquisou: chame pesquisar.') : undefined};
+  }
+  if(nome==='mostrar_voos'){
+    const ids = (inp.ids||[]).filter(id=>vooPorId(p,id)).slice(0,6);
+    if(!ids.length) return {erro:'Nenhum id válido. Use listar_voos.'};
+    chatAnexar(ctx, {voos:ids});
+    return {ok:true, mostrados:ids.length};
+  }
+  if(nome==='usar_voo') return usarVooChat(p.id, inp.id);
+  if(nome==='datas_flexiveis'){
+    const quais = inp.trecho || 'ida', dias = Math.max(1, Math.min(3, n(inp.dias)||2));
+    const Ts = quais==='ambos' ? trechosDe(p) : [quais==='volta' ? 'Volta' : 'Ida'];
+    const ini = T => somarDias(T==='Ida' ? p.dataIda : p.dataVolta, -dias), fim = T => somarDias(T==='Ida' ? p.dataIda : p.dataVolta, dias);
+    chatAdd(ctx, {q:'cl', t:`Pesquisando ${Ts.map(T=>`${fmtDataCurta(ini(T))} a ${fmtDataCurta(fim(T))}`).join(' e ')} nas três cias…`, flex:true}, p.id);
+    p.chatPedeBusca = {tipo:'flex', quais, dias, em:new Date().toISOString()};
+    salvar(true); if(pcLocal()) pcAtenderPedidos();
+    return {ok:true, situacao: pcOnline() ? 'Pesquisa de datas começou; a tabela aparece no chat.' : 'PC desligado: a pesquisa espera o PC ligar.'};
+  }
+  if(nome==='definir_valor'){
+    if(inp.preco_em_dinheiro!=null) p.precoCia = n(inp.preco_em_dinheiro);
+    const cb = custoBase(p);
+    if(inp.lucro_reais!=null || inp.lucro_percentual!=null || inp.valor_cliente_pix!=null){
+      if(!cb) return {erro:'Ainda não há custo da Milhas Plus (falta escolher voo).'};
+      let pc = inp.lucro_percentual!=null ? n(inp.lucro_percentual) : inp.lucro_reais!=null ? n(inp.lucro_reais)/cb*100 : (n(inp.valor_cliente_pix)/cb - 1)*100;
+      if(pc < 0) return {erro:'Esse valor fica abaixo do custo.'};
+      p.percLucro = Math.round(pc*100)/100;
+    }
+    logar(p, 'Valor ajustado pelo chat'); salvar(true); if(abertoId===p.id) renderDetalheSeguro(); chatRender(true);
+    return {ok:true, ...resumoValores(p), economia_cliente: p.precoCia && valorCliente(p) ? BRL(n(p.precoCia) - valorCliente(p)) : null};
+  }
+  if(nome==='oferecer_envio'){
+    const falta = faltaVooCotacao(p); if(falta) return {erro:falta};
+    if(soDigitos(p.cliente?.whatsapp).length < 10) return {erro:'Falta o WhatsApp do cliente. Pergunte e use alterar_pedido.'};
+    if(!valorCliente(p)) return {erro:'Falta o valor do cliente.'};
+    chatAnexar(ctx, {botoes:[{rot:'Abrir WhatsApp', acao:'zap'}, {rot:'Ver prévia', acao:'previa'}]});
+    return {ok:true, valor_cliente_pix:BRL(valorCliente(p))};
+  }
+  return {erro:'Ferramenta desconhecida'};
+}
+function chatBotao(ctx, acao){
+  const p = pedido(chatPid(ctx));
+  if(acao==='ajustes'){ fecharDetalheSe(); irPara('config'); setTimeout(()=>abrirAjuste('claude'), 50); return; }
+  if(!p) return;
+  if(acao==='zap') ACOES.enviarCotacao(p, 'cotacao');
+  if(acao==='previa' || acao==='valor') irEtapaValor(p);
+}
+function fecharDetalheSe(){ if(abertoId && typeof fecharDetalhe==='function') fecharDetalhe(); }
+function irEtapaValor(p){
+  if(abertoId!==p.id) abrirDetalhe(p.id);
+  const etapas = [...$('#detCorpo').children].filter(e=>e.matches('details.etapa'));
+  const i = etapas.findIndex(d=>/valor/i.test(d.querySelector('summary h3')?.textContent||''));
+  if(i>=0){ passoSel[p.id] = i; renderDetalhe(); }
+}
+
+/* ---------- desenho ---------- */
+function mdChat(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>'); }
+function htmlVooCard(p, x, marcas, mini){
+  const na = vooNaCotacao(p, x), b = PROG[x.k], cia = x.k==='smiles' ? 'Smiles · GOL' : b.cia;
+  const tg = (marcas.barato===x.id ? '<span class="tg tbar">MAIS BARATO</span>' : '') + (marcas.rapido===x.id ? '<span class="tg trap">MAIS RÁPIDO</span>' : '') + (na ? '<span class="tg ok2">✓ NA COTAÇÃO</span>' : '');
+  const par = x.par ? `${x.par} parada${x.par>1?'s':''}${(x.v.escalas||[]).length ? ' · ' + x.v.escalas.map(e=>localParada(e.local)).join(', ') : ''}` : (x.v.paradas===0 || x.par===0 ? 'direto' : '');
+  if(mini) return `<div class="ch-mini" style="--c:${b.cor}"><div><b class="num">${esc(x.v.saida||'--:--')} → ${esc(x.v.chegada||'--:--')}</b><small>${esc([b.cia, x.data ? fmtDataCurta(x.data) : '', par, MIL(x.v.milhas)].filter(Boolean).join(' · '))}</small></div>${na ? '<span class="u ok">✓ Usado</span>' : `<button type="button" class="u" data-usar="${esc(x.id)}">Usar</button>`}</div>`;
+  return `<button type="button" class="voo${na?' sel':''}" style="--c:${b.cor}" data-usar="${esc(x.id)}" aria-pressed="${na}"><div><span class="ci">${esc(cia)}</span>${tg}<div class="h num">${esc(x.v.saida||'--:--')} → ${esc(x.v.chegada||'--:--')}<em>${esc(par)}</em></div></div>
+    <div class="m num">${MIL(x.v.milhas)}<small>${x.custo && x.custo.taxas!=null ? '+ taxa ' + BRL(Math.round(x.custo.taxas/pagantes(p)*100)/100) : 'taxa a conferir'}</small><span class="r">${x.custo ? BRL(x.custo.valor) : '—'}</span></div></button>`;
+}
+function htmlFontes(p, fx){
+  const f = fx || fontesChat(p), it = (k, nome, cor) => `<div class="fonte ${f[k].c}"><i style="background:${cor}"></i>${nome}<small>${esc(f[k].t)}</small></div>`;
+  const din = fx ? `<div class="fonte ${f.dinheiro.c}"><i style="background:#4A5B76"></i>Em dinheiro<small>${esc(f.dinheiro.t)}</small></div>`
+    : `<div class="fonte ${f.dinheiro.c}"><i style="background:#4A5B76"></i>Em dinheiro<small>${p.precoCia ? esc(f.dinheiro.t) : `<a href="${esc((urlsSky(p)[0]||{}).url||'#')}" target="_blank" rel="noopener">abrir site</a>`}</small></div>`;
+  const pr = fx ? 1 : progressoBusca(p);
+  return `<div class="fontes">${it('smiles','Smiles',PROG.smiles.cor)}${it('latam','LATAM Pass',PROG.latam.cor)}${it('azul','Azul',PROG.azul.cor)}${din}</div>${pr<1 ? `<div class="barrinha"><span style="width:${Math.round(pr*100)}%"></span></div>` : ''}`;
+}
+function htmlFlexTabela(p){
+  const fx = p.flexChat; if(!fx) return '';
+  const pr = fx.total ? fx.feitos/fx.total : 1;
+  let h = fx.rodando ? `<div class="flex-prog"><b>${fx.feitos} de ${fx.total}</b> datas lidas</div><div class="barrinha"><span style="width:${Math.round(pr*100)}%"></span></div>` : '';
+  for(const T of fx.Ts){
+    const datas = [...new Set(fx.dias.filter(d=>d.T===T).map(d=>d.data))].sort(); if(!datas.length) continue;
+    const cel = {}; let min = Infinity;
+    for(const d of fx.dias.filter(d=>d.T===T && d.voos.length)){ const c = custoVoo(p, d.k, T, d.voos[0]); if(c){ cel[d.data+'|'+d.k] = {d, c}; min = Math.min(min, c.valor); } }
+    h += `<table class="flex-tab"><caption>${T}</caption><tr><th></th>${Object.keys(PROG).map(k=>`<th style="color:${PROG[k].cor}">${PROG[k].nome.split(' ')[0]}</th>`).join('')}</tr>${datas.map(dt=>`<tr><th>${diaCurto(dt)}</th>${Object.keys(PROG).map(k=>{ const x = cel[dt+'|'+k]; return x ? `<td><button type="button" class="${x.c.valor-min<0.01?'min':''}" data-usar="f|${k}|${T}|${dt}|0">${MIL(x.d.voos[0].milhas)}<small>${BRL(x.c.valor)}</small></button></td>` : '<td>—</td>'; }).join('')}</tr>`).join('')}</table>`;
+  }
+  return h;
+}
+function htmlMsg(ctx, p, m){
+  if(m.q==='eu') return `<div class="eu">${mdChat(m.t)}</div>`;
+  let corpo = m.vivo==='busca' && p ? mdChat(textoBuscaChat(p, false)) : mdChat(m.t||'');
+  if(m.fontes && p) corpo += htmlFontes(p, m.fontesFix);
+  if(m.voos && p){ const xs = m.voos.map(id=>vooPorId(p,id)).filter(Boolean); corpo += xs.map(x=>htmlVooCard(p, x, {}, true)).join(''); }
+  if(m.flex && p) corpo += htmlFlexTabela(p);
+  if(m.botoes) corpo += `<div class="ch-bts">${m.botoes.map(b=>`<button type="button" class="ch-bt ${b.acao==='zap'?'pri':''}" data-chbt="${b.acao}">${esc(b.rot)}</button>`).join('')}</div>`;
+  if(!corpo) return '';
+  return `<div class="cl${m.erro?' err':''}">${corpo}</div>`;
+}
+function sugestoesChat(ctx, p){
+  if(!p) return ['Natal pra São Paulo, 30/12 a 06/01, 2 adultos', 'Curitiba pra Salvador, só ida, 15/01', 'qual cia costuma ser mais barata?'];
+  if(ctx==='ped') return ['refazer pesquisa', 'só diretos', 'mais barato possível'];
+  const alt = AEROPORTOS.find(a=>a.cidade===p.destino.cidade && a.iata!==p.destino.iata && a.pais===p.destino.pais);
+  return ['flexível ±2 dias', 'só voos diretos', 'chegar antes das 12h', ...(alt ? [`trocar para ${alt.iata}`] : [])];
+}
+function htmlResumoBarra(p, botao){
+  const s = selAtual(p), c = s && custoSel(p, s);
+  return `<div class="ch-resumo"><div><em>Custo milhas</em><b class="num">${c ? BRL(c.valor) : '—'}</b></div><div class="cli"><em>Cliente (Pix)</em><b class="num">${valorCliente(p) ? BRL(valorCliente(p)) : '—'}</b></div>${botao ? `<div class="lu"><em>Seu lucro</em><b class="num">${valorCliente(p) ? BRL(lucro(p)) : '—'}</b></div><div><em>Vale até</em><b>${validadeHoras(p)}h</b></div><button type="button" class="bt" data-chbt="valor">Ir para Valor e cotação →</button>` : ''}</div>`;
+}
+function htmlMobRes(ctx, p){
+  if(!p || !p.auto) return '';
+  const blocos = trechosDe(p).map(T=>{
+    const l = voosDoTrecho(p,T); if(!l.length) return '';
+    const mk = marcasVoos(l), ord = ordenarVoos(l,'barato'), todos = chatVerTodos[p.id+T];
+    const mostra = todos ? ord : ord.filter((x,i)=>i<1 || x.id===mk.rapido || vooNaCotacao(p,x)).slice(0,3);
+    return `<div class="cl ch-rot">${T} · ${diaCurto(T==='Ida'?p.dataIda:p.dataVolta)} · toque para usar</div>${mostra.map(x=>htmlVooCard(p,x,mk)).join('')}${l.length>mostra.length || todos ? `<button type="button" class="ch-todos" data-todos="${T}">${todos ? 'ver menos' : `ver todos (${l.length})`}</button>` : ''}`;
+  }).join('');
+  return blocos ? `<div class="ch-mres">${blocos}</div>` : '';
+}
+function htmlResPesq(){
+  const p = pedido(chatPid('pesq'));
+  if(!p) return `<div class="pq-vazio"><b>✦ Escreva a rota no chat</b><span>Ex.: "Natal pra São Paulo, 30/12 a 06/01, 2 adultos, só mala de mão". O Claude cria o pedido e pesquisa na Smiles, LATAM Pass e Azul. Os voos aparecem aqui.</span></div>`;
+  const cols = trechosDe(p).map(T=>{
+    const f = chatFiltro[T], todos = voosDoTrecho(p,T), mk = marcasVoos(todos);
+    let l = todos; if(f.dir) l = l.filter(x=>!x.par); if(f.prog) l = l.filter(x=>x.k===f.prog);
+    l = ordenarVoos(l, f.ord);
+    const chip = (rot, on, a) => `<button type="button" class="${on?'on':''}" data-filtro="${T}|${a}">${rot}</button>`;
+    const vazio = !todos.length ? `<div class="pq-nada">${autoAtual && autoAtual.pedidoId===p.id ? 'Lendo os sites…' : p.chatPedeBusca && !p.chatPedeBusca.feita ? 'Esperando o PC para pesquisar…' : 'Ainda sem voos. Peça no chat: "pesquisar".'}</div>` : !l.length ? '<div class="pq-nada">Nenhum voo com esse filtro.</div>' : '';
+    return `<div class="col"><h4>${T} · ${diaCurto(T==='Ida'?p.dataIda:p.dataVolta)} <small>${todos.length} voo${todos.length!==1?'s':''} · por pessoa</small></h4>
+      <div class="filtro">${chip('Mais barato', f.ord==='barato', 'ord:barato')}${chip('Mais rápido', f.ord==='rapido', 'ord:rapido')}${chip('Diretos', f.dir, 'dir')}${Object.keys(PROG).map(k=>chip(PROG[k].nome.split(' ')[0], f.prog===k, 'prog:'+k)).join('')}</div>${vazio}${l.map(x=>htmlVooCard(p,x,mk)).join('')}</div>`;
+  }).join('');
+  const sky = (urlsSky(p)[0]||{}).url, eco = p.precoCia && valorCliente(p) ? n(p.precoCia) - valorCliente(p) : null;
+  return `<div class="ped"><b>${esc(p.origem.iata)} ✈ ${esc(p.destino.iata)}</b><span>${esc([`ida ${diaCurto(p.dataIda)}`, p.dataVolta ? `volta ${diaCurto(p.dataVolta)}${voltaDe(p)!==p.destino.iata ? ' de ' + voltaDe(p) : ''}` : 'só ida', textoPax(p), textoMalasCliente(p).replace('Inclui ','').toLowerCase()].join(' · '))}</span><span class="cod">${esc(p.id)} · ${p.status==='nova' ? 'NOVO' : esc(String(p.status).toUpperCase())}</span><button type="button" class="pq-novo" data-pqnovo>+ nova pesquisa</button></div>
+    <div class="cols${trechosDe(p).length===1?' um':''}">${cols}</div>
+    <div class="din"><span>Em dinheiro (Google Flights / Skyscanner): ${p.precoCia ? `menor ida e volta <b>${BRL(n(p.precoCia))}</b>` : 'diga no chat o menor preço que achar'} · <a href="${esc(sky||'#')}" target="_blank" rel="noopener">abre o site</a></span>${eco!=null ? `<span>economia do cliente: <b style="color:${eco>0?'#1E7B4F':'#A8261C'}">${BRL(eco)}${eco>0 ? ` (${Math.round(eco/n(p.precoCia)*100)}%)` : ''}</b></span>` : ''}</div>
+    ${htmlResumoBarra(p, true)}`;
+}
+function htmlChatEsqueleto(ctx){
+  return `<div class="ch" data-ctx="${ctx}"><div class="ch-cab"><span class="av">✦</span><div><b>${ctx==='ped' ? 'Claude' : 'Pesquisa com o Claude'}</b><small>${ctx==='ped' ? 'pesquisa e ajustes deste pedido' : 'Smiles · LATAM Pass · Azul · em dinheiro'}</small></div><span class="ch-pc"></span>${ctx==='ped' ? '<button type="button" class="ch-x" data-chfechar aria-label="Fechar o chat">✕</button>' : ''}</div>
+    <div class="ch-msgs" role="log" aria-live="polite"></div><div class="ch-aviso" hidden></div><div class="ch-rbar"></div><div class="ch-sug"></div>
+    <form class="ch-entrada"><textarea rows="1" placeholder="${ctx==='ped' ? 'Peça uma pesquisa ou ajuste…' : 'Pergunte ou peça uma nova pesquisa…'}" aria-label="Mensagem para o Claude"></textarea><button type="submit" aria-label="Enviar">↑</button></form></div>`;
+}
+function chatPreencher(el){
+  const ctx = el.dataset.ctx, p = pedido(chatPid(ctx)), msgs = chatMsgs(ctx), box = el.querySelector('.ch-msgs');
+  const pc = el.querySelector('.ch-pc'), on = pcOnline();
+  pc.className = 'ch-pc ' + (on ? 'on' : 'off'); pc.textContent = on ? (ctx==='ped' ? '● PC' : '● PC conectado') : '○ PC desligado';
+  const ocupado = chatOcupado[ctx + ':' + chatPid(ctx)];
+  const ini = !msgs.length ? `<div class="cl">${ctx==='ped' ? `Pedido <b>${esc(p ? p.id : '')}</b> carregado. ${p ? textoCiasChat(p) : ''}` : 'Oi! Me diga a rota, as datas e quantas pessoas, que eu crio o pedido e pesquiso nas três cias.'}</div>` : '';
+  const perto = box.scrollHeight - box.scrollTop - box.clientHeight < 80, antes = box.childElementCount;
+  box.innerHTML = ini + msgs.map(m=>htmlMsg(ctx, p, m)).join('') + (ocupado ? '<div class="cl pensando"><i></i><i></i><i></i></div>' : '') + htmlMobRes(ctx, p);
+  if(perto || box.childElementCount !== antes) box.scrollTop = box.scrollHeight;
+  const av = el.querySelector('.ch-aviso');
+  av.hidden = on; av.innerHTML = '💻 <b>PC desligado:</b> abra o painel no Chrome do PC para pesquisar. Aqui você pode conversar e ajustar a cotação.';
+  el.querySelector('.ch-rbar').innerHTML = p && p.auto ? htmlResumoBarra(p, false) : '';
+  el.querySelector('.ch-sug').innerHTML = sugestoesChat(ctx, p).map(s=>`<button type="button" data-sug="${esc(s)}">${esc(s)}</button>`).join('');
+}
+function textoCiasChat(p){
+  const tem = Object.keys(PROG).filter(k=>trechosDe(p).some(T=>n(p.busca[k]?.['milhas'+T]))), falta = Object.keys(PROG).filter(k=>!tem.includes(k));
+  if(!tem.length) return 'Ainda não há voos. Quer que eu pesquise?';
+  return `Já tenho ${tem.map(k=>PROG[k].nome.split(' ')[0]).join(' e ')} preenchido${tem.length>1?'s':''}${falta.length ? `; falta ${falta.map(k=>PROG[k].nome.split(' ')[0]).join(' e ')}` : ''}.`;
+}
+function chatRender(forcar){
+  // P1 · tela Pesquisar
+  const t = $('#tela-pesquisar');
+  if(t && t.classList.contains('ativa')){
+    const p = pedido(chatPid('pesq')); if(p && autoEscolher(p)) salvar(true);
+    const ch = t.querySelector('.ch'); if(ch) chatPreencher(ch);
+    const r = $('#pqRes'); if(r) r.innerHTML = htmlResPesq();
+  }
+  // P2 · coluna no pedido
+  const dc = $('#detChat');
+  if(dc && abertoId && chatAberto()){
+    if(dc.dataset.pid!==abertoId || !dc.querySelector('.ch')){ dc.innerHTML = htmlChatEsqueleto('ped'); dc.dataset.pid = abertoId; }
+    chatPreencher(dc.querySelector('.ch'));
+  }
+  chatAssin = assinChat();
+}
+function assinChat(){
+  const ids = [chatPid('pesq'), abertoId].filter(Boolean);
+  return JSON.stringify([pcOnline(), chatSolto.length, Object.keys(chatOcupado), $('#tela-pesquisar')?.classList.contains('ativa'), chatAberto(), ...ids.map(id=>{ const p = pedido(id); return p && [(p.chat||[]).length, p.auto?.st, p.escolhido, p.combo, p.valorMP, p.percLucro, p.precoCia, p.flexChat && [p.flexChat.feitos, p.flexChat.rodando], p.chatPedeBusca, Object.keys(PROG).map(k=>[p.busca[k]?.saidaIda, p.busca[k]?.saidaVolta, p.busca[k]?.milhasIda, p.busca[k]?.milhasVolta])]; })]);
+}
+setInterval(()=>{ if(($('#tela-pesquisar')?.classList.contains('ativa') || (abertoId && chatAberto())) && assinChat()!==chatAssin) chatRender(); }, 1200);
+function chatAberto(){ try{ const v = localStorage.getItem('vpo_chat_aberto'); return v==null ? matchMedia('(min-width:1100px)').matches : v==='1'; }catch(e){ return false; } }
+function setChatAberto(on){
+  try{ localStorage.setItem('vpo_chat_aberto', on ? '1' : '0'); }catch(e){}
+  const d = $('#detalhe'), dc = $('#detChat'); if(!d || !dc) return;
+  d.classList.toggle('com-chat', on); dc.hidden = !on;
+  const bt = $('#detChatBt'); if(bt) bt.setAttribute('aria-pressed', on);
+  if(on) chatRender(true);
+}
+function montarTelaPesquisar(){
+  const t = $('#tela-pesquisar'); if(!t || t.querySelector('.pq')) return;
+  t.innerHTML = `<div class="pq"><div class="pq-chat">${htmlChatEsqueleto('pesq')}</div><div class="pq-res" id="pqRes"></div></div>`;
+}
+// cliques e envio (um ouvinte só para todas as telas)
+document.addEventListener('click', e=>{
+  const ch = e.target.closest('.ch, #pqRes'); if(!ch) return;
+  const ctx = ch.id==='pqRes' ? 'pesq' : ch.dataset.ctx;
+  const u = e.target.closest('[data-usar]');
+  if(u){ const p = pedido(chatPid(ctx)); if(p){ const r = usarVooChat(p.id, u.dataset.usar); if(r.erro) toast(r.erro); else toast(`${r.trecho} na cotação: ${r.programa} ${r.horario}`); } return; }
+  const s = e.target.closest('[data-sug]'); if(s){ chatEnviar(ctx, s.dataset.sug); return; }
+  const b = e.target.closest('[data-chbt]'); if(b){ chatBotao(ctx, b.dataset.chbt); return; }
+  const f = e.target.closest('[data-filtro]');
+  if(f){ const [T, a] = f.dataset.filtro.split('|'), x = chatFiltro[T];
+    if(a.startsWith('ord:')) x.ord = a.slice(4); else if(a==='dir') x.dir = !x.dir; else if(a.startsWith('prog:')){ const k = a.slice(5); x.prog = x.prog===k ? '' : k; }
+    chatRender(true); return; }
+  const td = e.target.closest('[data-todos]'); if(td){ const p = pedido(chatPid(ctx)); if(p){ chatVerTodos[p.id+td.dataset.todos] = !chatVerTodos[p.id+td.dataset.todos]; chatRender(true); } return; }
+  if(e.target.closest('[data-chfechar]')){ setChatAberto(false); return; }
+  if(e.target.closest('[data-pqnovo]')){ setChatPedPesq(''); chatSolto = []; salvarSolto(); chatRender(true); const ta = $('#tela-pesquisar textarea'); if(ta) ta.focus(); return; }
+});
+document.addEventListener('submit', e=>{
+  const f = e.target.closest('.ch-entrada'); if(!f) return; e.preventDefault();
+  const ta = f.querySelector('textarea'), ctx = f.closest('.ch').dataset.ctx, txt = ta.value; ta.value = ''; ta.style.height = '';
+  chatEnviar(ctx, txt);
+});
+document.addEventListener('keydown', e=>{
+  if(e.target.matches && e.target.matches('.ch-entrada textarea') && e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); e.target.closest('form').requestSubmit(); }
+});
+document.addEventListener('input', e=>{ if(e.target.matches && e.target.matches('.ch-entrada textarea')){ e.target.style.height = ''; e.target.style.height = Math.min(140, e.target.scrollHeight) + 'px'; } });
+
+$('#detChatBt')?.addEventListener('click', ()=>setChatAberto(!chatAberto()));
+$('#detChatFab')?.addEventListener('click', ()=>setChatAberto(true));
+$('#clTestar')?.addEventListener('click', async ()=>{
+  const r = $('#clTesteRes'); if(!chatCfgOk()){ r.textContent = 'Preencha o endereço (https://…/exec) e o segredo.'; return; }
+  r.textContent = 'Testando…';
+  try{ const j = await chamarClaude({teste:true}); r.textContent = j.ok ? `✓ Ligado · modelo ${j.modelo||''}` : 'Resposta estranha da ponte.'; }
+  catch(e){ r.textContent = '✕ ' + String(e && e.message || e).slice(0,160); }
+});
 /* ---------- pedido do cliente na barra de cima ---------- */
 function cabAberta(){ try{ return localStorage.getItem('vpo_cab_aberta')==='1'; }catch(e){ return false; } }
 function diaCurto(d){ return d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace('.','') : ''; }
