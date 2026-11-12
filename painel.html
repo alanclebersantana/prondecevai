@@ -7579,8 +7579,10 @@ async function chatEnviar(ctx, texto){
   try{
     const api = historicoApi(ctx);
     const ferr = ctx==='ped' ? CHAT_FERRAMENTAS.filter(f=>f.name!=='criar_pedido') : CHAT_FERRAMENTAS;
-    for(let volta=0; volta<6; volta++){
-      const r = await chamarClaude({system:sistemaChat(ctx), messages:api, tools:ferr, max_tokens:1200});
+    // as instruções ficam iguais durante toda a mensagem: o raciocínio do Claude ("thinking") é assinado junto com elas
+    const sistema = sistemaChat(ctx);
+    for(let volta=0; volta<8; volta++){
+      const r = await chamarClaude({system:sistema, messages:api, tools:ferr, max_tokens:4000});
       const txt = (r.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n').trim();
       const usos = (r.content||[]).filter(c=>c.type==='tool_use');
       if(txt) chatAdd(ctx, {q:'cl', t:txt});
@@ -7589,6 +7591,7 @@ async function chatEnviar(ctx, texto){
       const res = [];
       for(const u of usos){
         let out; try{ out = await chatFerramenta(ctx, u.name, u.input||{}); }catch(e){ out = {erro:String(e && e.message || e)}; }
+        if(['criar_pedido','alterar_pedido','pesquisar','usar_voo','definir_valor'].includes(u.name)) out = {...out, estado_agora: estadoChat(ctx)};
         res.push({type:'tool_result', tool_use_id:u.id, content:JSON.stringify(out).slice(0, 9000)});
       }
       api.push({role:'user', content:res});
